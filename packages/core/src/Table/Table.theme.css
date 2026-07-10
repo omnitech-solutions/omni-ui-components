@@ -1,0 +1,42 @@
+/* Theme overrides for `<Table theme="light|dark" />`. When a consumer forces a
+ * theme on a Table, the Root gets `data-theme=…` and these rules pin the
+ * `--bui-table-*` tokens so the palette is self-contained regardless of the
+ * enclosing app theme. */
+
+[data-bui-table-root][data-theme='light'] {
+  --bui-table-bg: #ffffff;
+  --bui-table-fg: #272525;
+  --bui-table-muted-fg: #8c918f;
+  --bui-table-border: #ececec;
+  --bui-table-border-strong: #d8e4da;
+  --bui-table-header-bg: #fafafa;
+  --bui-table-header-fg: #272525;
+  --bui-table-header-muted-fg: #8c918f;
+  --bui-table-header-split-color: #ececec;
+  --bui-table-row-bg: #ffffff;
+  --bui-table-row-hover-bg: #f8fbf8;
+  --bui-table-row-striped-bg: #f8fbf8;
+  --bui-table-row-expanded-bg: #ffffff;
+  --bui-table-row-selected-bg: color-mix(in srgb, #22ad01 10%, #ffffff);
+  --bui-table-footer-bg: #fafafa;
+  --bui-table-footer-fg: #272525;
+}
+
+[data-bui-table-root][data-theme='dark'] {
+  --bui-table-bg: #191c1d;
+  --bui-table-fg: #f5f5f5;
+  --bui-table-muted-fg: #a0a0a0;
+  --bui-table-border: #303032;
+  --bui-table-border-strong: #3f3f42;
+  --bui-table-header-bg: #232528;
+  --bui-table-header-fg: #f5f5f5;
+  --bui-table-header-muted-fg: #a0a0a0;
+  --bui-table-header-split-color: #303032;
+  --bui-table-row-bg: #191c1d;
+  --bui-table-row-hover-bg: #212124;
+  --bui-table-row-striped-bg: #1e2022;
+  --bui-table-row-expanded-bg: #191c1d;
+  --bui-table-row-selected-bg: color-mix(in srgb, #22ad01 18%, #191c1d);
+  --bui-table-footer-bg: #232528;
+  --bui-table-footer-fg: #f5f5f5;
+}

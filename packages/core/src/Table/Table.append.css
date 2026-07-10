@@ -1,0 +1,67 @@
+/*
+ * Small "+" affordances for row / column extension. Positioned around the
+ * table's outer border. Idle at low opacity; lift on hover.
+ */
+
+.bui-table-extend-wrapper {
+  position: relative;
+  overflow: visible;
+  /* Hug the table's actual width/height so the "+" affordances anchor to the
+   * table's edges (not the surrounding scroll body's edges). */
+  width: fit-content;
+  max-width: 100%;
+  /* Restore a subtle outer border around the table since the "+" affordances
+   * hang off the border — the button's own background + border cover the
+   * border where it passes through, giving the "punched-through" look. */
+  border: 1px solid var(--bui-table-border, currentColor);
+  border-radius: var(--bui-table-radius, 8px);
+}
+
+.bui-table-append-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--bui-table-border, currentColor);
+  background: var(--bui-table-bg, var(--bui-table-header-bg, #1f1f22));
+  color: var(--bui-table-fg-muted, currentColor);
+  border-radius: 999px;
+  opacity: 0.75;
+  cursor: pointer;
+  transition: opacity 120ms ease, background 120ms ease, transform 120ms ease, left 180ms ease, top 180ms ease, right 180ms ease, bottom 180ms ease;
+}
+.bui-table-append-control:hover,
+.bui-table-append-control:focus-visible {
+  opacity: 1;
+  outline: none;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+/* Row / column classes provide the positional transform; use CSS variable so
+ * the :active scale composes with the anchor translation instead of
+ * replacing it (which caused the icon to jump on press). */
+.bui-table-append-control {
+  --append-scale: 1;
+}
+.bui-table-append-control:active {
+  --append-scale: 0.92;
+}
+
+/* Positional variants ------------------------------------------------------- */
+/* "+" affordances hang from the mid-point of each edge, half in / half out
+ * of the table — the border passes through their center. */
+.bui-table-append-control--row {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 50%) scale(var(--append-scale, 1));
+  z-index: 2;
+}
+.bui-table-append-control--column {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(50%, -50%) scale(var(--append-scale, 1));
+  z-index: 2;
+}

@@ -1,0 +1,54 @@
+/*
+ * Drag handle styling for column/row reorder controls.
+ *
+ * Owned separately from Table.tokens.css so this file stays focused on
+ * a single concern. Import path: `./Table.drag.css` (pulled in by
+ * Table.tsx alongside Table.tokens.css).
+ */
+
+.bui-table-drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--bui-table-fg-muted, currentColor);
+  opacity: 0.45;
+  cursor: grab;
+  border-radius: 6px;
+  transition: opacity 120ms ease, background 120ms ease, transform 120ms ease;
+}
+
+th:hover > .bui-table-header-drag > .bui-table-drag-handle,
+th:focus-within > .bui-table-header-drag > .bui-table-drag-handle {
+  opacity: 0.8;
+}
+.bui-table-drag-handle:hover,
+.bui-table-drag-handle:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  outline: none;
+}
+.bui-table-drag-handle:active {
+  transform: scale(0.94);
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.bui-table-drag-handle[data-dragging='true'] {
+  opacity: 1;
+  cursor: grabbing;
+}
+
+.bui-table-drag-handle__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.bui-table-header-drag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

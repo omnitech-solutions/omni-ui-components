@@ -1,0 +1,35 @@
+/*
+ * Loading state — skeleton rows replace real rows while `loading` is truthy.
+ * Column headers stay unchanged; each cell renders a shimmering placeholder
+ * block so the row/column layout doesn't jump on data arrival.
+ */
+
+.bui-table-skeleton-cell {
+  padding: 12px 16px;
+}
+
+.bui-table-skeleton-block {
+  display: block;
+  height: 12px;
+  width: 70%;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, currentColor 8%, transparent) 0%,
+    color-mix(in srgb, currentColor 16%, transparent) 50%,
+    color-mix(in srgb, currentColor 8%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: bui-table-skeleton-shimmer 1200ms ease-in-out infinite;
+}
+
+/* Vary block widths across cells so the row doesn't feel like a bar. */
+.bui-table-skeleton-row .bui-table-skeleton-cell:nth-child(4n + 1) .bui-table-skeleton-block { width: 60%; }
+.bui-table-skeleton-row .bui-table-skeleton-cell:nth-child(4n + 2) .bui-table-skeleton-block { width: 80%; }
+.bui-table-skeleton-row .bui-table-skeleton-cell:nth-child(4n + 3) .bui-table-skeleton-block { width: 45%; }
+.bui-table-skeleton-row .bui-table-skeleton-cell:nth-child(4n + 4) .bui-table-skeleton-block { width: 70%; }
+
+@keyframes bui-table-skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

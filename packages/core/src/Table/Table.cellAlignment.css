@@ -1,0 +1,28 @@
+/*
+ * Extra appearance rules that consume `appearance.*` values passed through
+ * <Table> — either from the React primitive or from DocTable's renderHTML —
+ * that the tokens sheet doesn't cover yet. All rules key off the
+ * `.bui-table` root and the same data-attribute / CSS-variable contract the
+ * primitive already emits, so DocTable's renderHTML gets identical behavior
+ * to a mounted <Table> just by passing the props through.
+ */
+
+/*
+ * Cell alignment: `appearance.cellAlignment: 'left' | 'center' | 'right'`
+ * flows through as `data-cell-alignment`. Applies `text-align` on every
+ * cell (both `<th>` and `<td>`).
+ */
+.bui-table[data-cell-alignment='left'] th,
+.bui-table[data-cell-alignment='left'] td {
+  text-align: left;
+}
+
+.bui-table[data-cell-alignment='center'] th,
+.bui-table[data-cell-alignment='center'] td {
+  text-align: center;
+}
+
+.bui-table[data-cell-alignment='right'] th,
+.bui-table[data-cell-alignment='right'] td {
+  text-align: right;
+}

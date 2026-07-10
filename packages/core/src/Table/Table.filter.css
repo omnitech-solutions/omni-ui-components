@@ -1,0 +1,27 @@
+/*
+ * Filter dropdown density overrides — tightens the vertical spacing between
+ * filter options and the actions row so the popover doesn't feel airy.
+ */
+
+.bui-table-filter-dropdown {
+  /* Shrink to fit the widest row (options or the Reset+OK actions). */
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+.bui-table-filter-options {
+  padding: 4px 0;
+}
+
+.bui-table-filter-option {
+  padding: 4px 12px;
+  gap: 8px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.bui-table-filter-actions {
+  padding: 6px 8px;
+  gap: 8px;
+}
