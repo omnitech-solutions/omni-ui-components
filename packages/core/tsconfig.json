@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "dist-types",
+    "noEmit": false,
+    "emitDeclarationOnly": true
+  },
+  "include": ["src"],
+  "exclude": [
+    "dist",
+    "dist-types",
+    "node_modules",
+    "src/**/test/**",
+    "src/**/*.stories.*",
+    "src/**/*.factories.*",
+    "src/**/*.test.*",
+    "src/Table/TableStoryGroupOverview.tsx",
+    "src/Table/Showcase/ShowcaseShell.tsx",
+    "src/Table/storySupport.ts",
+    "src/Table/Table.story.fixtures.tsx",
+    "test"
+  ]
+}

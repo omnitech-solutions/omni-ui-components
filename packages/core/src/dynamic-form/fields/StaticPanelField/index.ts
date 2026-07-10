@@ -1,0 +1,1 @@
+export { StaticPanelField } from './StaticPanelField';

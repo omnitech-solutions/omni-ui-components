@@ -1,0 +1,10 @@
+node_modules
+dist
+dist-types
+storybook-static
+.turbo
+coverage
+tmp
+*.log
+.DS_Store
+

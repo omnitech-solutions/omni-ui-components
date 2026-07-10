@@ -1,0 +1,1 @@
+export { TagInputWidget } from './TagInputWidget';

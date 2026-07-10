@@ -1,0 +1,14 @@
+services:
+  storybook:
+    image: node:22.20.0
+    working_dir: /workspace
+    command: sh -lc "corepack enable && corepack prepare pnpm@10.33.3 --activate && pnpm install && pnpm storybook -- --host 0.0.0.0"
+    ports:
+      - "6006:6006"
+    volumes:
+      - .:/workspace
+      - pnpm-store:/root/.local/share/pnpm/store
+
+volumes:
+  pnpm-store:
+

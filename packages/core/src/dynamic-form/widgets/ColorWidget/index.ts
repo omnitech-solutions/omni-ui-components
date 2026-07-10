@@ -1,0 +1,1 @@
+export { ColorWidget } from './ColorWidget';

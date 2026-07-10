@@ -1,0 +1,1 @@
+export { MultiSelectWidget } from './MultiSelectWidget';

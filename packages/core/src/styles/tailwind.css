@@ -1,0 +1,720 @@
+@layer theme, base, utilities;
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities" layer(utilities) source(none);
+@import "tw-animate-css";
+
+/* Tailwind scans the package and Storybook sources for utility class usage. */
+@source "../**/*.{ts,tsx}";
+@source "../../../../.storybook/**/*.{ts,tsx}";
+
+/* Preflight (CSS reset) disabled — bridge CSS has its own normalize/reset.
+   We selectively apply the subset of preflight that Tailwind utilities depend on.
+   Without these, border/ring/shadow utilities produce no visible output because
+   they reference CSS variables (--tw-*) that preflight would normally initialize.
+
+   Full preflight would also reset margins, padding, headings, links, lists, and
+   set img/svg to display:block — all of which would break existing bridge CSS.
+   We'll enable full preflight once bridge CSS is fully retired. */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop {
+    --tw-border-style: solid;
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--color-border, currentColor);
+  }
+}
+
+/* Dark mode uses [data-theme="dark"] not prefers-color-scheme */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Devices without hover capability (touch tablets / phones). Use this to
+   surface affordances that would otherwise be gated behind `hover:` (which
+   Tailwind v4 already wraps in `@media (hover: hover)` by default and thus
+   never fires on touch). */
+@custom-variant nohover (@media (hover: none));
+
+@theme {
+  /* Breakpoints (match Bootstrap 3 breakpoints used in existing code) */
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 992px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1440px;
+
+  /* ---- Colors (shadcn/ui naming convention) ----
+     Pattern: {role} = surface/background color
+              {role}-foreground = text color on that surface
+     Usage:   bg-background, text-foreground, border-border, bg-card, etc.
+     --------------------------------------------------------------- */
+
+  /* Brand */
+  --color-primary: var(--color-primary);
+  --color-primary-foreground: var(--color-primary-contrast);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-danger: var(--color-danger);
+  --color-danger-dark: var(--color-danger-dark);
+  --color-danger-light: var(--color-danger-light);
+
+  /* shadcn/ui standard semantic tokens */
+  --color-destructive: var(--color-danger);
+  --color-destructive-foreground: var(--color-primary-contrast);
+  --color-secondary: var(--bg-grey-f5);
+  --color-secondary-foreground: var(--text-default);
+  --color-accent: var(--bg-grey-f8);
+  --color-accent-foreground: var(--text-default);
+  --color-muted: var(--bg-grey-f8);
+  --color-popover: var(--bg-panel);
+  --color-popover-foreground: var(--text-default);
+  /* Menu/popover item state backgrounds — used for hover/focus and the
+     selected/active row in any popover, dropdown, or list-style menu. */
+  --color-popover-item-hover: var(--bg-input-hover);
+  --color-popover-item-active: var(--bg-input-hover-active);
+  --color-card-foreground: var(--text-default);
+
+  /* Integration brand colors (payment button variants) */
+  --color-paypal: var(--paypal-blue);
+  --color-stripe: var(--stripe-blue-1);
+  --color-stripe-alt: var(--stripe-blue-2);
+
+  /* Secondary / Muted / Accent (shadcn/ui standard tokens) */
+  --color-secondary: var(--bg-grey-f1);
+  --color-secondary-foreground: var(--text-default);
+  --color-muted: var(--bg-grey-f5);
+  --color-accent: var(--bg-hover-subtle);
+  --color-accent-foreground: var(--text-default);
+
+  /* Named accent palette */
+  --color-accent-blue: var(--color-accent-blue);
+  --color-accent-yellow: var(--color-accent-yellow);
+  --color-accent-yellow-dark: var(--color-accent-yellow-dark);
+  --color-accent-brown: var(--color-accent-brown);
+  --color-accent-purple: var(--color-accent-purple);
+  --color-accent-orange: var(--color-accent-orange);
+
+  /* Surfaces */
+  --color-background: var(--bg-content);
+  --color-background-alt: var(--bg-content-alt);
+  --color-background-document: var(--bg-content-document);
+  --color-background-empty: var(--bg-content-empty);
+  --color-card: var(--bg-panel);
+  --color-card-foreground: var(--text-default);
+  --color-card-translucent: var(--bg-panel-semi-transparent);
+  --color-popover: var(--bg-panel);
+  --color-popover-foreground: var(--text-default);
+  --color-input: var(--bg-field);
+  --color-input-disabled: var(--bg-field-disabled);
+  --color-input-hover: var(--bg-input-hover);
+  --color-input-hover-subtle: var(--bg-input-hover-subtle);
+  --color-input-hover-active: var(--bg-input-hover-active);
+  --color-brand-muted: var(--bg-brand-muted);
+  --color-brand-dark: var(--bg-brand-dark);
+  --color-shadow: var(--bg-shadow);
+  --color-tooltip: var(--bg-tooltip);
+  --color-inverse: var(--bg-inverse);
+  --color-hover-subtle: var(--bg-hover-subtle);
+  --color-sidebar: var(--bg-sidebar);
+  --color-button: var(--bg-button-default);
+  --color-warning: var(--bg-warning-notice);
+
+  /* Surface greyscale */
+  --color-grey-fd: var(--bg-grey-fd);
+  --color-grey-fc: var(--bg-grey-fc);
+  --color-grey-fa: var(--bg-grey-fa);
+  --color-grey-f8: var(--bg-grey-f8);
+  --color-grey-f5: var(--bg-grey-f5);
+  --color-grey-f1: var(--bg-grey-f1);
+  --color-grey-e: var(--bg-grey-e);
+  --color-grey-c: var(--bg-grey-c);
+  --color-grey-8: var(--bg-grey-8);
+
+  /* Foreground (text) */
+  --color-foreground: var(--text-default);
+  --color-muted-foreground: var(--text-muted);
+  --color-muted-alt-foreground: var(--text-muted-alt);
+  --color-light-foreground: var(--text-lighter);
+  --color-faint-foreground: var(--text-lightest);
+  --color-tooltip-foreground: var(--text-tooltip);
+  --color-inverse-foreground: var(--text-inverse);
+  --color-translucent-foreground: var(--text-semi-transparent);
+  --color-translucent-muted-foreground: var(--text-semi-transparent-muted);
+
+  /* Border */
+  --color-border: var(--border-content);
+  --color-border-alt: var(--border-content-alt);
+  --color-border-darker: var(--border-darker);
+  --color-border-input: var(--border-field);
+  --color-ring: var(--border-field-focus);
+  --color-border-input-applied: var(--border-field-applied);
+  --color-border-button-hover: var(--border-button-hover);
+  --color-border-translucent: var(--border-semi-transparent);
+  --color-border-translucent-alt: var(--border-semi-transparent-alt);
+  --color-border-translucent-strong: var(--border-semi-transparent-strong);
+  --color-border-translucent-subtle: var(--border-semi-transparent-subtle);
+
+  /* Switch/Toggle */
+  --color-switch: var(--bg-switch);
+  --color-switch-indicator: var(--bg-switch-indicator);
+  --color-switch-toggle: var(--bg-switch-toggle);
+  --color-switch-toggle-active: var(--bg-switch-toggle-active);
+  --color-switch-foreground: var(--text-switch);
+  --color-switch-hover-foreground: var(--text-switch-hover);
+  --color-switch-active-foreground: var(--text-switch-active);
+
+  /* Component-specific */
+  --color-tag: var(--bg-tag-text);
+  --color-tag-hover: var(--bg-tag-text-hover);
+  --color-inverse-expense: var(--bg-inverse-expense);
+  --color-list-grid-row: var(--bg-list-grid-row);
+  --color-list-grouped-header: var(--bg-list-grouped-header);
+  --color-list-grouped-header-document: var(--bg-list-grouped-header-document);
+  --color-invoice-badge: var(--bg-invoice-badge);
+  --color-invoice-badge-foreground: var(--text-invoice-badge);
+  --color-info: var(--bg-info);
+  --color-info-light: var(--bg-info-light);
+  --color-info-lighter: var(--bg-info-lighter);
+  --color-yellow: var(--bg-yellow);
+  --color-highlight: var(--bg-highlight);
+
+  /* Border radius (4px grid: 4, 6, 8) */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Spacing: uses Tailwind v4 default multiplier (--spacing: 0.25rem = 4px).
+     p-1 = 4px, p-2 = 8px, p-3 = 12px, p-4 = 16px, p-5 = 20px, etc.
+     No custom overrides needed — the default 4px grid covers all common values.
+     Odd values (5px, 7px, 15px, 30px) use arbitrary syntax: p-[5px], p-[30px]. */
+
+  /* Shadows */
+  --shadow-sm: var(--box-shadow-small);
+  --shadow-md: var(--box-shadow-medium);
+  --shadow-lg: var(--box-shadow-large);
+  --shadow-drawer: var(--shadow-drawer);
+
+  /* Transitions */
+  --transition-duration-fast: var(--transition-fast);
+  --transition-duration-normal: var(--transition-normal);
+  --transition-duration-medium: var(--transition-medium);
+  --transition-duration-slow: var(--transition-slow);
+  --transition-duration-slower: var(--transition-slower);
+
+  /* Z-index */
+  --z-index-navigation: var(--z-navigation);
+  --z-index-sidebar: var(--z-sidebar);
+  --z-index-popup-menu: var(--z-popup-menu);
+  --z-index-drawer: var(--z-drawer);
+  --z-index-popover: var(--z-popover);
+  --z-index-search: var(--z-search);
+  --z-index-support-launcher: var(--z-support-launcher);
+  --z-index-onboarding: var(--z-onboarding);
+
+  /* Widths */
+  --width-wrapper: var(--wrapper-width);
+  --width-wrapper-xs: var(--wrapper-xs-width);
+  --width-wrapper-sm: var(--wrapper-sm-width);
+  --width-wrapper-smd: var(--wrapper-smd-width);
+  --width-wrapper-lg: var(--wrapper-lg-width);
+  --width-wrapper-xl: var(--wrapper-xl-width);
+  --width-sidebar: var(--sidebar-width);
+  --width-sidebar-collapsed: var(--sidebar-width-collapsed);
+  --width-drawer: var(--drawer-width);
+  --width-settings: var(--settings-width);
+  --width-invoice-wrapper: var(--invoice-wrapper-width);
+  --width-proposal-wrapper: var(--proposal-wrapper-width);
+
+  /* Heights */
+  --height-navigation: var(--navigation-height);
+
+  /* Font sizes (10px / 22px / 26px are the only sizes outside Tailwind's default scale) */
+  --text-2xs: 0.625rem; /* 10px */
+  --text-1_5xl: 22px;
+  --text-2_5xl: 26px;
+
+  /* Letter spacing (the two values that cover 95% of usage) */
+  --tracking-wide: 0.075em;
+  --tracking-wider: 1px;
+
+  /* Fonts */
+  --font-sans: var(--font-sans-serif);
+  --font-header: var(--font-header);
+  --font-body: var(--font-body);
+  --font-legal: var(--font-legal);
+  --font-display: var(--font-display-header);
+  --font-signature: var(--font-signature);
+}
+
+/* Transition utilities (cover 80% of transition usage in the codebase) */
+.transition-default {
+  transition: all var(--transition-normal) ease;
+}
+.transition-quick {
+  transition: all var(--transition-fast) ease;
+}
+
+/* Rich content inside activity feeds (Interweave, EmailBodyPreview).
+   Cannot use inline utilities — child HTML is uncontrolled.
+   Replaces: .project-event-item-body h1-h4, p, td from bridge/features/dashboard.css */
+.activity-rich-content h1,
+.activity-rich-content h2,
+.activity-rich-content h3,
+.activity-rich-content h4 {
+  margin-bottom: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.activity-rich-content h1,
+.activity-rich-content h1 span {
+  font-size: 26px;
+}
+.activity-rich-content h2,
+.activity-rich-content h2 span {
+  font-size: 22px;
+}
+.activity-rich-content h3,
+.activity-rich-content h3 span {
+  font-size: 20px;
+}
+.activity-rich-content h4,
+.activity-rich-content h4 span {
+  font-size: 16px;
+}
+.activity-rich-content p {
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+.activity-rich-content p:last-child {
+  margin-bottom: 0;
+}
+.activity-rich-content td {
+  font-family: var(--font-sans-serif);
+}
+
+/* Contact activity feed variant — tighter paragraph spacing */
+.activity-rich-content--contact p {
+  margin-bottom: 6px;
+}
+.activity-rich-content--contact p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- Tiptap Notes Editor ----
+   Styles that target ProseMirror-generated DOM (can't use inline Tailwind
+   because we don't control the rendered elements). The .note-tiptap-editor
+   wrapper class also has Tailwind utilities on the JSX element itself. */
+
+/* Placeholder — shown on the currently focused empty node (Notion-style) */
+.note-tiptap-editor .ProseMirror .is-empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-lighter);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Editor content area — padding creates the gutter for the drag handle */
+.note-tiptap-editor .ProseMirror {
+  min-height: 200px;
+  padding: 20px 40px 90px;
+  color: var(--text-default);
+}
+@media (width >= 768px) {
+  .note-tiptap-editor .ProseMirror {
+    padding: 20px 60px 90px;
+  }
+}
+
+/* Lists — spacing, nested list-style cycling, tight <p> inside <li> */
+.note-tiptap-editor .ProseMirror ol,
+.note-tiptap-editor .ProseMirror ul {
+  margin: 1.5em 0;
+  padding-left: 1.5em;
+}
+.note-tiptap-editor .ProseMirror ol:first-child,
+.note-tiptap-editor .ProseMirror ul:first-child {
+  margin-top: 0;
+}
+.note-tiptap-editor .ProseMirror ol:last-child,
+.note-tiptap-editor .ProseMirror ul:last-child {
+  margin-bottom: 0;
+}
+.note-tiptap-editor .ProseMirror ol ol,
+.note-tiptap-editor .ProseMirror ol ul,
+.note-tiptap-editor .ProseMirror ul ol,
+.note-tiptap-editor .ProseMirror ul ul {
+  margin: 0;
+}
+.note-tiptap-editor .ProseMirror li p {
+  margin-top: 0;
+  line-height: 1.57;
+}
+
+.note-tiptap-editor .ProseMirror ol { list-style: decimal; }
+.note-tiptap-editor .ProseMirror ol ol { list-style: lower-alpha; }
+.note-tiptap-editor .ProseMirror ol ol ol { list-style: lower-roman; }
+.note-tiptap-editor .ProseMirror ol ol ol ol { list-style: decimal; }
+.note-tiptap-editor .ProseMirror ol ol ol ol ol { list-style: lower-alpha; }
+.note-tiptap-editor .ProseMirror ol ol ol ol ol ol { list-style: lower-roman; }
+.note-tiptap-editor .ProseMirror ol ol ol ol ol ol ol { list-style: decimal; }
+.note-tiptap-editor .ProseMirror ol ol ol ol ol ol ol ol { list-style: lower-alpha; }
+.note-tiptap-editor .ProseMirror ol ol ol ol ol ol ol ol ol { list-style: lower-roman; }
+
+.note-tiptap-editor .ProseMirror ul:not([data-type='taskList']) { list-style: outside; }
+.note-tiptap-editor .ProseMirror ul:not([data-type='taskList']) ul { list-style: circle; }
+.note-tiptap-editor .ProseMirror ul:not([data-type='taskList']) ul ul { list-style: square; }
+.note-tiptap-editor .ProseMirror ul:not([data-type='taskList']) ul ul ul { list-style: outside; }
+.note-tiptap-editor .ProseMirror ul:not([data-type='taskList']) ul ul ul ul { list-style: circle; }
+.note-tiptap-editor .ProseMirror ul:not([data-type='taskList']) ul ul ul ul ul { list-style: square; }
+.note-tiptap-editor .ProseMirror ul:not([data-type='taskList']) ul ul ul ul ul ul { list-style: outside; }
+.note-tiptap-editor .ProseMirror ul:not([data-type='taskList']) ul ul ul ul ul ul ul { list-style: circle; }
+.note-tiptap-editor .ProseMirror ul:not([data-type='taskList']) ul ul ul ul ul ul ul ul { list-style: square; }
+
+/* Task lists (checkboxes) — checked state uses the app's primary color */
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] {
+  padding-left: 0.25em;
+  list-style: none;
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li:not(:has(> p:first-child)) {
+  list-style-type: none;
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li[data-checked='true'] > div > p {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li[data-checked='true'] > div > p span {
+  text-decoration: line-through;
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li label {
+  position: relative;
+  padding-top: 0.33rem;
+  padding-right: 0.5rem;
+  user-select: none;
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li label input[type='checkbox'] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li label span {
+  display: block;
+  position: relative;
+  width: 1em;
+  height: 1em;
+  background-color: var(--bg-content);
+  border: 1px solid var(--border-field);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 80ms ease-out, border-color 80ms ease-out;
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li label span::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.75em;
+  height: 0.75em;
+  background-color: var(--white);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M21.4142 4.58579C22.1953 5.36683 22.1953 6.63317 21.4142 7.41421L10.4142 18.4142C9.63317 19.1953 8.36684 19.1953 7.58579 18.4142L2.58579 13.4142C1.80474 12.6332 1.80474 11.3668 2.58579 10.5858C3.36683 9.80474 4.63317 9.80474 5.41421 10.5858L9 14.1716L18.5858 4.58579C19.3668 3.80474 20.6332 3.80474 21.4142 4.58579Z' fill='currentColor'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M21.4142 4.58579C22.1953 5.36683 22.1953 6.63317 21.4142 7.41421L10.4142 18.4142C9.63317 19.1953 8.36684 19.1953 7.58579 18.4142L2.58579 13.4142C1.80474 12.6332 1.80474 11.3668 2.58579 10.5858C3.36683 9.80474 4.63317 9.80474 5.41421 10.5858L9 14.1716L18.5858 4.58579C19.3668 3.80474 20.6332 3.80474 21.4142 4.58579Z' fill='currentColor'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li label input[type='checkbox']:checked + span {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li label input[type='checkbox']:checked + span::before {
+  opacity: 1;
+}
+.note-tiptap-editor .ProseMirror ul[data-type='taskList'] li > div {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Horizontal rule. The TiptapHorizontalRule node view wraps `<hr>` in a
+   tall flex container so the global drag handle's hit detection (which
+   relies on elementsFromPoint over the block) actually lands on it.
+   line-height matches the wrapper height so adjustHandlePosition centers
+   the handle on the rule. */
+.note-tiptap-editor .ProseMirror [data-horizontal-rule] {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  line-height: 24px;
+  margin: 4px 0;
+  cursor: default;
+}
+.note-tiptap-editor .ProseMirror [data-horizontal-rule] hr {
+  flex: 1;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--border-content);
+}
+.note-tiptap-editor .ProseMirror [data-horizontal-rule].ProseMirror-selectednode hr {
+  border-top-color: var(--text-lightest);
+}
+
+/* Iframe embeds (YouTube, Vimeo, etc.) preserved from Froala content */
+.note-tiptap-editor .ProseMirror iframe {
+  max-width: 100%;
+  border: 0;
+  aspect-ratio: 16 / 9;
+  display: block;
+  margin: 12px 0;
+}
+
+/* Image base styles. With resize enabled, the image is wrapped in
+   <div[data-resize-container]><div[data-resize-wrapper]><img/>…</div></div>
+   so .ProseMirror-selectednode and alignment land on the container, not
+   the img itself. Keep both the wrapped and bare img selectors so legacy
+   render paths (e.g. read-only previews without the node view) still
+   render reasonably. */
+.note-tiptap-editor .ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+  cursor: default;
+}
+.note-tiptap-editor .ProseMirror [data-resize-container] {
+  margin: 12px 0;
+  max-width: 100%;
+}
+/* Outline on the inner wrapper (which sizes to the image) rather than the
+   flex container (which spans the full parent width). The wrapper is a
+   default flex item, so it shrinks to its content — i.e. the resized
+   image — keeping the ring tight to whatever size the image is right now. */
+.note-tiptap-editor .ProseMirror [data-resize-container].ProseMirror-selectednode > [data-resize-wrapper],
+.note-tiptap-editor .ProseMirror img.ProseMirror-selectednode {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Alignment via margin auto on the container. The container is mirrored
+   with data-align from the node attrs (see TiptapImage addNodeView), and
+   it's switched to `display: block; width: fit-content` so it shrinks to
+   the image — auto margins then position it within the doc width.
+   Default (no data-align) stays left, matching browser flow. */
+.note-tiptap-editor .ProseMirror [data-resize-container][data-align='center'] {
+  margin-left: auto;
+  margin-right: auto;
+}
+.note-tiptap-editor .ProseMirror [data-resize-container][data-align='right'] {
+  margin-left: auto;
+  margin-right: 0;
+}
+/* Bare-img fallback for any non-NodeView render path (server-rendered
+   previews, clipboard exports, etc.). */
+.note-tiptap-editor .ProseMirror img[data-align='center'] {
+  margin-left: auto;
+  margin-right: auto;
+}
+.note-tiptap-editor .ProseMirror img[data-align='right'] {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Resize handles. The node view leaves them styleless and absolutely
+   positioned at the corners; show them only when the image is selected
+   so they don't visually clutter every image at rest. */
+.note-tiptap-editor .ProseMirror [data-resize-handle] {
+  width: 10px;
+  height: 10px;
+  background: var(--color-primary);
+  border: 2px solid var(--bg-content);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 80ms ease;
+  z-index: 1;
+}
+.note-tiptap-editor .ProseMirror [data-resize-handle='top-left'] { transform: translate(-50%, -50%); }
+.note-tiptap-editor .ProseMirror [data-resize-handle='top-right'] { transform: translate(50%, -50%); }
+.note-tiptap-editor .ProseMirror [data-resize-handle='bottom-left'] { transform: translate(-50%, 50%); }
+.note-tiptap-editor .ProseMirror [data-resize-handle='bottom-right'] { transform: translate(50%, 50%); }
+.note-tiptap-editor .ProseMirror [data-resize-handle='top-left'] { cursor: nwse-resize; }
+.note-tiptap-editor .ProseMirror [data-resize-handle='top-right'] { cursor: nesw-resize; }
+.note-tiptap-editor .ProseMirror [data-resize-handle='bottom-left'] { cursor: nesw-resize; }
+.note-tiptap-editor .ProseMirror [data-resize-handle='bottom-right'] { cursor: nwse-resize; }
+.note-tiptap-editor .ProseMirror [data-resize-container].ProseMirror-selectednode [data-resize-handle],
+.note-tiptap-editor .ProseMirror [data-resize-container][data-resize-state='true'] [data-resize-handle] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Tables */
+.note-tiptap-editor .ProseMirror .tableWrapper {
+  overflow-x: auto;
+  margin: 12px 0;
+}
+.note-tiptap-editor .ProseMirror table {
+  table-layout: fixed;
+  width: 100%;
+  overflow: hidden;
+  border-collapse: collapse;
+}
+.note-tiptap-editor .ProseMirror td,
+.note-tiptap-editor .ProseMirror th {
+  position: relative;
+  vertical-align: top;
+  border: 1px solid var(--border-content-alt);
+  padding: 6px 10px;
+  min-width: 25px;
+}
+.note-tiptap-editor .ProseMirror th {
+  background-color: var(--bg-grey-f8);
+  font-weight: 600;
+  text-align: left;
+}
+.note-tiptap-editor .ProseMirror th p,
+.note-tiptap-editor .ProseMirror td p {
+  margin: 0;
+}
+
+/* Column resize handle */
+.note-tiptap-editor .ProseMirror .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: var(--color-primary);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.note-tiptap-editor .ProseMirror td:hover > .column-resize-handle,
+.note-tiptap-editor .ProseMirror th:hover > .column-resize-handle {
+  opacity: 0.5;
+}
+.note-tiptap-editor .ProseMirror.resize-cursor {
+  cursor: col-resize;
+}
+.note-tiptap-editor .ProseMirror.resize-cursor .column-resize-handle {
+  opacity: 1;
+}
+
+/* Cell selection highlight */
+.note-tiptap-editor .ProseMirror .selectedCell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  pointer-events: none;
+}
+
+/* While a block drag is in flight, suppress the cell-selection highlight,
+   the per-column/row triggers + menu, and the bubble menus. prosemirror-tables
+   auto-converts a NodeSelection on a cell into a CellSelection, so a table
+   drag leaves every cell highlighted during the drag; the table
+   controls also float over the drop preview. The text bubble menu also
+   sticks around because the lib's drag-handle is a sibling of view.dom, so
+   the bubble menu plugin's view.dom dragstart hide-handler never fires. */
+/* `!important` is required: the trigger buttons and menu use Tailwind
+   utility classes (`flex`, `absolute`, etc.) that get applied later in
+   the cascade and would otherwise override a plain `display: none`. */
+.note-tiptap-editor .ProseMirror.dragging .selectedCell::after,
+.note-tiptap-editor:has(.ProseMirror.dragging) .tiptap-table-trigger,
+.note-tiptap-editor:has(.ProseMirror.dragging) .tiptap-table-menu {
+  display: none !important;
+}
+.note-tiptap-editor:has(.ProseMirror.dragging) .tiptap-bubble-menu {
+  visibility: hidden !important;
+}
+
+/* Drag preview (semi-transparent ghost while dragging a block). The
+   browser snapshots this element at dragstart, so the same opacity drives
+   both the in-place source ghost and the floating preview that follows
+   the cursor. */
+.note-tiptap-editor .ProseMirror.dragging .ProseMirror-selectednode {
+  opacity: 0.35;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: var(--bg-content);
+}
+
+/* Notion-style drag handle — lib creates the element via vanilla DOM;
+   uses ::before + mask-image for the grip icon (can't be Tailwind). */
+.drag-handle {
+  position: absolute;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 0;
+  height: 24px;
+  background: transparent;
+  border-radius: 4px;
+  cursor: grab;
+  z-index: 50;
+  transition: opacity 80ms ease;
+}
+.drag-handle::before {
+  content: '';
+  display: block;
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  margin: 0 3px;
+  background-color: color-mix(in srgb, var(--text-muted) 60%, transparent);
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='5' cy='3' r='1.4'/><circle cx='5' cy='8' r='1.4'/><circle cx='5' cy='13' r='1.4'/><circle cx='11' cy='3' r='1.4'/><circle cx='11' cy='8' r='1.4'/><circle cx='11' cy='13' r='1.4'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='5' cy='3' r='1.4'/><circle cx='5' cy='8' r='1.4'/><circle cx='5' cy='13' r='1.4'/><circle cx='11' cy='3' r='1.4'/><circle cx='11' cy='8' r='1.4'/><circle cx='11' cy='13' r='1.4'/></svg>");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  transition: background-color 120ms ease;
+}
+.drag-handle:hover::before {
+  background-color: var(--text-muted);
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
+.drag-handle.hide {
+  opacity: 0;
+}
+@media (width < 768px) {
+  .drag-handle {
+    display: none !important;
+  }
+}
+
+/* "+" quick-insert button inside the drag handle */
+.drag-handle-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: color-mix(in srgb, var(--text-muted) 60%, transparent);
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.drag-handle-plus:hover {
+  background-color: var(--bg-input-hover-subtle);
+  color: var(--text-default);
+}
+.drag-handle-plus svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Slash command popup container (positioned by JS) */
+.tiptap-slash-menu-container {
+  width: 260px;
+}

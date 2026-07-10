@@ -1,0 +1,37 @@
+/* Omni UI Components — component-local design tokens. */
+
+@layer omni-ui-components {
+  :root {
+    --oui-surface-field:           var(--color-input);
+    --oui-surface-field-disabled:  var(--color-input-disabled);
+
+    --oui-border-field:            var(--color-border-input);
+    --oui-border-interactive:      var(--color-primary);
+    --oui-border-invalid:          var(--color-destructive);
+
+    --oui-foreground:              var(--color-foreground);
+    --oui-foreground-muted:        var(--color-muted-foreground);
+    --oui-foreground-placeholder:  color-mix(in srgb, var(--color-foreground) 32%, transparent);
+    --oui-foreground-required:     var(--color-destructive);
+
+    --oui-radius-field:            var(--radius-md, 6px);
+    --oui-field-height-sm:         1.5rem;
+    --oui-field-height-md:         2rem;
+    --oui-field-height-lg:         2.5rem;
+    --oui-field-height-xl:         3rem;
+    --oui-field-padding-x:         0.6875rem;
+
+    --oui-label-width:             7.5rem;   /* 120px — matches sidebar property row */
+
+    --oui-transition-duration:     var(--transition-normal, 200ms);
+    --oui-transition-easing:       cubic-bezier(0.645, 0.045, 0.355, 1);
+
+    --oui-font-sans:               var(--font-sans, 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --oui-transition-duration: 0ms;
+    }
+  }
+}

@@ -1,0 +1,373 @@
+/* Theme Tokens — semantic variables that switch between light/dark
+ * Moved from app/assets/stylesheets/base/_theme_variables.scss
+ */
+:root {
+  /* -------------------------------------------
+    Current theme tokens: default to light
+  -------------------------------------------- */
+
+  /* Brand colors (unchanged across themes) */
+  --oui-background-current: var(--oui-background);
+  --primary: var(--oui-primary-6);
+  --danger: #ff4d4f;
+  --color-primary: var(--oui-primary-6);
+  --color-danger: #ff4d4f;
+  --color-primary-contrast: var(--color-primary-contrast-light);
+  --color-primary-dark: var(--color-primary-dark-light);
+  --color-danger-dark: var(--color-danger-dark-light);
+  --color-danger-light: var(--color-danger-light-light);
+
+  --color-omni-wordmark: var(--oui-primary-7);
+
+  /* Background components */
+  --bg-content: var(--bg-content-light);
+  --bg-content-alt: var(--bg-content-alt-light);
+  --bg-content-document: var(--bg-content-document-light);
+  --bg-content-empty: var(--bg-content-empty-light);
+  --bg-panel: var(--bg-panel-light);
+  --bg-input-hover: var(--bg-input-hover-light);
+  --bg-input-hover-subtle: var(--bg-input-hover-subtle-light);
+  --bg-input-hover-active: var(--bg-input-hover-active-light);
+  --bg-brand-muted: var(--bg-brand-muted-light);
+  --bg-brand-dark: var(--bg-brand-dark-light);
+  --bg-field: var(--bg-field-light);
+  --bg-field-disabled: var(--bg-field-disabled-light);
+  --bg-shadow: var(--bg-shadow-light);
+  --bg-tooltip: var(--bg-tooltip-light);
+  --bg-inverse: var(--bg-inverse-light);
+
+  /* Background greyscale */
+  --bg-grey-fd: var(--bg-grey-fd-light);
+  --bg-grey-fc: var(--bg-grey-fc-light);
+  --bg-grey-fa: var(--bg-grey-fa-light);
+  --bg-grey-f8: var(--bg-grey-f8-light);
+  --bg-grey-f5: var(--bg-grey-f5-light);
+  --bg-grey-f1: var(--bg-grey-f1-light);
+  --bg-grey-e: var(--bg-grey-e-light);
+  --bg-grey-c: var(--bg-grey-c-light);
+  --bg-grey-8: var(--bg-grey-8-light);
+
+  /* Inverted backgrounds */
+  --bg-inverse-expense: var(--bg-inverse-expense-light);
+  --bg-panel-semi-transparent: var(--bg-panel-semi-transparent-light);
+
+  /* Switch/Toggle components */
+  --bg-switch: var(--bg-switch-light);
+  --bg-switch-indicator: var(--bg-switch-indicator-light);
+  --bg-switch-toggle: var(--bg-switch-toggle-light);
+  --bg-switch-toggle-active: var(--bg-switch-toggle-active-light);
+  --text-switch: var(--text-switch-light);
+  --text-switch-hover: var(--text-switch-hover-light);
+  --text-switch-active: var(--text-switch-active-light);
+
+  /* Button specific */
+  --bg-button-default: var(--bg-button-default-light);
+  --border-button-hover: var(--border-button-hover-light);
+
+  /* Component-specific semantic colors */
+  --bg-tag-text: var(--bg-tag-text-light);
+  --bg-tag-text-hover: var(--bg-tag-text-hover-light);
+  --border-chart: var(--border-chart-light);
+  --border-chart-row: var(--border-chart-row-light);
+  --stroke-calendar: var(--stroke-calendar-light);
+  --border-calendar-hover: var(--border-calendar-hover-light);
+  --shadow-drawer: var(--shadow-drawer-light);
+  --shadow-gantt: var(--shadow-gantt-light);
+  --shadow-gantt-hover: var(--shadow-gantt-hover-light);
+  --bg-timetracker-row: var(--bg-timetracker-row-light);
+  --shadow-timetracker: var(--shadow-timetracker-light);
+  --bg-invoice-badge: var(--bg-invoice-badge-light);
+  --text-invoice-badge: var(--text-invoice-badge-light);
+  --bg-wysiwyg-placeholder: var(--bg-wysiwyg-placeholder-light);
+  --bg-list-grid-row: var(--bg-list-grid-row-light);
+  --border-react-select-menu: var(--border-react-select-menu-light);
+  --bg-client-portal-item: var(--bg-client-portal-item-light);
+  --bg-timeline-striped: var(--bg-timeline-striped-light);
+  --bg-warning-notice: var(--bg-warning-notice-light);
+  --bg-sidebar: var(--bg-sidebar-light);
+
+  /* Text colors */
+  --text-default: var(--text-default-light);
+  --text-muted: var(--text-muted-light);
+  --text-muted-alt: var(--text-muted-alt-light);
+  --text-lighter: var(--text-lighter-light);
+  --text-lightest: var(--text-lightest-light);
+  --text-tooltip: var(--text-tooltip-light);
+  --text-inverse: var(--text-inverse-light);
+  --text-semi-transparent: var(--text-semi-transparent-light);
+  --text-semi-transparent-muted: var(--text-semi-transparent-muted-light);
+
+  /* Border colors */
+  --border-content: var(--border-content-light);
+  --border-content-alt: var(--border-content-alt-light);
+  --border-darker: var(--border-darker-light);
+  --border-field: var(--border-field-light);
+  --border-field-focus: var(--color-primary);
+  --border-semi-transparent: var(--border-semi-transparent-light);
+  --border-semi-transparent-alt: var(--border-semi-transparent-alt-light);
+  --border-semi-transparent-strong: var(--border-semi-transparent-strong-light);
+  --border-semi-transparent-subtle: var(--border-semi-transparent-subtle-light);
+  --border-field-applied: var(--border-field-applied-light);
+
+  /* List items */
+  --bg-hover-subtle: var(--bg-hover-subtle-light);
+  --bg-list-grouped-header: var(--bg-list-grouped-header-light);
+  --bg-list-grouped-header-document: var(--bg-list-grouped-header-document-light);
+
+  /* Chart colors */
+  --chart-tick-color: var(--chart-tick-color-light);
+  --chart-tooltip-bg: var(--chart-tooltip-bg-light);
+
+  /* Box shadows */
+  --box-shadow-small: 0 1px 2px #00000008;
+  --box-shadow-medium: 0 6px 16px 0 #00000014, 0 3px 6px -4px #0000001f, 0 9px 28px 8px #0000000d;
+  --box-shadow-large: 0 12px 32px #0000001f;
+
+  /* Deprecated branding colors */
+  --bg-info: var(--bg-info-light-val);
+  --bg-info-light: var(--bg-info-light-light);
+  --bg-info-lighter: var(--bg-info-lighter-light);
+  --bg-yellow: var(--bg-yellow-light);
+  --bg-highlight: var(--bg-highlight-light);
+}
+
+/* -------------------------------------------
+  Dark mode: remap to dark base tokens
+-------------------------------------------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --oui-background-current: var(--oui-background-dark);
+
+  /* Brand variants */
+  --color-primary-contrast: var(--color-primary-contrast-dark);
+  --color-primary-dark: var(--color-primary-dark-dark);
+  --color-danger-dark: var(--color-danger-dark-dark);
+  --color-danger-light: var(--color-danger-light-dark);
+
+  --color-omni-wordmark: var(--oui-primary-4);
+
+  /* Background components */
+  --bg-content: var(--bg-content-dark);
+  --bg-content-alt: var(--bg-content-alt-dark);
+  --bg-content-document: var(--bg-content-document-dark);
+  --bg-content-empty: var(--bg-content-empty-dark);
+  --bg-panel: var(--bg-panel-dark);
+  --bg-input-hover: var(--bg-input-hover-dark);
+  --bg-input-hover-subtle: var(--bg-input-hover-subtle-dark);
+  --bg-input-hover-active: var(--bg-input-hover-active-dark);
+  --bg-brand-muted: var(--bg-brand-muted-dark);
+  --bg-brand-dark: var(--bg-brand-dark-dark);
+  --bg-field: var(--bg-field-dark);
+  --bg-field-disabled: var(--bg-field-disabled-dark);
+  --bg-shadow: var(--bg-shadow-dark);
+  --bg-tooltip: var(--bg-tooltip-dark);
+  --bg-inverse: var(--bg-inverse-dark);
+
+  /* Background greyscale */
+  --bg-grey-fd: var(--bg-grey-fd-dark);
+  --bg-grey-fc: var(--bg-grey-fc-dark);
+  --bg-grey-fa: var(--bg-grey-fa-dark);
+  --bg-grey-f8: var(--bg-grey-f8-dark);
+  --bg-grey-f5: var(--bg-grey-f5-dark);
+  --bg-grey-f1: var(--bg-grey-f1-dark);
+  --bg-grey-e: var(--bg-grey-e-dark);
+  --bg-grey-c: var(--bg-grey-c-dark);
+  --bg-grey-8: var(--bg-grey-8-dark);
+
+  /* Inverted backgrounds */
+  --bg-inverse-expense: var(--bg-inverse-expense-dark);
+  --bg-panel-semi-transparent: var(--bg-panel-semi-transparent-dark);
+
+  /* Switch/Toggle components */
+  --bg-switch: var(--bg-switch-dark);
+  --bg-switch-indicator: var(--bg-switch-indicator-dark);
+  --bg-switch-toggle: var(--bg-switch-toggle-dark);
+  --bg-switch-toggle-active: var(--bg-switch-toggle-active-dark);
+  --text-switch: var(--text-switch-dark);
+  --text-switch-hover: var(--text-switch-hover-dark);
+  --text-switch-active: var(--text-switch-active-dark);
+
+  /* Button specific */
+  --bg-button-default: var(--bg-button-default-dark);
+  --border-button-hover: var(--border-button-hover-dark);
+
+  /* Component-specific semantic colors */
+  --bg-tag-text: var(--bg-tag-text-dark);
+  --bg-tag-text-hover: var(--bg-tag-text-hover-dark);
+  --border-chart: var(--border-chart-dark);
+  --border-chart-row: var(--border-chart-row-dark);
+  --stroke-calendar: var(--stroke-calendar-dark);
+  --border-calendar-hover: var(--border-calendar-hover-dark);
+  --shadow-drawer: var(--shadow-drawer-dark);
+  --shadow-gantt: var(--shadow-gantt-dark);
+  --shadow-gantt-hover: var(--shadow-gantt-hover-dark);
+  --bg-timetracker-row: var(--bg-timetracker-row-dark);
+  --shadow-timetracker: var(--shadow-timetracker-dark);
+  --bg-invoice-badge: var(--bg-invoice-badge-dark);
+  --text-invoice-badge: var(--text-invoice-badge-dark);
+  --bg-wysiwyg-placeholder: var(--bg-wysiwyg-placeholder-dark);
+  --bg-list-grid-row: var(--bg-list-grid-row-dark);
+  --border-react-select-menu: var(--border-react-select-menu-dark);
+  --bg-client-portal-item: var(--bg-client-portal-item-dark);
+  --bg-timeline-striped: var(--bg-timeline-striped-dark);
+  --bg-warning-notice: var(--bg-warning-notice-dark);
+  --bg-sidebar: var(--bg-sidebar-dark);
+
+  /* Text colors */
+  --text-default: var(--text-default-dark);
+  --text-muted: var(--text-muted-dark);
+  --text-muted-alt: var(--text-muted-alt-dark);
+  --text-lighter: var(--text-lighter-dark);
+  --text-lightest: var(--text-lightest-dark);
+  --text-tooltip: var(--text-tooltip-dark);
+  --text-inverse: var(--text-inverse-dark);
+  --text-semi-transparent: var(--text-semi-transparent-dark);
+  --text-semi-transparent-muted: var(--text-semi-transparent-muted-dark);
+
+  /* Border colors */
+  --border-content: var(--border-content-dark);
+  --border-content-alt: var(--border-content-alt-dark);
+  --border-darker: var(--border-darker-dark);
+  --border-field: var(--border-field-dark);
+  --border-semi-transparent: var(--border-semi-transparent-dark);
+  --border-semi-transparent-alt: var(--border-semi-transparent-alt-dark);
+  --border-semi-transparent-strong: var(--border-semi-transparent-strong-dark);
+  --border-semi-transparent-subtle: var(--border-semi-transparent-subtle-dark);
+  --border-field-applied: var(--border-field-applied-dark);
+
+  /* List items */
+  --bg-hover-subtle: var(--bg-hover-subtle-dark);
+  --bg-list-grouped-header: var(--bg-list-grouped-header-dark);
+  --bg-list-grouped-header-document: var(--bg-list-grouped-header-document-dark);
+
+  /* Chart colors */
+  --chart-tick-color: var(--chart-tick-color-dark);
+  --chart-tooltip-bg: var(--chart-tooltip-bg-dark);
+
+  /* Deprecated branding colors */
+  --bg-info: var(--bg-info-dark-val);
+  --bg-info-light: var(--bg-info-light-dark);
+  --bg-info-lighter: var(--bg-info-lighter-dark);
+  --bg-yellow: var(--bg-yellow-dark);
+  --bg-highlight: var(--bg-highlight-dark);
+}
+
+/* -------------------------------------------
+  Nested light inside dark: remap back to light
+-------------------------------------------- */
+[data-theme="dark"] [data-theme="light"] {
+  color-scheme: light;
+  --oui-background-current: var(--oui-background);
+
+  /* Brand variants */
+  --color-primary-contrast: var(--color-primary-contrast-light);
+  --color-primary-dark: var(--color-primary-dark-light);
+  --color-danger-dark: var(--color-danger-dark-light);
+  --color-danger-light: var(--color-danger-light-light);
+
+  /* Background components */
+  --bg-content: var(--bg-content-light);
+  --bg-content-alt: var(--bg-content-alt-light);
+  --bg-content-document: var(--bg-content-document-light);
+  --bg-content-empty: var(--bg-content-empty-light);
+  --bg-panel: var(--bg-panel-light);
+  --bg-input-hover: var(--bg-input-hover-light);
+  --bg-input-hover-subtle: var(--bg-input-hover-subtle-light);
+  --bg-input-hover-active: var(--bg-input-hover-active-light);
+  --bg-brand-muted: var(--bg-brand-muted-light);
+  --bg-brand-dark: var(--bg-brand-dark-light);
+  --bg-field: var(--bg-field-light);
+  --bg-field-disabled: var(--bg-field-disabled-light);
+  --bg-shadow: var(--bg-shadow-light);
+  --bg-tooltip: var(--bg-tooltip-light);
+  --bg-inverse: var(--bg-inverse-light);
+
+  /* Background greyscale */
+  --bg-grey-fd: var(--bg-grey-fd-light);
+  --bg-grey-fc: var(--bg-grey-fc-light);
+  --bg-grey-fa: var(--bg-grey-fa-light);
+  --bg-grey-f8: var(--bg-grey-f8-light);
+  --bg-grey-f5: var(--bg-grey-f5-light);
+  --bg-grey-f1: var(--bg-grey-f1-light);
+  --bg-grey-e: var(--bg-grey-e-light);
+  --bg-grey-c: var(--bg-grey-c-light);
+  --bg-grey-8: var(--bg-grey-8-light);
+
+  /* Inverted backgrounds */
+  --bg-inverse-expense: var(--bg-inverse-expense-light);
+  --bg-panel-semi-transparent: var(--bg-panel-semi-transparent-light);
+
+  /* Switch/Toggle components */
+  --bg-switch: var(--bg-switch-light);
+  --bg-switch-indicator: var(--bg-switch-indicator-light);
+  --bg-switch-toggle: var(--bg-switch-toggle-light);
+  --bg-switch-toggle-active: var(--bg-switch-toggle-active-light);
+  --text-switch: var(--text-switch-light);
+  --text-switch-hover: var(--text-switch-hover-light);
+  --text-switch-active: var(--text-switch-active-light);
+
+  /* Button specific */
+  --bg-button-default: var(--bg-button-default-light);
+  --border-button-hover: var(--border-button-hover-light);
+
+  /* Component-specific semantic colors */
+  --bg-tag-text: var(--bg-tag-text-light);
+  --bg-tag-text-hover: var(--bg-tag-text-hover-light);
+  --border-chart: var(--border-chart-light);
+  --border-chart-row: var(--border-chart-row-light);
+  --stroke-calendar: var(--stroke-calendar-light);
+  --border-calendar-hover: var(--border-calendar-hover-light);
+  --shadow-drawer: var(--shadow-drawer-light);
+  --shadow-gantt: var(--shadow-gantt-light);
+  --shadow-gantt-hover: var(--shadow-gantt-hover-light);
+  --bg-timetracker-row: var(--bg-timetracker-row-light);
+  --shadow-timetracker: var(--shadow-timetracker-light);
+  --bg-invoice-badge: var(--bg-invoice-badge-light);
+  --text-invoice-badge: var(--text-invoice-badge-light);
+  --bg-wysiwyg-placeholder: var(--bg-wysiwyg-placeholder-light);
+  --bg-list-grid-row: var(--bg-list-grid-row-light);
+  --border-react-select-menu: var(--border-react-select-menu-light);
+  --bg-client-portal-item: var(--bg-client-portal-item-light);
+  --bg-timeline-striped: var(--bg-timeline-striped-light);
+  --bg-warning-notice: var(--bg-warning-notice-light);
+  --bg-sidebar: var(--bg-sidebar-light);
+
+  /* Text colors */
+  --text-default: var(--text-default-light);
+  --text-muted: var(--text-muted-light);
+  --text-muted-alt: var(--text-muted-alt-light);
+  --text-lighter: var(--text-lighter-light);
+  --text-lightest: var(--text-lightest-light);
+  --text-tooltip: var(--text-tooltip-light);
+  --text-inverse: var(--text-inverse-light);
+  --text-semi-transparent: var(--text-semi-transparent-light);
+  --text-semi-transparent-muted: var(--text-semi-transparent-muted-light);
+
+  /* Border colors */
+  --border-content: var(--border-content-light);
+  --border-content-alt: var(--border-content-alt-light);
+  --border-darker: var(--border-darker-light);
+  --border-field: var(--border-field-light);
+  --border-semi-transparent: var(--border-semi-transparent-light);
+  --border-semi-transparent-alt: var(--border-semi-transparent-alt-light);
+  --border-semi-transparent-strong: var(--border-semi-transparent-strong-light);
+  --border-semi-transparent-subtle: var(--border-semi-transparent-subtle-light);
+  --border-field-applied: var(--border-field-applied-light);
+
+  /* List items */
+  --bg-hover-subtle: var(--bg-hover-subtle-light);
+  --bg-list-grouped-header: var(--bg-list-grouped-header-light);
+  --bg-list-grouped-header-document: var(--bg-list-grouped-header-document-light);
+
+  /* Chart colors */
+  --chart-tick-color: var(--chart-tick-color-light);
+  --chart-tooltip-bg: var(--chart-tooltip-bg-light);
+
+  /* Deprecated branding colors */
+  --bg-info: var(--bg-info-light-val);
+  --bg-info-light: var(--bg-info-light-light);
+  --bg-info-lighter: var(--bg-info-lighter-light);
+  --bg-yellow: var(--bg-yellow-light);
+  --bg-highlight: var(--bg-highlight-light);
+}
+
