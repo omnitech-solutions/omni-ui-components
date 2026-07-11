@@ -1,7 +1,9 @@
 export { CodePanel, type CodePanelProps } from './CodePanel';
 export { ComponentWrapper, type ComponentWrapperProps } from './ComponentWrapper';
+export { affixDocsHeroPreset, resolveDocsHeroPreset, type DocsHeroPreset, type DocsHeroSegmentOverride } from './docsHero';
 export { DocsPage } from './DocsPage';
 export { InlineCode, type InlineCodeProps } from './InlineCode';
+export { SignatureCode, type SignatureCodeProps } from './SignatureCode';
 export { SegmentedPill, type PillSegment, type SegmentedPillProps } from './SegmentedPill';
 export { ShowCodePanel, type ShowCodeInput } from './ShowCodePanel';
 export { TableOfContents, type TocItem } from './TableOfContents';

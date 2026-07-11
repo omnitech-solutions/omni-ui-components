@@ -65,9 +65,18 @@ interface RowProps {
 }
 
 const Row: React.FC<RowProps> = ({ id, index, name, code, children }) => (
-  <section id={id} className="scroll-mt-6 py-8">
-    <SegmentedPill segments={[{ content: index, tinted: true }, { content: name, uppercase: true }, { content: <InlineCode code={`<${name}/>`} /> }]} />
-    <div className="mt-5">{children}</div>
+  <section id={id} className="pb-overview-row scroll-mt-6 py-8">
+    <div className="pb-overview-row-header">
+      <SegmentedPill
+        segments={[
+          { content: index, tinted: true, className: 'px-5 py-3 text-base font-semibold text-foreground' },
+          { content: name, uppercase: true, className: 'px-5 py-3 text-base font-semibold tracking-[0.12em]' },
+          { content: <InlineCode code={`<${name} />`} className="text-[1rem] text-[var(--color-primary)]" />, className: 'px-5 py-3' },
+        ]}
+        className="inline-flex items-stretch overflow-hidden rounded-2xl border border-[var(--oui-border-field)] text-xs font-mono"
+      />
+    </div>
+    <div className="pb-overview-row-preview mt-5">{children}</div>
     <CodePanel code={code} />
   </section>
 );
@@ -302,17 +311,16 @@ const ComponentOverviewPage: React.FC = () => {
   const tocItems: TocItem[] = SECTIONS.flatMap((section) => section.rows.map((row) => ({ id: rowId(row.name), label: row.name, group: section.title })));
 
   return (
-    <div className="box-border w-full max-w-[100vw] px-8 py-10">
-      <header className="mb-8 max-w-3xl">
-        <h1 className="text-3xl font-bold text-foreground">Component overview</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Browse the available Omni UI components. Each row carries the component name, JSX import contract, and a live preview driven by that component's
-          factory variants.
-        </p>
-      </header>
-
-      <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_14rem] xl:grid-cols-[minmax(0,1fr)_16rem]">
-        <div className="min-w-0">
+    <div className="pb-shell box-border w-full max-w-[100vw] px-8 py-10">
+      <div className="pb-overview-layout grid gap-8 md:grid-cols-[minmax(0,1fr)_14rem] xl:grid-cols-[minmax(0,1fr)_16rem]">
+        <div className="pb-overview-main min-w-0">
+          <header className="pb-shell-header mb-8 max-w-4xl">
+            <h1 className="text-4xl font-semibold text-foreground">Component Overview</h1>
+            <p className="mt-3 text-[15px] leading-8 text-muted-foreground">
+              Browse the Omni UI component set with the same reference layout used for Table. Each row keeps the component identity, JSX contract, live
+              preview, and runnable example code together.
+            </p>
+          </header>
           {SECTIONS.map((section, sectionIndex) => (
             <React.Fragment key={section.title}>
               <SectionHeading id={sectionId(section.title)} index={String(sectionIndex + 1)} title={section.title} />
@@ -334,7 +342,7 @@ const ComponentOverviewPage: React.FC = () => {
           ))}
         </div>
         <aside className="hidden md:block">
-          <TableOfContents items={tocItems} />
+          <TableOfContents items={tocItems} title="Table of contents" />
         </aside>
       </div>
     </div>
