@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Tag } from '@omnitech/omni-ui-core/Tag';
+import { Tag } from '@oc-tech/omni-ui-components/Tag';
 
 const meta: Meta<typeof Tag> = {
   title: 'omni-ui-components/Tag',

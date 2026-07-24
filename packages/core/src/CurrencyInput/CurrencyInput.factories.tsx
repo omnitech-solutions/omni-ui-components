@@ -1,4 +1,4 @@
-import type { CurrencyInputProps } from '@omnitech/omni-ui-core/CurrencyInput';
+import type { CurrencyInputProps } from '@oc-tech/omni-ui-components/CurrencyInput';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const currencyInputPropsFactory = (overrides: Partial<CurrencyInputProps> = {}): CurrencyInputProps => ({

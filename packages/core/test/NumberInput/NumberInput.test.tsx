@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { NumberInput, type NumberInputProps } from '@omnitech/omni-ui-core/NumberInput';
+import { NumberInput, type NumberInputProps } from '@oc-tech/omni-ui-components/NumberInput';
 
 const renderNI = (overrides: Partial<NumberInputProps> = {}) => render(<NumberInput data-testid="n" label="Amount" {...overrides} />);
 

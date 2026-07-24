@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Button } from '@omnitech/omni-ui-core/Button';
-import { Modal, ModalContent, ModalDescription, ModalFooter, ModalHeader, ModalTitle, ModalTrigger } from '@omnitech/omni-ui-core/Modal';
+import { Button } from '@oc-tech/omni-ui-components/Button';
+import { Modal, ModalContent, ModalDescription, ModalFooter, ModalHeader, ModalTitle, ModalTrigger } from '@oc-tech/omni-ui-components/Modal';
 
 const meta: Meta<typeof Modal> = {
   title: 'omni-ui-components/Modal',

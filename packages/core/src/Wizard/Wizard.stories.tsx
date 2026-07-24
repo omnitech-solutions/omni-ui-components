@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Wizard, type WizardProps } from '@omnitech/omni-ui-core/Wizard';
+import { Wizard, type WizardProps } from '@oc-tech/omni-ui-components/Wizard';
 import { SAMPLE_STEPS, wizardPropsFactory } from 'factories/omni-ui-components/Wizard/Wizard.factories';
 
 const Renderer: React.FC<WizardProps> = (args) => {

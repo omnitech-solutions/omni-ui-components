@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { DynamicForm } from '@omnitech/omni-ui-core/dynamic-form';
-import { buildFormContext, EMPTY_FORM_CONTEXT_BASE } from '@omnitech/omni-ui-core/dynamic-form/lib/formContext';
-import type { FormError } from '@omnitech/omni-ui-core';
+import { DynamicForm } from '@oc-tech/omni-ui-components/dynamic-form';
+import { buildFormContext, EMPTY_FORM_CONTEXT_BASE } from '@oc-tech/omni-ui-components/dynamic-form/lib/formContext';
+import type { FormError } from '@oc-tech/omni-ui-components';
 import type { DynamicFormFixture, FormFixture } from 'factories/dynamic-form/DynamicForm/DynamicForm.factories';
 export type { FormFixture, DynamicFormFixture };
 

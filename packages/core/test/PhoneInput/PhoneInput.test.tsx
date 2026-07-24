@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { PhoneInput, formatPhone } from '@omnitech/omni-ui-core/PhoneInput';
+import { PhoneInput, formatPhone } from '@oc-tech/omni-ui-components/PhoneInput';
 
 describe('omni-ui-components/PhoneInput formatPhone', () => {
   it('groups US digits as (XXX) XXX-XXXX', () => {

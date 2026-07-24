@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Progress } from '@omnitech/omni-ui-core/Progress';
+import { Progress } from '@oc-tech/omni-ui-components/Progress';
 
 const meta: Meta<typeof Progress> = {
   title: 'omni-ui-components/Progress',

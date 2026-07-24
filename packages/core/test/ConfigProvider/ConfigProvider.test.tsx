@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { ConfigProvider } from '@omnitech/omni-ui-core/ConfigProvider';
+import { ConfigProvider } from '@oc-tech/omni-ui-components/ConfigProvider';
 
 describe('omni-ui-components/ConfigProvider', () => {
   it('renders children', () => {

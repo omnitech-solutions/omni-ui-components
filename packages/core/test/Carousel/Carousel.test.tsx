@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Carousel } from '@omnitech/omni-ui-core/Carousel';
+import { Carousel } from '@oc-tech/omni-ui-components/Carousel';
 
 describe('omni-ui-components/Carousel', () => {
   it('moves between slides', async () => {

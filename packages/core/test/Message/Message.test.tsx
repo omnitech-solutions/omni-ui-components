@@ -1,4 +1,4 @@
-import { message } from '@omnitech/omni-ui-core/Message';
+import { message } from '@oc-tech/omni-ui-components/Message';
 
 describe('omni-ui-components/message', () => {
   it('delegates to window.alert', () => {

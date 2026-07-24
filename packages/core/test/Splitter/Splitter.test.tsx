@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Splitter, SplitterPanel } from '@omnitech/omni-ui-core/Splitter';
+import { Splitter, SplitterPanel } from '@oc-tech/omni-ui-components/Splitter';
 
 describe('omni-ui-components/Splitter', () => {
   it('renders both panels', () => {

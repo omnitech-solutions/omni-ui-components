@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Watermark } from '@omnitech/omni-ui-core/Watermark';
+import { Watermark } from '@oc-tech/omni-ui-components/Watermark';
 
 const meta: Meta<typeof Watermark> = {
   title: 'omni-ui-components/Watermark',

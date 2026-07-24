@@ -3,7 +3,7 @@ import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { DatePicker, type DateRange } from '@omnitech/omni-ui-core/DatePicker';
+import { DatePicker, type DateRange } from '@oc-tech/omni-ui-components/DatePicker';
 
 describe('DatePicker range-mode regressions', () => {
   it('exports DateRange and accepts it as value', () => {

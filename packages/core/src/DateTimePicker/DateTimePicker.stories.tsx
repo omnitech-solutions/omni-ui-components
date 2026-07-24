@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { DateTimePicker, type DateTimePickerProps } from '@omnitech/omni-ui-core/DateTimePicker';
+import { DateTimePicker, type DateTimePickerProps } from '@oc-tech/omni-ui-components/DateTimePicker';
 
 const Renderer: React.FC<DateTimePickerProps> = (args) => {
   const [value, setValue] = React.useState<string>(args.value ?? '');

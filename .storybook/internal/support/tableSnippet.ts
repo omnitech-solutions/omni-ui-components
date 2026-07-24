@@ -26,7 +26,7 @@ export interface BuildTableSnippetOptions {
   serializeProp?: (key: string, value: unknown) => string | null;
 }
 
-const DEFAULT_IMPORTS = ["import { Table } from '@omnitech/omni-ui-core/Table';", "import type { TableColumn, TableDataRow } from '@omnitech/omni-ui-core/Table';"];
+const DEFAULT_IMPORTS = ["import { Table } from '@oc-tech/omni-ui-components/Table';", "import type { TableColumn, TableDataRow } from '@oc-tech/omni-ui-components/Table';"];
 
 const DEFAULT_OMIT = ['testIdPrefix', 'key', 'ref'];
 

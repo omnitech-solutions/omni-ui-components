@@ -1,4 +1,4 @@
-import type { FileUploadProps } from '@omnitech/omni-ui-core/FileUpload';
+import type { FileUploadProps } from '@oc-tech/omni-ui-components/FileUpload';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const fileUploadPropsFactory = (overrides: Partial<FileUploadProps> = {}): FileUploadProps => ({

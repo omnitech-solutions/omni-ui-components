@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Splitter, SplitterPanel } from '@omnitech/omni-ui-core/Splitter';
+import { Splitter, SplitterPanel } from '@oc-tech/omni-ui-components/Splitter';
 
 const meta: Meta<typeof Splitter> = {
   title: 'omni-ui-components/Splitter',

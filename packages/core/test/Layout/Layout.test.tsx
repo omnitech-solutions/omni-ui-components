@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Content, Header, Layout } from '@omnitech/omni-ui-core/Layout';
+import { Content, Header, Layout } from '@oc-tech/omni-ui-components/Layout';
 
 describe('omni-ui-components/Layout', () => {
   it('renders sections', () => {

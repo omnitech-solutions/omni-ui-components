@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Spin } from '@omnitech/omni-ui-core/Spin';
+import { Spin } from '@oc-tech/omni-ui-components/Spin';
 
 const meta: Meta<typeof Spin> = {
   title: 'omni-ui-components/Spin',

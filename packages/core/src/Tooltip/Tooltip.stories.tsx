@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Button } from '@omnitech/omni-ui-core/Button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@omnitech/omni-ui-core/Tooltip';
+import { Button } from '@oc-tech/omni-ui-components/Button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@oc-tech/omni-ui-components/Tooltip';
 
 const meta: Meta<typeof Tooltip> = {
   title: 'omni-ui-components/Tooltip',

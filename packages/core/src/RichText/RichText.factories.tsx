@@ -1,4 +1,4 @@
-import type { RichTextProps } from '@omnitech/omni-ui-core/RichText';
+import type { RichTextProps } from '@oc-tech/omni-ui-components/RichText';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const richTextPropsFactory = (overrides: Partial<RichTextProps> = {}): RichTextProps => ({

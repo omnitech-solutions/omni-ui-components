@@ -1,4 +1,4 @@
-import type { RadioOption, RadioProps } from '@omnitech/omni-ui-core/Radio';
+import type { RadioOption, RadioProps } from '@oc-tech/omni-ui-components/Radio';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const SAMPLE_PLANS: RadioOption[] = [

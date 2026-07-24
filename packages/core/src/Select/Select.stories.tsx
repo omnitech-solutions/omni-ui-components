@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Select, type SelectProps } from '@omnitech/omni-ui-core/Select';
+import { Select, type SelectProps } from '@oc-tech/omni-ui-components/Select';
 import { selectPropsFactory } from 'factories/omni-ui-components/Select/Select.factories';
 
 const Renderer: React.FC<SelectProps> = (args) => {

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Table } from '@omnitech/omni-ui-core/Table';
-import type { TableColumn } from '@omnitech/omni-ui-core/Table';
+import { Table } from '@oc-tech/omni-ui-components/Table';
+import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
 import { ShowcaseShell } from './ShowcaseShell';
 
 interface LedgerEntry {

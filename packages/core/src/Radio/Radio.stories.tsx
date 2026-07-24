@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Radio, type RadioProps } from '@omnitech/omni-ui-core/Radio';
+import { Radio, type RadioProps } from '@oc-tech/omni-ui-components/Radio';
 import { radioPropsFactory } from 'factories/omni-ui-components/Radio/Radio.factories';
 
 const Renderer: React.FC<RadioProps> = (args) => {

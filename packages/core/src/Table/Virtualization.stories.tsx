@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Table, type TableRef } from '@omnitech/omni-ui-core/Table';
+import { Table, type TableRef } from '@oc-tech/omni-ui-components/Table';
 import { ComponentWrapper } from './storySupport';
 import { largeProjects, wideProjectColumns, type ProjectRecord } from './Table.story.fixtures';
 const meta: Meta = {

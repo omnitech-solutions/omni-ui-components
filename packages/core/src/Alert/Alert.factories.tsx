@@ -1,4 +1,4 @@
-import type { AlertProps } from '@omnitech/omni-ui-core/Alert';
+import type { AlertProps } from '@oc-tech/omni-ui-components/Alert';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const alertPropsFactory = (overrides: Partial<AlertProps> = {}): AlertProps => ({

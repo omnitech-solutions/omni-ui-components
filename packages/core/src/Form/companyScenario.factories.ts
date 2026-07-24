@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { FormFixture } from '@omnitech/omni-ui-core/Form/Form.types';
+import type { FormFixture } from '@oc-tech/omni-ui-components/Form/Form.types';
 import { NEW_CONTACT_OPTION, SHOWCASE_CONTACTS } from '../../showcase/entities';
 
 /**

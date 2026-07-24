@@ -1,4 +1,4 @@
-import type { TagInputProps } from '@omnitech/omni-ui-core/TagInput';
+import type { TagInputProps } from '@oc-tech/omni-ui-components/TagInput';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const tagInputPropsFactory = (overrides: Partial<TagInputProps> = {}): TagInputProps => ({

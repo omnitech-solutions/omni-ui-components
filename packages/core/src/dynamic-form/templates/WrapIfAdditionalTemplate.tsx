@@ -3,7 +3,7 @@ import type { WrapIfAdditionalTemplateProps } from '@rjsf/utils';
 import { ADDITIONAL_PROPERTY_FLAG, buttonId, TranslatableString } from '@rjsf/utils';
 
 import { cn } from 'lib/utils';
-import { inputVariants } from '@omnitech/omni-ui-core/Input/Input.variants';
+import { inputVariants } from '@oc-tech/omni-ui-components/Input/Input.variants';
 
 /**
  * Omni override of `@rjsf/shadcn`'s WrapIfAdditional template. RJSF

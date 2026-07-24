@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 import { rangeSpec } from '@rjsf/utils';
 
-import { SliderPrimitive } from '@omnitech/omni-ui-core';
+import { SliderPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Range widget — slider for numeric schemas. */

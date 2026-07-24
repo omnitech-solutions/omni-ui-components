@@ -1,4 +1,4 @@
-import type { ColorPickerProps } from '@omnitech/omni-ui-core/ColorPicker';
+import type { ColorPickerProps } from '@oc-tech/omni-ui-components/ColorPicker';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const colorPickerPropsFactory = (overrides: Partial<ColorPickerProps> = {}): ColorPickerProps => ({

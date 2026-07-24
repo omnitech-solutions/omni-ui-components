@@ -1,4 +1,4 @@
-import type { FieldDef, FormFixture, FormRow, FormSectionHeading, FormToolbarRow } from '@omnitech/omni-ui-core/Form/Form.types';
+import type { FieldDef, FormFixture, FormRow, FormSectionHeading, FormToolbarRow } from '@oc-tech/omni-ui-components/Form/Form.types';
 import { formatValue } from './formatValue';
 
 const isSectionHeading = (r: unknown): r is FormSectionHeading =>
@@ -37,7 +37,7 @@ export function buildFormSnippet<T>(fixture: FormFixture<T>, opts: { formData?: 
   const formData = opts.formData ?? fixture.initial;
   const submit = opts.submitLabel ?? fixture.submitLabel ?? 'Save';
   return [
-    "import { Form, FormActions, FormField, FormRow, Input } from '@omnitech/omni-ui-core';",
+    "import { Form, FormActions, FormField, FormRow, Input } from '@oc-tech/omni-ui-components';",
     '',
     `const formData = ${formatValue(formData)};`,
     '',

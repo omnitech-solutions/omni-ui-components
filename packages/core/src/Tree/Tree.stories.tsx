@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Tree } from '@omnitech/omni-ui-core/Tree';
+import { Tree } from '@oc-tech/omni-ui-components/Tree';
 
 const meta: Meta<typeof Tree> = {
   title: 'omni-ui-components/Tree',

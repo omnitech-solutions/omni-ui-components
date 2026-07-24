@@ -3,8 +3,8 @@ import * as React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Form, FormActions, FormField, FormRow } from '@omnitech/omni-ui-core';
-import type { FormFixture } from '@omnitech/omni-ui-core/Form/Form.types';
+import { Form, FormActions, FormField, FormRow } from '@oc-tech/omni-ui-components';
+import type { FormFixture } from '@oc-tech/omni-ui-components/Form/Form.types';
 import { addressFormFactory, contactFormFactory, type AddressFormData } from 'factories/omni-ui-components/Form/Form.factories';
 import { FormDemo } from 'storybook-helpers/FormDemo';
 import { FormStoryShell } from 'storybook-helpers/FormStoryShell';

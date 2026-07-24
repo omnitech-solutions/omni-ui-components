@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Checkbox, type CheckboxProps } from '@omnitech/omni-ui-core/Checkbox';
+import { Checkbox, type CheckboxProps } from '@oc-tech/omni-ui-components/Checkbox';
 
 const renderCheckbox = (overrides: Partial<CheckboxProps> = {}) => render(<Checkbox data-testid="c" label="Subscribe" {...overrides} />);
 

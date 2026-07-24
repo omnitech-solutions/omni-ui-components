@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp, Copy, Trash2, X } from 'lucide-react';
 
 import { cn } from 'lib/utils';
 
-import { Button, IconButton } from '@omnitech/omni-ui-core';
+import { Button, IconButton } from '@oc-tech/omni-ui-components';
 
 /**
  * RJSF IconButton bridge — RJSF's array / object toolbars look up named

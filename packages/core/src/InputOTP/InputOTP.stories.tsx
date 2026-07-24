@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { InputOTP, type InputOTPProps } from '@omnitech/omni-ui-core/InputOTP';
+import { InputOTP, type InputOTPProps } from '@oc-tech/omni-ui-components/InputOTP';
 
 const Renderer: React.FC<InputOTPProps> = (args) => {
   const [value, setValue] = React.useState<string>(args.value ?? '');

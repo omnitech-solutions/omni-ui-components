@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { FileUpload } from '@omnitech/omni-ui-core/FileUpload';
+import { FileUpload } from '@oc-tech/omni-ui-components/FileUpload';
 
 describe('omni-ui-components/FileUpload', () => {
   it('renders the dropzone + label', () => {

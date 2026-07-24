@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Timeline } from '@omnitech/omni-ui-core/Timeline';
+import { Timeline } from '@oc-tech/omni-ui-components/Timeline';
 
 describe('omni-ui-components/Timeline', () => {
   it('renders timeline items', () => {

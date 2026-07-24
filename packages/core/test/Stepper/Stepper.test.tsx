@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileText } from 'lucide-react';
 
-import { Stepper, type StepperProps } from '@omnitech/omni-ui-core/Stepper';
+import { Stepper, type StepperProps } from '@oc-tech/omni-ui-components/Stepper';
 
 const renderStepper = (overrides: Partial<StepperProps> = {}) =>
   render(<Stepper data-testid="s" label="Number of pages" icon={<FileText />} unit="page" min={1} max={50} value={7} {...overrides} />);

@@ -1,4 +1,4 @@
-import type { SliderProps } from '@omnitech/omni-ui-core/Slider';
+import type { SliderProps } from '@oc-tech/omni-ui-components/Slider';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Build `<Slider>` props for standalone (non-RJSF) stories and tests. */

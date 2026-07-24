@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { zodIssuesToFormErrors } from '@omnitech/omni-ui-core';
+import { zodIssuesToFormErrors } from '@oc-tech/omni-ui-components';
 
 /** Helper — force a Zod parse failure for the given schema/value and return the issues. */
 const failedParse = <T>(schema: z.ZodType<T>, value: unknown): z.ZodError => {

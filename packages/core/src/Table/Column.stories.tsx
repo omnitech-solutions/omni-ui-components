@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Table, type TableColumn, type TableState } from '@omnitech/omni-ui-core/Table';
+import { Table, type TableColumn, type TableState } from '@oc-tech/omni-ui-components/Table';
 import { ComponentWrapper } from './storySupport';
 import { clientFilters, groupedProjectColumns, phaseTreeFilters, defaultColumns, projects, spanRows, type ProjectRecord } from './Table.story.fixtures';
 const formatBudget = (value: unknown) => {

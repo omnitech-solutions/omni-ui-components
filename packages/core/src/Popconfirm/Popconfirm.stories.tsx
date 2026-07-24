@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Button } from '@omnitech/omni-ui-core/Button';
-import { Popconfirm } from '@omnitech/omni-ui-core/Popconfirm';
+import { Button } from '@oc-tech/omni-ui-components/Button';
+import { Popconfirm } from '@oc-tech/omni-ui-components/Popconfirm';
 
 const meta: Meta<typeof Popconfirm> = {
   title: 'omni-ui-components/Popconfirm',

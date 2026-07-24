@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-import { validators } from '@omnitech/omni-ui-core';
-import type { FormFixture } from '@omnitech/omni-ui-core/Form/Form.types';
+import { validators } from '@oc-tech/omni-ui-components';
+import type { FormFixture } from '@oc-tech/omni-ui-components/Form/Form.types';
 import { COUNTRY_OPTIONS } from '../Select/countries';
 import { SHOWCASE_EXPENSE_CATEGORIES, SHOWCASE_MEMBERS, SHOWCASE_PROJECTS, SHOWCASE_TAX_RATES } from '../../showcase/entities';
 import { project } from '../../helpers/optionMappers';
 
-export type { FieldDef, FieldType, FormFixture, FormRow, FormRowDef, FormSectionHeading } from '@omnitech/omni-ui-core/Form/Form.types';
+export type { FieldDef, FieldType, FormFixture, FormRow, FormRowDef, FormSectionHeading } from '@oc-tech/omni-ui-components/Form/Form.types';
 
 /* -------------------------------------------------------------------------- */
 /* Address fixture                                                             */

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { CurrencyInputPrimitive } from '@omnitech/omni-ui-core';
+import { CurrencyInputPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Currency widget for monetary fields. */

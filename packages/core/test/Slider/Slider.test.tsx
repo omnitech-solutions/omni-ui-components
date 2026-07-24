@@ -9,7 +9,7 @@ beforeAll(() => {
   }
 });
 
-import { Slider, type SliderProps } from '@omnitech/omni-ui-core/Slider';
+import { Slider, type SliderProps } from '@oc-tech/omni-ui-components/Slider';
 
 const renderSlider = (overrides: Partial<SliderProps> = {}) => render(<Slider data-testid="s" label="Volume" min={0} max={100} value={35} {...overrides} />);
 

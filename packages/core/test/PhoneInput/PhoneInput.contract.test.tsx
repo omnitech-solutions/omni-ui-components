@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { PhoneInput } from '@omnitech/omni-ui-core';
+import { PhoneInput } from '@oc-tech/omni-ui-components';
 import { runControlContract } from '../__support__/runControlContract';
 
 runControlContract({

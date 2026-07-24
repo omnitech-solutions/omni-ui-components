@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { DatePicker, type DatePickerProps, type DateRange } from '@omnitech/omni-ui-core/DatePicker';
+import { DatePicker, type DatePickerProps, type DateRange } from '@oc-tech/omni-ui-components/DatePicker';
 import { datePickerPropsFactory } from 'factories/omni-ui-components/DatePicker/DatePicker.factories';
 
 const Renderer: React.FC<DatePickerProps> = (args) => {

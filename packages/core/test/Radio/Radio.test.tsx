@@ -10,7 +10,7 @@ beforeAll(() => {
   }
 });
 
-import { Radio, type RadioProps } from '@omnitech/omni-ui-core/Radio';
+import { Radio, type RadioProps } from '@oc-tech/omni-ui-components/Radio';
 
 const baseOptions = [
   { value: 'free', label: 'Free' },

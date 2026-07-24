@@ -26,10 +26,10 @@ const config: StorybookConfig = {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
-      '@omnitech/omni-ui-core/dynamic-form/': path.join(coreSrc, 'dynamic-form') + path.sep,
-      '@omnitech/omni-ui-core/dynamic-form': path.join(coreSrc, 'dynamic-form', 'index.ts'),
-      '@omnitech/omni-ui-core/': coreSrc + path.sep,
-      '@omnitech/omni-ui-core': path.join(coreSrc, 'index.ts'),
+      '@oc-tech/omni-ui-components/dynamic-form/': path.join(coreSrc, 'dynamic-form') + path.sep,
+      '@oc-tech/omni-ui-components/dynamic-form': path.join(coreSrc, 'dynamic-form', 'index.ts'),
+      '@oc-tech/omni-ui-components/': coreSrc + path.sep,
+      '@oc-tech/omni-ui-components': path.join(coreSrc, 'index.ts'),
       'dynamic-form/': path.join(coreSrc, 'dynamic-form') + path.sep,
       'dynamic-form': path.join(coreSrc, 'dynamic-form', 'index.ts'),
       components: path.join(coreSrc, 'components'),

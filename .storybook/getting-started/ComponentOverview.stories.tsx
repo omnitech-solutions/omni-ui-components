@@ -27,9 +27,9 @@ import {
   TagInput,
   Textarea,
   TimePicker,
-} from '@omnitech/omni-ui-core';
+} from '@oc-tech/omni-ui-components';
 import { CodePanel, InlineCode, SegmentedPill, TableOfContents, type TocItem } from '../internal/support';
-import type { Variant } from '@omnitech/omni-ui-core/internal/support/makeFactory';
+import type { Variant } from '@oc-tech/omni-ui-components/internal/support/makeFactory';
 import { buttonPropsFactory, buttonSizeVariants, buttonVariants } from 'factories/omni-ui-components/Button/Button.factories';
 import { checkboxPropsFactory, checkboxVariants } from 'factories/omni-ui-components/Checkbox/Checkbox.factories';
 import { colorPickerPropsFactory, colorPickerVariants } from 'factories/omni-ui-components/ColorPicker/ColorPicker.factories';
@@ -94,7 +94,7 @@ const codeFromVariants = <T,>(
   variants: Variant<T>[],
   redactKeys: Array<keyof T> = ['onChange' as keyof T, 'onText' as keyof T],
 ): string => {
-  const head = `import { ${componentName} } from '@omnitech/omni-ui-core';\n\n`;
+  const head = `import { ${componentName} } from '@oc-tech/omni-ui-components';\n\n`;
   const body = variants
     .map((variant) => {
       const entries = Object.entries(variant.args as Record<string, unknown>).filter(([key]) => !redactKeys.includes(key as keyof T));

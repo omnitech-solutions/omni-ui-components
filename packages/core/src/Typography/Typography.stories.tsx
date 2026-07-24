@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Typography } from '@omnitech/omni-ui-core/Typography';
+import { Typography } from '@oc-tech/omni-ui-components/Typography';
 
 const meta: Meta<typeof Typography.Title> = {
   title: 'omni-ui-components/Typography',

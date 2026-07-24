@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FileText } from 'lucide-react';
 
-import type { StepperProps } from '@omnitech/omni-ui-core/Stepper';
+import type { StepperProps } from '@oc-tech/omni-ui-components/Stepper';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Build `<Stepper>` props for standalone (non-RJSF) stories and tests. */

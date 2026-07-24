@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { ComponentWrapper } from './storySupport';
-import { Table } from '@omnitech/omni-ui-core/Table';
+import { Table } from '@oc-tech/omni-ui-components/Table';
 import type { InvoiceLineRecord, ProjectRecord } from './Table.story.fixtures';
 import {
   clientFilters,

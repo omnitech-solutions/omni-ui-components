@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { ColorPickerPrimitive } from '@omnitech/omni-ui-core';
+import { ColorPickerPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Color widget — submits `#rrggbb`. */

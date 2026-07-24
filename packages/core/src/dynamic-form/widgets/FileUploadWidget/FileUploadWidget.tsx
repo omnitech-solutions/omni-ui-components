@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { FileUploadPrimitive } from '@omnitech/omni-ui-core';
+import { FileUploadPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /**

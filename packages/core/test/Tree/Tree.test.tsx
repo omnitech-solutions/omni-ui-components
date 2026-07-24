@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Tree } from '@omnitech/omni-ui-core/Tree';
+import { Tree } from '@oc-tech/omni-ui-components/Tree';
 
 describe('omni-ui-components/Tree', () => {
   it('toggles child nodes', async () => {

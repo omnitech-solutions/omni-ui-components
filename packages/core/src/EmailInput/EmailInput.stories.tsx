@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { EmailInput, type EmailInputProps } from '@omnitech/omni-ui-core/EmailInput';
+import { EmailInput, type EmailInputProps } from '@oc-tech/omni-ui-components/EmailInput';
 
 const Renderer: React.FC<EmailInputProps> = (args) => {
   const [value, setValue] = React.useState<string>(typeof args.value === 'string' ? args.value : '');

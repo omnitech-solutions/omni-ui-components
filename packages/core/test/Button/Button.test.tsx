@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Button, type ButtonProps } from '@omnitech/omni-ui-core/Button';
+import { Button, type ButtonProps } from '@oc-tech/omni-ui-components/Button';
 
 const renderButton = (overrides: Partial<ButtonProps> = {}) => render(<Button {...overrides}>Save</Button>);
 

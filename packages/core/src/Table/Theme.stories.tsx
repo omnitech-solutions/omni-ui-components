@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Table } from '@omnitech/omni-ui-core/Table';
+import { Table } from '@oc-tech/omni-ui-components/Table';
 import { ComponentWrapper } from './storySupport';
 import { defaultColumns, appearanceVariantProjects, type ProjectRecord } from './Table.story.fixtures';
 

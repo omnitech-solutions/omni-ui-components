@@ -1,4 +1,4 @@
-import type { PhoneInputProps } from '@omnitech/omni-ui-core/PhoneInput';
+import type { PhoneInputProps } from '@oc-tech/omni-ui-components/PhoneInput';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const phoneInputPropsFactory = (overrides: Partial<PhoneInputProps> = {}): PhoneInputProps => ({

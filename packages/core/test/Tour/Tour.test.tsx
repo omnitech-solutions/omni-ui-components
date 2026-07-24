@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Tour } from '@omnitech/omni-ui-core/Tour';
+import { Tour } from '@oc-tech/omni-ui-components/Tour';
 
 describe('omni-ui-components/Tour', () => {
   it('renders current step when open', () => {

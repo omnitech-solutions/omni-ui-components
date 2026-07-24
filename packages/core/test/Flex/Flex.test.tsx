@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Flex } from '@omnitech/omni-ui-core/Flex';
+import { Flex } from '@oc-tech/omni-ui-components/Flex';
 
 describe('omni-ui-components/Flex', () => {
   it('renders child items', () => {

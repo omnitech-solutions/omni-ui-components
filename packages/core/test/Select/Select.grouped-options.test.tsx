@@ -2,8 +2,8 @@ import * as React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { SelectPrimitive } from '@omnitech/omni-ui-core/Select/SelectPrimitive';
-import type { SelectOption } from '@omnitech/omni-ui-core/Select/Select.types';
+import { SelectPrimitive } from '@oc-tech/omni-ui-components/Select/SelectPrimitive';
+import type { SelectOption } from '@oc-tech/omni-ui-components/Select/Select.types';
 
 /* cmdk auto-scrolls the focused option; jsdom has no scrollIntoView. */
 beforeAll(() => {

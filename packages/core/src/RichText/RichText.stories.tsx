@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { RichText, type RichTextProps } from '@omnitech/omni-ui-core/RichText';
+import { RichText, type RichTextProps } from '@oc-tech/omni-ui-components/RichText';
 
 const Renderer: React.FC<RichTextProps> = (args) => {
   const [value, setValue] = React.useState<string>(args.value ?? '');

@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
 
-import { Button } from '@omnitech/omni-ui-core/Button';
-import { Tour } from '@omnitech/omni-ui-core/Tour';
+import { Button } from '@oc-tech/omni-ui-components/Button';
+import { Tour } from '@oc-tech/omni-ui-components/Tour';
 
 const meta: Meta<typeof Tour> = {
   title: 'omni-ui-components/Tour',

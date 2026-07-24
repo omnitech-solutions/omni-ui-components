@@ -18,6 +18,7 @@
     "format:write": "prettier --write .",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
+    "publish:package": "(npm whoami >/dev/null 2>&1 || npm login --scope=@oc-tech --auth-type=web) && pnpm --filter @oc-tech/omni-ui-components publish --access public",
     "docker:dev:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:dev:down": "docker compose -f docker-compose.dev.yml down -v",
     "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"

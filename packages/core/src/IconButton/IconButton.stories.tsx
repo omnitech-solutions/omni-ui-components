@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChevronDown, ChevronUp, Copy, Trash2, X } from 'lucide-react';
 
-import { IconButton, type IconButtonProps } from '@omnitech/omni-ui-core/IconButton';
+import { IconButton, type IconButtonProps } from '@oc-tech/omni-ui-components/IconButton';
 import { iconButtonPropsFactory } from 'factories/omni-ui-components/IconButton/IconButton.factories';
 
 const meta: Meta<typeof IconButton> = {

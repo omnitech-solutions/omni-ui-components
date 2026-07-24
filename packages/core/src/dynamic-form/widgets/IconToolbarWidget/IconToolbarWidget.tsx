@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 import { ChevronDown, ChevronUp, Copy, Trash2, X, type LucideIcon } from 'lucide-react';
 
-import { IconButton, type IconButtonVariant } from '@omnitech/omni-ui-core';
+import { IconButton, type IconButtonVariant } from '@oc-tech/omni-ui-components';
 
 /**
  * IconToolbarWidget — a non-data RJSF widget that renders a row of

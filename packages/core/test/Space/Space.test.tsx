@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Space } from '@omnitech/omni-ui-core/Space';
+import { Space } from '@oc-tech/omni-ui-components/Space';
 
 describe('omni-ui-components/Space', () => {
   it('renders spaced children', () => {

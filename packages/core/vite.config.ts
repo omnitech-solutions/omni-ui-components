@@ -1,9 +1,20 @@
 import { resolve } from 'node:path';
+import { createRequire } from 'node:module';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
+
+const require = createRequire(import.meta.url);
+const packageJson = require('./package.json') as {
+  dependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>;
+};
+const externalPackages = [
+  ...Object.keys(packageJson.dependencies ?? {}),
+  ...Object.keys(packageJson.peerDependencies ?? {}),
+];
 
 export default defineConfig({
   plugins: [
@@ -28,7 +39,8 @@ export default defineConfig({
       cssFileName: 'styles',
     },
     rollupOptions: {
-      external: [/^react($|\/)/, /^react-dom($|\/)/],
+      external: (id) =>
+        externalPackages.some((packageName) => id === packageName || id.startsWith(`${packageName}/`)),
     },
   },
 });

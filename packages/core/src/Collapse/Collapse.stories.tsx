@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Collapse } from '@omnitech/omni-ui-core/Collapse';
+import { Collapse } from '@oc-tech/omni-ui-components/Collapse';
 
 const meta: Meta<typeof Collapse> = {
   title: 'omni-ui-components/Collapse',

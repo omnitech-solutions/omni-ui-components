@@ -1,4 +1,4 @@
-import type { TextareaProps } from '@omnitech/omni-ui-core/Textarea/Textarea.types';
+import type { TextareaProps } from '@oc-tech/omni-ui-components/Textarea/Textarea.types';
 import { makeFactory, type Variant } from '../../internal/support/makeFactory';
 
 /**

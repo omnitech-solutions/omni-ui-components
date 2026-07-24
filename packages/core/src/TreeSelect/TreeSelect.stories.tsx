@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { TreeSelect } from '@omnitech/omni-ui-core/TreeSelect';
+import { TreeSelect } from '@oc-tech/omni-ui-components/TreeSelect';
 
 const meta: Meta<typeof TreeSelect> = {
   title: 'omni-ui-components/TreeSelect',

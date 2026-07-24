@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Anchor } from '@omnitech/omni-ui-core/Anchor';
+import { Anchor } from '@oc-tech/omni-ui-components/Anchor';
 
 const meta: Meta<typeof Anchor> = {
   title: 'omni-ui-components/Anchor',

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Switch, type SwitchProps } from '@omnitech/omni-ui-core/Switch';
+import { Switch, type SwitchProps } from '@oc-tech/omni-ui-components/Switch';
 import { switchPropsFactory } from 'factories/omni-ui-components/Switch/Switch.factories';
 
 const Renderer: React.FC<SwitchProps> = (args) => {

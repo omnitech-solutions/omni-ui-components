@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { TimePicker } from '@omnitech/omni-ui-core/TimePicker';
+import { TimePicker } from '@oc-tech/omni-ui-components/TimePicker';
 
 describe('omni-ui-components/TimePicker', () => {
   it('renders with label + time input', () => {

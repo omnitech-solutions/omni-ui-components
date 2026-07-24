@@ -1,4 +1,4 @@
-import type { BadgeProps } from '@omnitech/omni-ui-core/Badge';
+import type { BadgeProps } from '@oc-tech/omni-ui-components/Badge';
 
 export const badgePropsFactory = (overrides: Partial<BadgeProps> = {}): BadgeProps => ({
   children: 'Active',

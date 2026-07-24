@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Avatar } from '@omnitech/omni-ui-core/Avatar';
+import { Avatar } from '@oc-tech/omni-ui-components/Avatar';
 import { avatarPropsFactory } from 'factories/omni-ui-components/Avatar/Avatar.factories';
 
 const meta: Meta<typeof Avatar> = {

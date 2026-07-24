@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { RadioPrimitive, type RadioOption } from '@omnitech/omni-ui-core';
+import { RadioPrimitive, type RadioOption } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Radio widget. */

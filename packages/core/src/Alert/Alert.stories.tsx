@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Alert } from '@omnitech/omni-ui-core/Alert';
+import { Alert } from '@oc-tech/omni-ui-components/Alert';
 import { alertPropsFactory } from 'factories/omni-ui-components/Alert/Alert.factories';
 
 const meta: Meta<typeof Alert> = {

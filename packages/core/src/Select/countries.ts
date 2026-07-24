@@ -1,4 +1,4 @@
-import type { SelectOption } from '@omnitech/omni-ui-core/Select/Select.types';
+import type { SelectOption } from '@oc-tech/omni-ui-components/Select/Select.types';
 
 /**
  * ISO-3166-1 alpha-2 country list, alphabetised by display name.

@@ -2,8 +2,8 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Button } from '@omnitech/omni-ui-core/Button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@omnitech/omni-ui-core/Tooltip';
+import { Button } from '@oc-tech/omni-ui-components/Button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@oc-tech/omni-ui-components/Tooltip';
 
 describe('omni-ui-components/Tooltip', () => {
   it('shows tooltip content on hover without a long delay', async () => {

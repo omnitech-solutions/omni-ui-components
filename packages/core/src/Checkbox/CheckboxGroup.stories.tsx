@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { CheckboxGroup, type CheckboxGroupProps } from '@omnitech/omni-ui-core/Checkbox';
+import { CheckboxGroup, type CheckboxGroupProps } from '@oc-tech/omni-ui-components/Checkbox';
 import { checkboxGroupPropsFactory } from 'factories/omni-ui-components/Checkbox/Checkbox.factories';
 
 const Renderer: React.FC<CheckboxGroupProps> = (args) => {

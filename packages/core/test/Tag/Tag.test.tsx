@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Tag } from '@omnitech/omni-ui-core/Tag';
+import { Tag } from '@oc-tech/omni-ui-components/Tag';
 
 describe('omni-ui-components/Tag', () => {
   it('renders label', () => {

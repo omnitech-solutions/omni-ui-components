@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Divider } from '@omnitech/omni-ui-core/Divider';
+import { Divider } from '@oc-tech/omni-ui-components/Divider';
 
 const meta: Meta<typeof Divider> = {
   title: 'omni-ui-components/Divider',

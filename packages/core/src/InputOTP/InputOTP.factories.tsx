@@ -1,4 +1,4 @@
-import type { InputOTPProps } from '@omnitech/omni-ui-core/InputOTP';
+import type { InputOTPProps } from '@oc-tech/omni-ui-components/InputOTP';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const inputOTPPropsFactory = (overrides: Partial<InputOTPProps> = {}): InputOTPProps => ({

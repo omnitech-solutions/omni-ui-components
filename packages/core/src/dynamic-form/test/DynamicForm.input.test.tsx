@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { z } from 'zod';
 
-import { Input } from '@omnitech/omni-ui-core/Input';
+import { Input } from '@oc-tech/omni-ui-components/Input';
 import { buildSingleFieldSchema, buildSingleFieldUiSchema, renderDynamicForm, screen } from './testing/renderDynamicForm';
 
 describe('DynamicForm — Input widget integration', () => {

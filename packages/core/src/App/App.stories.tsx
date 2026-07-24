@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { App } from '@omnitech/omni-ui-core/App';
+import { App } from '@oc-tech/omni-ui-components/App';
 
 const meta: Meta<typeof App> = {
   title: 'omni-ui-components/App',

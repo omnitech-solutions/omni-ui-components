@@ -6,7 +6,7 @@ import type { z } from 'zod';
  * `DynamicForm` and the vanilla `Form` share the same submit-time error contract;
  * the RJSF adapter only adds `source: 'ajv'` for render-time JSON Schema errors.
  */
-export type { FormError } from '@omnitech/omni-ui-core';
+export type { FormError } from '@oc-tech/omni-ui-components';
 
 /**
  * Canonical Omni wrapper around an RJSF render contract plus a Zod parser

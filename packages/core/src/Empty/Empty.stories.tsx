@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Empty } from '@omnitech/omni-ui-core/Empty';
+import { Empty } from '@oc-tech/omni-ui-components/Empty';
 
 const meta: Meta<typeof Empty> = {
   title: 'omni-ui-components/Empty',

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Plus } from 'lucide-react';
 
-import { FloatButton } from '@omnitech/omni-ui-core/FloatButton';
+import { FloatButton } from '@oc-tech/omni-ui-components/FloatButton';
 
 const meta: Meta<typeof FloatButton> = {
   title: 'omni-ui-components/FloatButton',

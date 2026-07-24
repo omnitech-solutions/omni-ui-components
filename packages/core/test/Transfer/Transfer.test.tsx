@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Transfer } from '@omnitech/omni-ui-core/Transfer';
+import { Transfer } from '@oc-tech/omni-ui-components/Transfer';
 
 describe('omni-ui-components/Transfer', () => {
   it('moves selected source items to target', async () => {

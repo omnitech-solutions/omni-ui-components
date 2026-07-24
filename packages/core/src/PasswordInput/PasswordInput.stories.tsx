@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { PasswordInput, type PasswordInputProps } from '@omnitech/omni-ui-core/PasswordInput';
+import { PasswordInput, type PasswordInputProps } from '@oc-tech/omni-ui-components/PasswordInput';
 
 const Renderer: React.FC<PasswordInputProps> = (args) => {
   const [value, setValue] = React.useState<string>(typeof args.value === 'string' ? args.value : '');

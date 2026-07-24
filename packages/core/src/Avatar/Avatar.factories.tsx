@@ -1,4 +1,4 @@
-import type { AvatarProps } from '@omnitech/omni-ui-core/Avatar';
+import type { AvatarProps } from '@oc-tech/omni-ui-components/Avatar';
 
 export const avatarPropsFactory = (overrides: Partial<AvatarProps> = {}): AvatarProps => ({
   fallback: 'OU',

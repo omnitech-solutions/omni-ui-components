@@ -1,5 +1,5 @@
-import type { MultiSelectProps } from '@omnitech/omni-ui-core/MultiSelect';
-import type { SelectOption } from '@omnitech/omni-ui-core/Select';
+import type { MultiSelectProps } from '@oc-tech/omni-ui-components/MultiSelect';
+import type { SelectOption } from '@oc-tech/omni-ui-components/Select';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const SAMPLE_TAGS: SelectOption[] = [

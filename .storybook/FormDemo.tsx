@@ -26,7 +26,7 @@ import {
   Slider,
   Stepper,
   Textarea,
-} from '@omnitech/omni-ui-core';
+} from '@oc-tech/omni-ui-components';
 import type {
   FieldDef,
   FormFixture,
@@ -35,8 +35,8 @@ import type {
   FormSectionHeading,
   FormToolbarAction,
   FormToolbarRow,
-} from '@omnitech/omni-ui-core/Form/Form.types';
-import type { FormProps } from '@omnitech/omni-ui-core/Form/Form.types';
+} from '@oc-tech/omni-ui-components/Form/Form.types';
+import type { FormProps } from '@oc-tech/omni-ui-components/Form/Form.types';
 
 const TOOLBAR_ICONS = {
   trash: Trash2,

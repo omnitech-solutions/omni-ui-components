@@ -1,4 +1,4 @@
-import type { DateTimePickerProps } from '@omnitech/omni-ui-core/DateTimePicker';
+import type { DateTimePickerProps } from '@oc-tech/omni-ui-components/DateTimePicker';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const dateTimePickerPropsFactory = (overrides: Partial<DateTimePickerProps> = {}): DateTimePickerProps => ({

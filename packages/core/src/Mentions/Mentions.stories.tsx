@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Mentions } from '@omnitech/omni-ui-core/Mentions';
+import { Mentions } from '@oc-tech/omni-ui-components/Mentions';
 
 const meta: Meta<typeof Mentions> = {
   title: 'omni-ui-components/Mentions',

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { WizardProps, WizardStep } from '@omnitech/omni-ui-core/Wizard';
+import type { WizardProps, WizardStep } from '@oc-tech/omni-ui-components/Wizard';
 
 export const SAMPLE_STEPS: WizardStep[] = [
   {

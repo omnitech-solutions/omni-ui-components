@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Input, type InputProps } from '@omnitech/omni-ui-core/Input';
+import { Input, type InputProps } from '@oc-tech/omni-ui-components/Input';
 import { inputPropsFactory } from 'factories/omni-ui-components/Input/Input.factories';
 
 const Renderer: React.FC<InputProps> = (args) => {

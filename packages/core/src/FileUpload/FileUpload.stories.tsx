@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { FileUpload, type FileUploadProps } from '@omnitech/omni-ui-core/FileUpload';
+import { FileUpload, type FileUploadProps } from '@oc-tech/omni-ui-components/FileUpload';
 
 const Renderer: React.FC<FileUploadProps> = (args) => {
   const [files, setFiles] = React.useState<File[]>(args.value ?? []);

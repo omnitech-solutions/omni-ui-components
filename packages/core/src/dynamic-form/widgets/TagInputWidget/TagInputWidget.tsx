@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { TagInputPrimitive } from '@omnitech/omni-ui-core';
+import { TagInputPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF TagInput widget — chip-based multi-string input. */

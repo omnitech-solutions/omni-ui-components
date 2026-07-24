@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { CurrencyInput, type CurrencyInputProps } from '@omnitech/omni-ui-core/CurrencyInput';
+import { CurrencyInput, type CurrencyInputProps } from '@oc-tech/omni-ui-components/CurrencyInput';
 import { currencyInputPropsFactory } from 'factories/omni-ui-components/CurrencyInput/CurrencyInput.factories';
 
 const Renderer: React.FC<CurrencyInputProps> = (args) => {

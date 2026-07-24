@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Input, type InputProps, type InputSize, type InputVariant } from '@omnitech/omni-ui-core/Input';
+import { Input, type InputProps, type InputSize, type InputVariant } from '@oc-tech/omni-ui-components/Input';
 import { runFieldChromeContract } from '../__support__/runFieldChromeContract';
 
 const renderInput = (overrides: Partial<InputProps> = {}) => render(<Input data-testid="i" {...overrides} />);

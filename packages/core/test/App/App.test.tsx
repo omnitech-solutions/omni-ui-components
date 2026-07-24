@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { App } from '@omnitech/omni-ui-core/App';
+import { App } from '@oc-tech/omni-ui-components/App';
 
 describe('omni-ui-components/App', () => {
   it('renders children unchanged', () => {

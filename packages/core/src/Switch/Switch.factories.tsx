@@ -1,4 +1,4 @@
-import type { SwitchProps } from '@omnitech/omni-ui-core/Switch';
+import type { SwitchProps } from '@oc-tech/omni-ui-components/Switch';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const switchPropsFactory = (overrides: Partial<SwitchProps> = {}): SwitchProps => ({

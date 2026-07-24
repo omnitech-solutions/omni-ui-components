@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Button } from '@omnitech/omni-ui-core/Button';
-import { Popover, PopoverPanel, PopoverTrigger } from '@omnitech/omni-ui-core/Popover';
+import { Button } from '@oc-tech/omni-ui-components/Button';
+import { Popover, PopoverPanel, PopoverTrigger } from '@oc-tech/omni-ui-components/Popover';
 
 const meta: Meta<typeof Popover> = {
   title: 'omni-ui-components/Popover',

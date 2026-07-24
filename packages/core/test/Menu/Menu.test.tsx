@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Menu } from '@omnitech/omni-ui-core/Menu';
+import { Menu } from '@oc-tech/omni-ui-components/Menu';
 
 describe('omni-ui-components/Menu', () => {
   it('renders menu items', () => {

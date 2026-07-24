@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Pagination } from '@omnitech/omni-ui-core/Pagination';
+import { Pagination } from '@oc-tech/omni-ui-components/Pagination';
 
 describe('omni-ui-components/Pagination', () => {
   it('calls onChange for next page', async () => {

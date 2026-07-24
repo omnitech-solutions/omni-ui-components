@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Statistic } from '@omnitech/omni-ui-core/Statistic';
+import { Statistic } from '@oc-tech/omni-ui-components/Statistic';
 
 describe('omni-ui-components/Statistic', () => {
   it('renders title and value', () => {

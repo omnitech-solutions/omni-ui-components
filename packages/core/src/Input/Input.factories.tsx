@@ -1,6 +1,6 @@
 import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 
-import type { InputProps } from '@omnitech/omni-ui-core/Input/Input.types';
+import type { InputProps } from '@oc-tech/omni-ui-components/Input/Input.types';
 import { makeFactory, type Variant } from '../../internal/support/makeFactory';
 
 /**

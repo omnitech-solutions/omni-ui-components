@@ -3,8 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { InlineCode, SegmentedPill, ShowCodePanel, TableOfContents, oneLine, useIsDark, type TocItem } from '../internal/support';
 
-import { Table } from '@omnitech/omni-ui-core/Table';
-import type { TableColumn } from '@omnitech/omni-ui-core/Table';
+import { Table } from '@oc-tech/omni-ui-components/Table';
+import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
 import {
   clientFilters,
   draggableRows,

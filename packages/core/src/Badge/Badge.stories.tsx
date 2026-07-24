@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Badge } from '@omnitech/omni-ui-core/Badge';
+import { Badge } from '@oc-tech/omni-ui-components/Badge';
 import { badgePropsFactory } from 'factories/omni-ui-components/Badge/Badge.factories';
 
 const meta: Meta<typeof Badge> = {

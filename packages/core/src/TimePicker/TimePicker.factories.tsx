@@ -1,4 +1,4 @@
-import type { TimePickerProps } from '@omnitech/omni-ui-core/TimePicker';
+import type { TimePickerProps } from '@oc-tech/omni-ui-components/TimePicker';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const timePickerPropsFactory = (overrides: Partial<TimePickerProps> = {}): TimePickerProps => ({

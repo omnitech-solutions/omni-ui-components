@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { List, ListItem } from '@omnitech/omni-ui-core/List';
+import { List, ListItem } from '@oc-tech/omni-ui-components/List';
 
 const meta: Meta<typeof List> = {
   title: 'omni-ui-components/List',

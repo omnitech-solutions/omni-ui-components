@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Button } from '@omnitech/omni-ui-core/Button';
+import { Button } from '@oc-tech/omni-ui-components/Button';
 import {
   Dropdown,
   DropdownContent,
@@ -9,7 +9,7 @@ import {
   DropdownSeparator,
   DropdownShortcut,
   DropdownTrigger,
-} from '@omnitech/omni-ui-core/Dropdown';
+} from '@oc-tech/omni-ui-components/Dropdown';
 
 const meta: Meta<typeof Dropdown> = {
   title: 'omni-ui-components/Dropdown',

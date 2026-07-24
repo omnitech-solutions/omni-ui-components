@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 
-import { Col, Row } from '@omnitech/omni-ui-core/Grid';
+import { Col, Row } from '@oc-tech/omni-ui-components/Grid';
 
 describe('omni-ui-components/Grid', () => {
   it('applies column width from span', () => {

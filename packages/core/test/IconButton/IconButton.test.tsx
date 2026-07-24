@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Trash2 } from 'lucide-react';
 
-import { IconButton, type IconButtonProps } from '@omnitech/omni-ui-core/IconButton';
+import { IconButton, type IconButtonProps } from '@oc-tech/omni-ui-components/IconButton';
 
 const renderIconButton = (overrides: Partial<IconButtonProps> = {}) =>
   render(<IconButton aria-label="Remove" icon={<Trash2 data-testid="icon" />} {...overrides} />);

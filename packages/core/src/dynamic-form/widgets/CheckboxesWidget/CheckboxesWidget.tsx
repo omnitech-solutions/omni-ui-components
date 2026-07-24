@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { CheckboxGroupPrimitive, type CheckboxOption } from '@omnitech/omni-ui-core';
+import { CheckboxGroupPrimitive, type CheckboxOption } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Checkboxes widget for `type: 'array'` with `items.enum` / `items.oneOf`. */

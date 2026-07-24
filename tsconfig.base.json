@@ -18,8 +18,8 @@
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@omnitech/omni-ui-core": ["packages/core/src/index.ts"],
-      "@omnitech/omni-ui-core/*": ["packages/core/src/*"],
+      "@oc-tech/omni-ui-components": ["packages/core/src/index.ts"],
+      "@oc-tech/omni-ui-components/*": ["packages/core/src/*"],
       "core/*": ["packages/core/src/*"],
       "dynamic-form/*": ["packages/core/src/dynamic-form/*"],
       "components/*": ["packages/core/src/components/*"],

@@ -1,4 +1,4 @@
-import type { PasswordInputProps } from '@omnitech/omni-ui-core/PasswordInput';
+import type { PasswordInputProps } from '@oc-tech/omni-ui-components/PasswordInput';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const passwordInputPropsFactory = (overrides: Partial<PasswordInputProps> = {}): PasswordInputProps => ({

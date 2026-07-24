@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { TagInput, type TagInputProps } from '@omnitech/omni-ui-core/TagInput';
+import { TagInput, type TagInputProps } from '@oc-tech/omni-ui-components/TagInput';
 
 const Renderer: React.FC<TagInputProps> = (args) => {
   const [value, setValue] = React.useState<string[]>(args.value ?? []);

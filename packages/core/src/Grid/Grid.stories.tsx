@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Col, Row } from '@omnitech/omni-ui-core/Grid';
+import { Col, Row } from '@oc-tech/omni-ui-components/Grid';
 
 const meta: Meta<typeof Row> = {
   title: 'omni-ui-components/Grid',

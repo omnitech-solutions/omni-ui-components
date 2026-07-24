@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Result } from '@omnitech/omni-ui-core/Result';
+import { Result } from '@oc-tech/omni-ui-components/Result';
 
 describe('omni-ui-components/Result', () => {
   it('renders title and subtitle', () => {

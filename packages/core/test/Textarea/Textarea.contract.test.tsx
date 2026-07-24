@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { Textarea } from '@omnitech/omni-ui-core';
+import { Textarea } from '@oc-tech/omni-ui-components';
 import { runControlContract } from '../__support__/runControlContract';
 
 runControlContract({

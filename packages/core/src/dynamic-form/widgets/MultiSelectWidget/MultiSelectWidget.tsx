@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { MultiSelectPrimitive, type SelectOption } from '@omnitech/omni-ui-core';
+import { MultiSelectPrimitive, type SelectOption } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF MultiSelect widget — chip-rendering popover. */

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { InputOTP, type InputOTPProps } from '@omnitech/omni-ui-core/InputOTP';
+import { InputOTP, type InputOTPProps } from '@oc-tech/omni-ui-components/InputOTP';
 
 const renderOTP = (overrides: Partial<InputOTPProps> = {}) => render(<InputOTP data-testid="otp" label="Code" length={6} {...overrides} />);
 

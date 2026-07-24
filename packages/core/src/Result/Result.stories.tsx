@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Result } from '@omnitech/omni-ui-core/Result';
+import { Result } from '@oc-tech/omni-ui-components/Result';
 
 const meta: Meta<typeof Result> = {
   title: 'omni-ui-components/Result',

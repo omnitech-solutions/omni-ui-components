@@ -1,4 +1,4 @@
-import type { ButtonProps } from '@omnitech/omni-ui-core/Button';
+import type { ButtonProps } from '@oc-tech/omni-ui-components/Button';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Build `<Button>` props for standalone stories and tests. */

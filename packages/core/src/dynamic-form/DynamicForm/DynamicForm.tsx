@@ -6,7 +6,7 @@ import { deepEquals } from '@rjsf/utils';
 import ajvValidator from '@rjsf/validator-ajv8';
 import type { z } from 'zod';
 
-import { Form } from '@omnitech/omni-ui-core';
+import { Form } from '@oc-tech/omni-ui-components';
 import type { FormError } from '../appFormSchema';
 import { appFields } from '../registries/fields';
 import { appWidgets } from '../registries/widgets';

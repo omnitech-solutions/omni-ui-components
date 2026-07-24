@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { PasswordInput } from '@omnitech/omni-ui-core';
+import { PasswordInput } from '@oc-tech/omni-ui-components';
 import { runControlContract } from '../__support__/runControlContract';
 
 runControlContract({

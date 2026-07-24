@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { PhoneInput, type PhoneInputProps } from '@omnitech/omni-ui-core/PhoneInput';
+import { PhoneInput, type PhoneInputProps } from '@oc-tech/omni-ui-components/PhoneInput';
 import { phoneInputPropsFactory } from 'factories/omni-ui-components/PhoneInput/PhoneInput.factories';
 
 const Renderer: React.FC<PhoneInputProps> = (args) => {

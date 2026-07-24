@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { FloatButton } from '@omnitech/omni-ui-core/FloatButton';
+import { FloatButton } from '@oc-tech/omni-ui-components/FloatButton';
 
 describe('omni-ui-components/FloatButton', () => {
   it('renders as a button', () => {

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@omnitech/omni-ui-core/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@oc-tech/omni-ui-components/Card';
 
 describe('omni-ui-components/Card', () => {
   it('renders card sections', () => {

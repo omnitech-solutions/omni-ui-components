@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { FormDemo, type FormDemoProps } from './FormDemo';
-import type { FormError } from '@omnitech/omni-ui-core/Form/Form.types';
+import type { FormError } from '@oc-tech/omni-ui-components/Form/Form.types';
 
 export interface FormStoryShellProps<TFormData> extends FormDemoProps<TFormData> {
   /** Show the last submitted value in a debug pane. Default `true`. */

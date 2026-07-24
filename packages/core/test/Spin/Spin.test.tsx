@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Spin } from '@omnitech/omni-ui-core/Spin';
+import { Spin } from '@oc-tech/omni-ui-components/Spin';
 
 describe('omni-ui-components/Spin', () => {
   it('renders tip while spinning', () => {

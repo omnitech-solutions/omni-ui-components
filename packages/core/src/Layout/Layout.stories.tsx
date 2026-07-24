@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Content, Footer, Header, Layout, Sider } from '@omnitech/omni-ui-core/Layout';
+import { Content, Footer, Header, Layout, Sider } from '@oc-tech/omni-ui-components/Layout';
 
 const meta: Meta<typeof Layout> = {
   title: 'omni-ui-components/Layout',

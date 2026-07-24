@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Empty } from '@omnitech/omni-ui-core/Empty';
+import { Empty } from '@oc-tech/omni-ui-components/Empty';
 
 describe('omni-ui-components/Empty', () => {
   it('renders description', () => {

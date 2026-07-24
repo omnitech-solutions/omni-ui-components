@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { PhoneInputPrimitive } from '@omnitech/omni-ui-core';
+import { PhoneInputPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Phone widget. `ui:options.defaultDialCode` (e.g. `+1`) prefills the dial code. */

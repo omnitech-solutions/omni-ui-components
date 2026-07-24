@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 
-import { QRCode } from '@omnitech/omni-ui-core/QRCode';
+import { QRCode } from '@oc-tech/omni-ui-components/QRCode';
 
 describe('omni-ui-components/QRCode', () => {
   it('renders qr grid', () => {

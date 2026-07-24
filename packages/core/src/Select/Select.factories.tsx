@@ -1,4 +1,4 @@
-import type { SelectProps } from '@omnitech/omni-ui-core/Select/Select.types';
+import type { SelectProps } from '@oc-tech/omni-ui-components/Select/Select.types';
 import type { Variant } from '../../internal/support/makeFactory';
 
 import { COUNTRY_OPTIONS } from './countries';

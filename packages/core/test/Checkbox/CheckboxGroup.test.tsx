@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { CheckboxGroup, type CheckboxGroupProps } from '@omnitech/omni-ui-core/Checkbox';
+import { CheckboxGroup, type CheckboxGroupProps } from '@oc-tech/omni-ui-components/Checkbox';
 
 const baseOptions = [
   { value: 'email', label: 'Email' },

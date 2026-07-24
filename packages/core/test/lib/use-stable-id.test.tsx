@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import * as React from 'react';
 import { render, rerender as _, screen } from '@testing-library/react';
 
-import { useStableId } from '@omnitech/omni-ui-core';
+import { useStableId } from '@oc-tech/omni-ui-components';
 
 describe('useStableId', () => {
   const Probe: React.FC<{ prefix?: string }> = ({ prefix }) => {

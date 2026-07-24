@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { NumberInput, type NumberInputProps } from '@omnitech/omni-ui-core/NumberInput';
+import { NumberInput, type NumberInputProps } from '@oc-tech/omni-ui-components/NumberInput';
 import { numberInputPropsFactory } from 'factories/omni-ui-components/NumberInput/NumberInput.factories';
 
 const Renderer: React.FC<NumberInputProps> = (args) => {

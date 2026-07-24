@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { ColorPicker, type ColorPickerProps } from '@omnitech/omni-ui-core/ColorPicker';
+import { ColorPicker, type ColorPickerProps } from '@oc-tech/omni-ui-components/ColorPicker';
 
 const Renderer: React.FC<ColorPickerProps> = (args) => {
   const [value, setValue] = React.useState<string>(args.value ?? '#3b82f6');

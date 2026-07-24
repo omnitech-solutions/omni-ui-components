@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Mentions } from '@omnitech/omni-ui-core/Mentions';
+import { Mentions } from '@oc-tech/omni-ui-components/Mentions';
 
 describe('omni-ui-components/Mentions', () => {
   it('calls onChange when edited', async () => {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { AutoComplete } from '@omnitech/omni-ui-core/AutoComplete';
+import { AutoComplete } from '@oc-tech/omni-ui-components/AutoComplete';
 
 const meta: Meta<typeof AutoComplete> = {
   title: 'omni-ui-components/AutoComplete',

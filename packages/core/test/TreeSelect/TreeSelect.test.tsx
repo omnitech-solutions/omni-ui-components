@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { TreeSelect } from '@omnitech/omni-ui-core/TreeSelect';
+import { TreeSelect } from '@oc-tech/omni-ui-components/TreeSelect';
 
 describe('omni-ui-components/TreeSelect', () => {
   it('renders flattened options', async () => {

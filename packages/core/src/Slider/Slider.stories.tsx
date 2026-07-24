@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Slider, type SliderProps } from '@omnitech/omni-ui-core/Slider';
+import { Slider, type SliderProps } from '@oc-tech/omni-ui-components/Slider';
 import { sliderPropsFactory } from 'factories/omni-ui-components/Slider/Slider.factories';
 
 const Renderer: React.FC<SliderProps> = (args) => {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Segmented, type SegmentedProps } from '@omnitech/omni-ui-core/Segmented';
+import { Segmented, type SegmentedProps } from '@oc-tech/omni-ui-components/Segmented';
 import { segmentedPropsFactory } from 'factories/omni-ui-components/Segmented/Segmented.factories';
 
 const Renderer: React.FC<SegmentedProps> = (args) => {

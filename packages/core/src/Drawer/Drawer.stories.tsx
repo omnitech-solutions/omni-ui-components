@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Button } from '@omnitech/omni-ui-core/Button';
-import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@omnitech/omni-ui-core/Drawer';
+import { Button } from '@oc-tech/omni-ui-components/Button';
+import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@oc-tech/omni-ui-components/Drawer';
 
 const meta: Meta<typeof Drawer> = {
   title: 'omni-ui-components/Drawer',

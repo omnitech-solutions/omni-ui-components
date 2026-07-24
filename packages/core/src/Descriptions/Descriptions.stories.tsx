@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Descriptions } from '@omnitech/omni-ui-core/Descriptions';
+import { Descriptions } from '@oc-tech/omni-ui-components/Descriptions';
 
 const meta: Meta<typeof Descriptions> = {
   title: 'omni-ui-components/Descriptions',

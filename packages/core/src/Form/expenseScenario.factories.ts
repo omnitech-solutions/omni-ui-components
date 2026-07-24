@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { FormFixture } from '@omnitech/omni-ui-core/Form/Form.types';
+import type { FormFixture } from '@oc-tech/omni-ui-components/Form/Form.types';
 import { SHOWCASE_EXPENSE_CATEGORIES, SHOWCASE_MEMBERS, SHOWCASE_PROJECTS, SHOWCASE_TAX_RATES } from '../../showcase/entities';
 import { formOptions, project } from '../../helpers/optionMappers';
 

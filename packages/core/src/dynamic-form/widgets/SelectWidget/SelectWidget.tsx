@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { SelectPrimitive, type SelectFooterAction, type SelectOption } from '@omnitech/omni-ui-core';
+import { SelectPrimitive, type SelectFooterAction, type SelectOption } from '@oc-tech/omni-ui-components';
 import { MultiSelectWidget } from '../MultiSelectWidget';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 import type { OmniRjsfFormContext } from '../../lib/formContext';

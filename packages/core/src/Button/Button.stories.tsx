@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ArrowRight, Plus, Trash2 } from 'lucide-react';
 
-import { Button, type ButtonProps } from '@omnitech/omni-ui-core/Button';
+import { Button, type ButtonProps } from '@oc-tech/omni-ui-components/Button';
 import { buttonPropsFactory } from 'factories/omni-ui-components/Button/Button.factories';
 
 const meta: Meta<typeof Button> = {

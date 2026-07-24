@@ -1,4 +1,4 @@
-import { fieldsFromRows } from '@omnitech/omni-ui-core';
+import { fieldsFromRows } from '@oc-tech/omni-ui-components';
 
 describe('fieldsFromRows', () => {
   it('flattens FieldDef[][] rows into a flat field list', () => {

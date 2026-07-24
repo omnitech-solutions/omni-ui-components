@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Calendar } from '@omnitech/omni-ui-core/Calendar';
+import { Calendar } from '@oc-tech/omni-ui-components/Calendar';
 
 describe('omni-ui-components/Calendar', () => {
   it('renders a grid of days', () => {

@@ -2,8 +2,8 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Button } from '@omnitech/omni-ui-core/Button';
-import { Modal, ModalContent, ModalDescription, ModalFooter, ModalHeader, ModalTitle, ModalTrigger } from '@omnitech/omni-ui-core/Modal';
+import { Button } from '@oc-tech/omni-ui-components/Button';
+import { Modal, ModalContent, ModalDescription, ModalFooter, ModalHeader, ModalTitle, ModalTrigger } from '@oc-tech/omni-ui-components/Modal';
 
 describe('omni-ui-components/Modal', () => {
   it('opens modal content from the trigger', async () => {

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Divider } from '@omnitech/omni-ui-core/Divider';
+import { Divider } from '@oc-tech/omni-ui-components/Divider';
 
 describe('omni-ui-components/Divider', () => {
   it('renders label when provided', () => {

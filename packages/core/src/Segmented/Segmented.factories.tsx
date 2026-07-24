@@ -1,4 +1,4 @@
-import type { SegmentedOption, SegmentedProps } from '@omnitech/omni-ui-core/Segmented';
+import type { SegmentedOption, SegmentedProps } from '@oc-tech/omni-ui-components/Segmented';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const SAMPLE_TONES: SegmentedOption[] = [

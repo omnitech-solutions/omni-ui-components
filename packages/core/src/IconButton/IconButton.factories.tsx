@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Trash2, Pencil, Plus, X } from 'lucide-react';
 
-import type { IconButtonProps } from '@omnitech/omni-ui-core/IconButton';
+import type { IconButtonProps } from '@oc-tech/omni-ui-components/IconButton';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Build `<IconButton>` props for standalone stories and tests. */

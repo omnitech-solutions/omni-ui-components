@@ -3,7 +3,7 @@ import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Wizard, type WizardProps } from '@omnitech/omni-ui-core/Wizard';
+import { Wizard, type WizardProps } from '@oc-tech/omni-ui-components/Wizard';
 
 const STEPS = [
   { name: 'basic', label: 'Basic', content: <p>basic-content</p> },

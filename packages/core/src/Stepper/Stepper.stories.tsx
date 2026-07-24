@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Calendar, FileText, Users } from 'lucide-react';
 
-import { Stepper, type StepperProps } from '@omnitech/omni-ui-core/Stepper';
+import { Stepper, type StepperProps } from '@oc-tech/omni-ui-components/Stepper';
 import { stepperPropsFactory } from 'factories/omni-ui-components/Stepper/Stepper.factories';
 
 const Renderer: React.FC<StepperProps> = (args) => {

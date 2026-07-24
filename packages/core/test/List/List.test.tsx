@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { List, ListItem } from '@omnitech/omni-ui-core/List';
+import { List, ListItem } from '@oc-tech/omni-ui-components/List';
 
 describe('omni-ui-components/List', () => {
   it('renders list items', () => {

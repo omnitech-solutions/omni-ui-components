@@ -13,7 +13,7 @@ beforeAll(() => {
   }
 });
 
-import { Select, type SelectProps, type SelectSize, type SelectVariant } from '@omnitech/omni-ui-core/Select';
+import { Select, type SelectProps, type SelectSize, type SelectVariant } from '@oc-tech/omni-ui-components/Select';
 
 const baseOptions = [
   { value: 'US', label: 'United States' },

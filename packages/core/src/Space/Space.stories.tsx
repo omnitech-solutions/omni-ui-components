@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Space } from '@omnitech/omni-ui-core/Space';
+import { Space } from '@oc-tech/omni-ui-components/Space';
 
 const meta: Meta<typeof Space> = {
   title: 'omni-ui-components/Space',

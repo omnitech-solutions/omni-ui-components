@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 import { schemaRequiresTrueValue } from '@rjsf/utils';
 
-import { SwitchPrimitive } from '@omnitech/omni-ui-core';
+import { SwitchPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Switch widget for boolean schemas. */

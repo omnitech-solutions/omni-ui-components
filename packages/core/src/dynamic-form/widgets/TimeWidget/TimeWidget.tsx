@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { TimePickerPrimitive } from '@omnitech/omni-ui-core';
+import { TimePickerPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Time widget — submits `HH:MM` (24h). */

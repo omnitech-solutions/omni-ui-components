@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { DatePickerPrimitive } from '@omnitech/omni-ui-core';
+import { DatePickerPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Date widget — stores YYYY-MM-DD strings. */

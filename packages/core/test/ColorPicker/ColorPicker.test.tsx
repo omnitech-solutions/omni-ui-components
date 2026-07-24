@@ -9,7 +9,7 @@ beforeAll(() => {
   }
 });
 
-import { ColorPicker } from '@omnitech/omni-ui-core/ColorPicker';
+import { ColorPicker } from '@oc-tech/omni-ui-components/ColorPicker';
 
 describe('omni-ui-components/ColorPicker', () => {
   it('renders the swatch trigger + label', () => {

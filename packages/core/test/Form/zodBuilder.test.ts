@@ -1,4 +1,4 @@
-import { buildZodSchema, validators } from '@omnitech/omni-ui-core';
+import { buildZodSchema, validators } from '@oc-tech/omni-ui-components';
 
 describe('validators preset catalog', () => {
   describe('text', () => {

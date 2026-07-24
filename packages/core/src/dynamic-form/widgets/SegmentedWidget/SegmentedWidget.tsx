@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
-import { SegmentedPrimitive, type SegmentedOption } from '@omnitech/omni-ui-core';
+import { SegmentedPrimitive, type SegmentedOption } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Segmented widget — single-select pill row. */

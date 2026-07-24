@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { MultiSelect, type MultiSelectProps } from '@omnitech/omni-ui-core/MultiSelect';
+import { MultiSelect, type MultiSelectProps } from '@oc-tech/omni-ui-components/MultiSelect';
 
 const OPTIONS = [
   { value: 'react', label: 'React' },

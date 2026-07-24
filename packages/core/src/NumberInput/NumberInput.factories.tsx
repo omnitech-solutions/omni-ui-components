@@ -1,4 +1,4 @@
-import type { NumberInputProps } from '@omnitech/omni-ui-core/NumberInput';
+import type { NumberInputProps } from '@oc-tech/omni-ui-components/NumberInput';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const numberInputPropsFactory = (overrides: Partial<NumberInputProps> = {}): NumberInputProps => ({

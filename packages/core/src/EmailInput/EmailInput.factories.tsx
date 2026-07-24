@@ -1,4 +1,4 @@
-import type { EmailInputProps } from '@omnitech/omni-ui-core/EmailInput';
+import type { EmailInputProps } from '@oc-tech/omni-ui-components/EmailInput';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const emailInputPropsFactory = (overrides: Partial<EmailInputProps> = {}): EmailInputProps => ({

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Tab, TabPanel, Tabs, TabsBar } from '@omnitech/omni-ui-core/Tabs';
+import { Tab, TabPanel, Tabs, TabsBar } from '@oc-tech/omni-ui-components/Tabs';
 
 const meta: Meta<typeof Tabs> = {
   title: 'omni-ui-components/Tabs',

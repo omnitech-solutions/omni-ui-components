@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
-import { Watermark } from '@omnitech/omni-ui-core/Watermark';
+import { Watermark } from '@oc-tech/omni-ui-components/Watermark';
 
 describe('omni-ui-components/Watermark', () => {
   it('renders watermark content and child content', () => {

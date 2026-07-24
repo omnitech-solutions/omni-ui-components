@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Table } from '@omnitech/omni-ui-core/Table';
+import { Table } from '@oc-tech/omni-ui-components/Table';
 import { defaultColumns, treeProjects, type ProjectRecord } from '../Table.story.fixtures';
 import { ShowcaseShell } from './ShowcaseShell';
 

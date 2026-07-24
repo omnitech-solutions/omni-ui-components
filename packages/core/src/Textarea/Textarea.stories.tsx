@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Textarea, type TextareaProps } from '@omnitech/omni-ui-core/Textarea';
+import { Textarea, type TextareaProps } from '@oc-tech/omni-ui-components/Textarea';
 import { textareaPropsFactory } from 'factories/omni-ui-components/Textarea/Textarea.factories';
 
 const Renderer: React.FC<TextareaProps> = (args) => {

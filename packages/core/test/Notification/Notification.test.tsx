@@ -1,4 +1,4 @@
-import { notification } from '@omnitech/omni-ui-core/Notification';
+import { notification } from '@oc-tech/omni-ui-components/Notification';
 
 describe('omni-ui-components/notification', () => {
   it('delegates to window.alert', () => {

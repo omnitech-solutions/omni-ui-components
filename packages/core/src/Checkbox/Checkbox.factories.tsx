@@ -1,4 +1,4 @@
-import type { CheckboxGroupProps, CheckboxOption, CheckboxProps } from '@omnitech/omni-ui-core/Checkbox';
+import type { CheckboxGroupProps, CheckboxOption, CheckboxProps } from '@oc-tech/omni-ui-components/Checkbox';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const SAMPLE_CHANNELS: CheckboxOption[] = [
