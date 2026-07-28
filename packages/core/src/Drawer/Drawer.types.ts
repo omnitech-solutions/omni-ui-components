@@ -8,6 +8,8 @@ export type DrawerCloseProps = React.ComponentPropsWithoutRef<typeof DialogPrimi
 export type DrawerOverlayProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>;
 export interface DrawerContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   side?: 'top' | 'bottom' | 'left' | 'right';
+  /** Render the modal backdrop. Disable for persistent, non-modal docked panels. */
+  overlay?: boolean;
 }
 export interface DrawerHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 export interface DrawerFooterProps extends React.HTMLAttributes<HTMLDivElement> {}

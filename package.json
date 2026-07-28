@@ -101,7 +101,6 @@
     "typescript": "catalog:",
     "vite": "^8.1.4",
     "vite-plugin-dts": "^4.5.4",
-    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "catalog:"
   }
 }

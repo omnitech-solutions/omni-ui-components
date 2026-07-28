@@ -51,12 +51,15 @@ const sheetVariants = cva(
   },
 );
 
-interface SheetContentProps extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>, VariantProps<typeof sheetVariants> {}
+interface SheetContentProps extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>, VariantProps<typeof sheetVariants> {
+  /** Render the modal backdrop. Disable for persistent, non-modal docked panels. */
+  overlay?: boolean;
+}
 
 const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Content>, SheetContentProps>(
-  ({ side = 'right', className, children, ...props }, ref) => (
+  ({ side = 'right', overlay = true, className, children, ...props }, ref) => (
     <SheetPortal>
-      <SheetOverlay />
+      {overlay ? <SheetOverlay /> : null}
       <SheetPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
         {children}
         <SheetPrimitive.Close className="absolute right-4 top-4 rounded-md border border-transparent p-1.5 text-[var(--oui-foreground-muted)] opacity-90 ring-offset-background transition-colors hover:border-[var(--oui-border-field)] hover:bg-muted/40 hover:text-[var(--oui-foreground)] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">

@@ -1,12 +1,12 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   root: import.meta.dirname,
-  plugins: [react(), tsconfigPaths(), tailwindcss()],
+  plugins: [react(), tailwindcss()],
   resolve: {
+    tsconfigPaths: true,
     alias: {
       '@oc-tech/omni-ui-components/dynamic-form/': `${import.meta.dirname}/packages/core/src/dynamic-form/`,
       '@oc-tech/omni-ui-components/dynamic-form': `${import.meta.dirname}/packages/core/src/dynamic-form/index.ts`,

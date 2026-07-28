@@ -3,7 +3,6 @@ import { createRequire } from 'node:module';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
 
 const require = createRequire(import.meta.url);
@@ -17,9 +16,11 @@ const externalPackages = [
 ];
 
 export default defineConfig({
+  resolve: {
+    tsconfigPaths: true,
+  },
   plugins: [
     react(),
-    tsconfigPaths(),
     tailwindcss(),
     dts({
       entryRoot: 'src',

@@ -35,10 +35,10 @@ function MenuBranch({ item, selectedKeys, depth = 0 }: { item: MenuItem; selecte
           item.onClick?.();
         }}
         className={cn(
-          'flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left transition-colors',
+          'flex w-full appearance-none items-center gap-2 rounded-lg border-0 bg-transparent px-3 py-2.5 text-left transition-colors',
           'font-[family-name:var(--oui-font-sans)] text-sm text-[var(--oui-foreground)]',
           'hover:bg-muted/40',
-          isSelected && 'bg-muted/60 font-semibold text-[var(--oui-foreground)]',
+          isSelected && 'bg-primary/10 font-semibold text-[var(--oui-foreground)]',
         )}
         style={{ paddingLeft: `${12 + depth * 14}px` }}
         aria-expanded={hasChildren ? open : undefined}
@@ -51,7 +51,7 @@ function MenuBranch({ item, selectedKeys, depth = 0 }: { item: MenuItem; selecte
         <span className="min-w-0 flex-1 truncate">{item.label}</span>
       </button>
       {hasChildren && open ? (
-        <ul className={cn('mt-1 space-y-1 rounded-xl border border-[var(--oui-border-field)] bg-background/60 p-2', depth > 0 && 'ml-4')}>
+        <ul className={cn('mt-1 list-none space-y-1 rounded-xl border border-[var(--oui-border-field)] bg-background/60 p-2', depth > 0 && 'ml-4')}>
           {item.children!.map((child) => (
             <MenuBranch key={child.key} item={child} selectedKeys={selectedKeys} depth={depth + 1} />
           ))}
@@ -64,7 +64,7 @@ function MenuBranch({ item, selectedKeys, depth = 0 }: { item: MenuItem; selecte
 export const Menu = ({ items, selectedKeys, className, ...props }: MenuProps) => (
   <ul
     className={cn(
-      'space-y-1 rounded-xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-2 shadow-xs',
+      'list-none space-y-1 rounded-xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-2 shadow-xs',
       className,
     )}
     {...props}

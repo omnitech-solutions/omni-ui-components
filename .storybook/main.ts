@@ -13,12 +13,9 @@ const config: StorybookConfig = {
   addons: ['@storybook/addon-docs', '@storybook/addon-a11y', '@storybook/addon-themes'],
   typescript: {
     check: false,
-    reactDocgen: 'react-docgen-typescript',
-    reactDocgenTypescriptOptions: {
-      shouldExtractLiteralValuesFromEnum: true,
-      shouldRemoveUndefinedFromOptional: true,
-      propFilter: (prop) => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true),
-    },
+    // Use the Babel-based parser so stories and factory fixtures outside the
+    // package tsconfig are documented without noisy "skipping docgen" warnings.
+    reactDocgen: 'react-docgen',
   },
   core: { disableTelemetry: true },
   features: { backgrounds: false },
