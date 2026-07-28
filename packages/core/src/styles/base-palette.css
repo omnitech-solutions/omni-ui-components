@@ -36,17 +36,17 @@
 
   /* Ant Design-style theme seeds.
      Minimal customization:
-       :root { --oui-primary: #1677ff; --oui-background: #ffffff; }
+       :root { --oui-primary: #1677ff; --oui-background: #fafafa; }
 
      Optional:
-       :root { --oui-background-dark: #000000; }
+       :root { --oui-background-dark: #1d1d1d; }
        :root { --oui-primary-1: ...; ... --oui-primary-10: ...; }
 
      If palette stops are not provided, they are derived from the primary
      and current background with color-mix so one seed color is enough. */
   --oui-primary: #1677ff;
-  --oui-background: #ffffff;
-  --oui-background-dark: #000000;
+  --oui-background: #fafafa;
+  --oui-background-dark: #1d1d1d;
   --oui-background-current: var(--oui-background);
 
   --oui-primary-1: color-mix(in srgb, var(--oui-primary) 9%, var(--oui-background-current));

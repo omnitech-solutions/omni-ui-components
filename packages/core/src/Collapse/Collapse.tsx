@@ -58,7 +58,7 @@ export function Collapse({ items, defaultActiveKey, activeKey, accordion, onChan
               disabled={item.disabled}
               onClick={() => toggle(item.key)}
               className={cn(
-                'flex w-full items-start justify-between gap-4 px-4 py-3.5 text-left',
+                'flex w-full cursor-pointer items-start justify-between gap-4 px-4 py-3.5 text-left',
                 'transition-colors duration-[var(--oui-transition-duration)] ease-[var(--oui-transition-easing)]',
                 'hover:bg-muted/30',
                 open && 'bg-muted/20',

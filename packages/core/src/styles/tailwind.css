@@ -25,6 +25,15 @@
     border-style: solid;
     border-color: var(--color-border, currentColor);
   }
+
+  /* Tailwind preflight is intentionally disabled, but component buttons still
+     need its neutral background reset. Without this, buttons that use only
+     hover/active background utilities inherit the browser's native ButtonFace
+     grey, which varies by browser and color scheme. */
+  button {
+    background-color: transparent;
+    background-image: none;
+  }
 }
 
 /* Dark mode uses [data-theme="dark"] not prefers-color-scheme */
