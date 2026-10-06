@@ -8,3 +8,14 @@ tmp
 *.log
 *.tsbuildinfo
 .DS_Store
+
+# Crux Flow local installation state. Run `crux-flow init` on each machine;
+# generated agents and skill copies can contain absolute retained-release paths.
+/.crux-flow/
+/.claude/agents/crux-flow-*.md
+/.codex/agents/crux-flow-*.toml
+/.opencode/agents/crux-flow-*.md
+/.opencode/skills/crux-flow-*/
+/.omp/agents/crux-flow-*.md
+/.omp/skills/crux-flow-*/
+/.omp/config.yml

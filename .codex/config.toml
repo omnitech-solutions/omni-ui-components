@@ -1,0 +1,5 @@
+[plugins."crux-flow@crux-flow"]
+enabled = true
+
+[plugins."crux@crux"]
+enabled = false
