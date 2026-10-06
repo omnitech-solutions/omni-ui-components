@@ -15,7 +15,7 @@ export const numberInputPropsFactory = (overrides: Partial<NumberInputProps> = {
 /** Ordered variant matrix used by the cheatsheet + kitchen-sink stories. */
 export const numberInputVariants: Variant<NumberInputProps>[] = [
   { name: 'Default', args: { label: 'Default', value: 100 } },
-  { name: 'Decimals', args: { label: 'Decimals', value: 12.5, decimalScale: 2 } },
+  { name: 'Decimals', args: { label: 'Decimals', value: 12.5, decimals: 2 } },
   { name: 'Required', args: { label: 'Required', required: true, value: null as unknown as number } },
   { name: 'Disabled', args: { label: 'Disabled', disabled: true, value: 42 } },
   { name: 'Invalid', args: { label: 'Invalid', error: 'Must be greater than zero', value: 0 } },
