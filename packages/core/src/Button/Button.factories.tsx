@@ -47,7 +47,7 @@ export const buttonActionVariants: Variant<ButtonProps>[] = [
   { name: 'End session', args: { buttonSize: 'control', tone: 'danger', soft: true, children: 'End session' } },
 ];
 
-/** State and content variations: shortcut keycaps, loading, pressed, truncating label, asChild. */
+/** State and content variations: shortcut text, loading, pressed, truncating label, asChild. */
 export const buttonStateVariants: Variant<ButtonProps>[] = [
   { name: 'Shortcut', args: { buttonSize: 'control', tone: 'neutral', icon: <Camera />, shortcut: ['⌘', '⇧', 'S'], children: 'Capture' } },
   { name: 'Loading', args: { buttonSize: 'control', tone: 'accent', loading: true, icon: <Camera />, children: 'Analysing' } },

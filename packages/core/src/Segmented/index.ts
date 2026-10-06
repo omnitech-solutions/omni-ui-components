@@ -1,3 +1,10 @@
 export { Segmented } from './Segmented';
 export { SegmentedPrimitive } from './SegmentedPrimitive';
-export type { SegmentedOption, SegmentedProps, SegmentedPrimitiveProps } from './Segmented.types';
+export type {
+  SegmentedAppearance,
+  SegmentedMultipleProps,
+  SegmentedOption,
+  SegmentedPrimitiveProps,
+  SegmentedProps,
+  SegmentedSingleProps,
+} from './Segmented.types';

@@ -93,11 +93,14 @@ describe('omni-ui-components/Button variations', () => {
   });
 
   describe('shortcut', () => {
-    it('renders one keycap per key after the label, hidden from the accessible name', () => {
+    it('renders the keys as one plain mono text run after the label, hidden from the accessible name', () => {
       render(<Button shortcut={['⌘', '⇧', 'S']}>Capture</Button>);
       const btn = screen.getByRole('button', { name: 'Capture' });
-      const keys = btn.querySelectorAll('[data-slot="button-shortcut"] kbd');
-      expect(Array.from(keys).map((k) => k.textContent)).toEqual(['⌘', '⇧', 'S']);
+      const shortcut = btn.querySelector('[data-slot="button-shortcut"]')!;
+      expect(shortcut.textContent).toBe('⌘⇧S');
+      expect(shortcut.querySelector('kbd')).toBeNull();
+      expect(shortcut).toHaveClass('font-mono', 'text-[11px]', 'opacity-70');
+      expect(shortcut.className).not.toMatch(/border|rounded/);
       expect(btn.querySelector('[data-slot="button-shortcut"]')).toHaveAttribute('aria-hidden', 'true');
       expect(btn.lastElementChild).toBe(btn.querySelector('[data-slot="button-shortcut"]'));
     });

@@ -18,7 +18,7 @@ const meta: Meta<typeof Button> = {
     fillIcon: { control: 'boolean', description: 'Render the leading icon filled.' },
     loading: { control: 'boolean', description: 'Native disabled + aria-busy + spinner in place of the leading icon.' },
     pressed: { control: 'boolean', description: 'Toggle state: aria-pressed + pressed look.' },
-    shortcut: { control: 'object', description: 'Keycaps after the label, e.g. ["⌘", "⇧", "S"].' },
+    shortcut: { control: 'object', description: 'Shortcut after the label as plain mono text, e.g. ["⌘", "⇧", "S"].' },
     labelMaxWidth: { control: 'text', description: 'Label ellipsis width (px number or CSS length); full label becomes the title when cut.' },
     asChild: { control: 'boolean', description: 'Render the single child element as the button.' },
     onClick: { action: 'clicked' },

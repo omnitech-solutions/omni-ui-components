@@ -69,3 +69,13 @@ export const toneBadgeClasses: Record<ControlTone, string> = {
 /** Active (pressed) look: accent tint, whatever the tone. */
 export const pressedClasses =
   'aria-pressed:border aria-pressed:border-[color:var(--oui-tone-accent-border)] aria-pressed:bg-[color:var(--oui-tone-accent-bg)] aria-pressed:text-[color:var(--oui-tone-accent-fg)]';
+
+/** Foreground per tone (icons, rings, text) for elements that draw with `currentColor`. */
+export const toneTextClasses: Record<ControlTone, string> = {
+  neutral: 'text-[color:var(--oui-tone-neutral-fg)]',
+  accent: 'text-[color:var(--oui-tone-accent-fg)]',
+  success: 'text-[color:var(--oui-tone-success-fg)]',
+  warning: 'text-[color:var(--oui-tone-warning-fg)]',
+  danger: 'text-[color:var(--oui-tone-danger-fg)]',
+  dim: 'text-[color:var(--oui-tone-dim-fg)]',
+};

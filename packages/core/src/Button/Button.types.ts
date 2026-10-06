@@ -33,7 +33,7 @@ export interface ButtonProps
   soft?: boolean;
   /** Render the leading icon filled. */
   fillIcon?: boolean;
-  /** Keycaps after the label, one entry per key: `['⌘', '⇧', 'S']`. */
+  /** Shortcut after the label as small plain mono text (keys joined, e.g. ⌘⇧S), one entry per key: `['⌘', '⇧', 'S']`. */
   shortcut?: string[];
   /**
    * Disables the button (native `disabled`), sets `aria-busy` and swaps the

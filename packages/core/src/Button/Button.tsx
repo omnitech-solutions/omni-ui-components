@@ -87,15 +87,8 @@ const ButtonInner = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const shortcutNode =
       shortcut && shortcut.length > 0 ? (
-        <span data-slot="button-shortcut" aria-hidden="true" className="ml-1 inline-flex items-center gap-0.5 opacity-70">
-          {shortcut.map((key, index) => (
-            <kbd
-              key={`${key}-${index}`}
-              className="inline-flex min-w-[1.25rem] items-center justify-center rounded-[4px] border border-current/30 px-1 font-[family-name:var(--oui-font-sans)] text-[11px] leading-[1.15rem]"
-            >
-              {key}
-            </kbd>
-          ))}
+        <span data-slot="button-shortcut" aria-hidden="true" className="ml-1 font-mono text-[11px] leading-none opacity-70">
+          {shortcut.join('')}
         </span>
       ) : null;
 

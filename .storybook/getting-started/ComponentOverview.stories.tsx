@@ -153,6 +153,11 @@ import {
   buttonToneVariants,
   buttonVariants,
 } from 'factories/omni-ui-components/Button/Button.factories';
+import { dividerPropsFactory, dividerVariants } from 'factories/omni-ui-components/Divider/Divider.factories';
+import { emptyPropsFactory, emptyVariants } from 'factories/omni-ui-components/Empty/Empty.factories';
+import { progressPropsFactory, progressRingVariants, progressVariants } from 'factories/omni-ui-components/Progress/Progress.factories';
+import { stepsPropsFactory, stepsVariants } from 'factories/omni-ui-components/Steps/Steps.factories';
+import { tagPropsFactory, tagVariants } from 'factories/omni-ui-components/Tag/Tag.factories';
 import { checkboxPropsFactory, checkboxVariants } from 'factories/omni-ui-components/Checkbox/Checkbox.factories';
 import { colorPickerPropsFactory, colorPickerVariants } from 'factories/omni-ui-components/ColorPicker/ColorPicker.factories';
 import { currencyInputPropsFactory, currencyInputVariants } from 'factories/omni-ui-components/CurrencyInput/CurrencyInput.factories';
@@ -175,7 +180,7 @@ import { passwordInputPropsFactory, passwordInputVariants } from 'factories/omni
 import { phoneInputPropsFactory, phoneInputVariants } from 'factories/omni-ui-components/PhoneInput/PhoneInput.factories';
 import { radioPropsFactory, radioVariants } from 'factories/omni-ui-components/Radio/Radio.factories';
 import { richTextPropsFactory, richTextVariants } from 'factories/omni-ui-components/RichText/RichText.factories';
-import { segmentedPropsFactory, segmentedVariants } from 'factories/omni-ui-components/Segmented/Segmented.factories';
+import { segmentedControlVariants, segmentedPropsFactory, segmentedVariants } from 'factories/omni-ui-components/Segmented/Segmented.factories';
 import { selectPropsFactory, selectVariants } from 'factories/omni-ui-components/Select/Select.factories';
 import { sliderPropsFactory, sliderVariants } from 'factories/omni-ui-components/Slider/Slider.factories';
 import { stepperPropsFactory, stepperVariants } from 'factories/omni-ui-components/Stepper/Stepper.factories';
@@ -367,7 +372,68 @@ const CheckboxPreview = () => (
   <FieldGrid Component={Checkbox} factory={checkboxPropsFactory} variants={checkboxVariants} valueKey={'checked' as const} />
 );
 const SwitchPreview = () => <FieldGrid Component={Switch} factory={switchPropsFactory} variants={switchVariants} valueKey={'checked' as const} />;
-const SegmentedPreview = () => <FieldGrid Component={Segmented} factory={segmentedPropsFactory} variants={segmentedVariants} />;
+const SegmentedPreview = () => (
+  <FieldGrid Component={Segmented} factory={segmentedPropsFactory} variants={[...segmentedVariants, ...segmentedControlVariants]} />
+);
+
+const ProgressPreview: React.FC = () => (
+  <div className="flex flex-col gap-4">
+    <div className="grid max-w-md gap-3">
+      {progressVariants.map((variant) => (
+        <Progress key={variant.name} {...progressPropsFactory(variant.args)} />
+      ))}
+    </div>
+    <div className="flex flex-wrap items-center gap-4">
+      {progressRingVariants.map((variant) => (
+        <Progress key={variant.name} {...progressPropsFactory(variant.args)} />
+      ))}
+    </div>
+  </div>
+);
+
+const EmptyPreview: React.FC = () => (
+  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    {emptyVariants.map((variant) => (
+      <div key={variant.name} className="flex h-72 flex-col rounded-xl border">
+        <Empty {...emptyPropsFactory(variant.args)} />
+      </div>
+    ))}
+  </div>
+);
+
+const StepsPreview: React.FC = () => (
+  <div className="flex flex-col gap-6">
+    {stepsVariants.map((variant) => (
+      <Steps key={variant.name} {...stepsPropsFactory(variant.args)} />
+    ))}
+  </div>
+);
+
+const TagPreview: React.FC = () => (
+  <div className="flex flex-wrap items-center gap-3">
+    {tagVariants.map((variant) => (
+      <Tag key={variant.name} {...tagPropsFactory(variant.args)} />
+    ))}
+  </div>
+);
+
+const DividerPreview: React.FC = () => (
+  <div className="flex flex-col gap-4">
+    <div className="grid max-w-md gap-4">
+      {dividerVariants.slice(0, 2).map((variant) => (
+        <Divider key={variant.name} {...dividerPropsFactory(variant.args)} />
+      ))}
+    </div>
+    <div className="flex h-9 items-center gap-3">
+      {dividerVariants.slice(2).map((variant) => (
+        <React.Fragment key={variant.name}>
+          <span className="text-xs text-muted-foreground">{variant.name}</span>
+          <Divider {...dividerPropsFactory(variant.args)} />
+        </React.Fragment>
+      ))}
+    </div>
+  </div>
+);
 
 const SliderPreview = () => <FieldGrid Component={Slider} factory={sliderPropsFactory} variants={sliderVariants} />;
 const StepperPreview = () => <FieldGrid Component={Stepper} factory={stepperPropsFactory} variants={stepperVariants} />;
@@ -432,7 +498,6 @@ const WizardPreview = () => (
   />
 );
 
-const StepsPreview = () => <Steps items={[{ title: 'Question' }, { title: 'Solution' }, { title: 'Tests' }]} current={1} />;
 const TourPreview = () => {
   const [open, setOpen] = React.useState(false);
   const [current, setCurrent] = React.useState(0);
@@ -496,10 +561,8 @@ const previews: Record<string, React.ComponentType> = {
   Transfer: TransferPreview,
   Wizard: WizardPreview,
   CheckboxGroup: CheckboxGroupPreview,
-  Steps: StepsPreview,
   Tabs: TabsPreview,
   FloatButton: () => <FloatButton style={{ position: 'static' }}>+</FloatButton>,
-  Divider: () => <Divider>Divider</Divider>,
   Flex: () => (
     <Flex gap={12} justify="space-between">
       {['Left', 'Middle', 'Right'].map((v) => (
@@ -677,7 +740,6 @@ const previews: Record<string, React.ComponentType> = {
       ]}
     />
   ),
-  Empty: () => <Empty description="No records" />,
   Image: () => <Image src="https://placehold.co/240x120" alt="Preview" />,
   List: () => (
     <List>
@@ -705,7 +767,6 @@ const previews: Record<string, React.ComponentType> = {
       ]}
     />
   ),
-  Tag: () => <Tag>Active</Tag>,
   Timeline: () => <Timeline items={[{ children: 'Created' }, { children: 'Reviewed' }, { children: 'Published' }]} />,
   Tooltip: () => (
     <TooltipProvider>
@@ -782,7 +843,6 @@ const previews: Record<string, React.ComponentType> = {
       <OmniButton variant="destructive">Delete</OmniButton>
     </Popconfirm>
   ),
-  Progress: () => <Progress percent={64} />,
   Result: () => <Result status="success" title="Saved" subTitle="The record was saved successfully." />,
   Skeleton: () => <Skeleton className="h-6 w-48" />,
   Spin: () => (
@@ -812,12 +872,22 @@ const LibraryPreview: React.FC<{ name: string }> = ({ name }) => {
   return Preview ? <Preview /> : previewBox(name);
 };
 
-const libraryRow = (name: string): OverviewRowSpec => ({
-  name,
-  preview: () => <LibraryPreview name={name} />,
-  variants: [],
-  source: `previews.${name}`,
-});
+/** Rows with their own preview and factory variants (Show code and the variant list come from them). */
+const configuredRows: Record<string, OverviewRowSpec> = {
+  Divider: { name: 'Divider', preview: DividerPreview, variants: dividerVariants as Variant<unknown>[] },
+  Empty: { name: 'Empty', preview: EmptyPreview, variants: emptyVariants as Variant<unknown>[] },
+  Progress: { name: 'Progress', preview: ProgressPreview, variants: [...progressVariants, ...progressRingVariants] as Variant<unknown>[] },
+  Steps: { name: 'Steps', preview: StepsPreview, variants: stepsVariants as Variant<unknown>[] },
+  Tag: { name: 'Tag', preview: TagPreview, variants: tagVariants as Variant<unknown>[] },
+};
+
+const libraryRow = (name: string): OverviewRowSpec =>
+  configuredRows[name] ?? {
+    name,
+    preview: () => <LibraryPreview name={name} />,
+    variants: [],
+    source: `previews.${name}`,
+  };
 
 const TypographyPreview: React.FC = () => (
   <div className="flex flex-col gap-3">

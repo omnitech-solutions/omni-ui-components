@@ -12,7 +12,7 @@ _No sources ingested yet. Drop files into `bionic/inbox/` (or paste a URL) and i
 
 ## References (1)
 
-- [[research/references/native-app-control-variations]] — Button and IconButton tones, control sizes, states and the tokens behind them (2026-10-06)
+- [[research/references/native-app-control-variations]] — Button and IconButton tones, control sizes and states; Progress ring, Segmented, Empty tile, Steps checklist, Tag and Divider variations; the tokens behind them (2026-10-06)
 
 ## Ideas (0)
 
