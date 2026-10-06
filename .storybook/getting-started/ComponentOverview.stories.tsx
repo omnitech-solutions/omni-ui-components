@@ -160,7 +160,18 @@ import {
 import { actionMenuPropsFactory, actionMenuVariants } from 'factories/omni-ui-components/ActionMenu/ActionMenu.factories';
 import { splitButtonPropsFactory, splitButtonVariants } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
 import { NativeToolbarDemo, toolbarLabelledVariants, toolbarVariants } from 'factories/omni-ui-components/Toolbar/Toolbar.factories';
+import { SessionBarDemo, sessionBarExamples } from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
+import { StatusClock } from '@oc-tech/omni-ui-components/StatusClock';
+import { statusClockExamples, statusClockPropsFactory } from 'factories/omni-ui-components/StatusClock/StatusClock.factories';
+import { NativeAppWindow, nativeAppDefaults } from 'factories/omni-ui-components/showcase/NativeApp/NativeApp.factories';
 import { NativePanelsDemo, panelPropsFactory, panelVariants, TranscriptDemo } from 'factories/omni-ui-components/Panel/Panel.factories';
+import {
+  analysingEntries,
+  ComposerExample,
+  readyEntries,
+  transcriptVariants,
+  TranscriptPanel,
+} from 'factories/omni-ui-components/Transcript/Transcript.factories';
 import { dividerPropsFactory, dividerVariants } from 'factories/omni-ui-components/Divider/Divider.factories';
 import { emptyPropsFactory, emptyVariants } from 'factories/omni-ui-components/Empty/Empty.factories';
 import { progressPropsFactory, progressRingVariants, progressVariants } from 'factories/omni-ui-components/Progress/Progress.factories';
@@ -357,6 +368,45 @@ const ToolbarPreview: React.FC = () => (
   </div>
 );
 
+const SessionBarPreview: React.FC = () => (
+  <div className="flex flex-col gap-4 overflow-x-auto pb-2">
+    {sessionBarExamples.map((variant) => (
+      <div key={variant.name} className="flex w-[900px] flex-col gap-1.5">
+        <span className="font-mono text-xs text-muted-foreground">{variant.name}</span>
+        <div className="rounded-xl p-3" style={{ background: '#1a4f96' }}>
+          <SessionBarDemo {...variant.args} />
+        </div>
+      </div>
+    ))}
+    <div className="flex w-[330px] flex-col gap-1.5">
+      <span className="font-mono text-xs text-muted-foreground">330px · wraps, build tag truncates</span>
+      <div className="rounded-xl p-3" style={{ background: '#1a4f96' }}>
+        <SessionBarDemo devBuild />
+      </div>
+    </div>
+  </div>
+);
+
+const StatusClockPreview: React.FC = () => (
+  <div className="flex flex-wrap gap-4">
+    {statusClockExamples.map((variant) => (
+      <div key={variant.name} className="flex flex-col gap-1.5">
+        <span className="font-mono text-xs text-muted-foreground">{variant.name}</span>
+        <div className="rounded-xl px-4 py-3" style={{ background: 'var(--oui-panel-bg)', border: '1px solid var(--oui-panel-border)' }}>
+          <StatusClock {...statusClockPropsFactory(variant.args)} />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const NativeAppPreview: React.FC = () => (
+  <div className="flex flex-col gap-4 overflow-x-auto pb-2">
+    <span className="font-mono text-xs text-muted-foreground">Showcase / Native App: toolbar, panels and footer together at 900px</span>
+    <NativeAppWindow {...nativeAppDefaults} width={900} />
+  </div>
+);
+
 const PanelPreview: React.FC = () => (
   <div className="flex flex-col gap-6 overflow-x-auto pb-2">
     <div className="flex flex-col gap-1.5">
@@ -388,6 +438,36 @@ const PanelPreview: React.FC = () => (
         </div>
       </div>
     </div>
+  </div>
+);
+
+const TranscriptPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-6">
+    <div className="flex flex-col gap-1.5">
+      <span className="font-mono text-xs text-muted-foreground">Ready · event chip, hover or focus a bubble to copy</span>
+      <TranscriptPanel entries={readyEntries()} height={320} />
+    </div>
+    <div className="flex flex-col gap-1.5">
+      <span className="font-mono text-xs text-muted-foreground">See-through 22% · own message</span>
+      <TranscriptPanel entries={analysingEntries()} seeThrough={0.22} height={320} />
+    </div>
+  </div>
+);
+
+const ComposerPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-6">
+    {[
+      { name: 'Empty (send muted)', props: {} },
+      { name: 'Typing', props: { initialValue: 'Assume the input is sorted' } },
+      { name: 'Dictating (red mic)', props: { dictating: true } },
+    ].map((item) => (
+      <div key={item.name} className="flex w-[320px] flex-col gap-1.5">
+        <span className="font-mono text-xs text-muted-foreground">{item.name}</span>
+        <div className="rounded-xl p-3" style={{ background: '#172033' }}>
+          <ComposerExample {...item.props} />
+        </div>
+      </div>
+    ))}
   </div>
 );
 
@@ -1025,6 +1105,7 @@ const SECTIONS: OverviewSectionSpec[] = [
     rows: [
       ...['Divider', 'Flex', 'Grid', 'Layout'].map(libraryRow),
       { name: 'Panel', preview: PanelPreview, variants: panelVariants as Variant<unknown>[] },
+      { name: 'Transcript', preview: TranscriptPreview, variants: transcriptVariants as Variant<unknown>[] },
       { name: 'useFollowLatest', preview: UseFollowLatestPreview, variants: [], source: 'UseFollowLatestPreview' },
       ...['Space', 'Splitter', 'Masonry'].map(libraryRow),
     ],
@@ -1058,6 +1139,20 @@ const SECTIONS: OverviewSectionSpec[] = [
       },
       { name: 'SplitButton', preview: SplitButtonPreview, variants: splitButtonVariants as Variant<unknown>[] },
       { name: 'Toolbar', preview: ToolbarPreview, variants: [...toolbarVariants, ...toolbarLabelledVariants] as Variant<unknown>[] },
+      { name: 'SessionBar', preview: SessionBarPreview, variants: sessionBarExamples as Variant<unknown>[] },
+      { name: 'StatusClock', preview: StatusClockPreview, variants: statusClockExamples as Variant<unknown>[] },
+      {
+        name: 'Native App (showcase)',
+        preview: NativeAppPreview,
+        variants: [
+          { name: 'Toolbar states (1a)', args: { story: 'Showcase/Native App · Toolbar States' } },
+          { name: 'Toolbar variations and open menus (1c)', args: { story: 'Showcase/Native App · Toolbar Variations' } },
+          { name: 'Panels in three states (1d)', args: { story: 'Showcase/Native App · Panels In Three States' } },
+          { name: 'Footer states (1e)', args: { story: 'Showcase/Native App · Footer States' } },
+          { name: 'Window 1180 and 900', args: { story: 'Showcase/Native App · Window 1180, Window 900' } },
+        ] as Variant<unknown>[],
+        source: 'NativeAppPreview',
+      },
       { name: 'ActionMenu', preview: ActionMenuPreview, variants: actionMenuVariants as Variant<unknown>[] },
     ],
   },
@@ -1068,6 +1163,15 @@ const SECTIONS: OverviewSectionSpec[] = [
         name: 'Input',
         preview: InputPreview,
         variants: inputVariants as Variant<unknown>[],
+      },
+      {
+        name: 'Composer (Input + actions)',
+        preview: ComposerPreview,
+        variants: [
+          { name: 'Empty, send muted', args: { actions: 'mic + send', variant: 'panel' } },
+          { name: 'Typing', args: { actions: 'mic + send', variant: 'panel', value: 'Assume the input is sorted' } },
+        ] as Variant<unknown>[],
+        source: 'ComposerPreview',
       },
       {
         name: 'Textarea',

@@ -27,7 +27,7 @@ const meta: Meta<typeof Input> = {
   tags: ['autodocs'],
   args: inputPropsFactory({ wrapperClassName: 'mx-auto max-w-md' }),
   argTypes: {
-    variant: { control: 'inline-radio', options: ['ghost', 'bordered'] },
+    variant: { control: 'inline-radio', options: ['ghost', 'bordered', 'panel'] },
     inputSize: { control: 'inline-radio', options: ['sm', 'default', 'md', 'lg'] },
     layout: { control: 'inline-radio', options: ['vertical', 'horizontal'] },
     onChange: { action: 'changed' },

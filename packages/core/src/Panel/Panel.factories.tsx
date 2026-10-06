@@ -1,11 +1,17 @@
 import * as React from 'react';
-import { ArrowUp, Code, Hourglass, Mic, MonitorUp, Plus } from 'lucide-react';
+import { Check, Code, Copy, Hourglass, MonitorUp, Plus } from 'lucide-react';
 
 import { Button } from '@oc-tech/omni-ui-components/Button';
-import { IconButton } from '@oc-tech/omni-ui-components/IconButton';
 import { Panel, type PanelProps, type PanelScroll } from '@oc-tech/omni-ui-components/Panel';
 import { Steps } from '@oc-tech/omni-ui-components/Steps';
 import { Tag } from '@oc-tech/omni-ui-components/Tag';
+import { Transcript, type TranscriptEntry } from '@oc-tech/omni-ui-components/Transcript';
+import {
+  analysingEntries,
+  answeredEntries,
+  ComposerExample,
+  readyEntries,
+} from 'factories/omni-ui-components/Transcript/Transcript.factories';
 import type { OnAction } from '../SplitButton/SplitButton.factories';
 import type { Variant } from '../../internal/support/makeFactory';
 
@@ -183,13 +189,6 @@ export const panelVariants: Variant<PanelProps>[] = [
 /** The designer gallery's blue backdrop behind the panels (story-only chrome). */
 export const PANEL_BACKDROP = '#1a4f96';
 
-interface Message {
-  id: number;
-  from: 'Mic' | 'You';
-  time: string;
-  text: string;
-}
-
 const SAMPLE_LINES = [
   "Love to hear why you're interested in the role you're applying for.",
   'Just kick things off.',
@@ -203,54 +202,14 @@ const SAMPLE_LINES = [
   'Which edge cases would you test first?',
 ];
 
-/** `n` sample messages, alternating the interviewer (Mic) and the candidate (You). */
-export const sampleMessages = (count: number, from = 0): Message[] =>
-  Array.from({ length: count }, (_, index) => {
+/** `n` sample entries, alternating the interviewer (Mic) and the candidate (own message). */
+export const sampleMessages = (count: number, from = 0): TranscriptEntry[] =>
+  Array.from({ length: count }, (_, index): TranscriptEntry => {
     const id = from + index;
-    const minute = 21 + id;
-    return {
-      id,
-      from: id % 4 === 3 ? 'You' : 'Mic',
-      time: `08:${String(minute % 60).padStart(2, '0')}`,
-      text: SAMPLE_LINES[id % SAMPLE_LINES.length],
-    };
+    const text = SAMPLE_LINES[id % SAMPLE_LINES.length];
+    if (id % 4 === 3) return { id: String(id), kind: 'message', text };
+    return { id: String(id), kind: 'speech', speaker: 'Mic', time: `08:${String((21 + id) % 60).padStart(2, '0')}`, text };
   });
-
-const Bubble: React.FC<{ message: Message }> = ({ message }) =>
-  message.from === 'You' ? (
-    <div
-      data-slot="message"
-      className="max-w-[85%] self-end rounded-[10px] bg-[color:var(--oui-tone-accent-bg)] px-2.5 py-2 text-[13px] leading-[1.45]"
-    >
-      {message.text}
-    </div>
-  ) : (
-    <div data-slot="message" className="flex flex-none flex-col gap-0.5 rounded-[10px] bg-[color:var(--oui-tone-accent-bg)] px-2.5 py-2">
-      <span className="text-[11.5px] text-[color:var(--oui-tone-success-fg)]">Mic · {message.time}</span>
-      <span className="text-[13px] leading-[1.45]">{message.text}</span>
-    </div>
-  );
-
-/** The mic and send controls under a composer, as the dock of the transcript (the Composer itself is a later slice). */
-export const ComposerDock: React.FC<{
-  onSend?: () => void;
-  onMic?: () => void;
-}> = ({ onSend, onMic }) => (
-  <>
-    <span className="flex h-[34px] flex-1 items-center rounded-[9px] bg-[color:var(--oui-panel-dock-bg)] px-2.5 text-[13px] text-[color:var(--oui-panel-meta-fg)]">
-      Ask anything, or add context
-    </span>
-    <IconButton
-      variant="ghost"
-      icon={<Mic />}
-      label="Dictate"
-      iconSize="md"
-      className="size-[34px] rounded-[9px] bg-[color:var(--oui-tone-accent-bg)]"
-      onClick={onMic}
-    />
-    <IconButton variant="ghost" icon={<ArrowUp />} label="Send" iconSize="md" className="size-[34px] rounded-[9px]" disabled onClick={onSend} />
-  </>
-);
 
 export interface TranscriptDemoProps {
   /** Messages present at the start. */
@@ -296,18 +255,15 @@ export const TranscriptDemo: React.FC<TranscriptDemoProps> = ({
           width={width}
           minWidth={300}
           bodyPadding="sm"
-          bodyClassName="gap-2 [&>:first-child]:mt-auto"
           scroll={{
             ...scroll,
             lines: messages.length,
             onJumpToLatest: () => onAction?.('jump'),
           }}
-          dock={<ComposerDock onMic={() => onAction?.('mic')} onSend={() => onAction?.('send')} />}
-          dockClassName="gap-1.5 bg-transparent px-3 py-2.5"
+          dock={<ComposerExample onAction={onAction} />}
+          dockClassName="bg-transparent px-3 py-2.5"
         >
-          {messages.map((message) => (
-            <Bubble key={message.id} message={message} />
-          ))}
+          <Transcript entries={messages} copyIcon={<Copy />} copiedIcon={<Check />} />
         </Panel>
       </div>
     </div>
@@ -325,31 +281,7 @@ export interface NativePanelsDemoProps {
   onAction?: OnAction;
 }
 
-const TRANSCRIPT = {
-  ready: sampleMessages(2, 0).map((message) => message),
-  analysing: [
-    {
-      id: 0,
-      from: 'Mic' as const,
-      time: '10:56',
-      text: "Let's do a coding one. It's on your screen now.",
-    },
-    {
-      id: 1,
-      from: 'You' as const,
-      time: '10:57',
-      text: 'Assume the input is sorted',
-    },
-  ],
-  answer: [
-    {
-      id: 0,
-      from: 'Mic' as const,
-      time: '10:58',
-      text: 'Walk me through your approach first.',
-    },
-  ],
-};
+const TRANSCRIPT = { ready: readyEntries, analysing: analysingEntries, answer: answeredEntries };
 
 /**
  * The three panels of board 1d in a row: transcript 330px (min 300), the others share the rest equally.
@@ -357,7 +289,7 @@ const TRANSCRIPT = {
  */
 export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({ state = 'ready', seeThrough = 1, width = 1180, onAction }) => {
   const act = (name: string) => () => onAction?.(name);
-  const transcript = TRANSCRIPT[state];
+  const transcript = TRANSCRIPT[state]();
   return (
     <div
       data-testid="native-panels"
@@ -374,19 +306,16 @@ export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({ state = 'rea
         width={330}
         minWidth={300}
         bodyPadding="sm"
-        bodyClassName="gap-2 [&>:first-child]:mt-auto"
         scroll={{
           fade: state === 'analysing',
           thinScrollbar: true,
           stickToBottom: true,
           lines: transcript.length,
         }}
-        dock={<ComposerDock onMic={act('mic')} onSend={act('send')} />}
-        dockClassName="gap-1.5 bg-transparent px-3 py-2.5"
+        dock={<ComposerExample onAction={onAction} />}
+        dockClassName="bg-transparent px-3 py-2.5"
       >
-        {transcript.map((message) => (
-          <Bubble key={message.id} message={message} />
-        ))}
+        <Transcript entries={transcript} copyIcon={<Copy />} copiedIcon={<Check />} />
       </Panel>
       {state === 'ready' ? (
         <Panel

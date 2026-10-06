@@ -58,7 +58,9 @@ export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>(
           data-variant={variant}
           data-testid={testId}
           className={cn(
-            'inline-flex items-center gap-[var(--oui-control-gap)]',
+            variant === 'bar'
+              ? 'box-border flex w-full flex-wrap items-center justify-between gap-x-3 gap-y-2'
+              : 'inline-flex items-center gap-[var(--oui-control-gap)]',
             variant === 'floating' &&
               'rounded-2xl border border-[color:var(--oui-tone-dim-border)] bg-[color:var(--oui-badge-ring)] px-2.5 py-[7px] shadow-[0_10px_30px_rgba(0,0,0,0.35)]',
             className,
@@ -72,7 +74,11 @@ export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>(
                 aria-label={section.label}
                 data-slot="toolbar-group"
                 data-group-id={section.key}
-                className="flex items-center gap-[var(--oui-control-gap)]"
+                className={cn(
+                  'flex items-center gap-[var(--oui-control-gap)]',
+                  variant === 'bar' && section.key === 'leading' && 'min-w-0 flex-[1_1_auto]',
+                  variant === 'bar' && section.key === 'trailing' && 'ml-auto flex-wrap justify-end',
+                )}
               >
                 {section.node}
               </div>

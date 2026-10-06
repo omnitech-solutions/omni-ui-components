@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
-import { CONTROL_TONES, pressedClasses, toneTintClasses } from '../internal/support/controlTone';
+import { CONTROL_TONES, pressedClasses, tonePressedClasses, toneTintClasses } from '../internal/support/controlTone';
 
 /**
  * Tailwind class config for IconButton. Sizes track the Omni field
@@ -51,7 +51,7 @@ export const iconButtonVariants = cva(
       /** Tinted tone from the `--oui-tone-*` scale; overrides the `variant` colours. */
       tone: { neutral: '', accent: '', success: '', warning: '', danger: '', dim: '' },
     },
-    compoundVariants: CONTROL_TONES.map((tone) => ({ tone, className: toneTintClasses[tone] })),
+    compoundVariants: CONTROL_TONES.map((tone) => ({ tone, className: `${toneTintClasses[tone]} ${tonePressedClasses[tone]}` })),
     defaultVariants: { variant: 'outline', iconSize: 'default' },
   },
 );

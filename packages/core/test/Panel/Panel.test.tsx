@@ -619,7 +619,7 @@ describe('omni-ui-components/Panel', () => {
       const before = screen.getAllByText(/Mic ·|Assume|Just kick/).length;
       await userEvent.click(screen.getByTestId('add-message'));
       expect(screen.getAllByText(/Mic ·|Assume|Just kick/).length).toBeGreaterThan(before - 1);
-      expect(document.querySelectorAll('[data-slot="message"]').length).toBe(4);
+      expect(document.querySelectorAll('[data-slot="transcript-speech"],[data-slot="transcript-message"]').length).toBe(4);
       expect(screen.queryByRole('button', { name: /Jump to latest/ })).toBeNull();
     });
 
@@ -629,7 +629,7 @@ describe('omni-ui-components/Panel', () => {
       const body = slot('panel-body');
       Object.defineProperty(body, 'scrollHeight', {
         configurable: true,
-        get: () => 1000 + document.querySelectorAll('[data-slot="message"]').length * 10,
+        get: () => 1000 + document.querySelectorAll('[data-slot="transcript-speech"],[data-slot="transcript-message"]').length * 10,
       });
       Object.defineProperty(body, 'clientHeight', {
         configurable: true,

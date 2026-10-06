@@ -70,6 +70,16 @@ export const toneBadgeClasses: Record<ControlTone, string> = {
 export const pressedClasses =
   'aria-pressed:border aria-pressed:border-[color:var(--oui-tone-accent-border)] aria-pressed:bg-[color:var(--oui-tone-accent-bg)] aria-pressed:text-[color:var(--oui-tone-accent-fg)]';
 
+/** Pressed look per tone, so a `danger` toggle (a live mic) is red when pressed instead of the default accent. */
+export const tonePressedClasses: Record<ControlTone, string> = {
+  neutral: 'aria-pressed:border-[color:var(--oui-tone-neutral-border)] aria-pressed:bg-[color:var(--oui-tone-neutral-bg)] aria-pressed:text-[color:var(--oui-tone-neutral-fg)]',
+  accent: '',
+  success: 'aria-pressed:border-[color:var(--oui-tone-success-border)] aria-pressed:bg-[color:var(--oui-tone-success-bg)] aria-pressed:text-[color:var(--oui-tone-success-fg)]',
+  warning: 'aria-pressed:border-[color:var(--oui-tone-warning-border)] aria-pressed:bg-[color:var(--oui-tone-warning-bg)] aria-pressed:text-[color:var(--oui-tone-warning-fg)]',
+  danger: 'aria-pressed:border-[color:var(--oui-tone-danger-border)] aria-pressed:bg-[color:var(--oui-tone-danger-bg)] aria-pressed:text-[color:var(--oui-tone-danger-fg)]',
+  dim: 'aria-pressed:border-[color:var(--oui-tone-dim-border)] aria-pressed:bg-[color:var(--oui-tone-dim-bg)] aria-pressed:text-[color:var(--oui-tone-dim-fg)]',
+};
+
 /** Foreground per tone (icons, rings, text) for elements that draw with `currentColor`. */
 export const toneTextClasses: Record<ControlTone, string> = {
   neutral: 'text-[color:var(--oui-tone-neutral-fg)]',

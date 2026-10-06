@@ -98,6 +98,17 @@
     --oui-panel-border:            #e3e6ec;
     --oui-panel-divider:           #e8ebf0; /* 1px separators under the header and over the dock */
     --oui-panel-meta-fg:           #6b7280;
+
+    /* Code colours (highlight.js classes are painted from these; derived from the assistant prototype palette). */
+    --oui-code-plain:              oklch(0.28 0.02 260);
+    --oui-code-keyword:            oklch(0.5 0.18 300);
+    --oui-code-type:               oklch(0.5 0.1 210);
+    --oui-code-string:             oklch(0.48 0.12 145);
+    --oui-code-comment:            oklch(0.56 0.02 260);
+    --oui-code-number:             oklch(0.52 0.13 55);
+    --oui-code-function:           oklch(0.48 0.13 250);
+    --oui-code-gutter:             oklch(0.62 0.02 260);
+    --oui-code-mark-bg:            rgba(59, 111, 224, 0.1);
     --oui-panel-see-through:       1;       /* 1 = opaque surfaces, 0.22 = see-through */
     --oui-panel-fade:              28px;    /* top fade mask height of a scrolling body */
     --oui-panel-scrollbar-size:    6px;
@@ -147,7 +158,51 @@
     --oui-panel-border:            #24314a;
     --oui-panel-divider:           #212c42;
     --oui-panel-meta-fg:           #7d8aa3;
+
+    --oui-code-plain:              oklch(0.9 0.008 260);
+    --oui-code-keyword:            oklch(0.76 0.14 300);
+    --oui-code-type:               oklch(0.8 0.1 200);
+    --oui-code-string:             oklch(0.8 0.13 145);
+    --oui-code-comment:            oklch(0.62 0.02 260);
+    --oui-code-number:             oklch(0.8 0.12 65);
+    --oui-code-function:           oklch(0.82 0.1 240);
+    --oui-code-gutter:             oklch(0.5 0.02 260);
+    --oui-code-mark-bg:            rgba(91, 140, 255, 0.14);
     --oui-panel-scrollbar-thumb:   rgba(169, 182, 207, 0.32);
+  }
+
+  /* Syntax colours: highlight.js class names inside the library's code slots, painted from --oui-code-*. */
+  [data-slot='transcript-code'] pre,
+  [data-slot='code-lines'] {
+    color: var(--oui-code-plain);
+  }
+  :is([data-slot='transcript-code'], [data-slot='code-lines']) :is(.hljs-keyword, .hljs-literal, .hljs-meta .hljs-keyword) {
+    color: var(--oui-code-keyword);
+  }
+  :is([data-slot='transcript-code'], [data-slot='code-lines']) :is(.hljs-type, .hljs-title.class_, .hljs-built_in) {
+    color: var(--oui-code-type);
+  }
+  :is([data-slot='transcript-code'], [data-slot='code-lines']) :is(.hljs-string, .hljs-regexp, .hljs-template-string) {
+    color: var(--oui-code-string);
+  }
+  :is([data-slot='transcript-code'], [data-slot='code-lines']) :is(.hljs-comment, .hljs-quote) {
+    color: var(--oui-code-comment);
+    font-style: italic;
+  }
+  :is([data-slot='transcript-code'], [data-slot='code-lines']) :is(.hljs-number, .hljs-symbol, .hljs-bullet) {
+    color: var(--oui-code-number);
+  }
+  :is([data-slot='transcript-code'], [data-slot='code-lines']) :is(.hljs-title, .hljs-title.function_, .hljs-section) {
+    color: var(--oui-code-function);
+  }
+  :is([data-slot='transcript-code'], [data-slot='code-lines']) :is(.hljs-subst, .hljs-params, .hljs-variable, .hljs-attr, .hljs-property, .hljs-attribute) {
+    color: var(--oui-code-plain);
+  }
+  :is([data-slot='transcript-code'], [data-slot='code-lines']) .hljs-addition {
+    color: var(--oui-code-string);
+  }
+  :is([data-slot='transcript-code'], [data-slot='code-lines']) .hljs-deletion {
+    color: var(--oui-tone-danger-fg);
   }
 
   @media (prefers-reduced-motion: reduce) {

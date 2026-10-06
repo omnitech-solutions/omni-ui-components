@@ -29,6 +29,11 @@ export interface InputProps extends InputPrimitiveProps, FieldLayoutProps {
   required?: boolean;
   /** Override the auto-generated outer field-group className. */
   wrapperClassName?: string;
+  /**
+   * Trailing action slot: nodes (IconButtons with their own `onClick`) rendered in a row after the field, e.g. a
+   * composer's mic and send. The field flexes; the actions keep their size. Slot: `data-slot="input-actions"`.
+   */
+  actions?: React.ReactNode;
   /** Override the label className (e.g. align right, custom width). */
   labelClassName?: string;
 }

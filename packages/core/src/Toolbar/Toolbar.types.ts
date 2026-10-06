@@ -26,8 +26,12 @@ export interface ToolbarProps {
   trailing?: React.ReactNode;
   /** Draw the 20px separators between sections (default true). */
   separators?: boolean;
-  /** `plain` (default): just the row. `floating`: the rounded pill surface used by the Native App window. */
-  variant?: 'plain' | 'floating';
+  /**
+   * `plain` (default): just the row. `floating`: the rounded pill surface used by the Native App window.
+   * `bar`: a full-width row that wraps (never overflows): `leading` fills the left and shrinks, `trailing` is
+   * right-aligned. No surface of its own (SessionBar paints it).
+   */
+  variant?: 'plain' | 'floating' | 'bar';
   className?: string;
   'data-testid'?: string;
 }

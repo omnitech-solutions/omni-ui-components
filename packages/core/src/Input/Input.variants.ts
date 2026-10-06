@@ -37,6 +37,18 @@ export const inputVariants = cva(
           'focus-visible:ring-0',
           'disabled:bg-[var(--oui-surface-field-disabled)]',
         ].join(' '),
+        /**
+         * Panel dock field (a composer): the dock colour mixed with `--oui-panel-see-through` on the BACKGROUND only,
+         * the same `color-mix` the Panel uses, so it goes see-through with the Panel while text and icons stay opaque.
+         * Set the token on any ancestor; the unset default is opaque.
+         */
+        panel: [
+          'rounded-[9px] border-transparent text-[13px]',
+          'bg-[color:color-mix(in_srgb,var(--oui-panel-dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)]',
+          'placeholder:text-[color:var(--oui-panel-meta-fg)]',
+          'hover:border-transparent focus-visible:border-[var(--oui-border-interactive)]',
+          'disabled:bg-[color:color-mix(in_srgb,var(--oui-panel-dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)]',
+        ].join(' '),
         ghost: [
           'border-transparent bg-transparent shadow-none ring-0',
           'hover:border-transparent',

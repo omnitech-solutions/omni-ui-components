@@ -45,7 +45,7 @@ const meta: Meta<StoryArgs> = {
   },
   argTypes: {
     size: { control: 'inline-radio', options: ['control', 'control-labelled'], description: 'Control size handed to children through context.' },
-    variant: { control: 'inline-radio', options: ['plain', 'floating'] },
+    variant: { control: 'inline-radio', options: ['plain', 'floating', 'bar'] },
     separators: { control: 'boolean' },
     label: { control: 'text', description: 'aria-label of the toolbar.' },
     leading: { control: false },
