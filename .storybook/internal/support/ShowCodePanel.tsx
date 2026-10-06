@@ -7,7 +7,13 @@
  */
 
 import * as React from 'react';
+import './overview.css';
 import { Check, ChevronUp, Code2, Copy } from 'lucide-react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { format } from 'prettier/standalone';
+import * as typescript from 'prettier/plugins/typescript';
+import * as estree from 'prettier/plugins/estree';
 import { useDynamicSnippet, type UseDynamicSnippetOptions } from './useDynamicSnippet';
 
 export type ShowCodeInput = string | Record<string, string>;
@@ -22,25 +28,53 @@ interface ShowCodePanelProps {
   defaultOpen?: boolean;
 }
 
-export const ShowCodePanel: React.FC<ShowCodePanelProps> = ({ code, dynamic, language = 'markup', defaultOpen = false }) => {
+export const ShowCodePanel: React.FC<ShowCodePanelProps> = ({ code, dynamic, language = 'tsx', defaultOpen = false }) => {
   const dynamicSnippet = useDynamicSnippet(dynamic);
   const resolvedCode = dynamic ? dynamicSnippet : (code ?? '');
   const snippets = React.useMemo(
     () =>
       typeof resolvedCode === 'string'
         ? [{ label: '', code: resolvedCode }]
-        : Object.entries(resolvedCode).map(([label, snippet]) => ({ label, code: snippet })),
+        : Object.entries(resolvedCode).map(([label, snippet]) => ({
+            label,
+            code: snippet,
+          })),
     [resolvedCode],
   );
+  const [formatted, setFormatted] = React.useState(snippets);
+  React.useEffect(() => {
+    let active = true;
+    void Promise.all(
+      snippets.map(async (snippet) => ({
+        ...snippet,
+        code: await format(snippet.code, {
+          parser: 'typescript',
+          plugins: [typescript, estree],
+          printWidth: 100,
+          singleQuote: true,
+        }).catch(() => snippet.code),
+      })),
+    ).then((result) => {
+      if (active) setFormatted(result);
+    });
+    return () => {
+      active = false;
+    };
+  }, [snippets]);
   const [open, setOpen] = React.useState(defaultOpen);
   const [copied, setCopied] = React.useState(false);
-  const combined = React.useMemo(() => snippets.map((s) => (s.label ? `// ${s.label}\n${s.code}` : s.code)).join('\n\n'), [snippets]);
+  const [activeLabel, setActiveLabel] = React.useState('');
+  const activeSnippet = formatted.find((snippet) => snippet.label === activeLabel) ?? formatted[0];
+  const combined = activeSnippet?.code ?? '';
 
   const copy = React.useCallback(() => {
-    void navigator.clipboard.writeText(combined).then(() => {
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
-    });
+    void navigator.clipboard
+      .writeText(combined)
+      .then(() => {
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1500);
+      })
+      .catch(() => setCopied(false));
   }, [combined]);
 
   return (
@@ -86,14 +120,44 @@ export const ShowCodePanel: React.FC<ShowCodePanelProps> = ({ code, dynamic, lan
             <button type="button" className="pb-showcode-btn pb-showcode-copy-abs" onClick={copy} aria-label={copied ? 'Copied' : 'Copy code'}>
               {copied ? <Check size={14} /> : <Copy size={14} />}
             </button>
-            {snippets.map((snippet) => (
-              <div key={snippet.label || 'code'} className="pb-showcode-snippet">
-                {snippet.label && <div className="pb-showcode-snippet-label">{snippet.label}</div>}
-                <pre className="pb-code">
-                  <code>{snippet.code}</code>
-                </pre>
+            {formatted.length > 1 && (
+              <div role="tablist" aria-label="Code examples" className="pb-showcode-tabs">
+                {formatted.map((snippet) => (
+                  <button
+                    key={snippet.label}
+                    role="tab"
+                    type="button"
+                    aria-selected={snippet.label === activeSnippet?.label}
+                    onClick={() => setActiveLabel(snippet.label)}
+                    className="pb-showcode-btn"
+                  >
+                    {snippet.label}
+                  </button>
+                ))}
               </div>
-            ))}
+            )}
+            {activeSnippet &&
+              [activeSnippet].map((snippet) => (
+                <div key={snippet.label || 'code'} className="pb-showcode-snippet">
+                  {snippet.label && <div className="pb-showcode-snippet-label">{snippet.label}</div>}
+                  <SyntaxHighlighter
+                    language={language}
+                    style={oneDark}
+                    customStyle={{
+                      margin: 0,
+                      padding: '1.5rem',
+                      fontSize: 13,
+                      background: '#1e1e1e',
+                      overflowX: 'auto',
+                    }}
+                    codeTagProps={{
+                      style: { fontFamily: 'ui-monospace, monospace' },
+                    }}
+                  >
+                    {snippet.code}
+                  </SyntaxHighlighter>
+                </div>
+              ))}
           </div>
           <button type="button" className="pb-showcode-hide" onClick={() => setOpen(false)}>
             <ChevronUp size={12} /> Hide

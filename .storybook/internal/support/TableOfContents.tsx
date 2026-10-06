@@ -36,7 +36,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ items, title =
     const groups: Array<{ group?: string; items: TocItem[] }> = [];
     for (const item of items) {
       const last = groups[groups.length - 1];
-      if (last && last.group === item.group) last.items.push(item);
+      if (last && (!item.group || last.group === item.group)) last.items.push(item);
       else groups.push({ group: item.group, items: [item] });
     }
     return groups;
