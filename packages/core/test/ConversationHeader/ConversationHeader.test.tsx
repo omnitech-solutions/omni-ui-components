@@ -104,8 +104,8 @@ describe('omni-ui-components/ConversationHeader', () => {
     expect(screen.getByRole('textbox', { name: 'Conversation title' })).toBeInTheDocument();
     expect(onRename).not.toHaveBeenCalled();
     // Later, a real blur commits.
-    const now = Date.now();
-    const spy = jest.spyOn(Date, 'now').mockReturnValue(now + 5000);
+    const now = performance.now();
+    const spy = jest.spyOn(performance, 'now').mockReturnValue(now + 5000);
     (screen.getByRole('textbox', { name: 'Conversation title' }) as HTMLInputElement).blur();
     expect(onRename).toHaveBeenCalledWith(expect.objectContaining({ id: 'c1' }), 'Renamed');
     spy.mockRestore();

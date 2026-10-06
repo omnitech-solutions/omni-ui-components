@@ -298,7 +298,7 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
           {problem ? <ComposerNotice tone="danger" message={problem} /> : null}
         </>
       }
-      popover={command.open ? <CommandPopover {...command.popoverProps} /> : null}
+      popover={({ anchor }) => (command.open ? <CommandPopover {...command.popoverProps} anchor={anchor} /> : null)}
       hint={hint ?? (streaming ? 'Replying… keep typing to queue your next message · Esc to stop' : '⌘J to show or hide · / for commands · @ to add context')}
     />
   );

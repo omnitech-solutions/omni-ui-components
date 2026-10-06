@@ -13,10 +13,10 @@ export interface ScrollBoxMetrics {
 }
 
 /** True when the box is scrolled to its end, or within `AT_END_PX` of it. */
-export const isAtEnd = (box: ScrollBoxMetrics): boolean => box.scrollHeight - box.scrollTop - box.clientHeight <= AT_END_PX;
+export const isAtEnd = (box: ScrollBoxMetrics, threshold: number = AT_END_PX): boolean => box.scrollHeight - box.scrollTop - box.clientHeight <= threshold;
 
 /**
- * A log that follows its newest line until the person scrolls away, then offers a way back.
+ * A log that follows its newest line until the person scrolls away, then offers a way back. `threshold` (px, default 48) is how close to the end still counts as at the end; a conversation uses 200.
  *
  * `lines` is how many lines the log holds (a growing count means new lines arrived); `activity` is any value
  * that changes when the content changes without the count changing (a line streaming in, a stage starting).
@@ -31,7 +31,7 @@ export const isAtEnd = (box: ScrollBoxMetrics): boolean => box.scrollHeight - bo
  * <div ref={log.ref} onScroll={log.onScroll} onWheel={log.onPersonScroll} onKeyDown={log.onPersonScroll}>…</div>
  * {!log.following && <button onClick={log.jump}>{log.unseen} new</button>}
  */
-export function useFollowLatest<T extends HTMLElement = HTMLDivElement>(lines: number, activity?: unknown) {
+export function useFollowLatest<T extends HTMLElement = HTMLDivElement>(lines: number, activity?: unknown, threshold: number = AT_END_PX) {
   const ref = React.useRef<T>(null);
   const [following, setFollowingState] = React.useState(true);
   const [unseen, setUnseen] = React.useState(0);
@@ -79,10 +79,10 @@ export function useFollowLatest<T extends HTMLElement = HTMLDivElement>(lines: n
       if (followingRef.current) toEnd();
       return;
     }
-    const end = isAtEnd(box);
+    const end = isAtEnd(box, threshold);
     setFollowing(end);
     if (end) setUnseen(0);
-  }, [setFollowing, toEnd]);
+  }, [setFollowing, toEnd, threshold]);
 
   const jump = React.useCallback(() => {
     setFollowing(true);

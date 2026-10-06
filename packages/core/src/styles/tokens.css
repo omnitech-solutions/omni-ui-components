@@ -5,7 +5,8 @@
     --oui-surface-field:           var(--color-input);
     --oui-surface-field-disabled:  var(--color-input-disabled);
 
-    --oui-border-field:            var(--color-border-input);
+    /* The theme defines --border-field (light and dark); --color-border-input is a shadcn alias the theme never sets, which left outlines on currentColor. */
+    --oui-border-field:            var(--color-border-input, var(--border-field));
     --oui-border-interactive:      var(--color-primary);
     --oui-border-invalid:          var(--color-destructive);
 

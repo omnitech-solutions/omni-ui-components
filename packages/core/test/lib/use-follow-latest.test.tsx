@@ -16,6 +16,12 @@ describe('isAtEnd (ported from the studio follow-latest tests)', () => {
     expect(isAtEnd(box(600 - AT_END_PX))).toBe(true);
   });
 
+  it('threshold is configurable (default 48): 150px away is at the end with 200, not with the default', () => {
+    expect(isAtEnd(box(450))).toBe(false);
+    expect(isAtEnd(box(450), 200)).toBe(true);
+    expect(isAtEnd(box(399), 200)).toBe(false);
+  });
+
   it('is not at the end once the person has scrolled up', () => {
     expect(isAtEnd(box(600 - AT_END_PX - 1))).toBe(false);
     expect(isAtEnd(box(0))).toBe(false);

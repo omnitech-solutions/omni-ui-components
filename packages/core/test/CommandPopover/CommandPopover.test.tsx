@@ -6,6 +6,16 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { CommandPopover, type CommandItem, MENTION_PATTERN, mentionTrigger, SLASH_PATTERN, slashTrigger, useCommandTrigger } from '@oc-tech/omni-ui-components/CommandPopover';
 import { commandPopoverPropsFactory, slashCommands, surfaceItems } from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
 
+const ClippedHost: React.FC = () => {
+  const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
+  return (
+    <>
+      <div ref={setAnchor} />
+      <CommandPopover items={slashCommands()} label="x" anchor={anchor} onSelect={() => undefined} />
+    </>
+  );
+};
+
 describe('omni-ui-components/CommandPopover', () => {
   it('is a labelled listbox with aria-selected options, a hint and hover highlight', async () => {
     const onActiveChange = vi.fn();
@@ -72,6 +82,39 @@ describe('omni-ui-components/CommandPopover', () => {
       expect(onClose).toHaveBeenCalledTimes(1);
       fireEvent.keyDown(screen.getByRole('listbox'), { key: 'Escape' });
       expect(onClose).toHaveBeenCalledTimes(2);
+    });
+    it('presses on the anchor (the trigger textarea and its composer) are inside; presses elsewhere close', async () => {
+      const onClose = vi.fn();
+      const Page = () => {
+        const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
+        return (
+          <div>
+            <button>elsewhere</button>
+            <div data-slot="composer" ref={setAnchor}>
+              <textarea aria-label="box" />
+            </div>
+            <CommandPopover items={mine} label="x" anchor={anchor} onSelect={() => undefined} onClose={onClose} />
+          </div>
+        );
+      };
+      render(<Page />);
+      await userEvent.click(screen.getByLabelText('box'));
+      expect(onClose).not.toHaveBeenCalled();
+      await userEvent.click(screen.getByText('elsewhere'));
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+    it('with an anchor it renders in a portal on body, fixed, with listbox and aria-selected intact', () => {
+      render(
+        <div style={{ overflow: 'hidden', height: 10 }} data-testid="clip">
+          <div data-testid="anchor" />
+          <ClippedHost />
+        </div>,
+      );
+      const popover = document.querySelector('[data-slot="command-popover"]') as HTMLElement;
+      expect(screen.getByTestId('clip').contains(popover)).toBe(false);
+      expect(popover.parentElement).toBe(document.body);
+      expect(popover).toHaveClass('fixed');
+      expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true');
     });
     it('useCommandTrigger: onPick gets the same item and onClose fires when Escape closes', async () => {
       const onPick = vi.fn();

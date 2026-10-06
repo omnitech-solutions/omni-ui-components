@@ -116,6 +116,7 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
     const [value, setValue] = useControllableState<string>(valueProp, defaultValue, onChange);
     const [listening, setListening] = useControllableState<boolean>(dictatingProp, false);
     const area = React.useRef<HTMLTextAreaElement | null>(null);
+    const [rootEl, setRootEl] = React.useState<HTMLDivElement | null>(null);
     const caretToEnd = React.useRef(false);
     const items: A[] = attachmentItems ?? [];
     const hasText = value.trim().length > 0;
@@ -276,7 +277,10 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
 
     return (
       <div
-        ref={ref}
+        ref={(node) => {
+          setRootEl(node);
+          setRef(ref, node);
+        }}
         data-slot="composer"
         data-variant={variant}
         data-streaming={streaming ? 'true' : undefined}
@@ -291,7 +295,7 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
           <AttachmentStrip items={items} onRemove={onRemoveAttachment} onClick={onAttachmentClick} removeIcon={attachmentRemoveIcon} kindIcons={attachmentKindIcons} labels={attachmentLabels} />
         ) : null}
         {attachments}
-        {popover}
+        {typeof popover === 'function' ? popover({ anchor: rootEl }) : popover}
         <div data-slot="composer-box" className={composerBoxVariants({ variant, disabled })}>
           {variant === 'pill' ? (
             <>

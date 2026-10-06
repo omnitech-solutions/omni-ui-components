@@ -47,7 +47,15 @@ export const panelShellVariants: Variant<PanelShellProps>[] = [
   { name: 'Side panel (440px) beside the host', args: { host: <HostPage />, children: <EmptyStarters title="What are we working on?" starters={sampleStarters()} onStart={() => undefined} columns={1} /> } },
   { name: 'Full page (host hidden)', args: { mode: 'full', host: <HostPage />, children: <EmptyStarters title="What are we working on?" starters={sampleStarters()} onStart={() => undefined} /> } },
   { name: 'Closed (host only)', args: { open: false, host: <HostPage /> } },
-  { name: 'Narrow panel (320px)', args: { width: 320, host: <HostPage />, children: <EmptyStarters title="Ask anything" onStart={() => undefined} /> } },
+  {
+    name: 'Narrow panel (300px)',
+    args: {
+      width: 300,
+      host: <HostPage />,
+      header: <ConversationHeader {...conversationHeaderPropsFactory({ modelControl: <ModelPickerDemo side="bottom" align="end" /> })} />,
+      children: <EmptyStarters title="Ask anything" onStart={() => undefined} columns={1} />,
+    },
+  },
 ];
 
 /**

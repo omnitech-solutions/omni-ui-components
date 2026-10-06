@@ -10,6 +10,8 @@ export interface PanelScroll {
   thinScrollbar?: boolean;
   /** Follow the newest content until the person scrolls up, then show the jump pill (see `useFollowLatest`). */
   stickToBottom?: boolean;
+  /** Distance in px from the end that still counts as at the end (`useFollowLatest` `threshold`). Default 48. A conversation passes 200. */
+  threshold?: number;
   /** How many lines the body holds; a growing count while scrolled up is what the pill counts. Default: the number of `children`. */
   lines?: number;
   /** A value that changes when content changes without the line count changing (a line streaming in). */

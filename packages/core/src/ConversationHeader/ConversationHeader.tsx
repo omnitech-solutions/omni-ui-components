@@ -104,7 +104,7 @@ export const ConversationHeader = <C extends ConversationItem = ConversationItem
   React.useEffect(() => {
     if (!renaming) return;
     cancelled.current = false;
-    openedAt.current = Date.now();
+    openedAt.current = performance.now();
     setDraft(title ?? '');
     requestAnimationFrame(() => {
       input.current?.focus();
@@ -128,7 +128,7 @@ export const ConversationHeader = <C extends ConversationItem = ConversationItem
   const titleClass =
     'inline-flex h-8 min-w-0 max-w-full items-center gap-1 rounded-lg px-2 text-[13.5px] font-semibold outline-none focus-visible:ring-2 focus-visible:ring-ring/50';
 
-  const titleNode = renaming ? (
+  const renameField = renaming ? (
     <input
       ref={input}
       data-slot="conversation-rename"
@@ -147,7 +147,7 @@ export const ConversationHeader = <C extends ConversationItem = ConversationItem
       onBlur={(event) => {
         // The menu that opened this field hands focus back to its (now gone) trigger as it closes; that stray blur
         // must not commit. Within the first moments after opening, take focus back instead.
-        if (Date.now() - openedAt.current < RENAME_SETTLE_MS && !event.relatedTarget) {
+        if (performance.now() - openedAt.current < RENAME_SETTLE_MS && !event.relatedTarget) {
           input.current?.focus();
           return;
         }
@@ -155,7 +155,9 @@ export const ConversationHeader = <C extends ConversationItem = ConversationItem
       }}
       className="h-8 w-full min-w-40 rounded-lg border border-solid border-[color:var(--oui-tone-accent-border)] bg-[color:var(--oui-panel-bg)] px-2 text-[13.5px] font-semibold outline-none focus:ring-2 focus:ring-ring/50"
     />
-  ) : hasMenu ? (
+  ) : null;
+
+  const titleButton = hasMenu ? (
     <ActionMenu
       label={labels.menu}
       width={240}
@@ -181,12 +183,19 @@ export const ConversationHeader = <C extends ConversationItem = ConversationItem
     </span>
   );
 
+  const titleNode = (
+    <>
+      <span className={renaming ? 'hidden' : 'contents'}>{titleButton}</span>
+      {renameField}
+    </>
+  );
+
   return (
     <Toolbar
       label={labels.toolbar}
       variant="bar"
       separators={false}
-      className={cn('flex-nowrap px-2 py-1.5', className)}
+      className={cn('flex-nowrap px-2 py-1.5 [&>[data-group-id=trailing]]:min-w-0 [&>[data-group-id=trailing]]:flex-[0_1_auto] [&>[data-group-id=trailing]]:flex-nowrap', className)}
       data-testid={testId}
       leading={
         <div data-slot="conversation-header" className="flex min-w-0 flex-1 items-center gap-1">
@@ -199,9 +208,15 @@ export const ConversationHeader = <C extends ConversationItem = ConversationItem
       }
       trailing={
         <>
-          {modelControl}
-          <Actions actions={actions} />
-          {trailing}
+          {modelControl ? (
+            <div data-slot="conversation-model" className="min-w-0 shrink [&_button]:max-w-full [&_button]:min-w-0 [&_button]:overflow-hidden [&_button]:text-ellipsis">
+              {modelControl}
+            </div>
+          ) : null}
+          <div data-slot="conversation-actions" className="flex flex-none items-center gap-[var(--oui-control-gap)]">
+            <Actions actions={actions} />
+            {trailing}
+          </div>
         </>
       }
     />

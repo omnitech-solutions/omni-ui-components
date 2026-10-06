@@ -57,6 +57,8 @@ const ContextMeterInner = React.forwardRef<HTMLButtonElement, ContextMeterProps>
   ) => {
     const labels = React.useMemo(() => ({ ...DEFAULT_CONTEXT_METER_LABELS, ...labelsProp }), [labelsProp]);
     const [open, setOpen] = useControllableState<boolean>(openProp, defaultOpen, onOpenChange);
+    // The popover returns focus to the ring only after its exit animation; Escape puts it there at once.
+    const ringRef = React.useRef<HTMLButtonElement | null>(null);
     const percent = contextPercent(used, windowSize);
     const level = contextLevel(percent, thresholds);
     const title = percent === undefined ? labels.titleNoWindow(formatTokens(used)) : labels.title(percent);
@@ -64,7 +66,11 @@ const ContextMeterInner = React.forwardRef<HTMLButtonElement, ContextMeterProps>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <IconButton
-            ref={ref}
+            ref={(node) => {
+              ringRef.current = node;
+              if (typeof ref === 'function') ref(node);
+              else if (ref) ref.current = node;
+            }}
             variant="ghost"
             label={title}
             title={title}
@@ -78,7 +84,7 @@ const ContextMeterInner = React.forwardRef<HTMLButtonElement, ContextMeterProps>
             {...rest}
           />
         </PopoverTrigger>
-        <PopoverContent align={align} side={side} sideOffset={6} aria-label={labels.dialog} className={cn(contextPopoverClasses, menuClassName)}>
+        <PopoverContent align={align} side={side} sideOffset={6} aria-label={labels.dialog} className={cn(contextPopoverClasses, menuClassName)} onEscapeKeyDown={() => ringRef.current?.focus()}>
           <div data-slot="context-popover" className="flex flex-col gap-2.5">
             <div className="flex items-baseline justify-between font-medium">
               <span>{labels.heading}</span>

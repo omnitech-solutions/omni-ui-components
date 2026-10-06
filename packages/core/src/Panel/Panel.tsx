@@ -74,7 +74,7 @@ export const Panel = React.forwardRef<HTMLElement, PanelProps>(
     const titleId = `${generatedId}-title`;
 
     const follow = Boolean(scroll?.stickToBottom);
-    const log = useFollowLatest<HTMLDivElement>(scroll?.lines ?? React.Children.count(children), scroll?.activity);
+    const log = useFollowLatest<HTMLDivElement>(scroll?.lines ?? React.Children.count(children), scroll?.activity, scroll?.threshold);
 
     const showEmpty = Boolean(empty) && !hasBody(children);
     const hasActions = actions !== undefined && actions !== null && actions !== false;

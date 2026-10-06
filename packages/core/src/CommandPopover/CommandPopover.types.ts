@@ -54,6 +54,15 @@ export interface CommandPopoverProps<T extends CommandItem = CommandItem> extend
   loading?: boolean;
   /** Base id of the listbox; rows are `${id}-option-${index}`. Pair with `aria-activedescendant` on the textarea. */
   id?: string;
+  /**
+   * The element the popover sits against (the composer root or the textarea). Set: the popover renders in a portal
+   * (`container`, default `document.body`) with `position: fixed` above or below the anchor and the anchor's width, so an
+   * ancestor with `overflow: hidden` (the Panel dock) cannot clip it. Presses inside the anchor, and inside the composer
+   * that holds it, never count as outside presses for `onClose`. Not set: absolutely positioned inside its `relative` parent.
+   */
+  anchor?: HTMLElement | null;
+  /** Portal target when `anchor` is set. Default `document.body`. */
+  container?: HTMLElement | null;
   /** Where the popover sits against its `relative` parent: `above` (default, over a composer) or `below`. */
   placement?: 'above' | 'below';
   labels?: Partial<CommandPopoverLabels>;

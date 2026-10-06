@@ -175,8 +175,11 @@ export interface ComposerProps<A extends AttachmentItem = AttachmentItem, Q exte
   attachments?: React.ReactNode;
   /** Slot above everything: notices, a capability warning. */
   above?: React.ReactNode;
-  /** The popover node (a CommandPopover), positioned against the composer. */
-  popover?: React.ReactNode;
+  /**
+   * The popover (a CommandPopover). A function receives the composer root as `anchor`: pass it to `CommandPopover` so it
+   * renders in a portal above the composer and is not clipped by an `overflow: hidden` ancestor such as the Panel dock.
+   */
+  popover?: React.ReactNode | ((api: { anchor: HTMLElement | null }) => React.ReactNode);
   /** Replaces the field and the actions (a custom dictation bar). */
   dictation?: React.ReactNode;
   /** Line under the box, e.g. `Replies come from Claude`. */

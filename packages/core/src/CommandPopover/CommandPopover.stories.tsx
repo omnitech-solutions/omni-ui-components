@@ -77,23 +77,60 @@ export const InComposer: StoryObj = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    // The popover renders in a portal on body, so its queries use the whole page.
+    const page = within(document.body);
     const box = canvas.getByRole('combobox', { name: 'Message' });
     await userEvent.type(box, '/');
-    const list = await canvas.findByRole('listbox', { name: 'Commands' });
+    const list = await page.findByRole('listbox', { name: 'Commands' });
     await expect(within(list).getAllByRole('option')).toHaveLength(4);
     await userEvent.type(box, 'm');
     // Clicking the box asked the popover to close; typing reopens it as a new element.
-    await waitFor(() => expect(within(canvas.getByRole('listbox', { name: 'Commands' })).getAllByRole('option')).toHaveLength(1));
+    await waitFor(() => expect(within(page.getByRole('listbox', { name: 'Commands' })).getAllByRole('option')).toHaveLength(1));
     await userEvent.keyboard('{Escape}');
-    await waitFor(() => expect(canvas.queryByRole('listbox')).toBeNull());
+    await waitFor(() => expect(page.queryByRole('listbox')).toBeNull());
     await expect(box).toHaveFocus();
     await userEvent.clear(box);
     await userEvent.type(box, 'Look at @');
-    const mentions = await canvas.findByRole('listbox', { name: 'Add from Studio' });
+    const mentions = await page.findByRole('listbox', { name: 'Add from Studio' });
     await waitFor(() => expect(within(mentions).getAllByRole('option').length).toBe(4));
     await userEvent.keyboard('{ArrowDown}{Enter}');
-    await waitFor(() => expect(canvas.queryByRole('listbox')).toBeNull());
+    await waitFor(() => expect(page.queryByRole('listbox')).toBeNull());
     await expect(box).toHaveValue('Look at ');
     await expect(canvas.getByRole('group', { name: 'Code' })).toBeVisible();
+  },
+};
+
+const ClippedDemo: React.FC = () => {
+  const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
+  return (
+    <div className="p-6">
+      {/* The clip: overflow hidden and short, like the Panel dock. The anchored popover must still show above it. */}
+      <div data-testid="clip" className="overflow-hidden rounded-xl border p-3" style={{ height: 70, marginTop: 220 }}>
+        <div ref={setAnchor} data-slot="composer" className="rounded-lg border p-2 text-sm">
+          Composer (inside an overflow-hidden container)
+        </div>
+        <CommandPopover {...commandPopoverPropsFactory({ className: '' })} anchor={anchor} />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * With `anchor` the popover renders in a portal on `document.body`, fixed above the anchor, so an `overflow: hidden`
+ * ancestor (the Panel dock) cannot clip it. Listbox and `aria-selected` semantics are unchanged.
+ */
+export const NotClippedInPortal: StoryObj = {
+  render: () => <ClippedDemo />,
+  play: async ({ canvasElement }) => {
+    const clip = within(canvasElement).getByTestId('clip');
+    const popover = document.querySelector('[data-slot="command-popover"]') as HTMLElement;
+    await expect(clip.contains(popover)).toBe(false);
+    await expect(popover.parentElement).toBe(document.body);
+    const rect = popover.getBoundingClientRect();
+    const clipRect = clip.getBoundingClientRect();
+    // It sits above the clipped box and is fully visible (not cut to the 70px clip).
+    await expect(rect.bottom).toBeLessThanOrEqual(clipRect.top + 20);
+    await expect(rect.height).toBeGreaterThan(100);
+    await expect(within(popover).getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true');
   },
 };

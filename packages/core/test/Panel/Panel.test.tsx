@@ -650,3 +650,26 @@ describe('omni-ui-components/Panel', () => {
     });
   });
 });
+
+describe('Panel scroll.threshold', () => {
+  it('keeps following within the threshold: 150px from the end stays at the end with 200 but shows the pill with the default', () => {
+    const setup = (threshold?: number) => {
+      const { container, unmount } = render(
+        <Panel title="T" scroll={{ stickToBottom: true, lines: 3, threshold }}>
+          <div>a</div>
+        </Panel>,
+      );
+      const body = container.querySelector('[data-slot="panel-body"]') as HTMLElement;
+      Object.defineProperty(body, 'scrollHeight', { configurable: true, value: 1000 });
+      Object.defineProperty(body, 'clientHeight', { configurable: true, value: 400 });
+      Object.defineProperty(body, 'scrollTop', { configurable: true, writable: true, value: 450 });
+      fireEvent.wheel(body);
+      fireEvent.scroll(body);
+      const pill = screen.queryByRole('button', { name: 'Jump to latest' });
+      unmount();
+      return Boolean(pill);
+    };
+    expect(setup()).toBe(true);
+    expect(setup(200)).toBe(false);
+  });
+});

@@ -48,9 +48,8 @@ Components: Markdown, Sources, Suggestions, Thinking, StepTimeline, ErrorCard, A
 
 ## W4 shell + settings + utilities
 - [ ] `SettingsDialog` focus return is asserted only in Storybook (`FocusReturn` play); the happy-dom test of the same flow fails because Radix returns focus on a timer that happy-dom does not run the same way. Verify in a real browser each release or move the check to a browser test. File: `packages/core/test/SettingsDialog/SettingsDialog.test.tsx`.
-- [ ] `Toast` timer restarts on a new `text` only; notifying the same text twice does not restart it. Add a `nonce` or key if repeat notices matter. File: `packages/core/src/Toast/Toast.tsx`.
-- [ ] `useSpeech` and `canSpeak` are untested (jsdom has no `speechSynthesis`); add a fake synth test. File: `packages/core/test/ChatUtils/`.
-- [ ] `printConversation` (hidden iframe + print) is not tested beyond `conversationHtml`; needs a browser test. File: `packages/core/src/lib/chat/export.ts`.
+- [ ] `Toast` timer restarts when the `toast` item changes by reference; notifying the very same object twice does not restart it (`useToast.notify` stores the object it is given). Pass a fresh object, or add a `nonce` if repeat notices matter. File: `packages/core/src/Toast/Toast.tsx`.
+- [ ] `useSpeech` and `printConversation` are covered with stubbed `speechSynthesis` and a stubbed iframe (`test/ChatUtils/speech-print.test.tsx`); a real-browser print dialog and real speech output are still unchecked by hand. File: `packages/core/src/lib/chat/`.
 - [ ] The original Models settings tab (endpoint, cloud provider row) and the Shared read-only view were out of scope (ModelPicker is W3, read-only Transcript is W2); a `ModelsSettings` panel is not built. File: `packages/core/src/SettingsDialog/`.
 - [ ] `ConversationList` has no keyboard roving between rows (Tab walks every row and its hover actions); consider arrow-key navigation. File: `packages/core/src/ConversationList/ConversationList.tsx`.
 - [ ] `ChatShell` story imports `ModelPickerDemo` (W3) and `ComposerExample` (Transcript factories); if those are renamed the story breaks. File: `packages/core/src/PanelShell/PanelShell.factories.tsx`.

@@ -156,6 +156,8 @@ const ModelPickerInner = React.forwardRef<HTMLButtonElement, ModelPickerProps>(
   ({ open: openProp, defaultOpen = false, onOpenChange, disabled, align = 'start', side = 'top', className, menuClassName, onPick, onEffortChange, selectedId: selectedProp, defaultSelectedId, effort: effortProp, defaultEffort = 'medium', labels: labelsProp, icons, 'data-testid': testId, ...menu }, ref) => {
     const labels = React.useMemo(() => withLabelDefaults(DEFAULT_MODEL_PICKER_LABELS, labelsProp), [labelsProp]);
     const [open, setOpen] = useControllableState<boolean>(openProp, defaultOpen, onOpenChange);
+    // The popover returns focus to the chip only after its exit animation; picking or Escape puts it there at once.
+    const chipRef = React.useRef<HTMLButtonElement | null>(null);
     // The menu unmounts when closed, so the chip holds the selection and effort.
     const [selectedId, setSelectedId] = useControllableState<string | undefined>(selectedProp, defaultSelectedId);
     const [effort, setEffort] = useControllableState<string>(effortProp, defaultEffort);
@@ -166,7 +168,11 @@ const ModelPickerInner = React.forwardRef<HTMLButtonElement, ModelPickerProps>(
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
-            ref={ref}
+            ref={(node) => {
+              chipRef.current = node;
+              if (typeof ref === 'function') ref(node);
+              else if (ref) ref.current = node;
+            }}
             type="button"
             variant="ghost"
             buttonSize="sm"
@@ -181,7 +187,7 @@ const ModelPickerInner = React.forwardRef<HTMLButtonElement, ModelPickerProps>(
             <span className="truncate">{text}</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent align={align} side={side} sideOffset={6} aria-label={labels.dialog} className={cn(modelMenuClasses, menuClassName)}>
+        <PopoverContent align={align} side={side} sideOffset={6} aria-label={labels.dialog} className={cn(modelMenuClasses, menuClassName)} onEscapeKeyDown={() => chipRef.current?.focus()}>
           {/* The popover content is the dialog (role and name), so the menu inside is a plain container. */}
           <ModelMenu
             {...menu}
@@ -198,6 +204,7 @@ const ModelPickerInner = React.forwardRef<HTMLButtonElement, ModelPickerProps>(
             onPick={(model) => {
               setSelectedId(model.id);
               setOpen(false);
+              chipRef.current?.focus();
               return onPick?.(model);
             }}
           />

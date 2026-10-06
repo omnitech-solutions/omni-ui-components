@@ -136,6 +136,13 @@ describe('omni-ui-components/ContextMeter', () => {
     expect(onSummarise).toHaveReturnedWith('ws');
   });
 
+  it('has focus on the ring right after Escape', async () => {
+    render(<ContextMeter {...contextMeterPropsFactory()} />);
+    await userEvent.click(ring());
+    await userEvent.keyboard('{Escape}');
+    expect(ring()).toHaveFocus();
+  });
+
   it('every documented variant renders', () => {
     for (const variant of contextMeterVariants) {
       const { unmount } = render(<ContextMeter {...contextMeterPropsFactory(variant.args)} />);

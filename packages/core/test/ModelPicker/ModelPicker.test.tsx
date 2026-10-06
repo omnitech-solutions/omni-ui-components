@@ -216,6 +216,16 @@ describe('omni-ui-components/ModelPicker', () => {
     expect(onPick).toHaveReturnedWith(2);
   });
 
+  it('has focus on the chip right after a pick and right after Escape (before the exit animation ends)', async () => {
+    render(<ModelPicker {...modelPickerPropsFactory()} />);
+    await userEvent.click(chip());
+    await userEvent.click(screen.getByRole('button', { name: /Gemma 3 12B/ }));
+    expect(chip()).toHaveFocus();
+    await userEvent.click(chip());
+    await userEvent.keyboard('{Escape}');
+    expect(chip()).toHaveFocus();
+  });
+
   it('every documented variant renders', () => {
     for (const variant of modelPickerVariants) {
       const { unmount } = render(<ModelPicker {...modelPickerPropsFactory(variant.args)} />);

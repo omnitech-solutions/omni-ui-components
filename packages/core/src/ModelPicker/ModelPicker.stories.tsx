@@ -77,6 +77,7 @@ export const Default: Story = {
     const dialog = await within(document.body).findByRole('dialog', { name: 'Model' });
     await expect(within(dialog).getByRole('region', { name: 'LM Studio' })).toHaveTextContent('Local · LM Studio');
     await userEvent.click(within(dialog).getByRole('button', { name: /Gemma 3 12B/ }));
+    await expect(chip).toHaveFocus();
     await waitFor(() => expect(within(document.body).queryByRole('dialog')).toBeNull());
     await expect(chip).toHaveTextContent('Gemma 3 12B');
     await expect(chip).toHaveFocus();
@@ -87,6 +88,8 @@ export const Default: Story = {
     await userEvent.click(within(reopened).getByRole('radio', { name: 'High' }));
     await expect(within(document.body).getByRole('dialog')).toBeInTheDocument();
     await expect(chip).toHaveTextContent('Qwen3 Coder · High');
+    await userEvent.keyboard('{Escape}');
+    await expect(chip).toHaveFocus();
   },
 };
 

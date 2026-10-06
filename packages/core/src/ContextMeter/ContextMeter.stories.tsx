@@ -60,6 +60,7 @@ export const Default: Story = {
     await userEvent.click(within(dialog).getByRole('button', { name: 'Summarise now' }));
     await expect(args.onSummarise).toHaveBeenCalled();
     await userEvent.keyboard('{Escape}');
+    await expect(ring).toHaveFocus();
     await waitFor(() => expect(within(document.body).queryByRole('dialog')).toBeNull());
     await expect(ring).toHaveFocus();
   },
