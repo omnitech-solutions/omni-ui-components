@@ -15,12 +15,15 @@ export const SignatureCode: React.FC<SignatureCodeProps> = ({ code }) => (
       margin: 0,
       padding: 0,
       background: 'transparent',
-      display: 'inline',
+      display: 'inline-block',
+      overflow: 'visible',
       fontSize: '0.66rem',
-      lineHeight: 1,
+      lineHeight: 1.4,
       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace',
     }}
-    codeTagProps={{ style: { background: 'transparent', padding: 0, whiteSpace: 'pre' } }}
+    codeTagProps={{
+      style: { background: 'transparent', padding: 0, whiteSpace: 'pre' },
+    }}
     style={{
       ...oneDark,
       tag: { color: 'var(--color-muted-foreground)' },
