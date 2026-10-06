@@ -76,8 +76,10 @@ Read first, in this order: `bionic/objectives.md`, `bionic/AGENTS.md`, `AGENTS.m
   own `play` function alone, and read focus a beat after Esc (Radix restores it asynchronously).
 - Compare Native App stories against the designer boards at
   `omnitech-interview-answers-generator/e2e/live-session/.audit/out/design/boards/*.png` (regenerate with
-  `design-boards.mts` from `~/Downloads/AI Assistant Design Overhaul/Native Panel Cleanup.dc.html`, ignoring the Zoom
-  board 1b and dropping board 1f). The gallery file is the owner's and is not in git.
+  `design-boards.mts`, ignoring the Zoom board 1b and dropping board 1f). The gallery file and the 2x board images are
+  committed in the app repo at `omnitech-interview-answers-generator/bionic/inbox/redesign/ui-components/design/`; the
+  written T/M/F requirements are in `.../ui-components/native-panel-cleanup-brief.md` (all 26, verbatim) and are mapped to
+  phases and acceptance checks in `.../redesign/native-ui-swap-plan.md` section 4A.
 
 ## 4. P0: blocks the app from adopting the library
 
