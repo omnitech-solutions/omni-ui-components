@@ -53,8 +53,10 @@ import {
   Segmented,
   Select,
   Slider,
+  Panel,
   SplitButton,
   Steps,
+  useFollowLatest,
   Stepper,
   Switch,
   TagInput,
@@ -158,6 +160,7 @@ import {
 import { actionMenuPropsFactory, actionMenuVariants } from 'factories/omni-ui-components/ActionMenu/ActionMenu.factories';
 import { splitButtonPropsFactory, splitButtonVariants } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
 import { NativeToolbarDemo, toolbarLabelledVariants, toolbarVariants } from 'factories/omni-ui-components/Toolbar/Toolbar.factories';
+import { NativePanelsDemo, panelPropsFactory, panelVariants, TranscriptDemo } from 'factories/omni-ui-components/Panel/Panel.factories';
 import { dividerPropsFactory, dividerVariants } from 'factories/omni-ui-components/Divider/Divider.factories';
 import { emptyPropsFactory, emptyVariants } from 'factories/omni-ui-components/Empty/Empty.factories';
 import { progressPropsFactory, progressRingVariants, progressVariants } from 'factories/omni-ui-components/Progress/Progress.factories';
@@ -353,6 +356,74 @@ const ToolbarPreview: React.FC = () => (
     ))}
   </div>
 );
+
+const PanelPreview: React.FC = () => (
+  <div className="flex flex-col gap-6 overflow-x-auto pb-2">
+    <div className="flex flex-col gap-1.5">
+      <span className="font-mono text-xs text-muted-foreground">
+        Board 1d · three panels, nothing analysed / analysing / answer ready, code hidden
+      </span>
+      <div className="flex w-max flex-col gap-4">
+        <NativePanelsDemo state="ready" width={960} />
+        <NativePanelsDemo state="analysing" width={960} />
+        <NativePanelsDemo state="answer" width={960} />
+      </div>
+    </div>
+    <div className="flex flex-wrap items-start gap-6">
+      <div className="flex flex-col gap-1.5">
+        <span className="font-mono text-xs text-muted-foreground">Scrolling · fade, thin scrollbar, stick to bottom, Jump to latest</span>
+        <TranscriptDemo />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <span className="font-mono text-xs text-muted-foreground">Panel configurations (props only)</span>
+        <div className="flex flex-wrap gap-3">
+          {panelVariants.map((variant) => (
+            <div key={variant.name} className="flex h-64 w-72 flex-col gap-1">
+              <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+              <div className="flex min-h-0 flex-1 rounded-xl p-2.5" style={{ background: '#1a4f96' }}>
+                <Panel {...panelPropsFactory(variant.args)} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const UseFollowLatestPreview: React.FC = () => {
+  const [lines, setLines] = React.useState(8);
+  const log = useFollowLatest(lines);
+  return (
+    <div className="flex flex-col items-start gap-2">
+      <OmniButton variant="outline" buttonSize="sm" onClick={() => setLines((n) => n + 1)}>
+        Add a line
+      </OmniButton>
+      <div
+        ref={log.ref}
+        onScroll={log.onScroll}
+        onWheel={log.onPersonScroll}
+        onTouchMove={log.onPersonScroll}
+        onPointerDown={log.onPersonScroll}
+        onKeyDown={log.onPersonScroll}
+        tabIndex={0}
+        className="h-32 w-72 overflow-y-auto rounded-lg border p-2 text-sm"
+      >
+        {Array.from({ length: lines }, (_, i) => (
+          <p key={i}>Line {i + 1}</p>
+        ))}
+      </div>
+      <span className="font-mono text-xs text-muted-foreground">
+        following: {String(log.following)} · unseen: {log.unseen}{' '}
+        {!log.following ? (
+          <OmniButton variant="link" buttonSize="sm" onClick={log.jump}>
+            jump to latest
+          </OmniButton>
+        ) : null}
+      </span>
+    </div>
+  );
+};
 
 const ActionMenuPreview: React.FC = () => (
   <div className="flex flex-wrap items-center gap-3">
@@ -951,7 +1022,12 @@ const SECTIONS: OverviewSectionSpec[] = [
   },
   {
     title: 'Layout',
-    rows: ['Divider', 'Flex', 'Grid', 'Layout', 'Space', 'Splitter', 'Masonry'].map(libraryRow),
+    rows: [
+      ...['Divider', 'Flex', 'Grid', 'Layout'].map(libraryRow),
+      { name: 'Panel', preview: PanelPreview, variants: panelVariants as Variant<unknown>[] },
+      { name: 'useFollowLatest', preview: UseFollowLatestPreview, variants: [], source: 'UseFollowLatestPreview' },
+      ...['Space', 'Splitter', 'Masonry'].map(libraryRow),
+    ],
   },
   {
     title: 'Navigation',
