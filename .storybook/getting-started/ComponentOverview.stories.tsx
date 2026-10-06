@@ -187,19 +187,15 @@ const Row: React.FC<RowProps> = ({ id, index, name, code, children }) => (
           {
             content: index,
             tinted: true,
-            className: 'px-5 py-3 text-base font-semibold text-foreground',
           },
           {
             content: <ComponentLink component={name} />,
             uppercase: true,
-            className: 'px-5 py-3 text-base font-semibold tracking-[0.12em]',
           },
           {
-            content: <InlineCode code={`<${name} />`} className="text-[1rem] text-[var(--color-primary)]" />,
-            className: 'px-5 py-3',
+            content: <InlineCode code={`<${name} />`} />,
           },
         ]}
-        className="inline-flex items-stretch overflow-hidden rounded-2xl border border-[var(--oui-border-field)] text-xs font-mono"
       />
     </div>
     <div className="pb-overview-row-preview mt-5">{children}</div>

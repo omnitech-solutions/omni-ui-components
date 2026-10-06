@@ -12,3 +12,9 @@ Verification: `pnpm verify` completed with 562 existing tests, package typecheck
 No publication or push was performed. The Storybook launcher remains running on port 6006.
 
 Follow-up correction: the mark after `<NewTimesheet />` was the SignatureCode highlighter's vertical scrollbar (16px client height, 18px scroll height, overflow auto). Its wrapper now uses inline-block layout, visible overflow and a readable line height. Both Form and DynamicForm NewTimesheet docs were inspected after the fix, with no signature scrollbar. The agent-owned Storybook process was restarted because the Vite module cache retained old overview content. No operator-owned process was stopped. Follow-up checks: Storybook build completed successfully, separate overview TypeScript check exited 0, targeted oxlint exited 0, and git diff --check exited 0. An attempted ESLint invocation could not run (`Command "eslint" not found`); the repository's actual oxlint command was then used.
+
+The operator requested replacing the text arrow on overview title links with an appropriate icon aligned toward the top. ComponentLink now uses Lucide ExternalLink with top alignment; link text and icon inherit the pill colour and remain free of underlines in all interaction states. Keyboard focus retains its outline.
+
+The operator refined the navigation indicator to blue and requested compact Component Overview pills matching Table Overview. The icon uses the primary blue token while link text stays unchanged; both pages now use the same SegmentedPill default padding, font size, and radius.
+
+The operator requested a modest size increase for both overview row pills after matching their compact sizes. Shared overview CSS now uses 14px text, 20px line height and 6px by 12px segment padding, retaining the top-aligned blue navigation icon and plain link text.

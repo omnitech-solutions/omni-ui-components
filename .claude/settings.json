@@ -1,6 +1,6 @@
 {
   "enabledPlugins": {
-    "crux-flow@crux-flow": true,
-    "crux@crux": false
+    "crux@crux": false,
+    "crux-flow@crux-flow": true
   }
 }

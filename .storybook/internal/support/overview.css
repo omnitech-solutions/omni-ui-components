@@ -53,6 +53,17 @@
 .pb-overview-row-header > * {
   max-width: 100%;
 }
+.pb-overview-row-header > div {
+  font-size: 14px;
+  line-height: 20px;
+}
+.pb-overview-row-header > div > span {
+  padding: 6px 12px;
+}
+.pb-overview-row-header .pb-pill-inline-code {
+  font-size: inherit;
+  line-height: inherit;
+}
 .pb-overview-description {
   color: var(--color-muted-foreground);
   line-height: 1.7;
@@ -124,7 +135,7 @@
   font-size: 0.75rem;
   cursor: pointer;
 }
-/* The arrow and hover/focus treatment distinguish navigation from preview controls. */
+/* A raised navigation icon distinguishes links while preserving the pill typography. */
 .pb-component-link {
   display: inline-flex;
   align-items: center;
@@ -133,14 +144,20 @@
   text-decoration: none;
   border-radius: 0.2rem;
 }
-.pb-component-link-arrow {
+.pb-component-link-icon {
   color: var(--color-primary);
-  font-size: 1em;
+  width: 0.75em;
+  height: 0.75em;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 0.1em;
 }
-.pb-component-link:hover {
-  color: var(--color-primary);
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
+.pb-component-link,
+.pb-component-link:hover,
+.pb-component-link:focus,
+.pb-component-link:active {
+  color: inherit !important;
+  text-decoration: none !important;
 }
 .pb-component-link:focus-visible {
   outline: 2px solid var(--color-primary);

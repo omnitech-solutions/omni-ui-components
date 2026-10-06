@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ExternalLink } from 'lucide-react';
 
 interface StoryEntry {
   id: string;
@@ -50,9 +51,7 @@ export function ComponentLink({ component, children }: { component: string; chil
       aria-label={`Open ${component} component page (leaves overview)`}
     >
       {children ?? component}
-      <span aria-hidden="true" className="pb-component-link-arrow">
-        ↗
-      </span>
+      <ExternalLink aria-hidden="true" className="pb-component-link-icon" />
     </a>
   );
 }
