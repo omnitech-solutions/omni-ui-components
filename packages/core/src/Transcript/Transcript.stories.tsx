@@ -5,6 +5,12 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 import {
   analysingEntries,
   answeredEntries,
+  answeredTurns,
+  ConversationDemo,
+  failedTurns,
+  stoppedTurns,
+  streamingTurns,
+  type ConversationDemoProps,
   codeEntries,
   ComposerExample,
   editedEntries,
@@ -203,3 +209,146 @@ export const ComposerInteraction: StoryObj<ComposerExampleProps> = {
     await expect(send).toBeDisabled();
   },
 };
+
+// ---------------------------------------------------------------------------------------------------------------
+// Conversation mode: `turns` (from `buildTurns(messages, runs)`), slots for the parts built elsewhere, a Composer dock.
+// ---------------------------------------------------------------------------------------------------------------
+
+const conversationMeta = {
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        story:
+          'Set <primary>turns</primary> and the Transcript draws a <primary>conversation</primary> (`role="log"`, `aria-live="polite"`): per turn the question (attachment chips, bubble, hover actions) then the assistant reply. The parts built elsewhere plug into <primary>slots</primary> (`slots.timeline`, `thinking`, `sources`, `actions`, `suggestions`, `approvalsBefore`/`approvalsAfter`, `error`, `versions`, `summaryDivider`) and the text goes through `renderMarkdown`. Scrolling stays with the Panel: pass `scroll={conversationScroll(turns, liveText)}`. `Transcript<T, U, V, A>` is generic over your entry, turn, version and attachment types: every callback and slot gets the same object back, never a copy.\n\n**Callbacks**\n\n| Prop | Fires when | Payload |\n| --- | --- | --- |\n| `onCopy` | a bubble’s copy control (entries mode) | `(entry: T)` |\n| `onCopyCode` | a code block’s copy control | `(block, entry: T, index)` |\n| `onCopyUser` | a question’s copy button (turns mode). Absent: no button | `(turn: U)` |\n| `onLoadEarlier` | `Load earlier messages` is chosen. Absent: no button | `(oldest: U &#124; undefined)` |\n| `onEditStart` | the edit button is chosen (the editor opens itself when uncontrolled) | `(turn: U)` |\n| `onEditChange` | the editor text changes; controlled or not | `(next: string)` |\n| `onEditSubmit` | Send or Enter in the editor | `(turn: U, text: string)` |\n| `onEditCancel` | Cancel or Escape in the editor | `(turn: U)` |\n| `onRetry` | the default error’s Retry, or `context.retry()` from a slot | `(turn: U)` |\n| `onRegenerate` | `context.regenerate()` from a slot | `(turn: U)` |\n| `onSelectVersion` | the question’s pager, or `context.selectVersion(v)` from a slot | `(turn: U, version: V)` |\n| `onAttachmentClick` | an attachment chip on a question is chosen | `(attachment: A)` |\n| `onAtEndChange` | the scrolling ancestor moves to or from the end (within `atEndThreshold`, default 200) | `(atEnd: boolean)` |\n',
+      },
+    },
+  },
+  args: { turns: answeredTurns(), busy: false, composer: true, readOnly: false, hasEarlier: false, empty: false, approval: false, seeThrough: 1 } as ConversationDemoProps,
+  argTypes: {
+    turns: { control: 'object', description: '`ConversationTurn[]`: { id, user, answer?, run? }. Build them with `buildTurns(messages, runs)`.' },
+    busy: { control: 'boolean', description: 'A reply is running: the last turn streams (the demo feeds `live.text` word by word).' },
+    waiting: { control: 'boolean', description: 'The run waits for an approval: the last turn is not running.' },
+    liveText: { control: 'text', description: 'Story-only: the text streamed while busy.' },
+    composer: { control: 'boolean', description: 'Story-only: show the Composer dock.' },
+    readOnly: { control: 'boolean', description: 'A shared transcript: no edit, copy, actions, versions, approvals or follow-ups.' },
+    hasEarlier: { control: 'boolean', description: 'Show the `Load earlier messages` button (`onLoadEarlier`).' },
+    empty: { control: 'boolean', description: 'Story-only: no turns, so the `empty` slot shows.' },
+    editingId: { control: 'text', description: '`editingId`: id of the turn whose question is being edited.' },
+    approval: { control: 'boolean', description: 'Story-only: a pending approval after the last turn (`slots.approvalsAfter`).' },
+    seeThrough: { control: 'inline-radio', options: [1, 0.6, 0.22], description: 'Story-only: `--oui-panel-see-through`.' },
+    onAction: { action: 'conversation', description: 'Story-only: reports edit, copy, retry, suggestions, queue and send.' },
+  },
+  render: (args: ConversationDemoProps) => (
+    <div className="p-6">
+      <ConversationDemo {...args} />
+    </div>
+  ),
+};
+
+type ConversationStory = StoryObj<ConversationDemoProps>;
+
+/** A finished chat in a Panel: attachment chip, tool timeline, thinking, Markdown with a cited code block, sources, version pagers, action bar, follow-ups and the composer. */
+export const Conversation: ConversationStory = {
+  ...conversationMeta,
+  play: async ({ canvasElement }) => {
+    const log = within(canvasElement).getByRole('log', { name: 'Conversation' });
+    await expect(log).toHaveAttribute('aria-live', 'polite');
+    await expect(canvasElement.querySelectorAll('[data-slot="transcript-turn"]')).toHaveLength(2);
+    await expect(within(log).getAllByText('two-sum-notes.md')[0]).toBeVisible();
+    await expect(within(log).getByText(/Time is/)).toBeVisible();
+  },
+};
+
+/** The newest turn is running: live text with the blinking caret, the timeline reads running, no action bar or follow-ups yet. */
+export const ConversationStreaming: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, turns: streamingTurns(), busy: true },
+  play: async ({ canvasElement }) => {
+    await waitFor(() => expect(canvasElement.querySelector('[data-slot="transcript-cursor"], [data-slot="markdown"] [data-slot="markdown-cursor"]')).not.toBeNull());
+    await expect(canvasElement.querySelector('[data-status="running"]')).not.toBeNull();
+  },
+};
+
+/** Edit and resend: Enter sends the edited text as a new version, Esc cancels and focus returns to the edit button; Send is disabled when empty. */
+export const ConversationEditing: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, composer: false, onAction: fn() },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    await userEvent.hover(canvasElement.querySelector('[data-turn-id="u2"]') as HTMLElement);
+    const editButton = () => within(canvasElement.querySelector('[data-turn-id="u2"]') as HTMLElement).getByRole('button', { name: 'Edit and resend' });
+    await userEvent.click(editButton());
+    const box = canvas.getByRole('textbox', { name: 'Edit message' });
+    await expect(box).toHaveFocus();
+    await userEvent.clear(box);
+    await expect(canvas.getByRole('button', { name: 'Send' })).toBeDisabled();
+    await userEvent.type(box, 'What about negative numbers?');
+    await userEvent.keyboard('{Escape}');
+    await waitFor(() => expect(canvas.queryByRole('textbox', { name: 'Edit message' })).toBeNull());
+    await waitFor(() => expect(editButton()).toHaveFocus());
+    await userEvent.click(editButton());
+    const again = canvas.getByRole('textbox', { name: 'Edit message' });
+    await userEvent.clear(again);
+    await userEvent.type(again, 'Same question again{Enter}');
+    await expect(args.onAction).toHaveBeenCalledWith('edit-submit', { id: 'u2', text: 'Same question again' });
+  },
+};
+
+/** The question open in the editor, as it first appears. */
+export const ConversationEditorOpen: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, composer: false, editingId: 'u2' },
+};
+
+/** A failed run: the `error` slot (the ErrorCard) with Retry; the question stays and no assistant block is drawn. */
+export const ConversationFailed: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, turns: failedTurns(), onAction: fn() },
+  play: async ({ canvasElement, args }) => {
+    const retry = within(canvasElement).getByRole('button', { name: /retry/i });
+    await userEvent.click(retry);
+    await expect(args.onAction).toHaveBeenCalledWith('retry', 'u2');
+  },
+};
+
+/** A cancelled run: the partial text, the stopped banner, and the action bar (copy still works). */
+export const ConversationStopped: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, turns: stoppedTurns() },
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByText('Stopped. Nothing has been applied.')).toBeVisible();
+  },
+};
+
+/** The run waits for an approval: the last turn is not running (no caret) and the pending ApprovalCard follows it. */
+export const ConversationApproval: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, turns: streamingTurns(), busy: true, waiting: true, approval: true },
+};
+
+/** A shared, read-only transcript: no hover actions, no edit, no action bar, no follow-ups. Reading parts stay. */
+export const ConversationReadOnly: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, readOnly: true, composer: false },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector('[data-slot="transcript-edit"]')).toBeNull();
+    await expect(canvasElement.querySelector('[data-slot="transcript-user-actions"]')).toBeNull();
+  },
+};
+
+/** No turns and nothing running: the `empty` slot (an empty state, or a "no longer shared" notice). */
+export const ConversationEmpty: ConversationStory = { ...conversationMeta, args: { ...conversationMeta.args, empty: true } };
+
+/** Older messages exist: `Load earlier messages` sits at the top and reports `onLoadEarlier`. */
+export const ConversationLoadEarlier: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, hasEarlier: true, onAction: fn() },
+  play: async ({ canvasElement, args }) => {
+    await userEvent.click(within(canvasElement).getByRole('button', { name: 'Load earlier messages' }));
+    await expect(args.onAction).toHaveBeenCalledWith('load-earlier', 'u1');
+  },
+};
+
+/** The same chat on a see-through Panel at 22%: bubbles, field and surfaces follow the token. */
+export const ConversationSeeThrough: ConversationStory = { ...conversationMeta, args: { ...conversationMeta.args, seeThrough: 0.22 } };

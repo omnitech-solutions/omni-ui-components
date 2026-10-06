@@ -205,6 +205,43 @@
     color: var(--oui-tone-danger-fg);
   }
 
+  /* Conversation parts (Transcript streaming caret, DictationBar waveform and record dot). */
+  @keyframes oui-caret-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes oui-wave {
+    0%,
+    100% {
+      transform: scaleY(0.25);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+  @keyframes oui-record-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot='transcript-cursor'],
+    [data-slot='dictation-wave'] > span,
+    [data-slot='dictation-record'] {
+      animation: none !important;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     :root {
       --oui-transition-duration: 0ms;

@@ -1,11 +1,31 @@
 import * as React from 'react';
-import { ArrowUp, Check, CircleCheck, Copy, EyeOff, Mic } from 'lucide-react';
+import { ArrowUp, Check, CircleCheck, Copy, EyeOff, Mic, Pencil, RefreshCw, ThumbsDown, ThumbsUp, Wrench, Brain, CircleStop, ChevronDown, ChevronLeft, ChevronRight, Loader, FileText, Image as ImageIcon, LayoutGrid } from 'lucide-react';
 
 import { IconButton } from '@oc-tech/omni-ui-components/IconButton';
 import { Input } from '@oc-tech/omni-ui-components/Input';
 import { Panel, type PanelProps } from '@oc-tech/omni-ui-components/Panel';
 import { highlightLines } from '@oc-tech/omni-ui-components/Highlight';
-import { codeBlockId, Transcript, type TranscriptEntry, type TranscriptProps } from '@oc-tech/omni-ui-components/Transcript';
+import {
+  buildTurns,
+  codeBlockId,
+  conversationScroll,
+  Transcript,
+  type ChatMessage,
+  type ChatRun,
+  type ConversationTurn,
+  type TranscriptEntry,
+  type TranscriptProps,
+} from '@oc-tech/omni-ui-components/Transcript';
+import { ApprovalCard } from '@oc-tech/omni-ui-components/ApprovalCard';
+import { ErrorCard } from '@oc-tech/omni-ui-components/ErrorCard';
+import { Markdown } from '@oc-tech/omni-ui-components/Markdown';
+import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
+import { Sources } from '@oc-tech/omni-ui-components/Sources';
+import { StepTimeline } from '@oc-tech/omni-ui-components/StepTimeline';
+import { Suggestions } from '@oc-tech/omni-ui-components/Suggestions';
+import { Thinking } from '@oc-tech/omni-ui-components/Thinking';
+import { VersionPager } from '@oc-tech/omni-ui-components/VersionPager';
+import { ComposerDemo } from '../Composer/Composer.factories';
 import type { OnAction } from '../SplitButton/SplitButton.factories';
 import type { Variant } from '../../internal/support/makeFactory';
 
@@ -253,3 +273,293 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
     </div>
   );
 };
+
+// ---------------------------------------------------------------------------------------------------------------
+// Conversation mode (turns): messages -> buildTurns -> Transcript, with the other library parts in the slots.
+// ---------------------------------------------------------------------------------------------------------------
+
+const at = (minute: number, second = 0) => new Date(Date.UTC(2026, 9, 6, 9, minute, second)).toISOString();
+
+/** A finished exchange with a tool call, thinking, a cited answer, sources, follow-ups, two versions of the question. */
+export const chatMessages = (): ChatMessage[] => [
+  {
+    id: 'u1',
+    role: 'user',
+    createdAt: at(0),
+    siblings: [{ id: 'u1' }, { id: 'u1b' }],
+    parts: [
+      { type: 'attachment', kind: 'file', id: 'att-1', name: 'two-sum-notes.md' },
+      { type: 'text', text: 'Explain two sum in TypeScript and why a hash map beats the nested loop.' },
+    ],
+  },
+  { id: 'a1', role: 'assistant', createdAt: at(0, 2), parts: [{ type: 'tool-call', id: 'call-1', name: 'searchEvidence', input: { query: 'two sum' } }] },
+  { id: 't1', role: 'tool', createdAt: at(0, 3), parts: [{ type: 'tool-result', id: 'call-1', output: { passages: 3 } }] },
+  {
+    id: 'a2',
+    role: 'assistant',
+    createdAt: at(0, 9),
+    siblings: [{ id: 'a2' }, { id: 'a2b' }],
+    parts: [
+      { type: 'reasoning', text: 'The hash map stores each value with its index, so each lookup is O(1).', seconds: 4 },
+      {
+        type: 'text',
+        text: 'Keep a **map** of value to index and look up the complement as you scan [1].\n\n```ts\nfunction twoSum(nums: number[], target: number) {\n  const seen = new Map<number, number>();\n  for (let i = 0; i < nums.length; i++) {\n    const j = seen.get(target - nums[i]);\n    if (j !== undefined) return [j, i];\n    seen.set(nums[i], i);\n  }\n  return [];\n}\n```\n\nTime is **O(n)** and space is **O(n)**.',
+      },
+      { type: 'sources', items: [{ n: 1, id: 'src-1', title: 'Two Sum, the hash map pass', meta: 'two-sum-notes.md', quote: 'Store each number with its index and check target - n before inserting it.' }] },
+      { type: 'suggestions', items: ['What if the input is sorted?', 'Show the two pointer version'] },
+      { type: 'usage', usage: { total: 1280 } },
+    ],
+  },
+  { id: 'u2', role: 'user', createdAt: at(1), parts: [{ type: 'text', text: 'What changes if the array holds duplicates?' }] },
+];
+
+/** The second answer, finished (used for the fully answered conversation). */
+const secondAnswer = (): ChatMessage => ({
+  id: 'a3',
+  role: 'assistant',
+  createdAt: at(1, 6),
+  parts: [{ type: 'text', text: 'Nothing: the map keeps the **latest** index for a value, and the complement check runs before the insert, so `[3, 3]` with target `6` still returns `[0, 1]`.' }],
+});
+
+export const chatRuns = (): ChatRun[] => [
+  { id: 'r1', userMessageId: 'u1', status: 'completed' },
+  { id: 'r2', userMessageId: 'u2', status: 'completed' },
+];
+
+/** The answered conversation as turns. */
+export const answeredTurns = (): ConversationTurn[] => buildTurns([...chatMessages(), secondAnswer()], chatRuns());
+/** The same conversation with the last question still waiting for its answer (streams when `busy`). */
+export const streamingTurns = (): ConversationTurn[] => buildTurns(chatMessages(), [chatRuns()[0], { id: 'r2', userMessageId: 'u2', status: 'running' }]);
+/** The last run failed: the error slot shows. */
+export const failedTurns = (): ConversationTurn[] =>
+  buildTurns(chatMessages(), [chatRuns()[0], { id: 'r2', userMessageId: 'u2', status: 'failed', error: { code: 'model-unavailable', message: 'The model did not answer in time.' } }]);
+/** The last run was cancelled. */
+export const stoppedTurns = (): ConversationTurn[] => buildTurns([...chatMessages(), { ...secondAnswer(), status: 'partial' }], [chatRuns()[0], { id: 'r2', userMessageId: 'u2', status: 'cancelled' }]);
+
+const kindIcons = { file: <FileText />, image: <ImageIcon />, surface: <LayoutGrid /> };
+
+export interface ConversationDemoProps {
+  turns?: ConversationTurn[];
+  /** A reply is running; the last turn streams `liveText` word by word. */
+  busy?: boolean;
+  waiting?: boolean;
+  liveText?: string;
+  /** Show the composer dock. Default true. */
+  composer?: boolean;
+  readOnly?: boolean;
+  hasEarlier?: boolean;
+  empty?: boolean;
+  /** Start editing this turn's question. */
+  editingId?: string | null;
+  seeThrough?: number;
+  width?: number;
+  height?: number;
+  /** Add a pending approval after the last turn. */
+  approval?: boolean;
+  onAction?: OnAction;
+}
+
+const LIVE_TEXT = 'Duplicates are fine: the map keeps the latest index for a value, and the complement check runs before the insert.';
+
+/**
+ * A whole chat: `Panel` + conversation `Transcript` + `ComposerDemo` dock. The parts built elsewhere plug into the
+ * Transcript's slots (Markdown through `renderMarkdown`, StepTimeline, Thinking, Sources, MessageActions, VersionPager,
+ * Suggestions, ErrorCard, ApprovalCard). All state (edit, copy, streaming text) lives here; the library parts take props.
+ */
+export const ConversationDemo: React.FC<ConversationDemoProps> = ({
+  turns = answeredTurns(),
+  busy = false,
+  waiting = false,
+  liveText,
+  composer = true,
+  readOnly = false,
+  hasEarlier = false,
+  empty = false,
+  editingId: editingProp = null,
+  seeThrough = 1,
+  width = 440,
+  height = 620,
+  approval = false,
+  onAction,
+}) => {
+  const [editingId, setEditingId] = React.useState<string | null>(editingProp);
+  const [editValue, setEditValue] = React.useState('');
+  const [copied, setCopied] = React.useState<string | null>(null);
+  const [live, setLive] = React.useState('');
+  const [version, setVersion] = React.useState<Record<string, number>>({});
+  const [sent, setSent] = React.useState<'up' | 'down' | null>(null);
+  const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  React.useEffect(() => () => clearTimeout(timer.current), []);
+  React.useEffect(() => setEditingId(editingProp), [editingProp]);
+  React.useEffect(() => {
+    if (editingProp) {
+      const turn = turns.find((candidate) => candidate.id === editingProp);
+      if (turn) setEditValue(turn.user.parts.flatMap((part) => (part.type === 'text' ? [part.text] : [])).join('\n'));
+    }
+  }, [editingProp, turns]);
+
+  // A stand-in stream: one word every 120ms of the live text.
+  const target = liveText ?? LIVE_TEXT;
+  React.useEffect(() => {
+    if (!busy) return setLive('');
+    const words = target.split(' ');
+    let n = 0;
+    const id = setInterval(() => {
+      n = Math.min(words.length, n + 1);
+      setLive(words.slice(0, n).join(' '));
+      if (n >= words.length) clearInterval(id);
+    }, 120);
+    return () => clearInterval(id);
+  }, [busy, target]);
+
+  const copy = (text: string, id: string) => {
+    navigator.clipboard?.writeText(text).catch(() => undefined);
+    setCopied(id);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setCopied(null), 1500);
+  };
+  const promptOfTurn = (turn: ConversationTurn) => turn.user.parts.flatMap((part) => (part.type === 'text' ? [part.text] : [])).join('\n');
+
+  const pager = (message: ChatMessage | undefined) => {
+    const siblings = message?.siblings ?? [];
+    if (!message || siblings.length < 2) return null;
+    const index = version[message.id] ?? siblings.findIndex((candidate) => candidate.id === message.id);
+    return (
+      <VersionPager
+        index={index}
+        count={siblings.length}
+        disabled={busy}
+        previousIcon={<ChevronLeft />}
+        nextIcon={<ChevronRight />}
+        onMove={(step) => {
+          setVersion((all) => ({ ...all, [message.id]: index + step }));
+          onAction?.('version', step);
+        }}
+      />
+    );
+  };
+
+  return (
+    <div className="box-border flex rounded-xl p-3.5" style={{ background: '#1a4f96', height, ['--oui-panel-see-through' as string]: seeThrough }}>
+      <Panel
+        title="Chat"
+        width={width}
+        minWidth={320}
+        bodyPadding="sm"
+        scroll={conversationScroll(turns, live)}
+        dock={composer ? <ComposerDemo streaming={busy} onAction={onAction} /> : undefined}
+        dockClassName="bg-transparent px-3 py-2.5"
+      >
+        <Transcript
+          turns={empty ? [] : turns}
+          busy={busy}
+          waiting={waiting}
+          live={busy ? { text: live, reasoning: 'Comparing the nested loop with a map lookup…' } : undefined}
+          hasEarlier={hasEarlier}
+          onLoadEarlier={(oldest) => onAction?.('load-earlier', oldest?.id)}
+          readOnly={readOnly}
+          empty={<div className="py-10 text-center text-sm text-[color:var(--oui-panel-meta-fg)]">What are we working on?</div>}
+          copyIcon={<Copy />}
+          editIcon={<Pencil />}
+          stoppedIcon={<CircleStop />}
+          attachmentIcons={kindIcons}
+          editingId={editingId}
+          editValue={editValue}
+          onEditChange={setEditValue}
+          onEditStart={(turn) => {
+            setEditValue(promptOfTurn(turn));
+            setEditingId(turn.id);
+            onAction?.('edit-start', turn.id);
+          }}
+          onEditSubmit={(turn, text) => {
+            onAction?.('edit-submit', { id: turn.id, text });
+            setEditingId(null);
+          }}
+          onEditCancel={(turn) => {
+            setEditingId(null);
+            onAction?.('edit-cancel', turn.id);
+          }}
+          onRetry={(turn) => onAction?.('retry', turn.id)}
+          onRegenerate={(turn) => onAction?.('regenerate', turn.id)}
+          onSelectVersion={(turn, version) => onAction?.('select-version', { turn: turn.id, version: version.id })}
+          onAttachmentClick={(attachment) => onAction?.('attachment', attachment.id)}
+          onCopyUser={(turn) => copy(promptOfTurn(turn), `u-${turn.id}`)}
+          renderMarkdown={(text, context) => (
+            <Markdown
+              text={text}
+              streaming={context.streaming}
+              citations={context.running ? [] : [1]}
+              copyIcon={<Copy />}
+              copiedIcon={<Check />}
+              copiedCode={copied}
+              onCopy={(code) => copy(code, code)}
+              highlight={highlightLines}
+            />
+          )}
+          slots={{
+            timeline: (turn, context) =>
+              turn.answer && turn.answer.steps.length > 0 ? (
+                <StepTimeline
+                  steps={turn.answer.steps.map((step) => ({
+                    id: step.id,
+                    icon: <Wrench />,
+                    label: 'Searched evidence',
+                    activeLabel: 'Searching evidence',
+                    detail: step.done ? '3 passages' : undefined,
+                    state: step.failed ? 'failed' : step.done ? 'done' : 'running',
+                  }))}
+                  status={context.waiting ? 'waiting' : context.running ? 'running' : context.stopped ? 'stopped' : 'done'}
+                  seconds={turn.answer.seconds}
+                  icons={{ done: <Check />, chevron: <ChevronDown />, spinner: <Loader /> }}
+                />
+              ) : null,
+            thinking: (turn, context) =>
+              turn.answer?.reasoning || context.liveReasoning ? (
+                <Thinking
+                  text={context.liveReasoning ?? turn.answer?.reasoning?.text}
+                  streaming={context.running && !context.text}
+                  seconds={turn.answer?.reasoning?.seconds}
+                  icon={<Brain />}
+                  spinner={<Loader />}
+                  chevron={<ChevronDown />}
+                />
+              ) : null,
+            sources: (turn) => (turn.answer?.sources.length ? <Sources items={turn.answer.sources} cardIcon={<FileText />} /> : null),
+            actions: (turn, context) => (
+              <MessageActions
+                meta={turn.answer?.usage ? 'Sonnet · 1.3k tokens' : undefined}
+                actions={[
+                  { id: 'copy', icon: copied === turn.id ? <Check /> : <Copy />, label: copied === turn.id ? 'Copied' : 'Copy', onClick: () => copy(turn.answer?.text ?? '', turn.id) },
+                  ...(context.regenerate ? [{ id: 'regen', icon: <RefreshCw />, label: 'Regenerate', disabled: context.running, onClick: context.regenerate }] : []),
+                  ...(turn.answer?.final?.siblings && turn.answer.final.siblings.length > 1 ? [{ id: 'versions', node: pager(turn.answer.final) }] : []),
+                  { id: 'up', icon: <ThumbsUp />, label: 'Good answer', pressed: sent === 'up', onClick: () => setSent('up') },
+                  { id: 'down', icon: <ThumbsDown />, label: 'Bad answer', pressed: sent === 'down', onClick: () => setSent('down') },
+                ]}
+              />
+            ),
+            suggestions: (turn) => (turn.answer?.suggestions.length ? <Suggestions items={turn.answer.suggestions.map((label) => ({ id: label, label }))} onSelect={(item) => onAction?.('suggestion', item.label)} /> : null),
+            approvalsAfter: (_turn, context) =>
+              approval && context.last ? (
+                <ApprovalCard title="Allow the assistant to run the tests?" tool="runTests" tags={['runTests', 'sandbox']} status="pending" onDecide={(decision) => onAction?.('approval', decision)} />
+              ) : null,
+            error: (turn, context) => (
+              <ErrorCard
+                title="Couldn’t reach the model"
+                message={turn.run?.error?.message}
+                note="Your message is saved and nothing has been applied."
+                onRetry={context.retry}
+              />
+            ),
+          }}
+        />
+      </Panel>
+    </div>
+  );
+};
+
+/** Conversation configurations for the overview. */
+export const conversationVariants: Variant<TranscriptProps>[] = [
+  { name: 'Conversation (turns)', args: { turns: answeredTurns(), copyIcon: <Copy /> } },
+  { name: 'Streaming', args: { turns: streamingTurns(), busy: true, live: { text: 'Duplicates are fine: the map keeps the latest index' } } },
+  { name: 'Read only', args: { turns: answeredTurns(), readOnly: true } },
+];

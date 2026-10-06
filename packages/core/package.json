@@ -86,10 +86,13 @@
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "diff": "^9.0.0",
     "input-otp": "^1.4.2",
     "lowlight": "3.3.0",
     "lucide-react": "^1.7.0",
     "react-day-picker": "^9.14.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.5.0",
     "zod": "^4.4.3"
   },

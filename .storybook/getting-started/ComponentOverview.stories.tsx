@@ -161,6 +161,56 @@ import { actionMenuPropsFactory, actionMenuVariants } from 'factories/omni-ui-co
 import { splitButtonPropsFactory, splitButtonVariants } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
 import { NativeToolbarDemo, toolbarLabelledVariants, toolbarVariants } from 'factories/omni-ui-components/Toolbar/Toolbar.factories';
 import { SessionBarDemo, sessionBarExamples } from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
+import { AttachmentStrip } from '@oc-tech/omni-ui-components/Attachment';
+import { attachmentRemoveIcon, attachmentVariants } from 'factories/omni-ui-components/Attachment/Attachment.factories';
+import { CommandPopover } from '@oc-tech/omni-ui-components/CommandPopover';
+import { commandPopoverPropsFactory, commandPopoverVariants } from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
+import { ComposerDemo, composerVariants } from 'factories/omni-ui-components/Composer/Composer.factories';
+import { DictationBar } from '@oc-tech/omni-ui-components/DictationBar';
+import { dictationBarPropsFactory, dictationBarVariants } from 'factories/omni-ui-components/DictationBar/DictationBar.factories';
+import { QueuedList } from '@oc-tech/omni-ui-components/QueuedList';
+import { queuedListPropsFactory, queuedListVariants } from 'factories/omni-ui-components/QueuedList/QueuedList.factories';
+import { ConversationDemo } from 'factories/omni-ui-components/Transcript/Transcript.factories';
+import { MarkdownDemo, markdownVariants, ChatReplyShowcase } from 'factories/omni-ui-components/Markdown/Markdown.factories';
+import { Sources } from '@oc-tech/omni-ui-components/Sources';
+import { sourcesPropsFactory, sourcesVariants } from 'factories/omni-ui-components/Sources/Sources.factories';
+import { Suggestions } from '@oc-tech/omni-ui-components/Suggestions';
+import { suggestionsPropsFactory, suggestionsVariants } from 'factories/omni-ui-components/Suggestions/Suggestions.factories';
+import { Thinking } from '@oc-tech/omni-ui-components/Thinking';
+import { thinkingPropsFactory, thinkingVariants } from 'factories/omni-ui-components/Thinking/Thinking.factories';
+import { StepTimeline } from '@oc-tech/omni-ui-components/StepTimeline';
+import { stepTimelinePropsFactory, stepTimelineVariants } from 'factories/omni-ui-components/StepTimeline/StepTimeline.factories';
+import { ErrorCard } from '@oc-tech/omni-ui-components/ErrorCard';
+import { errorCardPropsFactory, errorCardVariants } from 'factories/omni-ui-components/ErrorCard/ErrorCard.factories';
+import { ApprovalCard } from '@oc-tech/omni-ui-components/ApprovalCard';
+import { approvalCardPropsFactory, approvalCardVariants } from 'factories/omni-ui-components/ApprovalCard/ApprovalCard.factories';
+import { FeedbackPanel } from '@oc-tech/omni-ui-components/FeedbackPanel';
+import { feedbackPanelPropsFactory, feedbackPanelVariants } from 'factories/omni-ui-components/FeedbackPanel/FeedbackPanel.factories';
+import { VersionPager } from '@oc-tech/omni-ui-components/VersionPager';
+import { versionPagerPropsFactory, versionPagerVariants } from 'factories/omni-ui-components/VersionPager/VersionPager.factories';
+import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
+import { messageActionsPropsFactory, messageActionsVariants } from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
+import { SummaryDivider } from '@oc-tech/omni-ui-components/SummaryDivider';
+import { summaryDividerPropsFactory, summaryDividerVariants } from 'factories/omni-ui-components/SummaryDivider/SummaryDivider.factories';
+import { ConversationList } from '@oc-tech/omni-ui-components/ConversationList';
+import { conversationListPropsFactory, conversationListVariants, ConversationListDemo } from 'factories/omni-ui-components/ConversationList/ConversationList.factories';
+import { ConversationHeader } from '@oc-tech/omni-ui-components/ConversationHeader';
+import { conversationHeaderPropsFactory, conversationHeaderVariants } from 'factories/omni-ui-components/ConversationHeader/ConversationHeader.factories';
+import { EmptyStarters } from '@oc-tech/omni-ui-components/EmptyStarters';
+import { emptyStartersPropsFactory, emptyStartersVariants } from 'factories/omni-ui-components/EmptyStarters/EmptyStarters.factories';
+import { SettingsDialogDemo, settingsDialogVariants } from 'factories/omni-ui-components/SettingsDialog/SettingsDialog.factories';
+import { Toast } from '@oc-tech/omni-ui-components/Toast';
+import { ToastDemo, toastPropsFactory, toastVariants } from 'factories/omni-ui-components/Toast/Toast.factories';
+import { PanelShell } from '@oc-tech/omni-ui-components/PanelShell';
+import { ChatShellDemo, panelShellPropsFactory, panelShellVariants } from 'factories/omni-ui-components/PanelShell/PanelShell.factories';
+import { PreferencesForm } from '@oc-tech/omni-ui-components/PreferencesForm';
+import { PreferencesFormDemo, preferencesFormPropsFactory, preferencesFormVariants } from 'factories/omni-ui-components/PreferencesForm/PreferencesForm.factories';
+import { DataPrivacyPanel } from '@oc-tech/omni-ui-components/DataPrivacyPanel';
+import { DataPrivacyPanelDemo, dataPrivacyPanelPropsFactory, dataPrivacyPanelVariants } from 'factories/omni-ui-components/DataPrivacyPanel/DataPrivacyPanel.factories';
+import { IntegrationList } from '@oc-tech/omni-ui-components/IntegrationList';
+import { IntegrationListDemo, integrationListPropsFactory, integrationListVariants } from 'factories/omni-ui-components/IntegrationList/IntegrationList.factories';
+import { ShortcutList } from '@oc-tech/omni-ui-components/ShortcutList';
+import { shortcutListPropsFactory, shortcutListVariants } from 'factories/omni-ui-components/ShortcutList/ShortcutList.factories';
 import { StatusClock } from '@oc-tech/omni-ui-components/StatusClock';
 import { statusClockExamples, statusClockPropsFactory } from 'factories/omni-ui-components/StatusClock/StatusClock.factories';
 import { NativeAppWindow, nativeAppDefaults } from 'factories/omni-ui-components/showcase/NativeApp/NativeApp.factories';
@@ -172,6 +222,12 @@ import {
   transcriptVariants,
   TranscriptPanel,
 } from 'factories/omni-ui-components/Transcript/Transcript.factories';
+import { ContextMeter } from '@oc-tech/omni-ui-components/ContextMeter';
+import { contextMeterPropsFactory, contextMeterVariants } from 'factories/omni-ui-components/ContextMeter/ContextMeter.factories';
+import { DiffReview } from '@oc-tech/omni-ui-components/DiffReview';
+import { DiffReviewDemo, diffReviewPropsFactory, diffReviewVariants, sampleChanges } from 'factories/omni-ui-components/DiffReview/DiffReview.factories';
+import { ModelMenu } from '@oc-tech/omni-ui-components/ModelPicker';
+import { ComposerToolbarDemo, modelPickerPropsFactory, modelPickerVariants } from 'factories/omni-ui-components/ModelPicker/ModelPicker.factories';
 import { dividerPropsFactory, dividerVariants } from 'factories/omni-ui-components/Divider/Divider.factories';
 import { emptyPropsFactory, emptyVariants } from 'factories/omni-ui-components/Empty/Empty.factories';
 import { progressPropsFactory, progressRingVariants, progressVariants } from 'factories/omni-ui-components/Progress/Progress.factories';
@@ -387,6 +443,41 @@ const SessionBarPreview: React.FC = () => (
   </div>
 );
 
+/** Message parts (W1): one framed preview per component, one block per factory variant. */
+const messagePartFrame = (title: string, node: React.ReactNode) => (
+  <div key={title} className="flex max-w-[620px] flex-col gap-1.5">
+    <span className="font-mono text-xs text-muted-foreground">{title}</span>
+    <div className="rounded-xl border border-solid border-[color:var(--oui-panel-border)] bg-[color:var(--oui-panel-bg)] p-3 text-[color:var(--oui-tone-neutral-fg)]">{node}</div>
+  </div>
+);
+const MessagePartsPreview = (variants: Variant<never>[], render: (args: never) => React.ReactNode): React.FC => {
+  const Preview: React.FC = () => <div className="flex flex-col gap-4">{variants.map((variant) => messagePartFrame(variant.name, render(variant.args as never)))}</div>;
+  return Preview;
+};
+const MarkdownPreview = MessagePartsPreview(markdownVariants as Variant<never>[], (args) => <MarkdownDemo {...(args as object)} />);
+const SourcesPreview = MessagePartsPreview(sourcesVariants as Variant<never>[], (args) => <Sources {...sourcesPropsFactory(args as object)} />);
+const SuggestionsPreview = MessagePartsPreview(suggestionsVariants as Variant<never>[], (args) => <Suggestions {...suggestionsPropsFactory(args as object)} />);
+const ThinkingPreview = MessagePartsPreview(thinkingVariants as Variant<never>[], (args) => <Thinking {...thinkingPropsFactory(args as object)} />);
+const StepTimelinePreview = MessagePartsPreview(stepTimelineVariants as Variant<never>[], (args) => <StepTimeline {...stepTimelinePropsFactory(args as object)} />);
+const ErrorCardPreview = MessagePartsPreview(errorCardVariants as Variant<never>[], (args) => <ErrorCard {...errorCardPropsFactory(args as object)} />);
+const ApprovalCardPreview = MessagePartsPreview(approvalCardVariants as Variant<never>[], (args) => <ApprovalCard {...approvalCardPropsFactory(args as object)} />);
+const FeedbackPanelPreview = MessagePartsPreview(feedbackPanelVariants as Variant<never>[], (args) => <FeedbackPanel {...feedbackPanelPropsFactory(args as object)} />);
+const AttachmentPreview = MessagePartsPreview(attachmentVariants as Variant<never>[], (args) => <AttachmentStrip removeIcon={attachmentRemoveIcon} onRemove={() => undefined} {...(args as { items: never })} />);
+const CommandPopoverPreview = MessagePartsPreview(commandPopoverVariants as Variant<never>[], (args) => <CommandPopover {...commandPopoverPropsFactory(args as object)} />);
+const DictationBarPreview = MessagePartsPreview(dictationBarVariants as Variant<never>[], (args) => <DictationBar {...dictationBarPropsFactory(args as object)} />);
+const QueuedListPreview = MessagePartsPreview(queuedListVariants as Variant<never>[], (args) => <QueuedList {...queuedListPropsFactory(args as object)} />);
+const MessageBoxPreview: React.FC = () => (
+  <div className="flex max-w-[460px] flex-col gap-6 pt-40">
+    <ComposerDemo />
+    <ComposerDemo variant="pill" attachments={false} />
+  </div>
+);
+const ConversationPreview: React.FC = () => <ConversationDemo height={560} />;
+const VersionPagerPreview = MessagePartsPreview(versionPagerVariants as Variant<never>[], (args) => <VersionPager {...versionPagerPropsFactory(args as object)} />);
+const MessageActionsPreview = MessagePartsPreview(messageActionsVariants as Variant<never>[], (args) => <MessageActions {...messageActionsPropsFactory(args as object)} />);
+const SummaryDividerPreview = MessagePartsPreview(summaryDividerVariants as Variant<never>[], (args) => <SummaryDivider {...summaryDividerPropsFactory(args as object)} />);
+const ChatReplyPreview: React.FC = () => <ChatReplyShowcase />;
+
 const StatusClockPreview: React.FC = () => (
   <div className="flex flex-wrap gap-4">
     {statusClockExamples.map((variant) => (
@@ -471,6 +562,51 @@ const ComposerPreview: React.FC = () => (
   </div>
 );
 
+const DiffReviewPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-6">
+    <div className="flex w-[520px] flex-col gap-1.5">
+      <span className="font-mono text-xs text-muted-foreground">Diff · tabs, context lines, Apply walks the phases</span>
+      <DiffReviewDemo />
+    </div>
+    <div className="flex w-[520px] flex-col gap-1.5">
+      <span className="font-mono text-xs text-muted-foreground">Checklist · partial apply</span>
+      <DiffReviewDemo variant="checklist" />
+    </div>
+    <div className="flex w-[520px] flex-col gap-1.5">
+      <span className="font-mono text-xs text-muted-foreground">Applied · no highlighting</span>
+      <DiffReview {...diffReviewPropsFactory({ status: 'applied', highlight: undefined, changes: sampleChanges(2) })} />
+    </div>
+  </div>
+);
+
+const ModelPickerPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-6">
+    <div className="flex flex-col gap-1.5">
+      <span className="font-mono text-xs text-muted-foreground">Menu · grouped providers, effort</span>
+      <div className="w-[340px] rounded-md border bg-popover p-1.5 text-popover-foreground shadow-md">
+        <ModelMenu {...modelPickerPropsFactory()} />
+      </div>
+    </div>
+    <div className="flex flex-col gap-1.5">
+      <span className="font-mono text-xs text-muted-foreground">Chip + context meter in the composer</span>
+      <ComposerToolbarDemo />
+    </div>
+  </div>
+);
+
+const ContextMeterPreview: React.FC = () => (
+  <div className="flex flex-wrap items-center gap-6">
+    {contextMeterVariants
+      .filter((variant) => !variant.name.startsWith('Custom') && !variant.name.startsWith('No summarise'))
+      .map((variant) => (
+        <div key={variant.name} className="flex flex-col items-center gap-1">
+          <ContextMeter {...contextMeterPropsFactory(variant.args)} />
+          <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+        </div>
+      ))}
+  </div>
+);
+
 const UseFollowLatestPreview: React.FC = () => {
   const [lines, setLines] = React.useState(8);
   const log = useFollowLatest(lines);
@@ -504,6 +640,132 @@ const UseFollowLatestPreview: React.FC = () => {
     </div>
   );
 };
+
+const ConversationListPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-6">
+    <ConversationListDemo />
+    {conversationListVariants.slice(1, 3).map((variant) => (
+      <div key={variant.name} className="flex h-[460px] w-[280px] flex-col gap-1">
+        <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+        <div className="min-h-0 flex-1">
+          <ConversationList {...conversationListPropsFactory(variant.args)} />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const ConversationHeaderPreview: React.FC = () => (
+  <div className="flex flex-col gap-3">
+    {conversationHeaderVariants.map((variant) => (
+      <div key={variant.name} className="flex w-[560px] max-w-full flex-col gap-1">
+        <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+        <div className="rounded-xl border">
+          <ConversationHeader {...conversationHeaderPropsFactory(variant.args)} />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const EmptyStartersPreview: React.FC = () => (
+  <div className="grid gap-4 md:grid-cols-2">
+    {emptyStartersVariants.map((variant) => (
+      <div key={variant.name} className="flex h-80 flex-col gap-1">
+        <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+        <div className="flex min-h-0 flex-1 flex-col rounded-xl border">
+          <EmptyStarters {...emptyStartersPropsFactory(variant.args)} />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const SettingsDialogPreview: React.FC = () => (
+  <div className="flex flex-col gap-2">
+    <span className="font-mono text-[11px] text-muted-foreground">Opens a focus-trapped dialog; arrow keys move between tabs</span>
+    <SettingsDialogDemo />
+    <span className="font-mono text-[11px] text-muted-foreground">{settingsDialogVariants.length} configurations in the stories</span>
+  </div>
+);
+
+const ToastPreview: React.FC = () => (
+  <div className="flex flex-wrap gap-4">
+    <div className="relative h-40 w-[460px] rounded-xl border">
+      <ToastDemo />
+    </div>
+    {toastVariants.slice(0, 3).map((variant) => (
+      <div key={variant.name} className="relative h-40 w-[460px] rounded-xl border">
+        <Toast {...toastPropsFactory(variant.args)} />
+      </div>
+    ))}
+  </div>
+);
+
+const PanelShellPreview: React.FC = () => (
+  <div className="flex flex-col gap-4">
+    <div className="h-[520px] w-full max-w-[960px]">
+      <ChatShellDemo />
+    </div>
+    <div className="grid gap-4 md:grid-cols-2">
+      {panelShellVariants.slice(0, 2).map((variant) => (
+        <div key={variant.name} className="flex h-72 flex-col gap-1">
+          <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+          <div className="min-h-0 flex-1">
+            <PanelShell {...panelShellPropsFactory(variant.args)} />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const PreferencesFormPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-6">
+    <PreferencesFormDemo />
+    {preferencesFormVariants.slice(1).map((variant) => (
+      <div key={variant.name} className="flex w-[420px] flex-col gap-1">
+        <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+        <PreferencesForm {...preferencesFormPropsFactory(variant.args)} />
+      </div>
+    ))}
+  </div>
+);
+
+const DataPrivacyPanelPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-6">
+    <DataPrivacyPanelDemo />
+    {[dataPrivacyPanelVariants[1], dataPrivacyPanelVariants[4]].map((variant) => (
+      <div key={variant.name} className="flex w-[480px] flex-col gap-1">
+        <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+        <DataPrivacyPanel {...dataPrivacyPanelPropsFactory(variant.args)} />
+      </div>
+    ))}
+  </div>
+);
+
+const IntegrationListPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-6">
+    <IntegrationListDemo />
+    {integrationListVariants.slice(1).map((variant) => (
+      <div key={variant.name} className="flex w-[420px] flex-col gap-1">
+        <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+        <IntegrationList {...integrationListPropsFactory(variant.args)} />
+      </div>
+    ))}
+  </div>
+);
+
+const ShortcutListPreview: React.FC = () => (
+  <div className="flex flex-wrap gap-8">
+    {[{ name: 'Default', args: {} }, ...shortcutListVariants].map((variant) => (
+      <div key={variant.name} className="flex w-[360px] flex-col gap-1">
+        <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+        <ShortcutList {...shortcutListPropsFactory(variant.args)} />
+      </div>
+    ))}
+  </div>
+);
 
 const ActionMenuPreview: React.FC = () => (
   <div className="flex flex-wrap items-center gap-3">
@@ -1106,6 +1368,15 @@ const SECTIONS: OverviewSectionSpec[] = [
       ...['Divider', 'Flex', 'Grid', 'Layout'].map(libraryRow),
       { name: 'Panel', preview: PanelPreview, variants: panelVariants as Variant<unknown>[] },
       { name: 'Transcript', preview: TranscriptPreview, variants: transcriptVariants as Variant<unknown>[] },
+      { name: 'Transcript (conversation)', preview: ConversationPreview, variants: [], source: 'ConversationPreview' },
+      { name: 'Attachment', preview: AttachmentPreview, variants: attachmentVariants as Variant<unknown>[] },
+      { name: 'Composer', preview: MessageBoxPreview, variants: composerVariants as Variant<unknown>[] },
+      { name: 'CommandPopover', preview: CommandPopoverPreview, variants: commandPopoverVariants as Variant<unknown>[] },
+      { name: 'DictationBar', preview: DictationBarPreview, variants: dictationBarVariants as Variant<unknown>[] },
+      { name: 'QueuedList', preview: QueuedListPreview, variants: queuedListVariants as Variant<unknown>[] },
+      { name: 'DiffReview', preview: DiffReviewPreview, variants: diffReviewVariants as Variant<unknown>[] },
+      { name: 'ModelPicker', preview: ModelPickerPreview, variants: modelPickerVariants as Variant<unknown>[] },
+      { name: 'ContextMeter', preview: ContextMeterPreview, variants: contextMeterVariants as Variant<unknown>[] },
       { name: 'useFollowLatest', preview: UseFollowLatestPreview, variants: [], source: 'UseFollowLatestPreview' },
       ...['Space', 'Splitter', 'Masonry'].map(libraryRow),
     ],
@@ -1154,6 +1425,28 @@ const SECTIONS: OverviewSectionSpec[] = [
         source: 'NativeAppPreview',
       },
       { name: 'ActionMenu', preview: ActionMenuPreview, variants: actionMenuVariants as Variant<unknown>[] },
+    ],
+  },
+  {
+    title: 'Message parts',
+    rows: [
+      { name: 'Markdown', preview: MarkdownPreview, variants: markdownVariants as Variant<unknown>[] },
+      { name: 'Sources', preview: SourcesPreview, variants: sourcesVariants as Variant<unknown>[] },
+      { name: 'Suggestions', preview: SuggestionsPreview, variants: suggestionsVariants as Variant<unknown>[] },
+      { name: 'Thinking', preview: ThinkingPreview, variants: thinkingVariants as Variant<unknown>[] },
+      { name: 'StepTimeline', preview: StepTimelinePreview, variants: stepTimelineVariants as Variant<unknown>[] },
+      { name: 'ErrorCard', preview: ErrorCardPreview, variants: errorCardVariants as Variant<unknown>[] },
+      { name: 'ApprovalCard', preview: ApprovalCardPreview, variants: approvalCardVariants as Variant<unknown>[] },
+      { name: 'FeedbackPanel', preview: FeedbackPanelPreview, variants: feedbackPanelVariants as Variant<unknown>[] },
+      { name: 'VersionPager', preview: VersionPagerPreview, variants: versionPagerVariants as Variant<unknown>[] },
+      { name: 'MessageActions', preview: MessageActionsPreview, variants: messageActionsVariants as Variant<unknown>[] },
+      { name: 'SummaryDivider', preview: SummaryDividerPreview, variants: summaryDividerVariants as Variant<unknown>[] },
+      {
+        name: 'Chat reply (message parts together)',
+        preview: ChatReplyPreview,
+        variants: [{ name: 'Finished reply, summary steps', args: {} }] as Variant<unknown>[],
+        source: 'ChatReplyPreview',
+      },
     ],
   },
   {
@@ -1341,6 +1634,21 @@ const SECTIONS: OverviewSectionSpec[] = [
   {
     title: 'Other',
     rows: ['Affix', 'App', 'BackTop', 'ConfigProvider', 'Upload', 'Util'].map(libraryRow),
+  },
+  {
+    title: 'Chat shell and settings',
+    rows: [
+      { name: 'PanelShell', preview: PanelShellPreview, variants: panelShellVariants as Variant<unknown>[] },
+      { name: 'ConversationList', preview: ConversationListPreview, variants: conversationListVariants as Variant<unknown>[] },
+      { name: 'ConversationHeader', preview: ConversationHeaderPreview, variants: conversationHeaderVariants as Variant<unknown>[] },
+      { name: 'EmptyStarters', preview: EmptyStartersPreview, variants: emptyStartersVariants as Variant<unknown>[] },
+      { name: 'Toast', preview: ToastPreview, variants: toastVariants as Variant<unknown>[] },
+      { name: 'SettingsDialog', preview: SettingsDialogPreview, variants: settingsDialogVariants as Variant<unknown>[] },
+      { name: 'PreferencesForm', preview: PreferencesFormPreview, variants: preferencesFormVariants as Variant<unknown>[] },
+      { name: 'DataPrivacyPanel', preview: DataPrivacyPanelPreview, variants: dataPrivacyPanelVariants as Variant<unknown>[] },
+      { name: 'IntegrationList', preview: IntegrationListPreview, variants: integrationListVariants as Variant<unknown>[] },
+      { name: 'ShortcutList', preview: ShortcutListPreview, variants: shortcutListVariants as Variant<unknown>[] },
+    ],
   },
 ];
 

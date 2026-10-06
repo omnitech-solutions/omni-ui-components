@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import type { HighlightFn } from '../Highlight';
 import type { ControlTone } from '../internal/support/controlTone';
+import type { ChatAttachmentPart, ChatVersion, ConversationTurn, TranscriptConversationProps } from './Transcript.conversation.types';
 
 /** A paragraph of plain text inside a bubble. */
 export interface TranscriptTextBlock {
@@ -64,10 +65,21 @@ export type TranscriptEntry = TranscriptSpeech | TranscriptMessage | TranscriptE
 /** Entries that carry text a person can copy. */
 export type TranscriptBubbleEntry = TranscriptSpeech | TranscriptMessage;
 
-export interface TranscriptProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onCopy'> {
-  entries: TranscriptEntry[];
+/**
+ * Props of the Transcript. `T` is your entry type (extend `TranscriptEntry`), `U` your turn, `V` your version and `A` your
+ * attachment part type: callbacks and slots receive the SAME objects you passed in (by reference), with your extra fields.
+ */
+export interface TranscriptProps<
+  T extends TranscriptEntry = TranscriptEntry,
+  U extends ConversationTurn = ConversationTurn,
+  V extends ChatVersion = ChatVersion,
+  A extends ChatAttachmentPart = ChatAttachmentPart,
+> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onCopy'>,
+    TranscriptConversationProps<U, V, A> {
+  /** Flat entries (speech, message, event). Not needed in conversation mode (`turns`). */
+  entries?: T[];
   /** Called with the entry when its copy control is chosen. The caller writes to the clipboard and sets `copiedId`. */
-  onCopy?: (entry: TranscriptBubbleEntry) => void;
+  onCopy?: (entry: Extract<T, TranscriptBubbleEntry>) => void;
   /** Id of the entry just copied: its control shows `copiedLabel` (and `copiedIcon`). Controlled, no internal timer. */
   copiedId?: string | null;
   /** Icon node of the copy control. Without it (or without `onCopy`) bubbles have no copy control. */
@@ -84,7 +96,7 @@ export interface TranscriptProps extends Omit<React.HTMLAttributes<HTMLDivElemen
    */
   fences?: boolean;
   /** Called with the block, its entry and its index when a code block's copy control is chosen. Set `copiedId` to `codeBlockId(entry.id, index)`. */
-  onCopyCode?: (block: TranscriptCodeBlock, entry: TranscriptBubbleEntry, index: number) => void;
+  onCopyCode?: (block: TranscriptCodeBlock, entry: Extract<T, TranscriptBubbleEntry>, index: number) => void;
   /** Accessible name of a code block's copy control. Default `Copy code`. */
   copyCodeLabel?: string;
   /** Name of a code block's control once copied. Default `Copied`. */
@@ -107,6 +119,6 @@ export interface TranscriptProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   renderCode?: (block: TranscriptCodeBlock) => React.ReactNode;
   /** Text of the quiet tag on an edited speech entry. Default `edited`. */
   editedLabel?: string;
-  /** Accessible name of the log. Default `Transcript`. */
+  /** Accessible name of the log. Default `Transcript` (`Conversation` in conversation mode, from `labels.conversation`). */
   'aria-label'?: string;
 }

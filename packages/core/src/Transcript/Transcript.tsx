@@ -3,9 +3,12 @@ import * as React from 'react';
 import { cn } from 'lib/utils';
 import { TokenLines } from '../Highlight/TokenLines';
 import { IconButton } from '../IconButton';
+import { TranscriptConversation } from './Transcript.conversation';
+import { CONVERSATION_STICK_THRESHOLD, DEFAULT_TRANSCRIPT_LABELS, type ChatAttachmentPart, type ChatVersion, type ConversationTurn } from './Transcript.conversation.types';
 import { Tag } from '../Tag';
 import { codeBlockId, parseFencedBlocks } from './Transcript.blocks';
 import {
+  conversationColumnClasses,
   transcriptBubbleVariants,
   transcriptCodeBlockClasses,
   transcriptCodeHeaderClasses,
@@ -14,6 +17,47 @@ import {
   transcriptLabelToneClasses,
 } from './Transcript.variants';
 import type { TranscriptBlock, TranscriptBubbleEntry, TranscriptCodeBlock, TranscriptEntry, TranscriptProps } from './Transcript.types';
+
+/** The nearest ancestor that scrolls vertically, or the document's scrolling element. */
+const scrollParentOf = (node: HTMLElement): HTMLElement | null => {
+  for (let parent = node.parentElement; parent; parent = parent.parentElement) {
+    const overflow = getComputedStyle(parent).overflowY;
+    if (overflow === 'auto' || overflow === 'scroll') return parent;
+  }
+  return null;
+};
+
+/**
+ * Tells the host when the scroll container (the nearest scrolling ancestor, e.g. the Panel body) moves to or from the
+ * end: `onAtEndChange(atEnd)` fires on change only, `atEnd` meaning within `threshold` px of the end. It reads the container, it
+ * never scrolls it (that stays with the Panel's `useFollowLatest`).
+ */
+function useAtEnd(root: React.RefObject<HTMLElement | null>, onAtEndChange: ((atEnd: boolean) => void) | undefined, threshold: number, deps: unknown[]) {
+  const last = React.useRef<boolean | null>(null);
+  const latest = React.useRef(onAtEndChange);
+  latest.current = onAtEndChange;
+  const measure = React.useCallback(() => {
+    const node = root.current;
+    const box = node ? scrollParentOf(node) : null;
+    if (!box) return;
+    const atEnd = box.scrollHeight - box.scrollTop - box.clientHeight <= threshold;
+    if (atEnd !== last.current) {
+      last.current = atEnd;
+      latest.current?.(atEnd);
+    }
+  }, [root, threshold]);
+  React.useEffect(() => {
+    if (!onAtEndChange) return;
+    const node = root.current;
+    const box = node ? scrollParentOf(node) : null;
+    if (!box) return;
+    box.addEventListener('scroll', measure, { passive: true });
+    return () => box.removeEventListener('scroll', measure);
+  }, [onAtEndChange, root, measure]);
+  // New content changes the distance without a scroll event.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => measure(), [measure, ...deps]);
+}
 
 /**
  * Omni Transcript: a config-driven live log of `entries` (speech, your own message, event chips) meant to be the
@@ -32,11 +76,49 @@ import type { TranscriptBlock, TranscriptBubbleEntry, TranscriptCodeBlock, Trans
  *   <Transcript entries={entries} copyIcon={<Copy />} copiedIcon={<Check />} onCopy={copy} copiedId={copied} />
  * </Panel>
  */
-export const Transcript = React.forwardRef<HTMLDivElement, TranscriptProps>(
-  (
+function TranscriptInner<
+  T extends TranscriptEntry = TranscriptEntry,
+  U extends ConversationTurn = ConversationTurn,
+  V extends ChatVersion = ChatVersion,
+  A extends ChatAttachmentPart = ChatAttachmentPart,
+>(
     {
-      entries,
-      onCopy,
+      entries: entriesProp,
+      turns,
+      busy,
+      waiting,
+      live,
+      hasEarlier,
+      onLoadEarlier,
+      loadingEarlier,
+      empty,
+      readOnly,
+      renderTurn,
+      renderMarkdown,
+      cursor,
+      slots,
+      editingId,
+      defaultEditingId,
+      editValue,
+      onEditChange,
+      onEditStart,
+      onEditSubmit,
+      onEditCancel,
+      onRetry,
+      onRegenerate,
+      onSelectVersion,
+      onAttachmentClick,
+      onAtEndChange,
+      atEndThreshold = CONVERSATION_STICK_THRESHOLD,
+      submitOnEnter,
+      onCopyUser,
+      editIcon,
+      stoppedIcon,
+      attachmentIcons,
+      maxWidth = 760,
+      style,
+      labels,
+      onCopy: onCopyProp,
       copiedId,
       copyIcon,
       copiedIcon,
@@ -44,7 +126,7 @@ export const Transcript = React.forwardRef<HTMLDivElement, TranscriptProps>(
       copiedLabel = 'Copied',
       editedLabel = 'edited',
       fences = false,
-      onCopyCode,
+      onCopyCode: onCopyCodeProp,
       copyCodeLabel = 'Copy code',
       copiedCodeLabel = 'Copied',
       wrapCode = false,
@@ -52,11 +134,23 @@ export const Transcript = React.forwardRef<HTMLDivElement, TranscriptProps>(
       highlight,
       codeLineNumbers = false,
       className,
-      'aria-label': ariaLabel = 'Transcript',
+      'aria-label': ariaLabelProp,
       ...rest
-    },
-    ref,
-  ) => {
+    }: TranscriptProps<T, U, V, A>,
+    forwardedRef: React.ForwardedRef<HTMLDivElement>,
+  ) {
+    const entries = (entriesProp ?? []) as TranscriptEntry[];
+    const onCopy = onCopyProp as ((entry: TranscriptBubbleEntry) => void) | undefined;
+    const onCopyCode = onCopyCodeProp as ((block: TranscriptCodeBlock, entry: TranscriptBubbleEntry, index: number) => void) | undefined;
+    const root = React.useRef<HTMLDivElement | null>(null);
+    const ref = (node: HTMLDivElement | null) => {
+      root.current = node;
+      if (typeof forwardedRef === 'function') forwardedRef(node);
+      else if (forwardedRef) (forwardedRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+    };
+    useAtEnd(root, onAtEndChange, atEndThreshold, [entries.length, turns?.length, live?.text]);
+    const conversation = turns !== undefined;
+    const ariaLabel = ariaLabelProp ?? (conversation ? (labels?.conversation ?? DEFAULT_TRANSCRIPT_LABELS.conversation) : 'Transcript');
     const copyable = Boolean(onCopy) && copyIcon !== undefined && copyIcon !== null;
 
     const copyControl = (entry: TranscriptBubbleEntry) => {
@@ -191,6 +285,58 @@ export const Transcript = React.forwardRef<HTMLDivElement, TranscriptProps>(
       );
     };
 
+    if (conversation) {
+      return (
+        <div
+          ref={ref}
+          role="log"
+          aria-live="polite"
+          aria-label={ariaLabel}
+          data-slot="transcript"
+          data-mode="conversation"
+          data-read-only={readOnly ? 'true' : undefined}
+          className={cn(conversationColumnClasses, className)}
+          style={{ maxWidth, ...style }}
+          {...rest}
+        >
+          <TranscriptConversation
+            turns={turns}
+            busy={busy}
+            waiting={waiting}
+            live={live}
+            hasEarlier={hasEarlier}
+            onLoadEarlier={onLoadEarlier}
+            loadingEarlier={loadingEarlier}
+            empty={empty}
+            readOnly={readOnly}
+            renderTurn={renderTurn}
+            renderMarkdown={renderMarkdown}
+            cursor={cursor}
+            slots={slots}
+            editingId={editingId}
+            defaultEditingId={defaultEditingId}
+            editValue={editValue}
+            onEditChange={onEditChange}
+            onEditStart={onEditStart}
+            onEditSubmit={onEditSubmit}
+            onEditCancel={onEditCancel}
+            onRetry={onRetry}
+            onRegenerate={onRegenerate}
+            onSelectVersion={onSelectVersion}
+            onAttachmentClick={onAttachmentClick}
+            submitOnEnter={submitOnEnter}
+            onCopyUser={onCopyUser}
+            editIcon={editIcon}
+            stoppedIcon={stoppedIcon}
+            attachmentIcons={attachmentIcons}
+            copyIcon={copyIcon}
+            copyLabel={copyLabel === 'Copy' ? undefined : copyLabel}
+            labels={labels}
+          />
+        </div>
+      );
+    }
+
     return (
       <div
         ref={ref}
@@ -198,11 +344,20 @@ export const Transcript = React.forwardRef<HTMLDivElement, TranscriptProps>(
         aria-label={ariaLabel}
         data-slot="transcript"
         className={cn('mt-auto flex min-w-0 flex-none flex-col gap-2', className)}
+        style={style}
         {...rest}
       >
         {entries.map(renderEntry)}
       </div>
     );
-  },
-);
-Transcript.displayName = 'Transcript';
+}
+
+export const Transcript = React.forwardRef(TranscriptInner) as <
+  T extends TranscriptEntry = TranscriptEntry,
+  U extends ConversationTurn = ConversationTurn,
+  V extends ChatVersion = ChatVersion,
+  A extends ChatAttachmentPart = ChatAttachmentPart,
+>(
+  props: TranscriptProps<T, U, V, A> & { ref?: React.Ref<HTMLDivElement> },
+) => React.ReactElement | null;
+(Transcript as { displayName?: string }).displayName = 'Transcript';
