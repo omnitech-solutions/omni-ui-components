@@ -1,5 +1,8 @@
 # omni-ui-components: completion plan (brief for a Crux dev cycle)
 
+> **Execution moved.** To run this work, use `bionic/inbox/lib-cloud-prompt.md` and `bionic/inbox/lib-work-units.md` (self-contained,
+> parallel units with a shared preamble). This file is kept as the rationale and the long-form description of each item.
+
 Written 2026-10-06 against library `master` at `5ab7ba6` (pushed). This is the work that remains in the library
 package before the Interview Studio native app and web app can adopt it, plus the quality work worth doing while
 the context is fresh. A second brief covers the app side:
