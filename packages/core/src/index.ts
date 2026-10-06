@@ -87,3 +87,6 @@ export * from './RichText';
 export * from './Form';
 export * from './Table';
 export * from './Tooltip';
+export * from './Toolbar';
+export * from './SplitButton';
+export * from './ActionMenu';

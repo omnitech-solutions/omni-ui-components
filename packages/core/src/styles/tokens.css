@@ -34,6 +34,7 @@
     --oui-control-gap:             6px;
     --oui-control-separator:       20px; /* vertical divider height between control groups */
     --oui-control-icon:            20px;
+    --oui-control-caret:           20px; /* width of a split button's caret segment */
     --oui-control-label-max:       260px; /* default ellipsis width for a truncating label */
 
     /* ---- Tone scale (fg / bg / border = soft tint; solid-bg / solid-fg = filled) ----
@@ -119,7 +120,7 @@
 
     --oui-tone-dim-fg:             #5f636c;
     --oui-tone-dim-bg:             transparent;
-    --oui-tone-dim-border:         #2c3038;
+    --oui-tone-dim-border:         #373b46; /* a touch lighter than the board's #2c3038 so the dimmed outline stays visible */
     --oui-tone-dim-solid-fg:       #5f636c;
   }
 

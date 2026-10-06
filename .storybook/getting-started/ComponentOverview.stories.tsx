@@ -40,6 +40,7 @@ import {
   DateTimePicker,
   EmailInput,
   FileUpload,
+  ActionMenu,
   IconButton,
   Input,
   InputOTP,
@@ -52,6 +53,7 @@ import {
   Segmented,
   Select,
   Slider,
+  SplitButton,
   Steps,
   Stepper,
   Switch,
@@ -153,6 +155,9 @@ import {
   buttonToneVariants,
   buttonVariants,
 } from 'factories/omni-ui-components/Button/Button.factories';
+import { actionMenuPropsFactory, actionMenuVariants } from 'factories/omni-ui-components/ActionMenu/ActionMenu.factories';
+import { splitButtonPropsFactory, splitButtonVariants } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
+import { NativeToolbarDemo, toolbarLabelledVariants, toolbarVariants } from 'factories/omni-ui-components/Toolbar/Toolbar.factories';
 import { dividerPropsFactory, dividerVariants } from 'factories/omni-ui-components/Divider/Divider.factories';
 import { emptyPropsFactory, emptyVariants } from 'factories/omni-ui-components/Empty/Empty.factories';
 import { progressPropsFactory, progressRingVariants, progressVariants } from 'factories/omni-ui-components/Progress/Progress.factories';
@@ -322,6 +327,38 @@ const IconButtonPreview: React.FC = () => (
         <IconButton key={variant.name} {...iconButtonPropsFactory(variant.args)} />
       ))}
     </div>
+  </div>
+);
+
+const SplitButtonPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-x-8 gap-y-5 pt-2">
+    {splitButtonVariants.map((variant) => (
+      <div key={variant.name} className="flex flex-col items-start gap-2">
+        <span className="font-mono text-xs text-muted-foreground">{variant.name}</span>
+        <SplitButton {...splitButtonPropsFactory(variant.args)} />
+      </div>
+    ))}
+  </div>
+);
+
+const ToolbarPreview: React.FC = () => (
+  <div className="flex flex-col gap-4 overflow-x-auto pb-2">
+    {[...toolbarVariants, ...toolbarLabelledVariants].map((variant) => (
+      <div key={variant.name} className="flex w-max flex-col gap-1.5">
+        <span className="font-mono text-xs text-muted-foreground">{variant.name}</span>
+        <div className="w-max rounded-xl px-4 py-3.5" style={{ background: '#1a4f96' }}>
+          <NativeToolbarDemo {...variant.args} />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const ActionMenuPreview: React.FC = () => (
+  <div className="flex flex-wrap items-center gap-3">
+    {actionMenuVariants.map((variant) => (
+      <ActionMenu key={variant.name} {...actionMenuPropsFactory(variant.args)} trigger={<OmniButton variant="outline">{variant.name}</OmniButton>} />
+    ))}
   </div>
 );
 
@@ -943,6 +980,9 @@ const SECTIONS: OverviewSectionSpec[] = [
         preview: IconButtonPreview,
         variants: [...iconButtonVariants, ...iconButtonSizeVariants, ...iconButtonToneVariants, ...iconButtonStateVariants] as Variant<unknown>[],
       },
+      { name: 'SplitButton', preview: SplitButtonPreview, variants: splitButtonVariants as Variant<unknown>[] },
+      { name: 'Toolbar', preview: ToolbarPreview, variants: [...toolbarVariants, ...toolbarLabelledVariants] as Variant<unknown>[] },
+      { name: 'ActionMenu', preview: ActionMenuPreview, variants: actionMenuVariants as Variant<unknown>[] },
     ],
   },
   {

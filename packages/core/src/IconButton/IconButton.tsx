@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Trash2 } from 'lucide-react';
 
 import { cn } from 'lib/utils';
-import { toneBadgeClasses } from '../internal/support/controlTone';
+import { ControlBadge } from '../internal/support/ControlBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../Tooltip';
 import { iconButtonVariants } from './IconButton.variants';
 import type { IconButtonProps } from './IconButton.types';
@@ -79,26 +79,7 @@ const IconButtonInner = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       >
         {icon}
         {badge ? (
-          <>
-            <span
-              data-slot="icon-button-badge"
-              data-tone={badge.tone}
-              aria-hidden="true"
-              className={cn(
-                'pointer-events-none absolute top-[var(--oui-badge-offset)] right-[var(--oui-badge-offset)]',
-                'flex size-[var(--oui-badge-size)] items-center justify-center rounded-full text-[11px] leading-none font-bold',
-                'shadow-[0_0_0_2px_var(--oui-badge-ring)]',
-                toneBadgeClasses[badge.tone],
-              )}
-            >
-              {badge.label}
-            </span>
-            {badge.description ? (
-              <span id={badgeDescriptionId} className="sr-only">
-                {badge.description}
-              </span>
-            ) : null}
-          </>
+          <ControlBadge slot="icon-button-badge" tone={badge.tone} label={badge.label} description={badge.description} descriptionId={badgeDescriptionId} />
         ) : null}
       </button>
     );

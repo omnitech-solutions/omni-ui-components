@@ -1,5 +1,5 @@
 ---
-title: Native App control variations (Button, IconButton, Progress ring, Segmented, Empty tile, Steps checklist, Tag, Divider, tokens)
+title: Native App control variations (Button, IconButton, Progress ring, Segmented, Empty tile, Steps checklist, Tag, Divider, tokens) and the Toolbar, SplitButton and ActionMenu components
 category: references
 updated: 2026-10-06
 ---
@@ -58,6 +58,45 @@ Reference for the configuration-driven variations the Native App (live-session t
 ## Divider as control separator
 
 - No prop. A vertical Divider with `h-[var(--oui-control-separator)] bg-[color:var(--oui-tone-neutral-border)]` (exported as `CONTROL_SEPARATOR_CLASS` from `Divider.factories.tsx`) is the 20px separator; the class replaces the default `h-full` and `bg-border`. Story: `Divider / Control separator (20px)`.
+
+## ActionMenu (new, `packages/core/src/ActionMenu`)
+
+Data-driven popup menu. Props: `trigger` (asChild element), `label` (aria-label of the menu), `title?`, `sections[]`, `notice?`, `hint?`, `kind: 'menu' | 'list'`, `onSelect(itemId, item)`, `onValueChange(sectionId, itemId)`, `returnFocus: 'keyboard' | 'always'`, `open` / `defaultOpen` / `onOpenChange`, `side`, `align`, `sideOffset`, `collisionPadding` (8), `width` (300), `maxHeight`, `portal` (true), `container`, `modal` (false), `className`, `data-testid`.
+
+- Section: `{ id, label?, labelStyle: 'plain' | 'caps', selection: 'single' | 'multiple' | 'none', value?, highlightChecked?, divider?, items[] }`. `selection` defaults to `single` when any row has `checked`. **Select mode:** give a section `value` and the rows' `checked` is derived (`item.id === value`); `onValueChange(sectionId, itemId)` fires once per choice. The menu keeps no selection state: the app (or the story wrapper) feeds `value` back.
+- Row: `{ id, label, description?, icon?, checked?, shortcut?: string[], tone?: 'default' | 'danger', disabled?, disabledReason?, onSelect? }`. Roles: `menuitemradio` (single), `menuitemcheckbox` (multiple), `menuitem`; `aria-checked` from `checked`. The fixed leading column (check or icon, 17px) is reserved per section whenever any row has `checked` or an `icon`, so labels align. `disabledReason` is shown as the row's second line (replacing `description`) and the row is `aria-disabled` and skipped by the keyboard. `shortcut` glyphs render as plain mono text (`['⌘','⇧','S']` -> `⌘⇧S`).
+- `notice: { tone, title, detail?, icon?, action?: { label, onSelect } }` leads the menu (the action is a real menu item, so arrows reach it). `hint: { label, keys: string[] }` (keys joined with a space) is pinned under the scroll area. The rows scroll in `[data-slot=action-menu-scroll]`; the menu height is `min(maxHeight, <radix available height>)` with `box-border` (the library has no preflight, so content-box would overflow a short window by the padding).
+- `kind="list"` is a read-only grouped reference list in a Radix Popover (`role=dialog`, groups, no menu roles) for the shortcuts menu.
+- Focus: pointer selections and outside clicks leave nothing focused (the last input device is tracked and `onCloseAutoFocus` is prevented); Enter / Space / Escape closes return focus to the trigger. `returnFocus="always"` restores the Radix behaviour.
+- WKWebView: `portal={false}` keeps the menu in the trigger's DOM; `container` portals into the app's own root; `modal` defaults to false so other controls stay clickable. `DropdownMenuContent` (components/ui) gained the same `portal` / `container` props (default unchanged).
+- Factories: `ActionMenu.factories.tsx` (`captureMenuSpec`, `micMenuSpec`, `answerStyleMenuSpec`, `shortcutsMenu`, notices, `actionMenuVariants`). Stories: CaptureModes, ScreenPermissionNotice, MicListeningDevices, MicLostWithDevices, AnswerStyleGrouped, AnswerStyleScrolling, AnswerStyleShortWindow (330px iframe), ShortcutsGrouped, DisabledItemWithReason, InsideItsOwnRoot, AnswerStyleSelect (play), Variants.
+
+## SplitButton (new, `packages/core/src/SplitButton`)
+
+Main action + caret menu in ONE bordered container: the caret has only `border-l border-inherit` (1px divider in the control's own border colour), so there is no seam. Props: `main { label, icon, caption?, state: 'idle' | 'analysing', pressed?, tooltip?, shortcut?, disabled?, disabledReason?, onPress?, data-testid }`, `caret { label?, tooltip?, disabledReason?, data-testid }`, `menu` (an ActionMenu spec without trigger/open), `tone` (neutral | accent | success | warning | danger | dim; default neutral, accent while analysing), `status { tone, label?, description? }`, `size` (default: the Toolbar's, else `control`), `open` / `defaultOpen` / `onOpenChange`, `openMenuOn: ('contextmenu' | 'arrowdown')[]`.
+
+- `analysing` swaps the icon for the indeterminate Progress ring, sets `aria-busy`; the press still reaches `onPress` (stop). `disabledReason` on the main half sets `aria-disabled` (hoverable, tooltip = reason, click swallowed) while the caret stays usable; a caret `disabledReason` blocks the menu.
+- The `status` badge is a child of the icon wrapper inside the main segment (top-right of the glyph, -4px offset, 16px, 2px ring); it never touches the caret half or the border. This is a deliberate owner deviation: board 1a draws it on the control's outer corner.
+- Focus ring: `has-[:focus-visible]:ring-2` on the container (one ring around the whole control, never one half); the halves are `outline-none` and inherit the tone text colour (`text-inherit`, buttons otherwise render the browser text colour without preflight).
+- Factories: `captureSplitButtonProps(state)` and `micSplitButtonProps(state)` are the state-to-props adapters (paused > problem > analysing > auto/manual); `CaptureSplitButtonDemo` / `MicSplitButtonDemo` hold the controlled state for stories (the components keep none); `splitButtonVariants`.
+
+## Toolbar (new, `packages/core/src/Toolbar`)
+
+`role="toolbar"` + `aria-label`, `aria-orientation=horizontal`. Props: `label`, `size: 'control' | 'control-labelled'` (provided to children through context; `useToolbarSize()`; SplitButton reads it, IconButton / Button / Segmented take their size by prop), `leading`, `groups: { id, label?, children }[]`, `children` (one more group), `trailing`, `separators` (20px Divider control separator with 3px side margin between sections, never at an edge), `variant: 'plain' | 'floating'` (floating = rounded pill on `--oui-badge-ring`). Gap 6px. No roving tabindex (each control is a tab stop; Segmented keeps its own arrow handling). Window dots, the app frame and `ToolbarLock` stay in the app.
+
+- Factories: `NativeToolbarDemo` composes board 1a from library parts with working state (capture / mic demos, answer-style select whose trigger shows the chosen name, panel toggles with the last-one lock, brighter ghost See-through and Shortcuts with the filled half-circle `ContrastFilledIcon`); `toolbarVariants` (7 board states) and `toolbarLabelledVariants`.
+
+## Additional deviations (Toolbar, SplitButton, ActionMenu)
+
+- `gap-toolbar.md` ControlSpec was split: SplitButton `main` carries the spec; the `ActionMenuSpec` is the ActionMenu props minus `trigger`; the badge lives on `status` (not `main.badge`), at the glyph and not the outer corner (owner decision).
+- ActionMenu rows use `shortcut: string[]` (plain mono) and a section `value` + `onValueChange` select mode instead of per-row `checked` only; `notice` uses `title` / `detail` / `action` as proposed; `kind: 'list'` is a Popover dialog as proposed. `content` slot for display thumbnails was not built (board 1c has none).
+- The menu is anchored to the caret (Radix dropdown has no Anchor); `align: 'end'` puts it under the control's right edge.
+- Dark `--oui-tone-dim-border` is `#373b46` (board `#2c3038`) so the dimmed outline stays visible on the story surface. Neutral uses the theme tokens (grey 31 / 67 in dark) rather than the board's bluish `#262a33` / `#363a44`. Menu surface and border use `--oui-surface-field` and the neutral tone border; `border-[var(--oui-border-field)]` is ambiguous for Tailwind (width vs colour) and the token can resolve empty, so colours use `border-[color:...]`.
+- Storybook: stories whose render puts JSX inside object props (e.g. Toolbar `groups`) hang the docs source decorator; the Toolbar and SplitButton stories render through the demo components instead.
+
+## Tests (Toolbar, SplitButton, ActionMenu)
+
+`packages/core/test/ActionMenu/ActionMenu.test.tsx`, `packages/core/test/SplitButton/SplitButton.test.tsx` and `SplitButton.flow.test.tsx` (selection tint, check moves, once-per-choice callbacks, focus after pointer vs keyboard vs Escape vs outside click, badge inside the main segment, whole-control focus ring, tones), `packages/core/test/Toolbar/Toolbar.test.tsx` (roles, size context, groups and separators, every board state, paused, last-panel lock and its tooltip, bright ghost icons). Storybook `play` functions: SplitButton PickAutoWithMouse / PickAutoWithKeyboard, Toolbar ChooseAnswerStyle, ActionMenu AnswerStyleSelect.
 
 ## Deviations from the proposals (`gap-toolbar.md`, `gap-panels-footer.md`)
 
