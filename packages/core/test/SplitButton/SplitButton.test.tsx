@@ -4,6 +4,7 @@ import { render, screen, within, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { SplitButton, type SplitButtonProps } from '@oc-tech/omni-ui-components/SplitButton';
+import { IconButton } from '@oc-tech/omni-ui-components/IconButton';
 import { Toolbar } from '@oc-tech/omni-ui-components/Toolbar';
 import {
   splitButtonCaptureVariants,
@@ -101,9 +102,20 @@ describe('omni-ui-components/SplitButton', () => {
       const badge = container.querySelector('[data-slot="split-button-status"]') as HTMLElement;
       expect(badge).toHaveAttribute('data-tone', 'warning');
       expect(badge).toHaveTextContent('!');
-      expect(badge).toHaveClass('top-[-4px]', 'right-[-4px]');
-      expect(badge.parentElement).toHaveAttribute('data-slot', 'split-button-icon');
+      expect(badge).toHaveClass('top-[var(--oui-badge-offset)]', 'right-0');
+      expect(badge.parentElement).toBe(screen.getByRole('button', { name: 'Capture' }));
       expect(screen.getByRole('button', { name: 'Capture' })).toHaveAccessibleDescription('Screen recording permission lost');
+    });
+
+    it('uses the same size and top offset as the IconButton badge, so the two read as one family', () => {
+      const split = renderSplit(variant('Capture · screen permission lost'));
+      const splitBadge = split.container.querySelector('[data-slot="split-button-status"]') as HTMLElement;
+      const icon = render(<IconButton icon={<span />} label="Mic" badge={{ tone: 'warning', label: '!', description: 'Microphone lost' }} />);
+      const iconBadge = icon.container.querySelector('[data-slot="icon-button-badge"]') as HTMLElement;
+      for (const cls of ['size-[var(--oui-badge-size)]', 'top-[var(--oui-badge-offset)]', 'rounded-full', 'text-[11px]']) {
+        expect(splitBadge).toHaveClass(cls);
+        expect(iconBadge).toHaveClass(cls);
+      }
     });
 
     it('has no badge unless `status` is set', () => {

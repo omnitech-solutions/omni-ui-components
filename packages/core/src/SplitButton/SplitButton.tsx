@@ -78,7 +78,7 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
         title={hasMainTip ? undefined : main.label}
         className={cn(
           SEGMENT,
-          'rounded-l-[calc(var(--oui-control-radius)-1px)]',
+          'relative rounded-l-[calc(var(--oui-control-radius)-1px)]',
           labelled ? 'min-w-[58px] flex-col gap-[3px] px-1' : 'min-w-[var(--oui-control-height)]',
           '[&_svg]:size-[var(--oui-control-icon)]',
           'aria-pressed:bg-[color:var(--oui-tone-accent-bg)] aria-pressed:text-[color:var(--oui-tone-accent-fg)]',
@@ -103,20 +103,20 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
             : undefined
         }
       >
-        {/* The icon's own box anchors the status badge, so it sits at the glyph's top-right and never touches the caret half. */}
-        <span data-slot="split-button-icon" className="relative inline-flex">
+        <span data-slot="split-button-icon" className="inline-flex">
           {analysing ? <Progress shape="ring" tone="accent" size={20} aria-hidden="true" /> : main.icon}
-          {status ? (
-            <ControlBadge
-              slot="split-button-status"
-              className="top-[-4px] right-[-4px]"
-              tone={status.tone}
-              label={status.label}
-              description={status.description}
-              descriptionId={badgeDescriptionId}
-            />
-          ) : null}
         </span>
+        {/* Same size and height as the IconButton badge (--oui-badge-size / --oui-badge-offset), anchored to the main segment's top-right corner but inset on the right so it never crosses into the caret half. */}
+        {status ? (
+          <ControlBadge
+            slot="split-button-status"
+            className="right-0"
+            tone={status.tone}
+            label={status.label}
+            description={status.description}
+            descriptionId={badgeDescriptionId}
+          />
+        ) : null}
         {labelled ? (
           <span data-slot="split-button-caption" className="text-[10.5px] leading-none">
             {main.caption ?? main.label}

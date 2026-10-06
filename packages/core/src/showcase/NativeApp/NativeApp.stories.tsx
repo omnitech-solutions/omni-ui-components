@@ -27,24 +27,9 @@ import {
   type NativeAppArgs,
 } from "./NativeApp.factories";
 
-const DOCS = `
-The Native App window, composed only from library parts with mocked callbacks, mirroring the designer gallery
-(*Native Panel Cleanup*, boards 1a, 1c, 1d, 1e; the Zoom-style board 1b and board 1f are not reproduced).
-
-| Story | Board | Requirements covered |
-| --- | --- | --- |
-| Toolbar States | 1a, Compact icons + caret: live manual, live auto, analysing, mic lost, screen permission lost, mic muted, paused with code hidden | T1 T2 T3 T4 T6 T8 T9 |
-| Toolbar Variations | 1c, Merging "Manual" into capture: C1, C2, C3 and the four caret menus shown open (When to analyse, Microphone lost, Answer style, Shortcuts) | T1 T3 T5 T7 |
-| Panels In Three States | 1d: ready (nothing analysed), analysing with one screenshot waiting, answer ready with Code hidden | M1 to M11 |
-| Footer States | 1e, Timer left, actions right: live dev build, live production build, paused dev build | F1 F2 F3 F4 F5 F6 |
-| Window 1180 and Window 900 | Toolbar, panels and footer together at two window widths; every control below drives them | T1 to T9, M10, M11, F1 to F6 |
-
-**Controls.** \`seeThrough\` (0.22 to 1) lowers panel and footer backgrounds only (M11); \`width\` is 900, 1180 or 330
-(the transcript alone); \`paused\`, \`devBuild\`, \`mic\` (listening, muted, lost), \`screen\` (ok, problem), \`mode\`
-(manual, auto) and \`analysing\` set the starting state. In the window stories the parts also talk to each other:
-the capture button and the Answer panel's Stop toggle the run, Pause and Resume in the footer pause the toolbar,
-and hiding Code in the panel toggles reflows to two panels. Every press is reported in the Actions panel.
-`;
+// The docs renderer is not Markdown: it understands `inline code`, <primary>emphasis</primary> and <code>signatures</code> only,
+// so no tables, bold or line breaks here.
+const DOCS = `The Native App window, composed only from library parts with mocked callbacks, mirroring the designer gallery (Native Panel Cleanup: boards 1a, 1c, 1d and 1e; the Zoom-style board 1b and board 1f are not reproduced). <primary>Toolbar States</primary> is board 1a (T1 T2 T3 T4 T6 T8 T9): live manual, live auto, analysing, mic lost, screen permission lost, mic muted, and paused with Code hidden. <primary>Toolbar Variations</primary> is board 1c (T1 T3 T5 T7): the three ways to merge Manual into capture, and the four caret menus shown open (When to analyse, Microphone lost, Answer style, Shortcuts). <primary>Panels In Three States</primary> is board 1d (M1 to M11): ready, analysing with one screenshot waiting, and answer ready with Code hidden. <primary>Footer States</primary> is board 1e (F1 to F6): live dev build, live production build, and paused dev build. <primary>Window 1180</primary> and <primary>Window 900</primary> put the toolbar, panels and footer together at two widths (T1 to T9, M10, M11, F1 to F6). Controls: \`seeThrough\` (0.22 to 1) lowers panel and footer backgrounds only (M11); \`width\` is 900, 1180 or 330 (the transcript alone); \`paused\`, \`devBuild\`, \`mic\` (listening, muted, lost), \`screen\` (ok, problem), \`mode\` (manual, auto) and \`analysing\` set the starting state. In the window stories the parts also talk to each other: the capture button and the Answer panel's Stop toggle the run, Pause and Resume in the footer pause the toolbar, and hiding Code in the panel toggles reflows to two panels. Every press is reported in the Actions panel.`;
 
 const meta: Meta<NativeAppArgs> = {
   title: "omni-ui-components/Showcase/Native App",
@@ -100,18 +85,22 @@ export const ToolbarStates: Story = {
   ),
 };
 
+/**
+ * A caret menu "shown open" for the gallery. Radix draws menu content in a fixed-position wrapper, which takes it out of
+ * the page flow (so neighbours overlap it, and it drifts when the page scrolls). Here the wrapper is made static, so the
+ * menu is an ordinary block that takes its real height and the next row always starts below it.
+ */
+const OPEN_MENU_CSS = `.oui-open-menu [data-radix-popper-content-wrapper]{position:static!important;transform:none!important;min-width:0!important;width:100%}`;
+
 const OpenMenu: React.FC<{
   spec: ActionMenuSpec;
-  minHeight: number;
   caption: string;
-}> = ({ spec, minHeight, caption }) => (
+}> = ({ spec, caption }) => (
   <div
-    className="flex flex-col gap-1.5"
-    style={{
-      minHeight,
-      width: typeof spec.width === "number" ? spec.width : 300,
-    }}
+    className="oui-open-menu flex flex-col gap-1.5"
+    style={{ width: typeof spec.width === "number" ? spec.width : 300 }}
   >
+    <style>{OPEN_MENU_CSS}</style>
     <StateLabel>{caption}</StateLabel>
     <ActionMenu
       {...spec}
@@ -170,24 +159,12 @@ export const ToolbarVariations: Story = {
       </div>
       <StateLabel>Caret menus · shown open</StateLabel>
       <div className="grid grid-cols-[320px_320px_300px] items-start gap-6">
-        <OpenMenu
-          caption="Capture caret"
-          spec={captureMenuSpec("manual")}
-          minHeight={500}
-        />
-        <OpenMenu
-          caption="Microphone caret · lost"
-          spec={micLostMenu}
-          minHeight={250}
-        />
-        <OpenMenu
-          caption="Answer style"
-          spec={answerStyleMenu}
-          minHeight={520}
-        />
+        <OpenMenu caption="Capture caret" spec={captureMenuSpec("manual")} />
+        <OpenMenu caption="Microphone caret · lost" spec={micLostMenu} />
+        <OpenMenu caption="Answer style" spec={answerStyleMenu} />
       </div>
-      <div className="min-h-[520px]">
-        <OpenMenu caption="Shortcuts" spec={shortcutsMenu} minHeight={520} />
+      <div>
+        <OpenMenu caption="Shortcuts" spec={shortcutsMenu} />
       </div>
     </Rows>
   ),

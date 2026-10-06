@@ -140,17 +140,18 @@ describe('omni-ui-components/SplitButton interaction flow', () => {
     });
   });
 
-  describe('status badge sits on the icon, inside the main segment', () => {
-    it('is inside the main button, anchored to the icon wrapper, and not inside the caret or a sibling of it', () => {
+  describe('status badge sits at the main segment top-right corner, inside it, same size as the IconButton badge', () => {
+    it('is a direct child of the main button (its positioning anchor), and not inside the caret or a sibling of it', () => {
       const { container } = render(<SplitButton {...splitButtonPropsFactory(captureSplitButtonProps({ mode: 'manual', problem: true }))} />);
       const badge = container.querySelector('[data-slot="split-button-status"]') as HTMLElement;
       const main = screen.getByRole('button', { name: 'Capture' });
       const caret = screen.getByRole('button', { name: 'More options' });
       expect(main.contains(badge)).toBe(true);
       expect(caret.contains(badge)).toBe(false);
-      expect(badge.parentElement).toHaveAttribute('data-slot', 'split-button-icon');
-      expect(badge.parentElement).toHaveClass('relative');
-      expect(badge.parentElement?.parentElement).toBe(main);
+      expect(badge.parentElement).toBe(main);
+      expect(main).toHaveClass('relative');
+      expect(badge).toHaveClass('right-0');
+      expect(badge).not.toHaveClass('right-[-4px]');
       expect(root(container).children).toHaveLength(2);
     });
 
