@@ -19,3 +19,6 @@ tmp
 /.omp/agents/crux-flow-*.md
 /.omp/skills/crux-flow-*/
 /.omp/config.yml
+
+# A global "Icon" ignore (macOS custom-folder-icon file) would otherwise hide the Icon component folder.
+!packages/core/src/Icon/
