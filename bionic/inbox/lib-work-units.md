@@ -20,7 +20,8 @@ are theirs); you prepare the release but never run `npm publish`.
 `pnpm --filter @oc-tech/omni-ui-components build`; `pnpm pack` inside `packages/core` and list the tarball: it must contain `dist`,
 `dist-types`, `dist/styles.css` and `README.md`; add a README section "Install and import" with the exact import line for the
 JS and for `@oc-tech/omni-ui-components/styles.css`; write `RELEASING.md` with the owner's exact publish commands
-(`pnpm --filter @oc-tech/omni-ui-components publish --access public` after the PR merges, then tag `v0.1.0`).
+(the repo already has `pnpm publish:package`, which does an npm web login for the `@oc-tech` scope and publishes; run it after the PR
+merges, then tag `v0.1.0`). Do not run it yourself.
 **Owns**: `packages/core/package.json` (version, files), `CHANGELOG.md`, `RELEASING.md`, `README.md`. **Done when**: tarball
 contents verified and pasted in the PR; owner commands written; nothing published.
 
