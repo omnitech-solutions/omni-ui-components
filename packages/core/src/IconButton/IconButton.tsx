@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Trash2 } from 'lucide-react';
 
 import { cn } from 'lib/utils';
+import { toneBadgeClasses } from '../internal/support/controlTone';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../Tooltip';
 import { iconButtonVariants } from './IconButton.variants';
 import type { IconButtonProps } from './IconButton.types';
 
@@ -23,28 +25,92 @@ const isTrashIcon = (icon: React.ReactNode): boolean =>
  * does not enforce this at the type level so the props stay structurally
  * compatible with RJSF's `IconButtonProps`.
  *
+ * Configuration-driven variations: `tone`, `pressed`, `badge`, `tooltip`,
+ * `disabledReason` and the `control` / `control-labelled` sizes. Callbacks
+ * are ordinary props (`onClick`).
+ *
  * @example
  * <IconButton aria-label="Remove" icon={<Trash2 />} variant="destructive" onClick={…} />
+ * <IconButton label="Microphone" icon={<Mic />} iconSize="control" tone="warning"
+ *   badge={{ tone: 'warning', label: '!', description: 'Microphone lost' }} tooltip="Microphone lost. Trying again." />
+ * <IconButton label="Capture" icon={<Camera />} disabledReason="Resume to capture" />
  */
 const IconButtonInner = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ icon, variant, iconSize, label, title, className, type = 'button', ...rest }, ref) => {
+  (
+    { icon, variant, iconSize, tone, pressed, badge, tooltip, disabledReason, label, title, className, type = 'button', disabled, onClick, ...rest },
+    ref,
+  ) => {
     const restAny = rest as Record<string, unknown>;
     const ariaLabel = label ?? (restAny['aria-label'] as string | undefined);
-    const resolvedVariant = variant ?? (isTrashIcon(icon) ? 'destructive' : 'outline');
-    return (
+    // A tone replaces the variant colours, so it sits on the quiet `secondary` base unless a variant is asked for.
+    const resolvedVariant = variant ?? (tone ? 'secondary' : isTrashIcon(icon) ? 'destructive' : 'outline');
+    const badgeDescriptionId = React.useId();
+    const reasoned = disabledReason !== undefined && disabledReason !== '';
+    const tipContent = reasoned ? disabledReason : tooltip;
+    const hasTip = tipContent !== undefined && tipContent !== null && tipContent !== false;
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      // aria-disabled keeps the button hoverable for the tooltip, so the click must be swallowed here.
+      if (reasoned) {
+        event.preventDefault();
+        return;
+      }
+      onClick?.(event);
+    };
+
+    const button = (
       <button
         ref={ref}
         type={type}
-        title={title ?? ariaLabel}
+        title={hasTip ? undefined : (title ?? ariaLabel)}
         aria-label={ariaLabel}
+        aria-pressed={pressed}
+        aria-disabled={reasoned ? true : undefined}
+        aria-describedby={badge?.description ? badgeDescriptionId : undefined}
+        disabled={reasoned ? undefined : disabled}
         data-slot="icon-button"
         data-variant={resolvedVariant}
         data-icon-size={iconSize ?? 'default'}
-        className={cn(iconButtonVariants({ variant: resolvedVariant, iconSize }), className)}
+        data-tone={tone}
+        data-disabled={reasoned ? '' : undefined}
+        className={cn(iconButtonVariants({ variant: resolvedVariant, iconSize, tone }), badge && 'relative', className)}
+        onClick={handleClick}
         {...rest}
       >
         {icon}
+        {badge ? (
+          <>
+            <span
+              data-slot="icon-button-badge"
+              data-tone={badge.tone}
+              aria-hidden="true"
+              className={cn(
+                'pointer-events-none absolute top-[var(--oui-badge-offset)] right-[var(--oui-badge-offset)]',
+                'flex size-[var(--oui-badge-size)] items-center justify-center rounded-full text-[11px] leading-none font-bold',
+                'shadow-[0_0_0_2px_var(--oui-badge-ring)]',
+                toneBadgeClasses[badge.tone],
+              )}
+            >
+              {badge.label}
+            </span>
+            {badge.description ? (
+              <span id={badgeDescriptionId} className="sr-only">
+                {badge.description}
+              </span>
+            ) : null}
+          </>
+        ) : null}
       </button>
+    );
+
+    if (!hasTip) return button;
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>{button}</TooltipTrigger>
+          <TooltipContent>{tipContent}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   },
 );

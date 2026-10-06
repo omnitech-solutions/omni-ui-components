@@ -145,7 +145,14 @@ import {
 import { z } from 'zod';
 import { CodePanel, InlineCode, SegmentedPill, TableOfContents, type TocItem } from '../internal/support';
 import type { Variant } from '@oc-tech/omni-ui-components/internal/support/makeFactory';
-import { buttonPropsFactory, buttonSizeVariants, buttonVariants } from 'factories/omni-ui-components/Button/Button.factories';
+import {
+  buttonActionVariants,
+  buttonPropsFactory,
+  buttonSizeVariants,
+  buttonStateVariants,
+  buttonToneVariants,
+  buttonVariants,
+} from 'factories/omni-ui-components/Button/Button.factories';
 import { checkboxPropsFactory, checkboxVariants } from 'factories/omni-ui-components/Checkbox/Checkbox.factories';
 import { colorPickerPropsFactory, colorPickerVariants } from 'factories/omni-ui-components/ColorPicker/ColorPicker.factories';
 import { currencyInputPropsFactory, currencyInputVariants } from 'factories/omni-ui-components/CurrencyInput/CurrencyInput.factories';
@@ -153,7 +160,13 @@ import { datePickerPropsFactory, datePickerVariants } from 'factories/omni-ui-co
 import { dateTimePickerPropsFactory, dateTimePickerVariants } from 'factories/omni-ui-components/DateTimePicker/DateTimePicker.factories';
 import { emailInputPropsFactory, emailInputVariants } from 'factories/omni-ui-components/EmailInput/EmailInput.factories';
 import { fileUploadPropsFactory, fileUploadVariants } from 'factories/omni-ui-components/FileUpload/FileUpload.factories';
-import { iconButtonPropsFactory, iconButtonSizeVariants, iconButtonVariants } from 'factories/omni-ui-components/IconButton/IconButton.factories';
+import {
+  iconButtonPropsFactory,
+  iconButtonSizeVariants,
+  iconButtonStateVariants,
+  iconButtonToneVariants,
+  iconButtonVariants,
+} from 'factories/omni-ui-components/IconButton/IconButton.factories';
 import { inputPropsFactory, inputVariants } from 'factories/omni-ui-components/Input/Input.factories';
 import { inputOTPPropsFactory, inputOTPVariants } from 'factories/omni-ui-components/InputOTP/InputOTP.factories';
 import { multiSelectPropsFactory, multiSelectVariants } from 'factories/omni-ui-components/MultiSelect/MultiSelect.factories';
@@ -264,6 +277,21 @@ const ButtonPreview: React.FC = () => (
         <Button key={variant.name} {...buttonPropsFactory(variant.args)} />
       ))}
     </div>
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6" style={{ width: 'fit-content' }}>
+      {buttonToneVariants.map((variant) => (
+        <Button key={variant.name} {...buttonPropsFactory(variant.args)} />
+      ))}
+    </div>
+    <div className="flex flex-wrap items-center gap-3">
+      {buttonActionVariants.map((variant) => (
+        <Button key={variant.name} {...buttonPropsFactory(variant.args)} />
+      ))}
+    </div>
+    <div className="flex flex-wrap items-center gap-3">
+      {buttonStateVariants.map((variant) => (
+        <Button key={variant.name} {...buttonPropsFactory(variant.args)} />
+      ))}
+    </div>
   </div>
 );
 
@@ -276,6 +304,16 @@ const IconButtonPreview: React.FC = () => (
     </div>
     <div className="flex flex-wrap items-center gap-3">
       {iconButtonSizeVariants.map((variant) => (
+        <IconButton key={variant.name} {...iconButtonPropsFactory(variant.args)} />
+      ))}
+    </div>
+    <div className="flex flex-wrap items-center gap-3">
+      {iconButtonToneVariants.map((variant) => (
+        <IconButton key={variant.name} {...iconButtonPropsFactory(variant.args)} />
+      ))}
+    </div>
+    <div className="flex flex-wrap items-center gap-3">
+      {iconButtonStateVariants.map((variant) => (
         <IconButton key={variant.name} {...iconButtonPropsFactory(variant.args)} />
       ))}
     </div>
@@ -822,12 +860,18 @@ const SECTIONS: OverviewSectionSpec[] = [
       {
         name: 'Button',
         preview: ButtonPreview,
-        variants: [...buttonVariants, ...buttonSizeVariants] as Variant<unknown>[],
+        variants: [
+          ...buttonVariants,
+          ...buttonSizeVariants,
+          ...buttonToneVariants,
+          ...buttonActionVariants,
+          ...buttonStateVariants,
+        ] as Variant<unknown>[],
       },
       {
         name: 'IconButton',
         preview: IconButtonPreview,
-        variants: [...iconButtonVariants, ...iconButtonSizeVariants] as Variant<unknown>[],
+        variants: [...iconButtonVariants, ...iconButtonSizeVariants, ...iconButtonToneVariants, ...iconButtonStateVariants] as Variant<unknown>[],
       },
     ],
   },

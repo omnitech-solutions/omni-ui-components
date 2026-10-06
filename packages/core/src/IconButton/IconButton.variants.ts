@@ -1,5 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
+import { CONTROL_TONES, pressedClasses, toneTintClasses } from '../internal/support/controlTone';
+
 /**
  * Tailwind class config for IconButton. Sizes track the Omni field
  * height scale (`--oui-field-height-*`) so IconButtons sit cleanly next
@@ -15,6 +17,8 @@ export const iconButtonVariants = cva(
     'focus-visible:ring-2 focus-visible:ring-ring/50',
     'disabled:cursor-not-allowed disabled:opacity-50',
     '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:transition-colors',
+    'aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
+    pressedClasses,
   ].join(' '),
   {
     variants: {
@@ -37,8 +41,17 @@ export const iconButtonVariants = cva(
         default: 'h-[var(--oui-field-height-md)] w-[var(--oui-field-height-md)] [&_svg]:size-4',
         md: 'h-[var(--oui-field-height-lg)] w-[var(--oui-field-height-lg)] [&_svg]:size-4',
         lg: 'h-[var(--oui-field-height-xl)] w-[var(--oui-field-height-xl)] [&_svg]:size-5',
+        /** 36px square control row (Native App toolbar). */
+        control:
+          'h-[var(--oui-control-height)] w-[var(--oui-control-height)] rounded-[var(--oui-control-radius)] [&_svg]:size-[var(--oui-control-icon)]',
+        /** 52px square labelled control row (icon-only; the caption is rendered by the consumer). */
+        'control-labelled':
+          'h-[var(--oui-control-height-labelled)] w-[var(--oui-control-height-labelled)] rounded-[var(--oui-control-radius)] [&_svg]:size-[var(--oui-control-icon)]',
       },
+      /** Tinted tone from the `--oui-tone-*` scale; overrides the `variant` colours. */
+      tone: { neutral: '', accent: '', success: '', warning: '', danger: '', dim: '' },
     },
+    compoundVariants: CONTROL_TONES.map((tone) => ({ tone, className: toneTintClasses[tone] })),
     defaultVariants: { variant: 'outline', iconSize: 'default' },
   },
 );

@@ -1,5 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
+import { CONTROL_TONES, pressedClasses, toneSoftClasses, toneSolidClasses } from '../internal/support/controlTone';
+
 /**
  * Tailwind class config for the Omni Button. Mirrors the shadcn
  * Button API (variant × size) but routes colors through Omni tokens
@@ -15,6 +17,9 @@ export const buttonVariants = cva(
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
     'disabled:pointer-events-none disabled:opacity-50',
     '[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+    'aria-disabled:pointer-events-none aria-disabled:opacity-50',
+    'data-[loading=true]:disabled:opacity-70',
+    pressedClasses,
   ].join(' '),
   {
     variants: {
@@ -33,12 +38,29 @@ export const buttonVariants = cva(
         md: 'h-[var(--oui-field-height-lg)] px-5 py-2',
         lg: 'h-[var(--oui-field-height-xl)] px-6 text-base',
         icon: 'h-[var(--oui-field-height-md)] w-[var(--oui-field-height-md)]',
+        /** 36px control row (Native App toolbar and footer). */
+        control:
+          'h-[var(--oui-control-height)] gap-[var(--oui-control-gap)] rounded-[var(--oui-control-radius)] px-3 text-[13.5px] [&_svg]:size-[var(--oui-control-icon)]',
+        /** 52px labelled control row. */
+        'control-labelled':
+          'h-[var(--oui-control-height-labelled)] gap-[var(--oui-control-gap)] rounded-[var(--oui-control-radius)] px-4 text-[13.5px] [&_svg]:size-[var(--oui-control-icon)]',
       },
+      /** Colour tone from the `--oui-tone-*` scale. Unset keeps the `variant` look. */
+      tone: { neutral: '', accent: '', success: '', warning: '', danger: '', dim: '' },
+      /** With a `tone`: outlined and transparent instead of filled. */
+      soft: { true: '', false: '' },
+      /** Renders the leading icon filled (`fill: currentColor`). */
+      fillIcon: { true: '[&_svg]:fill-current', false: '' },
     },
-    defaultVariants: { variant: 'default', buttonSize: 'default' },
+    compoundVariants: CONTROL_TONES.flatMap((tone) => [
+      { tone, soft: false, className: toneSolidClasses[tone] },
+      { tone, soft: true, className: toneSoftClasses[tone] },
+    ]),
+    defaultVariants: { variant: 'default', buttonSize: 'default', soft: false, fillIcon: false },
   },
 );
 
 export type ButtonVariantProps = VariantProps<typeof buttonVariants>;
 export type ButtonVariant = NonNullable<ButtonVariantProps['variant']>;
+export type ButtonTone = NonNullable<ButtonVariantProps['tone']>;
 export type ButtonSize = NonNullable<ButtonVariantProps['buttonSize']>;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import type { RootProps } from '../lib';
-import type { ButtonVariantProps } from './Button.variants';
+import type { ButtonTone, ButtonVariantProps } from './Button.variants';
 
 /**
  * Props for the Omni Button. Mirrors the shadcn Button API
@@ -14,13 +14,39 @@ import type { ButtonVariantProps } from './Button.variants';
  * @example
  * <Button variant="default" buttonSize="default" onClick={save}>Save</Button>
  */
-export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size'>, RootProps, ButtonVariantProps {
+export interface ButtonProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size'>, RootProps, Omit<ButtonVariantProps, 'tone' | 'soft' | 'fillIcon'> {
   /** Optional leading icon node. */
   icon?: React.ReactNode;
   /** Optional trailing icon node. */
   iconAfter?: React.ReactNode;
-  /** Renders as `<a>` when set; pass `href` to forward. */
+  /**
+   * Render the single child element (e.g. an `<a>` or a router `Link`) as the
+   * button, merging classes, ref and handlers onto it. The icon, label and
+   * shortcut are rendered inside that child. `disabled` / `loading` then become
+   * `aria-disabled` + `tabIndex={-1}` (an anchor has no native disabled).
+   */
   asChild?: boolean;
+  /** Colour tone from the `--oui-tone-*` scale. Unset keeps the `variant` look. */
+  tone?: ButtonTone;
+  /** With `tone`: outlined and transparent instead of filled. */
+  soft?: boolean;
+  /** Render the leading icon filled. */
+  fillIcon?: boolean;
+  /** Keycaps after the label, one entry per key: `['⌘', '⇧', 'S']`. */
+  shortcut?: string[];
+  /**
+   * Disables the button (native `disabled`), sets `aria-busy` and swaps the
+   * leading icon for a spinner. Ignored click handlers are not called.
+   */
+  loading?: boolean;
+  /** Toggle state: sets `aria-pressed` and the pressed look. Leave unset for a plain button. */
+  pressed?: boolean;
+  /**
+   * Max width of the label before it is cut with an ellipsis (number = px, or any
+   * CSS length). When truncated the full label is the button's `title`.
+   */
+  labelMaxWidth?: number | string;
 }
 
-export type { ButtonVariant, ButtonSize, ButtonVariantProps } from './Button.variants';
+export type { ButtonVariant, ButtonSize, ButtonTone, ButtonVariantProps } from './Button.variants';
