@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Mic, MicOff, Monitor, MonitorOff } from 'lucide-react';
+import { Eye, Mic, MicOff, Monitor, MonitorOff } from 'lucide-react';
 
 import { SplitButton, type SplitButtonProps } from '@oc-tech/omni-ui-components/SplitButton';
 import { captureMenuSpec, micLostNotice, micMenuSpec, screenPermissionNotice, type CaptureMode } from '../ActionMenu/ActionMenu.factories';
@@ -186,4 +186,23 @@ export const splitButtonMicVariants: Variant<SplitButtonProps>[] = [
   { name: 'Mic · paused', args: micSplitButtonProps({ status: 'paused' }) },
 ];
 
-export const splitButtonVariants: Variant<SplitButtonProps>[] = [...splitButtonCaptureVariants, ...splitButtonMicVariants];
+/** Board 1c: C2 puts the mode word on the main button, C3 adds an Auto "eye" toggle as a third segment. */
+export const splitButtonBoardVariants: Variant<SplitButtonProps>[] = [
+  {
+    name: 'C2 · mode word on the button',
+    args: {
+      main: { label: 'Capture, Manual', caption: 'Manual', labelInline: true, icon: <Monitor />, tooltip: 'Manual · click to analyse' },
+      menu: captureMenuSpec('manual'),
+    },
+  },
+  {
+    name: 'C3 · capture + auto toggle (eye)',
+    args: {
+      main: { label: 'Capture', icon: <Monitor />, tooltip: 'Analyse now' },
+      segments: [{ id: 'auto', label: 'Auto', icon: <Eye />, pressed: true, tooltip: 'Auto · re-analyses when the screen changes', shortcut: ['⌥', '⇧', 'U'] }],
+      menu: captureMenuSpec('auto'),
+    },
+  },
+];
+
+export const splitButtonVariants: Variant<SplitButtonProps>[] = [...splitButtonCaptureVariants, ...splitButtonMicVariants, ...splitButtonBoardVariants];

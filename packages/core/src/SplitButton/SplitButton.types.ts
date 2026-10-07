@@ -31,8 +31,32 @@ export interface SplitButtonMain {
    * button stays hoverable: the reason is the tooltip. The click is swallowed; the caret stays usable.
    */
   disabledReason?: string;
+  /**
+   * Show the caption (else `label`) as a word beside the icon in the standard 36px size (board C2: "Manual"). The accessible
+   * name stays `label`, so make `label` contain the visible word. Ignored in the `control-labelled` size, which already has a caption.
+   */
+  labelInline?: boolean;
   /** Called when the main action is pressed. */
   onPress?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  'data-testid'?: string;
+}
+
+/** An extra icon segment between the main action and the caret (board C3: the Auto "eye" toggle). */
+export interface SplitButtonSegment {
+  /** Stable id, passed back to `onPress` with the segment itself. */
+  id: string;
+  /** Accessible name (`aria-label`). */
+  label: string;
+  /** Icon node (caller-supplied). */
+  icon: React.ReactNode;
+  /** Toggle state (`aria-pressed`, accent tint on this segment). Omit for a plain action segment. */
+  pressed?: boolean;
+  tooltip?: React.ReactNode;
+  /** Key glyphs appended to the tooltip in mono text. */
+  shortcut?: string[];
+  disabled?: boolean;
+  /** Called with the segment itself, then the click event. */
+  onPress?: (segment: SplitButtonSegment, event: React.MouseEvent<HTMLButtonElement>) => void;
   'data-testid'?: string;
 }
 
@@ -52,6 +76,8 @@ export type SplitButtonMenu = Omit<ActionMenuProps, 'trigger' | 'open' | 'defaul
 export interface SplitButtonProps {
   main: SplitButtonMain;
   caret?: SplitButtonCaret;
+  /** Extra segments between the main action and the caret, each with its own divider and `onPress` (board C3). */
+  segments?: SplitButtonSegment[];
   /** The caret menu, as an ActionMenu spec. */
   menu: SplitButtonMenu;
   /** Tone of the whole control (one border, tinted surface): neutral | accent | success | warning | danger | dim. */

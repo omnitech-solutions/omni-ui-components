@@ -268,12 +268,10 @@ export const captureOptions = (): Array<{
         {
           main: {
             label: "Capture, Manual",
-            icon: (
-              <span className="inline-flex items-center gap-2 text-[15px]">
-                <Monitor className="!size-5" />
-                Manual
-              </span>
-            ),
+            caption: "Manual",
+            labelInline: true,
+            icon: <Monitor />,
+            tooltip: "Manual · click to analyse",
           },
           menu,
         },
@@ -286,16 +284,18 @@ export const captureOptions = (): Array<{
         "Auto is one click away, like ⌥⇧U. It's explicit, but it adds a third segment that people may confuse with see-through.",
       controls: [
         {
-          main: {
-            label: "Capture and auto toggle",
-            icon: (
-              <span className="inline-flex items-center gap-3">
-                <Monitor className="!size-5" />
-                <Eye className="!size-5 text-[color:var(--oui-tone-accent-fg)]" />
-              </span>
-            ),
-          },
-          menu,
+          main: { ...main, tooltip: "Analyse now" },
+          segments: [
+            {
+              id: "auto",
+              label: "Auto",
+              icon: <Eye />,
+              pressed: true,
+              tooltip: "Auto · re-analyses when the screen changes",
+              shortcut: ["⌥", "⇧", "U"],
+            },
+          ],
+          menu: captureMenuSpec("auto"),
         },
       ],
     },
