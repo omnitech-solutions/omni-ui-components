@@ -1,8 +1,16 @@
 /* Base Palette — immutable across themes
  * Moved from app/assets/stylesheets/base/_base_variables.scss
  */
-:root {
+@layer omni-ui-components-reset, omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base,
+  omni-ui-components.components, omni-ui-components.utilities, omni-ui-components.classes;
+
+/* `color-scheme` is not set on :root: a host that sets its own (or none) keeps it. Library themes set it on [data-theme]. */
+@layer omni-ui-components.palette {
+[data-theme='light'] {
   color-scheme: light;
+}
+
+:root {
 
   /* -------------------------------------------
     Base palette (unchanged across themes)
@@ -351,4 +359,5 @@
   --bg-yellow-dark: #2b2111;
   --bg-highlight-light: var(--oui-primary-1);
   --bg-highlight-dark: color-mix(in srgb, var(--oui-primary) 12%, var(--oui-background-dark));
+}
 }

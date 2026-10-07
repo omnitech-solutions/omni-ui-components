@@ -1,6 +1,10 @@
-@layer theme, base, utilities;
-@import "tailwindcss/theme" layer(theme);
-@import "tailwindcss/utilities" layer(utilities) source(none);
+/* Every rule the library ships lives in the cascade layer `omni-ui-components` (sublayers below), except the bare-element reset,
+   which has its own lowest layer. A host declares `@layer omni-ui-components-reset, host, omni-ui-components;` and keeps control
+   of precedence. See bionic/research/references/css-delivery.md. */
+@layer omni-ui-components-reset, omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base,
+  omni-ui-components.components, omni-ui-components.utilities, omni-ui-components.classes;
+@import "tailwindcss/theme" layer(omni-ui-components.theme);
+@import "tailwindcss/utilities" layer(omni-ui-components.utilities) source(none);
 @import "tw-animate-css";
 
 /* Tailwind scans the package and Storybook sources for utility class usage. */
@@ -15,7 +19,11 @@
    Full preflight would also reset margins, padding, headings, links, lists, and
    set img/svg to display:block — all of which would break existing bridge CSS.
    We'll enable full preflight once bridge CSS is fully retired. */
-@layer base {
+/* The preflight subset Tailwind utilities depend on, kept in its OWN layer below the host. Unlike every other library rule it
+   selects bare elements (`*`, `button`), because the library's native controls cannot be told apart from the host's. It is
+   the lowest layer, so a host that declares `@layer omni-ui-components-reset, host, omni-ui-components;`, or that leaves
+   its rules unlayered, always wins over it: the reset only fills in what the host does not say. */
+@layer omni-ui-components-reset {
   *,
   ::after,
   ::before,
@@ -26,13 +34,25 @@
     border-color: var(--color-border, currentColor);
   }
 
-  /* Tailwind preflight is intentionally disabled, but component buttons still
-     need its neutral background reset. Without this, buttons that use only
-     hover/active background utilities inherit the browser's native ButtonFace
-     grey, which varies by browser and color scheme. */
+  /* Component buttons that use only hover/active background utilities would otherwise inherit the browser's native
+     ButtonFace grey, which varies by browser and color scheme. */
   button {
     background-color: transparent;
     background-image: none;
+  }
+}
+
+/* Native controls the library marks with `data-slot` (Button, Input, IconButton, ...) take back what a host's own element rules
+   (`button { border; background; box-shadow }`, inside a host layer below this one) would otherwise paint onto them. This layer sits
+   below the utilities, so a component class that sets any of these still wins. The host's own, unmarked controls are not matched. */
+@layer omni-ui-components.base {
+  :where(button, input, select, textarea)[data-slot] {
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--color-border, currentColor);
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
   }
 }
 
@@ -254,6 +274,7 @@
   --font-signature: var(--font-signature);
 }
 
+@layer omni-ui-components.classes {
 /* Transition utilities (cover 80% of transition usage in the codebase) */
 .transition-default {
   transition: all var(--transition-normal) ease;
@@ -726,4 +747,5 @@
 /* Slash command popup container (positioned by JS) */
 .tiptap-slash-menu-container {
   width: 260px;
+}
 }

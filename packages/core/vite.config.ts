@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import { createRequire } from 'node:module';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import tailwindcss from '@tailwindcss/vite';
@@ -15,6 +15,21 @@ const externalPackages = [
   ...Object.keys(packageJson.peerDependencies ?? {}),
 ];
 
+/**
+ * Tailwind emits its `@property` fallback as a top-level `@layer properties`. Nest it under the library layer so every
+ * layer the package ships is `omni-ui-components` or one of its sublayers (see bionic/research/references/css-delivery.md).
+ */
+const nestTailwindLayers = (): Plugin => ({
+  name: 'oui:nest-tailwind-layers',
+  enforce: 'post',
+  generateBundle(_options, bundle) {
+    for (const asset of Object.values(bundle)) {
+      if (asset.type !== 'asset' || !asset.fileName.endsWith('.css') || typeof asset.source !== 'string') continue;
+      asset.source = asset.source.replace(/@layer properties(?=[{;,])/g, '@layer omni-ui-components.properties');
+    }
+  },
+});
+
 export default defineConfig({
   resolve: {
     tsconfigPaths: true,
@@ -22,6 +37,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    nestTailwindLayers(),
     dts({
       entryRoot: 'src',
       outDir: 'dist-types',

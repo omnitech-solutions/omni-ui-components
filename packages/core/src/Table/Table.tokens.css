@@ -1,7 +1,7 @@
 @import '../styles/base-palette.css';
-@import '../styles/theme-tokens.css';
+@import '../styles/theme-tokens.css' layer(omni-ui-components.palette);
 
-@layer components {
+@layer omni-ui-components.components {
   :root {
     --bui-table-bg: var(--color-card, var(--bg-panel, var(--white)));
     --bui-table-fg: var(--color-foreground, var(--text-default, var(--black)));
@@ -912,6 +912,7 @@
 
 }
 
+@layer omni-ui-components.classes {
 /* Rounded-frame corner fix. The wrapper's border-radius on its own doesn't
    produce a clean rounded corner because the collapsed cell borders and cell
    backgrounds paint a slightly off-color ring against the frame's inner curve.
@@ -950,4 +951,5 @@
 }
 .bui-table tbody tr:last-child td:last-child {
   border-bottom-right-radius: calc(var(--bui-table-radius) - 1px);
+}
 }
