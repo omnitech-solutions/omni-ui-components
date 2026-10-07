@@ -43,7 +43,8 @@ export const ChatReply: Story = {
     await userEvent.click(canvas.getAllByRole('button', { name: 'Open source 1' })[0]!);
     await expect(canvas.getByRole('group', { name: 'Two Sum notes' })).toBeVisible();
     await expect(args.onAction).toHaveBeenCalledWith('cite', 1);
-    await userEvent.click(canvas.getByRole('button', { name: 'Bad reply' }));
+    // Both turns carry a thumbs down; the Two Sum reply is the last turn, so scope to its button.
+    await userEvent.click(canvas.getAllByRole('button', { name: 'Bad reply' }).at(-1)!);
     await expect(canvas.getByRole('group', { name: 'What went wrong?' })).toBeVisible();
   },
 };

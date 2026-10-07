@@ -4,8 +4,8 @@ import { cva } from 'class-variance-authority';
 export const conversationTranscriptPartVariants = cva('min-w-0', {
   variants: {
     part: {
-      feedback: 'w-full',
-      approval: 'w-full',
+      feedback: 'box-border max-w-full',
+      approval: 'box-border max-w-full',
     },
   },
   defaultVariants: { part: 'feedback' },
