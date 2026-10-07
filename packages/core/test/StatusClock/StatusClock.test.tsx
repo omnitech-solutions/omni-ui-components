@@ -21,16 +21,16 @@ describe('omni-ui-components/StatusClock', () => {
 
   it('live: red icon and timer from the danger tone', () => {
     render(<StatusClock {...statusClockPropsFactory()} />);
-    expect(slot('status-clock-icon')).toHaveClass('text-[color:var(--oui-tone-danger-fg)]');
-    expect(screen.getByRole('timer')).toHaveClass('text-[color:var(--oui-tone-danger-fg)]');
+    expect(slot('status-clock-icon')).toHaveClass('text-[color:var(--oui-clock-live)]');
+    expect(screen.getByRole('timer')).toHaveClass('text-[color:var(--oui-clock-live)]');
   });
 
   it('paused: amber icon, amber timer and the Paused label', () => {
     render(<StatusClock {...statusClockPropsFactory({ state: 'paused' })} />);
     expect(screen.getByRole('group')).toHaveAttribute('data-state', 'paused');
-    expect(slot('status-clock-icon')).toHaveClass('text-[color:var(--oui-tone-warning-solid-bg)]');
-    expect(screen.getByRole('timer')).toHaveClass('text-[color:var(--oui-tone-warning-fg)]');
-    expect(screen.getByText('Paused')).toHaveClass('text-[color:var(--oui-tone-warning-fg)]');
+    expect(slot('status-clock-icon')).toHaveClass('text-[color:var(--oui-clock-paused-icon)]');
+    expect(screen.getByRole('timer')).toHaveClass('text-[color:var(--oui-clock-paused)]');
+    expect(screen.getByText('Paused')).toHaveClass('text-[color:var(--oui-clock-paused)]');
   });
 
   it('paused swaps in pausedIcon (falling back to icon); pausedLabel is configurable and nullable', () => {
@@ -71,7 +71,13 @@ describe('omni-ui-components/StatusClock', () => {
     });
     expect(tag).toHaveAttribute('title', SAMPLE_BUILD_TAG.title);
     expect(tag).toHaveClass('font-mono');
-    expect(tag).toHaveTextContent(SAMPLE_BUILD_TAG.label);
+    expect(tag).toHaveTextContent(`${SAMPLE_BUILD_TAG.sha}·${SAMPLE_BUILD_TAG.branch}`);
+    const commit = tag.querySelector('[data-slot="status-clock-commit-icon"]');
+    const branch = tag.querySelector('[data-slot="status-clock-branch-icon"]');
+    expect(commit).toBeInTheDocument();
+    expect(branch).toBeInTheDocument();
+    expect(commit?.nextElementSibling).toHaveAttribute('data-slot', 'status-clock-sha');
+    expect(branch?.nextElementSibling).toHaveAttribute('data-slot', 'status-clock-branch');
     await userEvent.click(tag);
     expect(onCopy).toHaveBeenCalledTimes(1);
   });
@@ -86,7 +92,8 @@ describe('omni-ui-components/StatusClock', () => {
     );
     const tag = screen.getByRole('button', { name: 'Copied' });
     expect(tag).toHaveTextContent('Copied');
-    expect(tag).not.toHaveTextContent(SAMPLE_BUILD_TAG.label);
+    expect(tag).not.toHaveTextContent(SAMPLE_BUILD_TAG.sha);
+    expect(tag.querySelector('svg')).toBeNull();
     rerender(
       <StatusClock
         {...statusClockPropsFactory({
@@ -95,6 +102,20 @@ describe('omni-ui-components/StatusClock', () => {
       />,
     );
     expect(screen.getByRole('button', { name: 'Copié' })).toBeInTheDocument();
+  });
+
+  it('build tag: the icons and the branch are optional', () => {
+    render(<StatusClock {...statusClockPropsFactory({ buildTag: { sha: 'abc1234' } })} />);
+    const tag = screen.getByRole('button', { name: 'Copy build abc1234' });
+    expect(tag).toHaveTextContent('abc1234');
+    expect(tag.querySelector('svg')).toBeNull();
+    expect(tag.querySelector('[data-slot="status-clock-branch"]')).toBeNull();
+  });
+
+  it('colours come from the clock tokens', () => {
+    render(<StatusClock {...statusClockPropsFactory({ state: 'paused' })} />);
+    expect(screen.getByRole('timer')).toHaveClass('text-[color:var(--oui-clock-paused)]');
+    expect(slot('status-clock-icon')).toHaveClass('text-[color:var(--oui-clock-paused-icon)]');
   });
 
   it('every example renders', () => {

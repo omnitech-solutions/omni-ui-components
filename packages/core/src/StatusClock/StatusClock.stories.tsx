@@ -31,7 +31,7 @@ const meta: Meta<StatusClockProps> = {
     docs: {
       description: {
         component:
-          'The session status of the footer: a caller-supplied <primary>icon</primary> node, a monospace <primary>elapsed</primary> string the caller formats, and a <primary>live | paused</primary> state. Paused swaps in the amber pause icon, turns the timer amber and adds a <primary>Paused</primary> label; nothing else changes colour. An optional <primary>buildTag</primary> (<primary>label</primary>, <primary>title</primary>, <primary>onCopy</primary>, controlled <primary>copied</primary>) renders after a divider; pass it in development builds only.',
+          'The session status of the footer: a caller-supplied <primary>icon</primary> node, a monospace <primary>elapsed</primary> string the caller formats, and a <primary>live | paused</primary> state. Paused swaps in the amber pause icon, turns the timer amber and adds a <primary>Paused</primary> label; nothing else changes colour. An optional <primary>buildTag</primary> (<primary>sha</primary>, <primary>branch</primary>, <primary>commitIcon</primary>, <primary>branchIcon</primary>, <primary>title</primary>, <primary>onCopy</primary>, controlled <primary>copied</primary>) renders after a divider; pass it in development builds only.',
       },
     },
   },
@@ -60,7 +60,7 @@ const meta: Meta<StatusClockProps> = {
     },
     buildTag: {
       control: 'object',
-      description: '{ label, title, onCopy, copied, copiedLabel, icon }. Omit in production builds.',
+      description: '{ sha, branch, commitIcon, branchIcon, title, onCopy, copied, copiedLabel }. Omit in production builds.',
     },
     label: { control: 'text', description: 'aria-label of the group.' },
   },

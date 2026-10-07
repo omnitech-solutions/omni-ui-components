@@ -50,6 +50,9 @@ export default defineConfig({
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
         'dynamic-form/index': resolve(__dirname, 'src/dynamic-form/index.ts'),
+        native: resolve(__dirname, 'src/entries/native.ts'),
+        chat: resolve(__dirname, 'src/entries/chat.ts'),
+        highlight: resolve(__dirname, 'src/entries/highlight.ts'),
       },
       formats: ['es', 'cjs'],
       fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'js' : 'cjs'}`,
