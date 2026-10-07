@@ -115,6 +115,7 @@ function TranscriptInner<
       editIcon,
       stoppedIcon,
       attachmentIcons,
+      attachmentVariant,
       maxWidth = 760,
       style,
       labels,
@@ -329,6 +330,7 @@ function TranscriptInner<
             editIcon={editIcon}
             stoppedIcon={stoppedIcon}
             attachmentIcons={attachmentIcons}
+            attachmentVariant={attachmentVariant}
             copyIcon={copyIcon}
             copyLabel={copyLabel === 'Copy' ? undefined : copyLabel}
             labels={labels}

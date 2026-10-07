@@ -13,6 +13,7 @@ import {
   readyItems,
   sampleThumbnail,
   statusItems,
+  useAttachmentUploads,
 } from 'factories/omni-ui-components/Attachment/Attachment.factories';
 
 type StoryArgs = AttachmentStripProps;
@@ -145,4 +146,55 @@ export const InComposer: StoryObj = {
       <ComposerDemo initialItems={[attachmentItem({ id: 'i', name: 'screenshot.png', kind: 'image', meta: 'Image', previewUrl: sampleThumbnail })]} />
     </div>
   ),
+};
+
+const UploadsDemo: React.FC<{ onReject: (code: string) => void; onRetry: (id: string) => void }> = ({ onReject, onRetry }) => {
+  const uploads = useAttachmentUploads();
+  return (
+    <div className="max-w-md p-6">
+      <AttachmentDropzone
+        current={uploads.items.length}
+        onFiles={uploads.add}
+        onReject={(reason) => onReject(reason.code)}
+        className="rounded-xl border border-dashed border-[color:var(--oui-panel-border)] p-6"
+      >
+        {(drop) => (
+          <div className="flex flex-col gap-3">
+            <button type="button" className="inline-flex items-center gap-2 self-start rounded-md border px-3 py-1.5 text-sm" onClick={drop.openPicker}>
+              <Paperclip className="size-4" /> Choose files
+            </button>
+            <AttachmentStrip
+              items={uploads.items}
+              removeIcon={attachmentRemoveIcon}
+              onRemove={uploads.remove}
+              onClick={(item) => {
+                if (item.status !== 'failed') return;
+                onRetry(item.id);
+                uploads.retry(item);
+              }}
+            />
+            <p className="m-0 text-xs text-[color:var(--oui-panel-meta-fg)]">
+              Each file goes uploading, extracting (PDF and images), then ready. A name starting <code>fail-upload</code> or <code>fail-extract</code> ends failed; choose a failed card to retry it.
+            </p>
+          </div>
+        )}
+      </AttachmentDropzone>
+    </div>
+  );
+};
+
+/** The life of a file the host sends: `uploading` (progress), `extracting`, `ready`, or `failed` ("Not sent", or an error text). `useAttachmentUploads` in the factories file is the example host state; the card is only data in, callbacks out. */
+export const Uploads: StoryObj = {
+  render: () => <UploadsDemo onReject={fn()} onRetry={fn()} />,
+  play: async ({ canvasElement }) => {
+    const zone = canvasElement.querySelector('[data-slot="attachment-dropzone"]') as HTMLElement;
+    const transfer = new DataTransfer();
+    transfer.items.add(new File(['x'], 'fail-upload.txt', { type: 'text/plain' }));
+    zone.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: transfer }));
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText('Uploading…')).toBeVisible();
+    await expect(canvas.getByRole('button', { name: 'Remove fail-upload.txt' })).toBeDisabled();
+    await expect(await canvas.findByText('Not sent', undefined, { timeout: 3000 })).toBeVisible();
+    await expect(canvas.getByRole('button', { name: 'Remove fail-upload.txt' })).toBeEnabled();
+  },
 };

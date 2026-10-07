@@ -6,6 +6,7 @@ import {
   analysingEntries,
   answeredEntries,
   answeredTurns,
+  attachmentTurns,
   ConversationDemo,
   failedTurns,
   stoppedTurns,
@@ -237,6 +238,7 @@ const conversationMeta = {
     editingId: { control: 'text', description: '`editingId`: id of the turn whose question is being edited.' },
     approval: { control: 'boolean', description: 'Story-only: a pending approval after the last turn (`slots.approvalsAfter`).' },
     seeThrough: { control: 'inline-radio', options: [1, 0.6, 0.22], description: 'Story-only: `--oui-panel-see-through`.' },
+    attachmentVariant: { control: 'inline-radio', options: ['chip', 'card'], description: '`attachmentVariant`: how a sent question shows its files, read-only. `chip` (default) or `card`.' },
     onAction: { action: 'conversation', description: 'Story-only: reports edit, copy, retry, suggestions, queue and send.' },
   },
   render: (args: ConversationDemoProps) => (
@@ -338,6 +340,19 @@ export const ConversationReadOnly: ConversationStory = {
 };
 
 /** No turns and nothing running: the `empty` slot (an empty state, or a "no longer shared" notice). */
+/** A sent question with its files as read-only cards (`attachmentVariant="card"`): thumbnail, name, status line ("Uploading…", "Not sent"), no remove button; choosing one calls `onAttachmentClick`. */
+export const ConversationAttachmentCards: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, turns: attachmentTurns(), attachmentVariant: 'card', composer: false },
+  play: async ({ canvasElement, args }) => {
+    const log = within(canvasElement).getByRole('log', { name: 'Conversation' });
+    await expect(within(log).queryByRole('button', { name: /^Remove/ })).toBeNull();
+    await expect(within(log).getByText('Not sent')).toBeVisible();
+    await userEvent.click(within(log).getByRole('button', { name: 'whiteboard.png' }));
+    await expect(args.onAction).toHaveBeenCalledWith('attachment', 'att-2');
+  },
+};
+
 export const ConversationEmpty: ConversationStory = { ...conversationMeta, args: { ...conversationMeta.args, empty: true } };
 
 /** Older messages exist: `Load earlier messages` sits at the top and reports `onLoadEarlier`. */

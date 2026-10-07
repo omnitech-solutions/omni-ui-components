@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { AttachmentKind } from '../Attachment';
+import type { AttachmentKind, AttachmentStatus } from '../Attachment';
 
 /** A piece of a source the model cited. Structural, so any `Sources` item type fits. */
 export interface ChatSource {
@@ -19,6 +19,10 @@ export interface ChatAttachmentPart {
   name: string;
   meta?: string;
   previewUrl?: string;
+  /** Where the file is: a sent message can still show `uploading`, `extracting` or `failed` ("Not sent"). Default `ready`. */
+  status?: AttachmentStatus;
+  /** Shown instead of `meta` when `status` is `failed`. */
+  error?: string;
 }
 
 /** One version of a message (an edit of a question, a regeneration of an answer). Extend it with your own fields. */
@@ -257,6 +261,8 @@ export interface TranscriptConversationProps<U extends ConversationTurn = Conver
   stoppedIcon?: React.ReactNode;
   /** Icon nodes of attachment chips on a question, by kind. */
   attachmentIcons?: Partial<Record<AttachmentKind, React.ReactNode>>;
+  /** How a sent question shows its attachments, always read-only (no remove button): `chip` (default, a compact pill) or `card` (thumbnail, name, meta/status line). Clicking either calls `onAttachmentClick`. */
+  attachmentVariant?: 'chip' | 'card';
   /** Wider turns for a full-page view. Default 760 (px), the original column width. */
   maxWidth?: number | string;
   labels?: Partial<TranscriptLabels>;
