@@ -30,3 +30,7 @@ jobs:
       - run: pnpm verify
 
       - run: pnpm storybook:build
+
+      # run every story's `play` in real Chromium (vitest browser mode + @storybook/addon-vitest)
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:stories
