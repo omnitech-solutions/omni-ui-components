@@ -33,15 +33,15 @@ export function resolveDocsHeroPreset(overrides?: {
     heroNameSegment: {
       className: [affixDocsHeroPreset.heroNameSegment.className ?? '', overrides?.heroNameSegment?.className ?? ''].filter(Boolean).join(' '),
       style: {
-        ...(affixDocsHeroPreset.heroNameSegment.style ?? {}),
-        ...(overrides?.heroNameSegment?.style ?? {}),
+        ...affixDocsHeroPreset.heroNameSegment.style,
+        ...overrides?.heroNameSegment?.style,
       },
     },
     heroSignatureSegment: {
       className: [affixDocsHeroPreset.heroSignatureSegment.className ?? '', overrides?.heroSignatureSegment?.className ?? ''].filter(Boolean).join(' '),
       style: {
-        ...(affixDocsHeroPreset.heroSignatureSegment.style ?? {}),
-        ...(overrides?.heroSignatureSegment?.style ?? {}),
+        ...affixDocsHeroPreset.heroSignatureSegment.style,
+        ...overrides?.heroSignatureSegment?.style,
       },
     },
   };

@@ -144,7 +144,7 @@ export const ComponentWrapper: React.FC<ComponentWrapperProps> = ({
     const explicitMatch = fixtures && Object.entries(fixtures).find(([, v]) => v === value);
     if (!registeredMatch && !explicitMatch) propDerived[key] = value;
   }
-  const mergedFixtures = { ...registered, ...propDerived, ...(fixtures ?? {}) };
+  const mergedFixtures = { ...registered, ...propDerived, ...fixtures };
   return (
     <div className={className} style={{ maxWidth: 800, minWidth: 600, marginInline: 'auto', width: '100%' }}>
       {(title || description) && (
