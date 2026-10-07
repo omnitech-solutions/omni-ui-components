@@ -1,0 +1,12 @@
+import { cva } from 'class-variance-authority';
+
+/** Wrappers the composition adds around parts that need one. The Transcript owns the column and the turn spacing. */
+export const conversationTranscriptPartVariants = cva('min-w-0', {
+  variants: {
+    part: {
+      feedback: 'w-full',
+      approval: 'w-full',
+    },
+  },
+  defaultVariants: { part: 'feedback' },
+});

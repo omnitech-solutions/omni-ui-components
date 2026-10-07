@@ -125,3 +125,4 @@ export * from './CommandPopover';
 export * from './Composer';
 export * from './DictationBar';
 export * from './QueuedList';
+export * from './ConversationTranscript';
