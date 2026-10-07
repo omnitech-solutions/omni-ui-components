@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import ts from 'typescript';
@@ -38,4 +39,17 @@ describe('src/index.ts barrel', () => {
     const duplicates = [...names].filter(([, from]) => from.length > 1).map(([name, from]) => `${name} <- ${from.join(', ')}`);
     expect(duplicates).toEqual([]);
   }, 60_000);
+
+  it('re-exports every component folder, except those with their own package entry', () => {
+    const src = path.dirname(entry);
+    const ownEntry = new Set(['dynamic-form']);
+    const barrel = fs.readFileSync(entry, 'utf8');
+    const missing = fs
+      .readdirSync(src, { withFileTypes: true })
+      .filter((d) => d.isDirectory() && !ownEntry.has(d.name))
+      .filter((d) => fs.existsSync(path.join(src, d.name, 'index.ts')) || fs.existsSync(path.join(src, d.name, 'index.tsx')))
+      .filter((d) => !barrel.includes(`from './${d.name}'`))
+      .map((d) => d.name);
+    expect(missing).toEqual([]);
+  });
 });
