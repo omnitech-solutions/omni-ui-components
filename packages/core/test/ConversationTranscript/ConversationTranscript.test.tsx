@@ -65,7 +65,7 @@ describe('omni-ui-components/ConversationTranscript composition', () => {
     expect(screen.getByRole('button', { name: 'Show me a test for it' })).toBeInTheDocument();
     expect(screen.getByText('Save this solution to your notes?')).toBeInTheDocument();
     expect(screen.getByText(/earlier messages summarised/i)).toBeInTheDocument();
-    expect(screen.getByText('Claude · 842 tokens')).toBeInTheDocument();
+    expect(screen.getAllByText('Claude · 842 tokens')).toHaveLength(2);
   });
 
   it('draws nothing for a part whose callback is absent', () => {
