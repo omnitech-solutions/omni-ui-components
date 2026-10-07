@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Subtree theming page</title>
+    <link rel="icon" href="data:," />
+    <script>
+      // ?host=layered puts host.css in `@layer host` (the documented setup); default is the library alone.
+      if (new URLSearchParams(location.search).get('host') === 'layered') {
+        document.write('<style>@layer host, omni-ui-components; @import url("./host.css") layer(host);</style>');
+      }
+    </script>
+  </head>
+  <body>
+    <div id="library-root" data-fixture style="width: 760px; font: 14px/1.5 system-ui, sans-serif"></div>
+    <script type="module" src="./d.tsx"></script>
+  </body>
+</html>

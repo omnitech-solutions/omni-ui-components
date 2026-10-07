@@ -301,6 +301,97 @@
   --font-signature: var(--font-signature);
 }
 
+/* Theme bridge. Tailwind emits every `@theme` entry once, on `:root`, and `var()` resolves where it is declared: `--color-foreground: var(--text-default)`
+   set on `<html>` would stay light inside a `data-theme="dark"` subtree, and so would every `text-foreground` / `bg-card` utility and every `var(--color-*)`
+   the components read. The entries that point at a theme-switched token are declared again on each theme root, where `--text-default` has the subtree's
+   value. Keep this list equal to those `@theme` entries (test/styles/themeContract.test.ts fails on drift). */
+@layer omni-ui-components.theme {
+  :root,
+  :host,
+  [data-theme] {
+    --color-primary-foreground: var(--color-primary-contrast);
+    --color-destructive-foreground: var(--color-primary-contrast);
+    --color-secondary: var(--bg-grey-f1);
+    --color-secondary-foreground: var(--text-default);
+    --color-accent: var(--bg-hover-subtle);
+    --color-accent-foreground: var(--text-default);
+    --color-muted: var(--bg-grey-f5);
+    --color-popover: var(--bg-panel);
+    --color-popover-foreground: var(--text-default);
+    --color-popover-item-hover: var(--bg-input-hover);
+    --color-popover-item-active: var(--bg-input-hover-active);
+    --color-card-foreground: var(--text-default);
+    --color-background: var(--bg-content);
+    --color-background-alt: var(--bg-content-alt);
+    --color-background-document: var(--bg-content-document);
+    --color-background-empty: var(--bg-content-empty);
+    --color-card: var(--bg-panel);
+    --color-card-translucent: var(--bg-panel-semi-transparent);
+    --color-input: var(--bg-field);
+    --color-input-disabled: var(--bg-field-disabled);
+    --color-input-hover: var(--bg-input-hover);
+    --color-input-hover-subtle: var(--bg-input-hover-subtle);
+    --color-input-hover-active: var(--bg-input-hover-active);
+    --color-brand-muted: var(--bg-brand-muted);
+    --color-brand-dark: var(--bg-brand-dark);
+    --color-shadow: var(--bg-shadow);
+    --color-tooltip: var(--bg-tooltip);
+    --color-inverse: var(--bg-inverse);
+    --color-hover-subtle: var(--bg-hover-subtle);
+    --color-sidebar: var(--bg-sidebar);
+    --color-button: var(--bg-button-default);
+    --color-warning: var(--bg-warning-notice);
+    --color-grey-fd: var(--bg-grey-fd);
+    --color-grey-fc: var(--bg-grey-fc);
+    --color-grey-fa: var(--bg-grey-fa);
+    --color-grey-f8: var(--bg-grey-f8);
+    --color-grey-f5: var(--bg-grey-f5);
+    --color-grey-f1: var(--bg-grey-f1);
+    --color-grey-e: var(--bg-grey-e);
+    --color-grey-c: var(--bg-grey-c);
+    --color-grey-8: var(--bg-grey-8);
+    --color-foreground: var(--text-default);
+    --color-muted-foreground: var(--text-muted);
+    --color-muted-alt-foreground: var(--text-muted-alt);
+    --color-light-foreground: var(--text-lighter);
+    --color-faint-foreground: var(--text-lightest);
+    --color-tooltip-foreground: var(--text-tooltip);
+    --color-inverse-foreground: var(--text-inverse);
+    --color-translucent-foreground: var(--text-semi-transparent);
+    --color-translucent-muted-foreground: var(--text-semi-transparent-muted);
+    --color-border: var(--border-content);
+    --color-border-alt: var(--border-content-alt);
+    --color-border-darker: var(--border-darker);
+    --color-border-input: var(--border-field);
+    --color-border-input-applied: var(--border-field-applied);
+    --color-border-button-hover: var(--border-button-hover);
+    --color-border-translucent: var(--border-semi-transparent);
+    --color-border-translucent-alt: var(--border-semi-transparent-alt);
+    --color-border-translucent-strong: var(--border-semi-transparent-strong);
+    --color-border-translucent-subtle: var(--border-semi-transparent-subtle);
+    --color-switch: var(--bg-switch);
+    --color-switch-indicator: var(--bg-switch-indicator);
+    --color-switch-toggle: var(--bg-switch-toggle);
+    --color-switch-toggle-active: var(--bg-switch-toggle-active);
+    --color-switch-foreground: var(--text-switch);
+    --color-switch-hover-foreground: var(--text-switch-hover);
+    --color-switch-active-foreground: var(--text-switch-active);
+    --color-tag: var(--bg-tag-text);
+    --color-tag-hover: var(--bg-tag-text-hover);
+    --color-inverse-expense: var(--bg-inverse-expense);
+    --color-list-grid-row: var(--bg-list-grid-row);
+    --color-list-grouped-header: var(--bg-list-grouped-header);
+    --color-list-grouped-header-document: var(--bg-list-grouped-header-document);
+    --color-invoice-badge: var(--bg-invoice-badge);
+    --color-invoice-badge-foreground: var(--text-invoice-badge);
+    --color-info: var(--bg-info);
+    --color-info-light: var(--bg-info-light);
+    --color-info-lighter: var(--bg-info-lighter);
+    --color-yellow: var(--bg-yellow);
+    --color-highlight: var(--bg-highlight);
+  }
+}
+
 @layer omni-ui-components.classes {
 /* Transition utilities (cover 80% of transition usage in the codebase) */
 .transition-default {
