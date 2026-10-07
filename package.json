@@ -12,11 +12,11 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "test:unit": "turbo run test",
-    "lint": "oxlint .",
+    "lint": "biome lint .",
     "test:coverage": "vitest run --coverage",
-    "lint:fix": "oxlint . --fix",
-    "format": "prettier --check .",
-    "format:write": "prettier --write .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format .",
+    "format:write": "biome format --write .",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "publish:package": "(npm whoami >/dev/null 2>&1 || npm login --scope=@oc-tech --auth-type=web) && pnpm --filter @oc-tech/omni-ui-components publish --access public",
@@ -25,7 +25,11 @@
     "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "test:storybook": "vitest run --config vitest.storybook.config.ts",
     "test:visual": "vitest run --config vitest.visual.config.ts",
-    "test:visual:update": "vitest run --config vitest.visual.config.ts --update"
+    "test:visual:update": "vitest run --config vitest.visual.config.ts --update",
+    "check": "biome check .",
+    "prepare": "lefthook install || true",
+    "hooks:run:pre-commit": "lefthook run pre-commit",
+    "hooks:run:pre-push": "lefthook run pre-push"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -81,6 +85,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "catalog:",
     "@storybook/addon-a11y": "^10.4.6",
     "@storybook/addon-docs": "^10.4.6",
     "@storybook/addon-themes": "^10.4.6",
@@ -98,7 +103,7 @@
     "@vitest/browser-playwright": "4.1.10",
     "@vitest/coverage-v8": "4.1.10",
     "happy-dom": "^20.10.6",
-    "oxlint": "catalog:",
+    "lefthook": "catalog:",
     "playwright": "^1.61.1",
     "prettier": "catalog:",
     "react-syntax-highlighter": "^16.1.1",

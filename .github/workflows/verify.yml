@@ -2,6 +2,8 @@ name: Verify
 
 on:
   pull_request:
+  push:
+    branches: [master, lib-completion]
 
 concurrency:
   group: verify-${{ github.ref }}
@@ -9,6 +11,10 @@ concurrency:
 
 permissions:
   contents: read
+
+env:
+  CI: 'true'
+  LEFTHOOK: '0'
 
 jobs:
   verify:
@@ -30,6 +36,8 @@ jobs:
 
       # lint, typecheck, test, build (the local gate)
       - run: pnpm verify
+
+      # coverage artifact (test:coverage + upload) is added once the coverage gate lands
 
       - run: pnpm storybook:build
 

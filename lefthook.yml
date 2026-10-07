@@ -1,0 +1,17 @@
+# Git hooks (lefthook). Installed by `pnpm install` through the `prepare` script.
+# Bypass once with LEFTHOOK=0 (CI does this) or `git commit --no-verify`.
+min_version: 2.1.10
+assert_lefthook_installed: true
+glob_matcher: doublestar
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: biome
+      glob: '**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc,css}'
+      run: pnpm exec biome check --no-errors-on-unmatched {staged_files}
+
+pre-push:
+  jobs:
+    - name: verify
+      run: pnpm verify
