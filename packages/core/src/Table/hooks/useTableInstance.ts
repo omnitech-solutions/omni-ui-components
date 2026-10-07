@@ -85,13 +85,15 @@ export function useTableInstance<TRecord, TRowData>(input: UseTableInstanceInput
       mergedLeafColumns.map((col) => ({
         id: col.key,
         accessorFn: (resolved) => cellValue(resolved.record, resolved.row, col),
-        filterFn: col.onFilter
-          ? (rowModel, _columnId, filterValue) => {
-              const values = Array.isArray(filterValue) ? filterValue : [filterValue];
-              if (!values.length || values[0] == null || values[0] === '') return true;
-              return values.some((value) => col.onFilter?.(value, rowModel.original.record));
-            }
-          : 'auto',
+        // Same semantics as `rowsForFilters`: OR across the selected values, `onFilter` when given, otherwise string equality.
+        // (TanStack's 'auto' filter would treat the array as one substring / number range and drop rows wrongly.)
+        filterFn: (rowModel, columnId, filterValue) => {
+          const values = Array.isArray(filterValue) ? filterValue : [filterValue];
+          if (!values.length || values[0] == null || values[0] === '') return true;
+          if (col.onFilter) return values.some((value) => col.onFilter?.(value, rowModel.original.record));
+          const current = rowModel.getValue(columnId);
+          return values.some((value) => String(current) === String(value));
+        },
         enableSorting: Boolean(col.sorter),
         sortingFn: (() => {
           const sorter = col.sorter;
