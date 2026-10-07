@@ -108,7 +108,7 @@ type ConversationProps<U extends ConversationTurn, V extends ChatVersion, A exte
 const call = <U extends ConversationTurn>(slot: TurnSlot<U> | undefined, turn: U, context: TurnContext) => (slot ? slot(turn, context) : null);
 
 /**
- * The turn-oriented body of the Transcript (use it through `<Transcript turns={...} />`): the "Load earlier messages"
+ * The turn-oriented body of the Transcript (use it through `<Transcript turns={...} />`): the "Load previous messages"
  * button, the empty slot, then per turn the question (attachment chips, bubble or editor, hover actions) and the
  * assistant's reply (timeline, thinking, content with the streaming caret, stopped banner, sources, actions,
  * follow-ups) with approvals and the error around it. The order and visibility rules are the original's (see
@@ -360,6 +360,7 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
           className="self-center"
           disabled={loadingEarlier}
           data-slot="transcript-load-earlier"
+          title={labels.loadEarlierHint}
           onClick={(event) => {
             // Turns already in memory come first (the scroll offset from the bottom is kept); then the host fetches a page.
             if (view.hidden > 0) view.showEarlier(event.currentTarget);

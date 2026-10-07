@@ -65,7 +65,7 @@ describe('omni-ui-components/Transcript callbacks (items by reference)', () => {
     const seen: (string | undefined)[] = [];
     const onLoadEarlier = vi.fn((oldest: MyTurn | undefined): void => void seen.push(oldest?.threadRef));
     render(<Transcript<never, MyTurn> turns={turns} hasEarlier onLoadEarlier={onLoadEarlier} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Load earlier messages' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Load previous messages' }));
     expect(onLoadEarlier.mock.calls[0][0]).toBe(turns[0]);
     expect(seen).toEqual(['t-1']);
   });
