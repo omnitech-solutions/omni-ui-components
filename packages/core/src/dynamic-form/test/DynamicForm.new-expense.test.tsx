@@ -12,7 +12,7 @@ beforeAll(() => {
 
 function Harness({ onSubmit, initial }: { onSubmit?: (data: ExpenseScenarioFormData) => void; initial?: Partial<ExpenseScenarioFormData> }) {
   const fixture = expenseScenarioFixture();
-  const start = { ...fixture.defaults, ...(initial ?? {}) } as ExpenseScenarioFormData;
+  const start = { ...fixture.defaults, ...initial } as ExpenseScenarioFormData;
   const [formData, setFormData] = React.useState<ExpenseScenarioFormData>(start);
   return (
     <DynamicForm

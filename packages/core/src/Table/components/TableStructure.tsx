@@ -184,7 +184,7 @@ export function TableStructure<TRecord, TRowData>({
                 const resolved = tanRow.original;
                 const rowIndex = enableVirtualRows ? (virtualItems[renderIndex]?.index ?? renderIndex) : renderIndex;
                 const indent = tanRow.depth ?? 0;
-                const rowProps = { ...(onRow?.(resolved.record, rowIndex, resolved.row) ?? {}), ...(resolved.row.onRow?.(resolved.record, rowIndex) ?? {}) };
+                const rowProps = { ...onRow?.(resolved.record, rowIndex, resolved.row), ...resolved.row.onRow?.(resolved.record, rowIndex) };
                 const rowClass = typeof rowClassName === 'function' ? rowClassName(resolved.record, rowIndex, resolved.row) : rowClassName;
                 const selected = selectedKeys.includes(String(resolved.key)) || resolved.row.selected;
                 const disabled = resolved.row.disabled || isSelectionDisabled(resolved);

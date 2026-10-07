@@ -93,7 +93,7 @@ const NumberInputPrimitiveInner = React.forwardRef<HTMLInputElement, NumberInput
       const parsed = clamp(parse(raw));
       /* Live re-format with thousand separators as the user types, but
        * preserve trailing `.` / `.0…` so decimal entry isn't clobbered. */
-      const endsWithDot = /\.$/.test(raw);
+      const endsWithDot = raw.endsWith('.');
       const trailingZeros = raw.match(/\.\d*?(0+)$/);
       let formatted = parsed === null ? raw : formatNumber(parsed, { ...fmtOpts, decimals: undefined });
       if (endsWithDot && !formatted.includes('.')) formatted += '.';

@@ -32,7 +32,7 @@ export function useResolvedRows<TRecord, TRowData>({
       const extras = appendedRows.map((r, index) => ({
         key: r.key,
         record: r.record ?? ({} as TRecord),
-        row: { ...(row ?? {}), ...r, record: r.record ?? ({} as TRecord) } as TableDataRow<TRecord, TRowData>,
+        row: { ...row, ...r, record: r.record ?? ({} as TRecord) } as TableDataRow<TRecord, TRowData>,
         index: normalized.length + index,
       }));
       return [...normalized, ...extras];

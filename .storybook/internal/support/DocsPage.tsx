@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Controls, Description, Primary, Stories, Title, useOf } from '@storybook/addon-docs/blocks';
+import { Controls, Primary, Stories, useOf } from '@storybook/addon-docs/blocks';
 import { resolveDocsHeroPreset, type DocsHeroSegmentOverride } from './docsHero';
 import { InlineCode } from './InlineCode';
 import { SignatureCode } from './SignatureCode';

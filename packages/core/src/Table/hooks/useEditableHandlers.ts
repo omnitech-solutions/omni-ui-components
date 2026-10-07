@@ -57,7 +57,7 @@ export function useEditableHandlers<TRecord, TRowData>({
     renderedLeafColumns.forEach((item) => {
       values[item.key] = rawCellValue(resolved.record, resolved.row, item);
     });
-    return { ...values, ...(rowConfig?.initialValues?.(resolved.record, resolved.row) ?? {}) };
+    return { ...values, ...rowConfig?.initialValues?.(resolved.record, resolved.row) };
   };
 
   const ensureRowEditValues = (rowKey: string, resolved: TableResolvedRow<TRecord, TRowData>, rowConfig: TableEditableRowConfig<TRecord, TRowData> | null) => {
@@ -65,7 +65,7 @@ export function useEditableHandlers<TRecord, TRowData>({
   };
 
   const setEditableValue = (rowKey: string, columnKey: string, value: unknown) => {
-    setEditValues((current) => ({ ...current, [rowKey]: { ...(current[rowKey] ?? {}), [columnKey]: value } }));
+    setEditValues((current) => ({ ...current, [rowKey]: { ...current[rowKey], [columnKey]: value } }));
     setEditErrors((current) => ({ ...current, [editableErrorKey(rowKey, columnKey)]: null }));
   };
 
@@ -84,7 +84,7 @@ export function useEditableHandlers<TRecord, TRowData>({
       setEditingCell(null);
       return;
     }
-    setEditValues((current) => ({ ...current, [rowKey]: { ...(current[rowKey] ?? {}), [col.key]: value } }));
+    setEditValues((current) => ({ ...current, [rowKey]: { ...current[rowKey], [col.key]: value } }));
     setEditingCell({ rowKey, columnKey: col.key });
     setEditingRowKey(null);
     setEditErrors((current) => ({ ...current, [editableErrorKey(rowKey, col.key)]: null }));
@@ -125,7 +125,7 @@ export function useEditableHandlers<TRecord, TRowData>({
     }
     if (editableConfig.cellConfig?.onSave) await editableConfig.cellConfig.onSave(value, ctx);
     else await editableConfig.columnConfig?.onSave?.(value, ctx.record, ctx.row);
-    setInternalCellValues((current) => ({ ...current, [rowKey]: { ...(current[rowKey] ?? {}), [col.key]: value } }));
+    setInternalCellValues((current) => ({ ...current, [rowKey]: { ...current[rowKey], [col.key]: value } }));
     onEdit?.({ key: col.key, value, record: ctx.record, row: ctx.row, column: col, rowKey });
     setEditingCell((current) => (current?.rowKey === rowKey && current.columnKey === col.key ? null : current));
     setEditErrors((current) => ({ ...current, [editableErrorKey(rowKey, col.key)]: null }));
@@ -193,7 +193,7 @@ export function useEditableHandlers<TRecord, TRowData>({
       return;
     }
     await rowConfig.onSave?.(values, resolved.record, resolved.row);
-    setInternalCellValues((current) => ({ ...current, [rowKey]: { ...(current[rowKey] ?? {}), ...values } }));
+    setInternalCellValues((current) => ({ ...current, [rowKey]: { ...current[rowKey], ...values } }));
     renderedLeafColumns.forEach((col) => {
       if (!(col.key in values)) return;
       onEdit?.({ key: col.key, value: values[col.key], record: resolved.record, row: resolved.row, column: col, rowKey });

@@ -21,7 +21,7 @@ export interface PaginationProps {
 export function Pagination({
   placement,
   state,
-  pageCount,
+  pageCount: _pageCount,
   disabled,
   showPrevNext,
   showSizeChanger,
