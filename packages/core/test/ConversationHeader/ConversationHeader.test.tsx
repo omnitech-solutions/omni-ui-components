@@ -180,6 +180,6 @@ describe('omni-ui-components/ConversationHeader', () => {
 
   it('keeps a gap between the model control and the trailing buttons', () => {
     render(<ConversationHeader {...conversationHeaderPropsFactory({ modelControl: <span>Model chip</span> })} />);
-    expect(screen.getByText('Model chip').closest('[data-slot="conversation-model"]')).toHaveClass('mr-2');
+    expect(screen.getByText('Model chip').closest('[data-slot="conversation-model"]')).toHaveClass('mr-2', '[&>*]:whitespace-nowrap');
   });
 });
