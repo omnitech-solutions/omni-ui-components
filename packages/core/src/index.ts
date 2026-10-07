@@ -127,4 +127,5 @@ export * from './Composer';
 export * from './DictationBar';
 export * from './QueuedList';
 export * from './StreamStatus';
+export * from './ConversationTranscript';
 export * from './MessageMenu';

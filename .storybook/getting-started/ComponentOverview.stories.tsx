@@ -172,6 +172,7 @@ import { QueuedList } from '@oc-tech/omni-ui-components/QueuedList';
 import { queuedListPropsFactory, queuedListVariants } from 'factories/omni-ui-components/QueuedList/QueuedList.factories';
 import { ConversationDemo } from 'factories/omni-ui-components/Transcript/Transcript.factories';
 import { MarkdownDemo, markdownVariants, ChatReplyShowcase } from 'factories/omni-ui-components/Markdown/Markdown.factories';
+import { ConversationTranscriptDemo } from 'factories/omni-ui-components/ConversationTranscript/ConversationTranscript.factories';
 import { Sources } from '@oc-tech/omni-ui-components/Sources';
 import { sourcesPropsFactory, sourcesVariants } from 'factories/omni-ui-components/Sources/Sources.factories';
 import { Suggestions } from '@oc-tech/omni-ui-components/Suggestions';
@@ -484,6 +485,7 @@ const MessageActionsPreview = MessagePartsPreview(messageActionsVariants as Vari
 const MessageMenuPreview = MessagePartsPreview(messageMenuVariants as Variant<never>[], (args) => <MessageMenu {...messageMenuPropsFactory(args as object)} />);
 const SummaryDividerPreview =MessagePartsPreview(summaryDividerVariants as Variant<never>[], (args) => <SummaryDivider {...summaryDividerPropsFactory(args as object)} />);
 const ChatReplyPreview: React.FC = () => <ChatReplyShowcase />;
+const ConversationTranscriptPreview: React.FC = () => <ConversationTranscriptDemo />;
 
 const StatusClockPreview: React.FC = () => (
   <div className="flex flex-wrap gap-4">
@@ -1476,6 +1478,12 @@ const SECTIONS: OverviewSectionSpec[] = [
         preview: ChatReplyPreview,
         variants: [{ name: 'Finished reply, summary steps', args: {} }] as Variant<unknown>[],
         source: 'ChatReplyPreview',
+      },
+      {
+        name: 'ConversationTranscript',
+        preview: ConversationTranscriptPreview,
+        variants: [{ name: 'The chat reply, composed from props only', args: {} }] as Variant<unknown>[],
+        source: 'ConversationTranscriptPreview',
       },
     ],
   },
