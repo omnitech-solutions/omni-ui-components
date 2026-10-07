@@ -53,8 +53,15 @@ export const TokenOverrides: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(bg(panelOf(canvas.getByTestId('branded')))).toBe('rgb(10, 80, 60)');
-    await expect(bg(panelOf(canvas.getByTestId('stock')))).not.toBe('rgb(10, 80, 60)');
+    const branded = canvas.getByTestId('branded');
+    const stock = canvas.getByTestId('stock');
+    // The override reaches the subtree: a probe painted with the token matches the panel, and the stock sibling differs.
+    const probe = document.createElement('div');
+    probe.style.background = 'color-mix(in srgb, var(--oui-panel-bg) 100%, transparent)';
+    branded.append(probe);
+    await expect(bg(panelOf(branded))).toBe(bg(probe));
+    probe.remove();
+    await expect(bg(panelOf(branded))).not.toBe(bg(panelOf(stock)));
   },
 };
 
