@@ -1,0 +1,173 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/dist-types",
+      "!**/storybook-static",
+      "!**/coverage",
+      "!**/.turbo",
+      "!**/tmp",
+      "!pnpm-lock.yaml",
+      "!bionic",
+      "!visual/**/__screenshots__"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "trailingCommas": "all",
+      "semicolons": "always"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    },
+    "formatter": {
+      "enabled": false
+    },
+    "linter": {
+      "enabled": true
+    }
+  },
+  "assist": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "domains": {
+      "react": "recommended",
+      "test": "recommended"
+    },
+    "rules": {
+      "preset": "recommended",
+      "a11y": {
+        "preset": "all",
+        "noAmbiguousAnchorText": "warn",
+        "noAriaHiddenOnFocusable": "warn",
+        "noAutofocus": "warn",
+        "noNoninteractiveTabindex": "warn",
+        "noStaticElementInteractions": "warn",
+        "useAriaPropsSupportedByRole": "warn",
+        "useFocusableInteractive": "warn",
+        "useKeyWithClickEvents": "warn",
+        "useSemanticElements": "warn",
+        "useValidAriaRole": "warn"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
+      },
+      "style": {
+        "noDescendingSpecificity": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "warn"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "warn",
+        "noShadowRestrictedNames": "warn",
+        "useIterableCallbackReturn": "warn"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "**/*.stories.*",
+        "**/*.factories.*",
+        "**/*.test.*",
+        "**/test/**",
+        "**/visual/**"
+      ],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noCommaOperator": "off",
+            "useLiteralKeys": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noArrayIndexKey": "off",
+            "useIterableCallbackReturn": "off",
+            "noAssignInExpressions": "off"
+          },
+          "correctness": {
+            "useExhaustiveDependencies": "off",
+            "useHookAtTopLevel": "off"
+          },
+          "a11y": {
+            "noStaticElementInteractions": "off",
+            "useKeyWithClickEvents": "off",
+            "useSemanticElements": "off",
+            "useButtonType": "off",
+            "noLabelWithoutControl": "off",
+            "noSvgWithoutTitle": "off",
+            "noNoninteractiveTabindex": "off",
+            "noNoninteractiveElementInteractions": "off",
+            "useAriaPropsSupportedByRole": "off",
+            "useValidAnchor": "off",
+            "noAutofocus": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [".storybook/**"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noCommaOperator": "off",
+            "useLiteralKeys": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noArrayIndexKey": "off",
+            "useIterableCallbackReturn": "off",
+            "noAssignInExpressions": "off"
+          },
+          "correctness": {
+            "useExhaustiveDependencies": "off",
+            "useHookAtTopLevel": "off"
+          },
+          "a11y": {
+            "noStaticElementInteractions": "off",
+            "useKeyWithClickEvents": "off",
+            "useSemanticElements": "off",
+            "useButtonType": "off",
+            "noLabelWithoutControl": "off",
+            "noSvgWithoutTitle": "off",
+            "noNoninteractiveTabindex": "off",
+            "noNoninteractiveElementInteractions": "off",
+            "useAriaPropsSupportedByRole": "off",
+            "useValidAnchor": "off",
+            "noAutofocus": "off"
+          },
+          "security": {
+            "noDangerouslySetInnerHtml": "off"
+          }
+        }
+      }
+    }
+  ]
+}

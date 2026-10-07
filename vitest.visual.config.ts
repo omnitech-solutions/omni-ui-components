@@ -6,7 +6,7 @@ import viteConfig from './vite.config';
 // Screenshot baselines for the Native App showcase (see `pnpm test:visual`, `pnpm test:visual:update`).
 // Separate from vitest.storybook.config.ts: that one runs `play` functions, this one compares pixels.
 // Baselines are suffixed by browser and platform (`...-chromium-darwin.png`), so macOS and Linux never compare
-// against each other; CI does not run this config (no Linux baselines are committed).
+// against each other. CI (ubuntu-24.04) runs this config against the committed `-linux` baselines.
 export default mergeConfig(
   viteConfig,
   defineConfig({

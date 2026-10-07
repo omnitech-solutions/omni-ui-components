@@ -5,6 +5,7 @@
 //      and the computed style of every element must be identical (threshold 0).
 //   3. Host page B (host + library Panel and Button) renders in light and dark with zero console errors; the library Button does
 //      not take the host button's look.
+//   5. Subtree theming (d.html): data-theme on any ancestor, nested opposite themes and token overrides compute per subtree.
 //   4. Library regression page: ~90 library elements (buttons, inputs, select, segmented, card, alert, panel, table, composer ...)
 //      compute identically with no host stylesheet and with the host in `@layer host`, in light and dark.
 // Run: pnpm --filter @oc-tech/omni-ui-components test:isolation   (builds the package first)
@@ -318,6 +319,94 @@ for (const theme of ['light', 'dark']) {
   });
   if (leaks.length) fail(`library ${theme}: host styles leak into ${alone.computed.length} library elements, ${leaks.length} differences: ${leaks.slice(0, Number(process.env.DIFF_SAMPLE ?? 8)).join(' | ')}`);
   else pass(`library ${theme}: ${alone.computed.length} library elements compute identically with and without the host stylesheet`);
+}
+
+// ---------------------------------------------------------------- 5. subtree theming: two palettes in one document
+
+// d.html renders the same component set in containers with data-theme on an ancestor: nested opposite themes (dark inside light, light
+// inside dark) and an override of tokens on the container. Each container is probed by direct children only (its nested set is
+// a separate container). A nested subtree must compute exactly like the same theme at the top level, whatever theme its host has.
+const themeProbe = (id) => {
+  const root = document.getElementById(id);
+  const own = (selector) => {
+    const el = [...root.querySelectorAll(selector)].find((e) => e.closest('section[data-fixture]') === root);
+    if (!el) throw new Error(`theme probe: ${selector} not found in #${id}`);
+    return el;
+  };
+  const read = (el, props) => {
+    if (!el) throw new Error(`theme probe: missing element in #${id}`);
+    return Object.fromEntries(props.map((p) => [p, getComputedStyle(el).getPropertyValue(p)]));
+  };
+  const paint = ['background-color', 'color', 'border-top-color', 'box-shadow'];
+  const card = own('[data-probe="card"]').firstElementChild;
+  const alert = own('[data-probe="alert"]').firstElementChild;
+  const facts = {
+    section: read(root, ['background-color', 'color']),
+    panel: read(own('[data-slot="panel"]'), paint),
+    panelHeader: read(own('[data-slot="panel-header"]'), paint),
+    panelBody: read(own('[data-probe="panel-body"]'), ['color']),
+    panelTitle: read(own('[data-slot="panel-title"]'), ['color']),
+    button: read(own('button:not([aria-pressed])'), paint),
+    input: read(own('input'), paint),
+    segmented: read(own('[data-probe="segmented"]').firstElementChild, paint),
+    card: read(card, paint),
+    alert: alert ? read(alert, paint) : null,
+    tokens: read(root, [
+      '--oui-panel-bg', '--oui-foreground', '--oui-foreground-muted', '--oui-surface-field', '--oui-border-field', '--oui-tone-accent-fg',
+      '--oui-segment-active-bg', '--oui-code-plain', '--oui-panel-meta-fg', '--oui-background-current', '--oui-primary-6',
+    ]),
+  };
+  return facts;
+};
+
+async function captureThemes(host) {
+  const context = await browser.newContext({ viewport: { width: 900, height: 2200 }, deviceScaleFactor: 1 });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+  page.on('pageerror', (e) => errors.push(String(e)));
+  await page.goto(`${base}/d.html?host=${host}`, { waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('#library-root button', { state: 'attached' });
+  await page.addStyleTag({ content: '*, ::before, ::after { transition: none !important; animation: none !important; }' });
+  await settle(page);
+  const result = { errors, facts: {} };
+  for (const id of ['plain', 'light-host', 'dark-in-light', 'dark-host', 'light-in-dark', 'override']) result.facts[id] = await page.evaluate(themeProbe, id);
+  result.html = await page.evaluate(() => document.documentElement.outerHTML.length);
+  await page.screenshot({ path: join(shots, `subtree-theming-${host}.png`), fullPage: true });
+  await context.close();
+  return result;
+}
+
+const flatten = (facts) => Object.entries(facts).flatMap(([group, props]) => (props ? Object.entries(props).map(([k, v]) => [`${group}.${k}`, v]) : []));
+const diffFacts = (a, b, skip = () => false) => {
+  const right = Object.fromEntries(flatten(b));
+  return flatten(a).filter(([k, v]) => right[k] !== v && !skip(k)).map(([k, v]) => `${k}: ${v} vs ${right[k]}`);
+};
+
+for (const host of ['none', 'layered']) {
+  const { errors, facts } = await captureThemes(host);
+  const label = `subtree theming (${host === 'none' ? 'library alone' : 'host in @layer host'})`;
+  if (errors.length) fail(`${label}: console errors ${errors.join(' | ')}`);
+  const problems = [];
+  // 1. a dark subtree inside a light host computes like a dark top-level host, and light inside dark like light; the nested ones carry the
+  //    host's backdrop-independent values only (the section background is the same token), so everything is compared.
+  const darkInLight = diffFacts(facts['dark-in-light'], facts['dark-host']);
+  if (darkInLight.length) problems.push(`dark subtree in a light host differs from a dark host: ${darkInLight.slice(0, 6).join(' | ')}`);
+  const lightInDark = diffFacts(facts['light-in-dark'], facts['light-host']);
+  if (lightInDark.length) problems.push(`light subtree in a dark host differs from a light host: ${lightInDark.slice(0, 6).join(' | ')}`);
+  // 2. the two palettes really differ in one document, on paint and on the derived tokens
+  const same = flatten(facts['light-host']).filter(([k, v]) => k !== 'alert.box-shadow' && v === Object.fromEntries(flatten(facts['dark-host']))[k] && /^(section|panel|input|card)\.(background-color|color)|tokens\.--oui-(foreground|surface-field|panel-bg)$/.test(k));
+  if (same.length) problems.push(`light and dark containers share values: ${same.map(([k]) => k).join(', ')}`);
+  // 3. no theme attribute behaves as light (the default), unchanged
+  const plain = diffFacts(facts.plain, facts['light-host'], (k) => k.startsWith('section.'));
+  if (plain.length) problems.push(`a container with no data-theme differs from data-theme="light": ${plain.slice(0, 6).join(' | ')}`);
+  // 4. token overrides on any ancestor win for the subtree and stay inside it
+  if (facts.override.tokens['--oui-panel-bg'] !== 'rgb(10, 200, 30)') problems.push(`override: --oui-panel-bg is ${facts.override.tokens['--oui-panel-bg']}`);
+  if (facts.override.panel['background-color'] === facts['dark-host'].panel['background-color']) problems.push('override: panel background did not change');
+  const overrideLeak = ['plain', 'light-host', 'dark-host'].filter((id) => facts[id].tokens['--oui-panel-bg'] === 'rgb(10, 200, 30)');
+  if (overrideLeak.length) problems.push(`override leaked into ${overrideLeak.join(', ')}`);
+  if (problems.length) fail(`${label}: ${problems.join(' || ')}`);
+  else pass(`${label}: dark in light and light in dark compute like the top-level themes (${flatten(facts['dark-in-light']).length} values each), overrides stay in their subtree`);
 }
 
 await browser.close();
