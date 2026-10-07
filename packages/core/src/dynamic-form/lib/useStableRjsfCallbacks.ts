@@ -13,7 +13,7 @@ export interface StableRjsfCallbacks<T = unknown> {
 // ref and exposes constant-identity callbacks.
 export function useStableRjsfCallbacks<T = unknown>(
   props: Pick<WidgetProps, 'id' | 'onChange' | 'onBlur' | 'onFocus' | 'options'>,
-  transform: (next: T, emptyValue: unknown) => unknown = (next, empty) => (next === '' ? (empty ?? '') : next),
+  transform: (next: T, emptyValue: unknown) => unknown = (next, empty) => (next === '' ? (empty === undefined ? '' : empty) : next),
 ): StableRjsfCallbacks<T> {
   const refs = React.useRef({
     onChange: props.onChange,
