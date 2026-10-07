@@ -1,5 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
+import { hitAreaBoth } from '../internal/support/hitArea';
 import { CONTROL_TONES, pressedClasses, tonePressedClasses, toneTintClasses } from '../internal/support/controlTone';
 
 /**
@@ -43,7 +44,7 @@ export const iconButtonVariants = cva(
         lg: 'h-[var(--oui-field-height-xl)] w-[var(--oui-field-height-xl)] [&_svg]:size-5',
         /** 36px square control row (Native App toolbar). */
         control:
-          'h-[var(--oui-control-height)] w-[var(--oui-control-height)] rounded-[var(--oui-control-radius)] [&_svg]:size-[var(--oui-control-icon)]',
+          `${hitAreaBoth} [--oui-hit-border:1px] h-[var(--oui-control-height)] w-[var(--oui-control-height)] rounded-[var(--oui-control-radius)] [&_svg]:size-[var(--oui-control-icon)]`,
         /** 52px square labelled control row (icon-only; the caption is rendered by the consumer). */
         'control-labelled':
           'h-[var(--oui-control-height-labelled)] w-[var(--oui-control-height-labelled)] rounded-[var(--oui-control-radius)] [&_svg]:size-[var(--oui-control-icon)]',
