@@ -1,3 +1,4 @@
+@layer omni-ui-components.classes {
 /*
  * Filter dropdown density overrides — tightens the vertical spacing between
  * filter options and the actions row so the popover doesn't feel airy.
@@ -24,4 +25,5 @@
 .bui-table-filter-actions {
   padding: 6px 8px;
   gap: 8px;
+}
 }

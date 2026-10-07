@@ -1,3 +1,4 @@
+@layer omni-ui-components.classes {
 /* Theme overrides for `<Table theme="light|dark" />`. When a consumer forces a
  * theme on a Table, the Root gets `data-theme=…` and these rules pin the
  * `--bui-table-*` tokens so the palette is self-contained regardless of the
@@ -39,4 +40,5 @@
   --bui-table-row-selected-bg: color-mix(in srgb, #22ad01 18%, #191c1d);
   --bui-table-footer-bg: #232528;
   --bui-table-footer-fg: #f5f5f5;
+}
 }

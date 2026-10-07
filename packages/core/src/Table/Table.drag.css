@@ -1,3 +1,4 @@
+@layer omni-ui-components.classes {
 /*
  * Drag handle styling for column/row reorder controls.
  *
@@ -51,4 +52,5 @@ th:focus-within > .bui-table-header-drag > .bui-table-drag-handle {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
 }
