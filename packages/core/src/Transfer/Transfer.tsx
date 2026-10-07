@@ -20,8 +20,15 @@ export function Transfer({ dataSource, targetKeys = [], onChange, className, ...
   const [selectedSource, setSelectedSource] = React.useState<string[]>([]);
   const [selectedTarget, setSelectedTarget] = React.useState<string[]>([]);
 
-  const moveRight = () => onChange?.([...targetKeys, ...selectedSource]);
-  const moveLeft = () => onChange?.(targetKeys.filter((key) => !selectedTarget.includes(key)));
+  const moveRight = () => {
+    onChange?.([...targetKeys, ...selectedSource]);
+    // Moved items leave the list, so their selection must not linger (a second click would add them twice).
+    setSelectedSource([]);
+  };
+  const moveLeft = () => {
+    onChange?.(targetKeys.filter((key) => !selectedTarget.includes(key)));
+    setSelectedTarget([]);
+  };
 
   const renderList = (items: TransferItem[], selected: string[], setSelected: React.Dispatch<React.SetStateAction<string[]>>) => (
     <div className="min-h-64 flex-1 rounded-lg border">
