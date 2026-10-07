@@ -40,7 +40,7 @@ import '@oc-tech/omni-ui-components/styles.css';
 
 ## What the host still shares, and the known leaks
 
-- **Custom property names** on `:root`: the stylesheet defines `--oui-*` and unprefixed names from the legacy theme (`--primary`, `--danger`, `--black`, `--white`, `--grey-*`, `--bg-*`, `--text-*`, `--color-*`, `--radius-*`, `--font-*`, `--spacing`, `--shadow-*`). A host that defines the same name in an unlayered rule wins over the library; in `@layer host` it loses to the library. The fixture host uses `--ui-*`, which does not collide. Prefixing the unprefixed names is U04's job (`tokens.css` and `theme-tokens.css` selectors); until then hosts should not reuse them.
+- **Custom property names** on `:root`: the stylesheet defines `--oui-*` and unprefixed names from the legacy theme (`--primary`, `--danger`, `--black`, `--white`, `--grey-*`, `--bg-*`, `--text-*`, `--color-*`, `--radius-*`, `--font-*`, `--spacing`, `--shadow-*`). A host that defines the same name in an unlayered rule wins over the library; in `@layer host` it loses to the library. The fixture host uses `--ui-*`, which does not collide. U04 did not rename them (see `theme-contract.md`, Legacy unprefixed names): the theme roots now declare them per `data-theme` subtree, and hosts should still not reuse them.
 - **`@keyframes` names** (`spin`, `pulse`, `enter`, `exit`, `oui-*`, `bui-*`) and `@property --tw-*` are global by language design.
 - **A host element inside a library component** (a host child in a `Panel` body) is matched by `[data-slot] *`: a host `button` there gets `all: revert`.
 - **A host control that carries a Tailwind-style class** (`inline-flex`, `flex`, `box-border`) loses its host border, background and shadow when the host is layered. Likewise a host element with a class named exactly `border-solid`, `border-dashed` or `border-dotted` gets `border-width: 0`, and one with a `border`, `border-*` or `rounded-*` class gets the browser's `box-sizing` and, for `border`, `border-color` from `--color-border`. Hosts without Tailwind do not use these names.
@@ -48,6 +48,8 @@ import '@oc-tech/omni-ui-components/styles.css';
 - **Dark mode** is `[data-theme="dark"]` on any ancestor (or `<html>`), not `prefers-color-scheme`.
 
 ## The isolation test
+
+Fifth check (U04): `d.html` renders one component set in a light host with a dark subtree, a dark host with a light subtree, a container with no `data-theme` and one with token overrides; every nested subtree must compute like the same theme at the top level, the two palettes must differ, and overrides must stay in their container (`library alone` and `host in @layer host`).
 
 `pnpm --filter @oc-tech/omni-ui-components test:isolation` builds the package and runs `fixtures/host-app/isolation.mjs` (Playwright, headless Chromium):
 
@@ -60,6 +62,6 @@ Playwright needs a Chromium: the script falls back to any `chromium-*` under `PL
 
 ## Open points
 
-- U04 owns token selectors: if the unprefixed token names are renamed or scoped, update the list above.
+- Prefixing the legacy unprefixed token names (`--bg-*`, `--text-*`, `--grey-*`, `--black`, `--white`, `--primary`) with `--oui-` and keeping the old names as aliases is not done; it touches about 200 call sites. Theme selectors are done (U04, `theme-contract.md`).
 - The regression page covers about fifteen components, not all of them. A component whose native control has neither a marker nor a recognised class would still pick up host element rules; add `data-slot` to its root.
 - Portalled content outside `[data-oui-surface]` (Radix content of components other than the four U05a covers) is matched only through its classes.
