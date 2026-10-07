@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
 import { DictationBar } from '@oc-tech/omni-ui-components/DictationBar';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { dictationBarPropsFactory } from 'factories/omni-ui-components/DictationBar/DictationBar.factories';
 
 describe('omni-ui-components/DictationBar', () => {
@@ -28,7 +27,11 @@ describe('omni-ui-components/DictationBar', () => {
   it('Cancel and Done call back; inactive renders nothing; labels are configurable', async () => {
     const onCancel = vi.fn();
     const onDone = vi.fn();
-    const { rerender } = render(<DictationBar {...dictationBarPropsFactory({ onCancel, onDone, labels: { done: 'Terminé' } })} />);
+    const { rerender } = render(
+      <DictationBar
+        {...dictationBarPropsFactory({ onCancel, onDone, labels: { done: 'Terminé' } })}
+      />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
     await userEvent.click(screen.getByRole('button', { name: 'Terminé' }));
     expect(onCancel).toHaveBeenCalled();

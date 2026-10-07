@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import type { FormFixture } from '@oc-tech/omni-ui-components/Form/Form.types';
+import { z } from 'zod';
 import { SHOWCASE_MEMBERS, SHOWCASE_PROJECTS, SHOWCASE_TASKS } from '../../showcase/entities';
 
 /**
@@ -89,22 +88,51 @@ export const timesheetScenarioZod = z.object({
   meetingId: z.string().optional().default(''),
 }) as unknown as z.ZodType<TimesheetScenarioFormData>;
 
-export const timesheetProjectOptions = () => SHOWCASE_PROJECTS.map((p) => ({ value: p.id, label: `${p.icon} ${p.name}` }));
-export const timesheetMemberOptions = () => SHOWCASE_MEMBERS.map((m) => ({ value: m.id, label: m.name }));
-export const timesheetTaskOptions = () => SHOWCASE_TASKS.map((t) => ({ value: t.id, label: t.name }));
+export const timesheetProjectOptions = () =>
+  SHOWCASE_PROJECTS.map((p) => ({ value: p.id, label: `${p.icon} ${p.name}` }));
+export const timesheetMemberOptions = () =>
+  SHOWCASE_MEMBERS.map((m) => ({ value: m.id, label: m.name }));
+export const timesheetTaskOptions = () =>
+  SHOWCASE_TASKS.map((t) => ({ value: t.id, label: t.name }));
 
-export const timesheetScenarioFormFactory = (overrides: Partial<TimesheetScenarioFormData> = {}): FormFixture<TimesheetScenarioFormData> => ({
+export const timesheetScenarioFormFactory = (
+  overrides: Partial<TimesheetScenarioFormData> = {},
+): FormFixture<TimesheetScenarioFormData> => ({
   title: 'Add Time',
   maxWidth: 'max-w-2xl',
   schema: timesheetScenarioZod,
   initial: { ...timesheetScenarioInitial, ...overrides },
   rows: [
-    { kind: 'heading', title: TIMESHEET_HEADER.durationLabel, description: `${TIMESHEET_HEADER.dateLabel} · ${TIMESHEET_HEADER.statusLabel}` },
+    {
+      kind: 'heading',
+      title: TIMESHEET_HEADER.durationLabel,
+      description: `${TIMESHEET_HEADER.dateLabel} · ${TIMESHEET_HEADER.statusLabel}`,
+    },
     [
-      { name: 'clientOrganizationId', label: 'Project', type: 'select', placeholder: 'Add project', options: timesheetProjectOptions() },
-      { name: 'ownerId', label: 'Member', type: 'select', placeholder: 'Select…', options: timesheetMemberOptions() },
+      {
+        name: 'clientOrganizationId',
+        label: 'Project',
+        type: 'select',
+        placeholder: 'Add project',
+        options: timesheetProjectOptions(),
+      },
+      {
+        name: 'ownerId',
+        label: 'Member',
+        type: 'select',
+        placeholder: 'Select…',
+        options: timesheetMemberOptions(),
+      },
     ],
-    [{ name: 'taskUuid', label: 'Task', type: 'select', placeholder: 'Select a task or type a new one', options: timesheetTaskOptions() }],
+    [
+      {
+        name: 'taskUuid',
+        label: 'Task',
+        type: 'select',
+        placeholder: 'Select a task or type a new one',
+        options: timesheetTaskOptions(),
+      },
+    ],
     [{ name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'What are you working on?' }],
     [{ name: 'companyTagIds', label: 'Tags', type: 'tags', placeholder: 'Add tags' }],
     [

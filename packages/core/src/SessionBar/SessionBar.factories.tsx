@@ -1,15 +1,20 @@
-import * as React from 'react';
-import { Pause, Play } from 'lucide-react';
-
-import { SessionBar, type SessionBarProps, type SessionStatus } from '@oc-tech/omni-ui-components/SessionBar';
+import {
+  SessionBar,
+  type SessionBarProps,
+  type SessionStatus,
+} from '@oc-tech/omni-ui-components/SessionBar';
 import { StatusClock, type StatusClockBuildTag } from '@oc-tech/omni-ui-components/StatusClock';
-import { PauseDiscIcon, RecordIcon, SAMPLE_BUILD_TAG } from '../StatusClock/StatusClock.factories';
+import { Pause, Play } from 'lucide-react';
+import * as React from 'react';
 import type { Variant } from '../../internal/support/makeFactory';
+import { PauseDiscIcon, RecordIcon, SAMPLE_BUILD_TAG } from '../StatusClock/StatusClock.factories';
 
 export type OnSessionAction = (name: string, detail?: unknown) => void;
 
 /** Build `<SessionBar>` props (buttons with icons, no callbacks) for stories and tests. */
-export const sessionBarPropsFactory = (overrides: Partial<SessionBarProps> = {}): SessionBarProps => ({
+export const sessionBarPropsFactory = (
+  overrides: Partial<SessionBarProps> = {},
+): SessionBarProps => ({
   status: 'live',
   pause: { icon: <Pause /> },
   resume: { icon: <Play /> },
@@ -63,7 +68,15 @@ export const SessionBarDemo: React.FC<SessionBarDemoProps> = ({
     <div style={width ? { width } : undefined} className="flex flex-col gap-2">
       <SessionBar
         status={status}
-        leading={<StatusClock state={status} elapsed={elapsed} icon={<RecordIcon />} pausedIcon={<PauseDiscIcon />} buildTag={buildTag} />}
+        leading={
+          <StatusClock
+            state={status}
+            elapsed={elapsed}
+            icon={<RecordIcon />}
+            pausedIcon={<PauseDiscIcon />}
+            buildTag={buildTag}
+          />
+        }
         pause={{
           icon: <Pause />,
           onClick: () => {

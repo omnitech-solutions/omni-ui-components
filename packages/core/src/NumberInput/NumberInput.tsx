@@ -1,13 +1,27 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { NumberInputPrimitive } from './NumberInputPrimitive';
 import type { NumberInputProps } from './NumberInput.types';
+import { NumberInputPrimitive } from './NumberInputPrimitive';
 
 /** Chrome-wrapped Omni NumberInput. */
 const NumberInputInner = React.forwardRef<HTMLInputElement, NumberInputProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

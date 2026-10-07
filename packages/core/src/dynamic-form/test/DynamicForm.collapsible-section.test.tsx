@@ -1,10 +1,8 @@
-import * as React from 'react';
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { z } from 'zod';
-import type { RJSFSchema, UiSchema } from '@rjsf/utils';
-
 import { DynamicForm } from 'dynamic-form';
+import { z } from 'zod';
 
 describe('DynamicForm — collapsible ObjectFieldTemplate', () => {
   const schema: RJSFSchema = {
@@ -23,7 +21,9 @@ describe('DynamicForm — collapsible ObjectFieldTemplate', () => {
   };
   const zodSchema = z.object({
     name: z.string().optional(),
-    additionalFields: z.object({ project: z.string().optional(), note: z.string().optional() }).optional(),
+    additionalFields: z
+      .object({ project: z.string().optional(), note: z.string().optional() })
+      .optional(),
   }) as never;
 
   function renderForm({ defaultOpen, title }: { defaultOpen?: boolean; title?: string } = {}) {
@@ -34,7 +34,15 @@ describe('DynamicForm — collapsible ObjectFieldTemplate', () => {
         },
       },
     };
-    return render(<DynamicForm schema={schema} uiSchema={uiSchema} zodSchema={zodSchema} formData={{}} onSubmit={jest.fn()} />);
+    return render(
+      <DynamicForm
+        schema={schema}
+        uiSchema={uiSchema}
+        zodSchema={zodSchema}
+        formData={{}}
+        onSubmit={jest.fn()}
+      />,
+    );
   }
 
   it('renders the toggle button and uses the schema title by default', () => {
@@ -78,7 +86,15 @@ describe('DynamicForm — collapsible ObjectFieldTemplate', () => {
   });
 
   it('renders the grid normally when collapsible option is absent', () => {
-    render(<DynamicForm schema={schema} uiSchema={{}} zodSchema={zodSchema} formData={{}} onSubmit={jest.fn()} />);
+    render(
+      <DynamicForm
+        schema={schema}
+        uiSchema={{}}
+        zodSchema={zodSchema}
+        formData={{}}
+        onSubmit={jest.fn()}
+      />,
+    );
     expect(screen.queryByTestId('oui-collapsible')).toBeNull();
     expect(screen.getByLabelText(/Project/)).toBeInTheDocument();
   });

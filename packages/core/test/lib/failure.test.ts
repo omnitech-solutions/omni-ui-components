@@ -3,7 +3,11 @@ import { describeFailure } from '@oc-tech/omni-ui-components';
 describe('describeFailure', () => {
   const cases: [string, unknown, string][] = [
     ['fetch failure', new TypeError('Failed to fetch'), 'Connection problem'],
-    ['node econnreset', Object.assign(new Error('read ECONNRESET'), { code: 'ECONNRESET' }), 'Connection problem'],
+    [
+      'node econnreset',
+      Object.assign(new Error('read ECONNRESET'), { code: 'ECONNRESET' }),
+      'Connection problem',
+    ],
     ['timeout', new Error('Request timed out after 30000ms'), 'Took too long'],
     ['timeout name', { name: 'TimeoutError', message: 'x' }, 'Took too long'],
     ['429 status', { status: 429, message: 'nope' }, 'Too many requests'],

@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import type * as React from 'react';
 
 export interface WatermarkProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
   content: React.ReactNode;

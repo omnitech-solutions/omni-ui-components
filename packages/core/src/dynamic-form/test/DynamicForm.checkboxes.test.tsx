@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { z } from 'zod';
 import type { RJSFSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import { buildSingleFieldUiSchema, renderDynamicForm, screen } from './testing/renderDynamicForm';
 
@@ -25,7 +25,8 @@ const channelsSchema = (required = false): RJSFSchema => ({
 });
 
 const getGroup = () => document.querySelector<HTMLDivElement>('[data-slot="checkbox-group"]')!;
-const getItem = (value: string) => document.querySelector<HTMLButtonElement>(`[data-testid="root_channels-option-${value}"]`)!;
+const getItem = (value: string) =>
+  document.querySelector<HTMLButtonElement>(`[data-testid="root_channels-option-${value}"]`)!;
 
 describe('DynamicForm — CheckboxesWidget (array of enum) integration', () => {
   it('renders one checkbox per oneOf entry', () => {
@@ -37,13 +38,18 @@ describe('DynamicForm — CheckboxesWidget (array of enum) integration', () => {
     });
     expect(getGroup()).toBeInTheDocument();
     ['email', 'sms', 'push'].forEach((v) => expect(getItem(v)).toBeInTheDocument());
-    ['Email', 'SMS', 'Push'].forEach((label) => expect(screen.getByText(label)).toBeInTheDocument());
+    ['Email', 'SMS', 'Push'].forEach((label) =>
+      expect(screen.getByText(label)).toBeInTheDocument(),
+    );
   });
 
   it('lays out horizontally when ui:options.inline=true', () => {
     renderDynamicForm({
       schema: channelsSchema(),
-      uiSchema: buildSingleFieldUiSchema('channels', { 'ui:widget': 'checkboxes', 'ui:options': { inline: true } }),
+      uiSchema: buildSingleFieldUiSchema('channels', {
+        'ui:widget': 'checkboxes',
+        'ui:options': { inline: true },
+      }),
       zodSchema: z.object({ channels: z.array(z.string()) }),
       formData: { channels: [] },
     });
@@ -84,14 +90,23 @@ describe('DynamicForm — CheckboxesWidget (array of enum) integration', () => {
     await submit();
     expect(onSubmit).not.toHaveBeenCalled();
     expect(onError).toHaveBeenCalledWith(
-      expect.arrayContaining([expect.objectContaining({ path: ['channels'], source: 'zod', message: 'pick at least one' })]),
+      expect.arrayContaining([
+        expect.objectContaining({
+          path: ['channels'],
+          source: 'zod',
+          message: 'pick at least one',
+        }),
+      ]),
     );
   });
 
   it('honors ui:enumDisabled for specific values', () => {
     renderDynamicForm({
       schema: channelsSchema(),
-      uiSchema: buildSingleFieldUiSchema('channels', { 'ui:widget': 'checkboxes', 'ui:enumDisabled': ['push'] }),
+      uiSchema: buildSingleFieldUiSchema('channels', {
+        'ui:widget': 'checkboxes',
+        'ui:enumDisabled': ['push'],
+      }),
       zodSchema: z.object({ channels: z.array(z.string()) }),
       formData: { channels: [] },
     });

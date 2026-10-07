@@ -1,9 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
-
 import { FeedbackPanel, type FeedbackPanelProps } from '@oc-tech/omni-ui-components/FeedbackPanel';
+import type { Meta, StoryObj } from '@storybook/react';
 import { feedbackPanelPropsFactory } from 'factories/omni-ui-components/FeedbackPanel/FeedbackPanel.factories';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 const meta: Meta<FeedbackPanelProps> = {
   title: 'omni-ui-components/FeedbackPanel',
@@ -44,7 +42,10 @@ export const Default: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Too long' }));
-    await expect(canvas.getByRole('button', { name: 'Too long' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(canvas.getByRole('button', { name: 'Too long' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     await userEvent.click(canvas.getByRole('button', { name: 'Send feedback' }));
     await expect(args.onSubmit).toHaveBeenCalledWith({ reasons: [args.reasons[2]] });
   },

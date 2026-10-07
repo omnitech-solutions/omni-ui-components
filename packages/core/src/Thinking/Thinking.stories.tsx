@@ -1,9 +1,10 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from 'storybook/test';
-
 import { Thinking, type ThinkingProps } from '@oc-tech/omni-ui-components/Thinking';
-import { SAMPLE_REASONING, thinkingPropsFactory } from 'factories/omni-ui-components/Thinking/Thinking.factories';
+import type { Meta, StoryObj } from '@storybook/react';
+import {
+  SAMPLE_REASONING,
+  thinkingPropsFactory,
+} from 'factories/omni-ui-components/Thinking/Thinking.factories';
+import { expect, userEvent, within } from 'storybook/test';
 
 const meta: Meta<ThinkingProps> = {
   title: 'omni-ui-components/Thinking',
@@ -56,7 +57,10 @@ export const Default: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Thought for 4s' }));
     await expect(canvas.getByText(SAMPLE_REASONING)).toBeVisible();
-    await expect(canvas.getByRole('button', { name: 'Thought for 4s' })).toHaveAttribute('aria-expanded', 'true');
+    await expect(canvas.getByRole('button', { name: 'Thought for 4s' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
   },
 };
 export const Streaming: Story = {

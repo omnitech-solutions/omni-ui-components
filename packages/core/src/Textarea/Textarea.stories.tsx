@@ -1,11 +1,12 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Textarea, type TextareaProps } from '@oc-tech/omni-ui-components/Textarea';
+import type { Meta, StoryObj } from '@storybook/react';
 import { textareaPropsFactory } from 'factories/omni-ui-components/Textarea/Textarea.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<TextareaProps> = (args) => {
-  const [value, setValue] = React.useState<string>(typeof args.value === 'string' ? args.value : '');
+  const [value, setValue] = React.useState<string>(
+    typeof args.value === 'string' ? args.value : '',
+  );
   React.useEffect(() => {
     setValue(typeof args.value === 'string' ? args.value : '');
   }, [args.value]);

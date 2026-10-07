@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Tree } from '@oc-tech/omni-ui-components/Tree';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Tree> = {
   title: 'omni-ui-components/Tree',
@@ -17,7 +16,14 @@ const meta: Meta<typeof Tree> = {
   },
   args: {
     treeData: [
-      { key: '1', title: 'Workspace', children: [{ key: '1-1', title: 'Accounts' }, { key: '1-2', title: 'Billing' }] },
+      {
+        key: '1',
+        title: 'Workspace',
+        children: [
+          { key: '1-1', title: 'Accounts' },
+          { key: '1-2', title: 'Billing' },
+        ],
+      },
     ],
   },
 };
@@ -29,7 +35,14 @@ export const Default: Story = {};
 export const MultiBranch: Story = {
   args: {
     treeData: [
-      { key: '1', title: 'Workspace', children: [{ key: '1-1', title: 'Accounts' }, { key: '1-2', title: 'Billing' }] },
+      {
+        key: '1',
+        title: 'Workspace',
+        children: [
+          { key: '1-1', title: 'Accounts' },
+          { key: '1-2', title: 'Billing' },
+        ],
+      },
       { key: '2', title: 'Archive', children: [{ key: '2-1', title: '2025' }] },
     ],
   },
@@ -57,7 +70,10 @@ export const DeepHierarchy: Story = {
               {
                 key: 'approvals',
                 title: 'Approvals',
-                children: [{ key: 'pending', title: 'Pending items' }, { key: 'history', title: 'Review history' }],
+                children: [
+                  { key: 'pending', title: 'Pending items' },
+                  { key: 'history', title: 'Review history' },
+                ],
               },
             ],
           },

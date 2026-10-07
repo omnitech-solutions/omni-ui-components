@@ -1,9 +1,18 @@
+import type {
+  ColumnFiltersState,
+  PaginationState,
+  Table as TanStackTable,
+} from '@tanstack/react-table';
 import * as React from 'react';
-import type { PaginationState, Table as TanStackTable } from '@tanstack/react-table';
-import type { ColumnFiltersState } from '@tanstack/react-table';
-import { filtersRecord } from '../internal';
-import type { TablePaginationPlacement, TablePaginationState, TableProps, TableResolvedRow, TableSemanticDOM } from '../Table.types';
 import { Pagination } from '../components/Pagination';
+import { filtersRecord } from '../internal';
+import type {
+  TablePaginationPlacement,
+  TablePaginationState,
+  TableProps,
+  TableResolvedRow,
+  TableSemanticDOM,
+} from '../Table.types';
 
 export interface UsePaginationHandlersInput<TRecord, TRowData> {
   pagination: TableProps<TRecord, TRowData>['pagination'];
@@ -51,7 +60,11 @@ export function usePaginationHandlers<TRecord, TRowData>({
 
   React.useEffect(() => {
     if (paginationEffectivelyOff) {
-      setPaginationStateValue((current) => ({ ...current, pageIndex: 0, pageSize: Math.max(allResolvedRows.length, 1) }));
+      setPaginationStateValue((current) => ({
+        ...current,
+        pageIndex: 0,
+        pageSize: Math.max(allResolvedRows.length, 1),
+      }));
     }
   }, [paginationEffectivelyOff, allResolvedRows.length, setPaginationStateValue]);
 
@@ -74,7 +87,16 @@ export function usePaginationHandlers<TRecord, TRowData>({
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [columnFilters, dataSource, onChange, paginationConfig, paginationDisabled, resolvedRows, setPaginationStateValue, table],
+    [
+      columnFilters,
+      dataSource,
+      onChange,
+      paginationConfig,
+      paginationDisabled,
+      resolvedRows,
+      setPaginationStateValue,
+      table,
+    ],
   );
 
   const handlePageSizeChange = React.useCallback(
@@ -93,12 +115,16 @@ export function usePaginationHandlers<TRecord, TRowData>({
 
   const paginationPlacements = React.useMemo(() => {
     if (!pagination) return [];
-    const configured = typeof pagination === 'object' ? (pagination.placement ?? ['bottomEnd']) : ['bottomEnd'];
+    const configured =
+      typeof pagination === 'object' ? (pagination.placement ?? ['bottomEnd']) : ['bottomEnd'];
     return configured.filter((placement) => placement !== 'none');
   }, [pagination]);
 
   const usePlacementSuffix = paginationPlacements.length > 1;
-  const renderPagination = (placement: TablePaginationPlacement = 'bottomEnd', testIdSuffix = ''): React.ReactNode => {
+  const renderPagination = (
+    placement: TablePaginationPlacement = 'bottomEnd',
+    testIdSuffix = '',
+  ): React.ReactNode => {
     if (!pagination) return null;
     const state = paginationState();
     const pageCount = Math.max(Math.ceil(state.total / state.pageSize), 1);
@@ -122,12 +148,22 @@ export function usePaginationHandlers<TRecord, TRowData>({
   const topPagination = paginationPlacements
     .filter((placement) => placement.startsWith('top'))
     .map((placement) => (
-      <React.Fragment key={placement}>{renderPagination(placement as TablePaginationPlacement, usePlacementSuffix ? placement : '')}</React.Fragment>
+      <React.Fragment key={placement}>
+        {renderPagination(
+          placement as TablePaginationPlacement,
+          usePlacementSuffix ? placement : '',
+        )}
+      </React.Fragment>
     ));
   const bottomPagination = paginationPlacements
     .filter((placement) => placement.startsWith('bottom'))
     .map((placement) => (
-      <React.Fragment key={placement}>{renderPagination(placement as TablePaginationPlacement, usePlacementSuffix ? placement : '')}</React.Fragment>
+      <React.Fragment key={placement}>
+        {renderPagination(
+          placement as TablePaginationPlacement,
+          usePlacementSuffix ? placement : '',
+        )}
+      </React.Fragment>
     ));
 
   return { paginationEffectivelyOff, topPagination, bottomPagination };

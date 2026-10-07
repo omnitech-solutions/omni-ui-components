@@ -1,22 +1,40 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
   fourDigitOtpFixture,
+  type OtpFormData,
   plainOtpFixture,
   prefilledOtpFixture,
-  type OtpFormData,
 } from 'factories/dynamic-form/widgets/InputOTPWidget/InputOTPWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<OtpFormData>;
 
 const config = defineDynamicFormStories<OtpFormData>({
   title: 'dynamic-form/widgets/InputOTPWidget',
-  fixtures: { plain: plainOtpFixture, prefilled: prefilledOtpFixture, fourDigit: fourDigitOtpFixture },
-  titles: { plain: 'InputOTPWidget', prefilled: 'InputOTPWidget · prefilled', fourDigit: 'InputOTPWidget · 4 digit' },
+  fixtures: {
+    plain: plainOtpFixture,
+    prefilled: prefilledOtpFixture,
+    fourDigit: fourDigitOtpFixture,
+  },
+  titles: {
+    plain: 'InputOTPWidget',
+    prefilled: 'InputOTPWidget · prefilled',
+    fourDigit: 'InputOTPWidget · 4 digit',
+  },
   defaultArgs: { fixture: 'plain' },
-  docs: { name: 'InputOTPWidget', whenToUse: 'One-time-code grid for 2FA / magic-link verification. `ui:options.length` overrides slot count.' },
-  stories: { Plain: { fixture: 'plain' }, Prefilled: { fixture: 'prefilled' }, FourDigit: { fixture: 'fourDigit' } },
+  docs: {
+    name: 'InputOTPWidget',
+    whenToUse:
+      'One-time-code grid for 2FA / magic-link verification. `ui:options.length` overrides slot count.',
+  },
+  stories: {
+    Plain: { fixture: 'plain' },
+    Prefilled: { fixture: 'prefilled' },
+    FourDigit: { fixture: 'fourDigit' },
+  },
 });
 
 const meta: Meta<Args> = {

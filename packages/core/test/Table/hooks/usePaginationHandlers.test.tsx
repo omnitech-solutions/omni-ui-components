@@ -1,12 +1,12 @@
 import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
-import * as React from 'react';
+import type * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { usePaginationHandlers } from '../../../src/Table/hooks/usePaginationHandlers';
-import { TableProvider, type TableContextShape } from '../../../src/Table/hooks/useTable';
+import { type TableContextShape, TableProvider } from '../../../src/Table/hooks/useTable';
 import { useTableInstance } from '../../../src/Table/hooks/useTableInstance';
 import { useTableState } from '../../../src/Table/hooks/useTableState';
 import type { TableProps } from '../../../src/Table/Table.types';
-import { column, people, resolve, type Person } from './support';
+import { column, type Person, people, resolve } from './support';
 
 // Full wiring: real state + real TanStack table + the pagination hook under test.
 const wired = (props: Partial<TableProps<Person>> = {}, rows: Person[] = people) => {

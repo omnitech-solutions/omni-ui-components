@@ -1,10 +1,19 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen, within } from '@testing-library/react';
 
-import { ContextMeter, contextLevel, contextPercent, formatTokens, type ContextSection } from '@oc-tech/omni-ui-components';
-import { contextMeterPropsFactory, contextMeterVariants, OpenContextMeter } from 'factories/omni-ui-components/ContextMeter/ContextMeter.factories';
+import {
+  ContextMeter,
+  type ContextSection,
+  contextLevel,
+  contextPercent,
+  formatTokens,
+} from '@oc-tech/omni-ui-components';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  contextMeterPropsFactory,
+  contextMeterVariants,
+  OpenContextMeter,
+} from 'factories/omni-ui-components/ContextMeter/ContextMeter.factories';
 
 const ring = () => document.querySelector('[data-slot="context-meter"]') as HTMLElement;
 const arc = () => document.querySelector('[data-slot="progress-ring-arc"]') as SVGElement;
@@ -44,7 +53,9 @@ describe('omni-ui-components/ContextMeter', () => {
 
     it('with no window is empty and says how many tokens are in context', () => {
       render(<ContextMeter {...contextMeterPropsFactory({ window: undefined, used: 1200 })} />);
-      expect(screen.getByRole('button', { name: 'About 1.2k tokens in context' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'About 1.2k tokens in context' }),
+      ).toBeInTheDocument();
       expect(ring()).toHaveAttribute('data-level', 'normal');
       expect(ring()).not.toHaveAttribute('data-percent');
     });
@@ -56,12 +67,18 @@ describe('omni-ui-components/ContextMeter', () => {
     ])('at %i tokens the level is %s (ring tone %s)', (used, level, tone) => {
       render(<ContextMeter {...contextMeterPropsFactory({ used })} />);
       expect(ring()).toHaveAttribute('data-level', level);
-      expect(document.querySelector('[data-slot="progress-ring"]')).toHaveAttribute('data-tone', tone);
+      expect(document.querySelector('[data-slot="progress-ring"]')).toHaveAttribute(
+        'data-tone',
+        tone,
+      );
     });
 
     it('fills the arc in proportion', () => {
       render(<ContextMeter {...contextMeterPropsFactory({ used: 131000 })} />);
-      const ratio = 1 - Number(arc().getAttribute('stroke-dashoffset')) / Number(arc().getAttribute('stroke-dasharray'));
+      const ratio =
+        1 -
+        Number(arc().getAttribute('stroke-dashoffset')) /
+          Number(arc().getAttribute('stroke-dasharray'));
       expect(ratio).toBeCloseTo(0.5, 1);
     });
   });
@@ -76,7 +93,11 @@ describe('omni-ui-components/ContextMeter', () => {
       expect(within(dialog).getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50');
       expect(within(dialog).getByText('About 131.0k of 262k tokens')).toBeInTheDocument();
       expect(within(dialog).getByText('Workspace').nextSibling).toHaveTextContent('0.9k');
-      expect(within(dialog).getByText('When it fills up, older turns are summarised — never silently dropped.')).toBeInTheDocument();
+      expect(
+        within(dialog).getByText(
+          'When it fills up, older turns are summarised — never silently dropped.',
+        ),
+      ).toBeInTheDocument();
     });
 
     it('without a window shows the approximate count and no bar', () => {
@@ -108,7 +129,14 @@ describe('omni-ui-components/ContextMeter', () => {
     it('takes every string from labels', async () => {
       render(
         <OpenContextMeter
-          labels={{ dialog: 'Contexto', heading: 'Contexto', summarise: 'Resumir', note: 'Nota', summary: (used, window) => `${used} / ${window}`, title: (p) => `${p} por ciento` }}
+          labels={{
+            dialog: 'Contexto',
+            heading: 'Contexto',
+            summarise: 'Resumir',
+            note: 'Nota',
+            summary: (used, window) => `${used} / ${window}`,
+            title: (p) => `${p} por ciento`,
+          }}
         />,
       );
       expect(screen.getByRole('dialog', { name: 'Contexto' })).toBeInTheDocument();
@@ -130,7 +158,15 @@ describe('omni-ui-components/ContextMeter', () => {
     type Section = ContextSection & { source: string };
     const sections: Section[] = [{ label: 'Workspace', tokens: 900, source: 'ws' }];
     const onSummarise = vi.fn((given: Section[]) => given[0]!.source);
-    render(<ContextMeter<Section> used={3100} window={262000} sections={sections} onSummarise={onSummarise} defaultOpen />);
+    render(
+      <ContextMeter<Section>
+        used={3100}
+        window={262000}
+        sections={sections}
+        onSummarise={onSummarise}
+        defaultOpen
+      />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Summarise now' }));
     expect(onSummarise.mock.calls[0]![0]).toBe(sections);
     expect(onSummarise).toHaveReturnedWith('ws');

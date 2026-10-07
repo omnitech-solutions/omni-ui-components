@@ -1,7 +1,6 @@
-import * as React from 'react';
-
-import type { RootProps } from '../lib';
+import type * as React from 'react';
 import type { FieldLayoutProps } from '../Input/Input.variants';
+import type { RootProps } from '../lib';
 import type { TextareaVariantProps } from './Textarea.variants';
 
 /**
@@ -10,7 +9,10 @@ import type { TextareaVariantProps } from './Textarea.variants';
  * @example
  * <TextareaPrimitive variant="bordered" textareaSize="default" value={v} onChange={setV} />
  */
-export interface TextareaPrimitiveProps extends Omit<React.ComponentProps<'textarea'>, 'onChange' | 'rows'>, TextareaVariantProps, RootProps {
+export interface TextareaPrimitiveProps
+  extends Omit<React.ComponentProps<'textarea'>, 'onChange' | 'rows'>,
+    TextareaVariantProps,
+    RootProps {
   invalid?: boolean;
   /** Number of visible text lines. Default 5 (matches @rjsf/shadcn). */
   rows?: number;
@@ -34,4 +36,4 @@ export interface TextareaProps extends TextareaPrimitiveProps, FieldLayoutProps 
   labelClassName?: string;
 }
 
-export type { TextareaVariant, TextareaSize, TextareaVariantProps } from './Textarea.variants';
+export type { TextareaSize, TextareaVariant, TextareaVariantProps } from './Textarea.variants';

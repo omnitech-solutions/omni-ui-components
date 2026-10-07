@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** A message waiting for the running reply to finish. */
 export interface QueuedItem {
@@ -15,9 +15,14 @@ export interface QueuedListLabels {
   list: string;
 }
 
-export const DEFAULT_QUEUED_LABELS: QueuedListLabels = { queued: 'Queued', remove: 'Remove from queue', list: 'Queued messages' };
+export const DEFAULT_QUEUED_LABELS: QueuedListLabels = {
+  queued: 'Queued',
+  remove: 'Remove from queue',
+  list: 'Queued messages',
+};
 
-export interface QueuedListProps<T extends QueuedItem = QueuedItem> extends Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
+export interface QueuedListProps<T extends QueuedItem = QueuedItem>
+  extends Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
   /** The queued messages. Extend {@link QueuedItem} with your own fields: `onRemove` hands the same object back. */
   items: T[];
   /** A row's remove button was chosen. Payload: the full item (the same object from `items`). Absent: no remove buttons. */

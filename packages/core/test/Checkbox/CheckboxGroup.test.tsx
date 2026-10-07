@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { CheckboxGroup, type CheckboxGroupProps } from '@oc-tech/omni-ui-components/Checkbox';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 const baseOptions = [
   { value: 'email', label: 'Email' },
@@ -10,7 +10,8 @@ const baseOptions = [
   { value: 'push', label: 'Push' },
 ];
 
-const renderGroup = (overrides: Partial<CheckboxGroupProps> = {}) => render(<CheckboxGroup data-testid="g" options={baseOptions} {...overrides} />);
+const renderGroup = (overrides: Partial<CheckboxGroupProps> = {}) =>
+  render(<CheckboxGroup data-testid="g" options={baseOptions} {...overrides} />);
 
 describe('omni-ui-components/CheckboxGroup', () => {
   describe('shape', () => {
@@ -71,7 +72,9 @@ describe('omni-ui-components/CheckboxGroup', () => {
   describe('disabled', () => {
     it('disables every option when group disabled', () => {
       renderGroup({ disabled: true });
-      baseOptions.forEach((opt) => expect(screen.getByTestId(`g-option-${opt.value}`)).toBeDisabled());
+      baseOptions.forEach((opt) =>
+        expect(screen.getByTestId(`g-option-${opt.value}`)).toBeDisabled(),
+      );
     });
 
     it('disables only the per-option flagged item', () => {
@@ -94,7 +97,9 @@ describe('omni-ui-components/CheckboxGroup', () => {
 
     it('groups options under aria-labelledby when label is provided', () => {
       renderGroup({ label: 'Channels', id: 'channels' });
-      const group = screen.getAllByRole('group').find((el) => el.getAttribute('aria-labelledby') === 'channels-label');
+      const group = screen
+        .getAllByRole('group')
+        .find((el) => el.getAttribute('aria-labelledby') === 'channels-label');
       expect(group).toBeDefined();
     });
   });

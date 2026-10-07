@@ -1,6 +1,6 @@
 export type { AppFormSchema, FormError } from './appFormSchema';
-export { DynamicForm } from './DynamicForm';
 export type { DynamicFormProps } from './DynamicForm';
-export { appWidgets } from './registries/widgets';
+export { DynamicForm } from './DynamicForm';
 export { appFields } from './registries/fields';
 export { appTemplates } from './registries/templates';
+export { appWidgets } from './registries/widgets';

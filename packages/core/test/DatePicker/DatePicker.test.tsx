@@ -11,7 +11,8 @@ beforeAll(() => {
 
 import { DatePicker, type DatePickerProps } from '@oc-tech/omni-ui-components/DatePicker';
 
-const renderPicker = (overrides: Partial<DatePickerProps> = {}) => render(<DatePicker data-testid="dp" label="Due date" {...overrides} />);
+const renderPicker = (overrides: Partial<DatePickerProps> = {}) =>
+  render(<DatePicker data-testid="dp" label="Due date" {...overrides} />);
 
 describe('omni-ui-components/DatePicker', () => {
   it('renders the trigger + label', () => {
@@ -33,7 +34,10 @@ describe('omni-ui-components/DatePicker', () => {
   });
 
   it('renders the range separator when a range is set', () => {
-    renderPicker({ mode: 'range', value: { from: new Date(2026, 6, 1), to: new Date(2026, 6, 15) } });
+    renderPicker({
+      mode: 'range',
+      value: { from: new Date(2026, 6, 1), to: new Date(2026, 6, 15) },
+    });
     expect(screen.getByTestId('dp').textContent).toMatch(/–/);
   });
 

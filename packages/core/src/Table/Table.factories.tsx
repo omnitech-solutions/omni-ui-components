@@ -1,7 +1,13 @@
-import * as React from 'react';
 import { ArrowDownUp, ImageIcon, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
-import { getDefaultTableRegistry, mergeTableRegistry, type TableCellOverride, type TableColumn, type TableDataRow, type TableProps } from './index';
+import {
+  getDefaultTableRegistry,
+  mergeTableRegistry,
+  type TableCellOverride,
+  type TableColumn,
+  type TableDataRow,
+  type TableProps,
+} from './index';
 
 export interface ProjectRecord {
   id: string;
@@ -36,8 +42,20 @@ export interface InvoiceLineRecord {
 }
 
 export const invoiceLines: InvoiceLineRecord[] = [
-  { id: 'line-1', item: 'Discovery phase', detail: 'Kickoff + research', quantity: 1, amount: 3800 },
-  { id: 'line-2', item: 'Identity system', detail: 'Logo, type, palette', quantity: 1, amount: 8200 },
+  {
+    id: 'line-1',
+    item: 'Discovery phase',
+    detail: 'Kickoff + research',
+    quantity: 1,
+    amount: 3800,
+  },
+  {
+    id: 'line-2',
+    item: 'Identity system',
+    detail: 'Logo, type, palette',
+    quantity: 1,
+    amount: 8200,
+  },
   { id: 'line-3', item: 'Packaging suite', detail: 'Primary SKU art', quantity: 1, amount: 5400 },
   { id: 'line-4', item: 'Project management', detail: '10% flat', quantity: 1, amount: 1000 },
 ];
@@ -54,7 +72,14 @@ export const invoiceColumns: TableColumn<InvoiceLineRecord>[] = [
       </span>
     ),
   },
-  { key: 'quantity', title: 'Qty', dataIndex: 'quantity', valueType: 'number', align: 'right', width: 120 },
+  {
+    key: 'quantity',
+    title: 'Qty',
+    dataIndex: 'quantity',
+    valueType: 'number',
+    align: 'right',
+    width: 120,
+  },
   {
     key: 'amount',
     title: 'Amount',
@@ -63,7 +88,8 @@ export const invoiceColumns: TableColumn<InvoiceLineRecord>[] = [
     align: 'right',
     width: 180,
     render: (value) => {
-      const parsed = typeof value === 'number' ? value : Number(String(value ?? '').replace(/[^0-9+-.]/g, ''));
+      const parsed =
+        typeof value === 'number' ? value : Number(String(value ?? '').replace(/[^0-9+-.]/g, ''));
       if (!Number.isFinite(parsed)) return String(value ?? '');
       return `$${parsed.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     },
@@ -178,7 +204,16 @@ export const largeProjects: ProjectRecord[] = Array.from({ length: 150 }, (_, in
   id: `project-${index + 1}`,
   name: `Project ${index + 1}`,
   client: index % 3 === 0 ? 'Acme Coffee' : index % 3 === 1 ? 'Northstar' : 'Field Goods',
-  status: index % 5 === 0 ? 'Discovery' : index % 5 === 1 ? 'Design' : index % 5 === 2 ? 'Build' : index % 5 === 3 ? 'Sent' : 'Paid',
+  status:
+    index % 5 === 0
+      ? 'Discovery'
+      : index % 5 === 1
+        ? 'Design'
+        : index % 5 === 2
+          ? 'Build'
+          : index % 5 === 3
+            ? 'Sent'
+            : 'Paid',
   phase: index % 3 === 0 ? 'Phase 1' : index % 3 === 1 ? 'Phase 2' : 'Phase 3',
   owner: index % 2 === 0 ? 'Nora Nunes' : 'Mae Cooper',
   budget: 1000 + index * 125,
@@ -344,9 +379,19 @@ export const registryRows: TableDataRow<ProjectRecord, DocCellData>[] = [
     cells: {
       name: { kind: 'heading', value: { id: 'h-1', text: 'Service Agreement', level: 3 } },
       client: { kind: 'pill', value: { id: 'pill-1', text: 'Acme Coffee' } },
-      status: { kind: 'bulletList', value: { id: 'list-1', items: ['Discovery', 'Identity', 'Packaging'] } },
-      owner: { kind: 'image', value: { id: 'img-1', src: '/images/empty-states/forms.svg', alt: 'Document illustration' } },
-      budget: { kind: 'money', value: { id: 'amount-1', amount: 18400, currency: 'USD' }, align: 'right' },
+      status: {
+        kind: 'bulletList',
+        value: { id: 'list-1', items: ['Discovery', 'Identity', 'Packaging'] },
+      },
+      owner: {
+        kind: 'image',
+        value: { id: 'img-1', src: '/images/empty-states/forms.svg', alt: 'Document illustration' },
+      },
+      budget: {
+        kind: 'money',
+        value: { id: 'amount-1', amount: 18400, currency: 'USD' },
+        align: 'right',
+      },
     },
   },
   {
@@ -363,87 +408,116 @@ export const registryRows: TableDataRow<ProjectRecord, DocCellData>[] = [
       dueDate: '2026-08-02',
     },
     cells: {
-      name: { kind: 'paragraph', value: { id: 'p-1', text: 'Paragraph renderer through TableRegistry.' } },
+      name: {
+        kind: 'paragraph',
+        value: { id: 'p-1', text: 'Paragraph renderer through TableRegistry.' },
+      },
       client: { kind: 'divider', value: { id: 'divider-1' } },
-      status: { kind: 'orderedList', value: { id: 'ordered-1', items: ['Draft', 'Review', 'Send'] } },
+      status: {
+        kind: 'orderedList',
+        value: { id: 'ordered-1', items: ['Draft', 'Review', 'Send'] },
+      },
       owner: { kind: 'actions', value: { id: 'actions-1', text: 'Actions' } },
-      budget: { kind: 'money', value: { id: 'amount-2', amount: 9200, currency: 'USD' }, align: 'right' },
+      budget: {
+        kind: 'money',
+        value: { id: 'amount-2', amount: 9200, currency: 'USD' },
+        align: 'right',
+      },
     },
   },
 ];
 
-const getCellData = (cell?: TableCellOverride<ProjectRecord, DocCellData>): DocCellData | undefined => {
+const getCellData = (
+  cell?: TableCellOverride<ProjectRecord, DocCellData>,
+): DocCellData | undefined => {
   if (!cell) return undefined;
   if (typeof cell.value === 'object' && cell.value !== null) return cell.value as DocCellData;
   return { id: 'inline', text: String(cell.value ?? '') };
 };
 
-export const storyTableRegistry = mergeTableRegistry(getDefaultTableRegistry<ProjectRecord, DocCellData>(), {
-  fields: {
-    paragraph: ({ row, column }) => <p className="m-0">{getCellData(row.cells?.[column.key])?.text}</p>,
-    heading: ({ row, column }) => {
-      const value = getCellData(row.cells?.[column.key]);
-      return <strong className="text-sm">{value?.text}</strong>;
-    },
-    pill: ({ row, column }) => {
-      const value = getCellData(row.cells?.[column.key]);
-      return <span className="rounded-full bg-[var(--bui-table-header-bg)] px-2 py-1 text-xs font-medium">{value?.text}</span>;
-    },
-    image: ({ row, column }) => {
-      const value = getCellData(row.cells?.[column.key]);
-      return (
+export const storyTableRegistry = mergeTableRegistry(
+  getDefaultTableRegistry<ProjectRecord, DocCellData>(),
+  {
+    fields: {
+      paragraph: ({ row, column }) => (
+        <p className="m-0">{getCellData(row.cells?.[column.key])?.text}</p>
+      ),
+      heading: ({ row, column }) => {
+        const value = getCellData(row.cells?.[column.key]);
+        return <strong className="text-sm">{value?.text}</strong>;
+      },
+      pill: ({ row, column }) => {
+        const value = getCellData(row.cells?.[column.key]);
+        return (
+          <span className="rounded-full bg-[var(--bui-table-header-bg)] px-2 py-1 text-xs font-medium">
+            {value?.text}
+          </span>
+        );
+      },
+      image: ({ row, column }) => {
+        const value = getCellData(row.cells?.[column.key]);
+        return (
+          <span className="inline-flex items-center gap-2">
+            <ImageIcon size={14} aria-hidden />
+            {value?.alt ?? 'Image'}
+          </span>
+        );
+      },
+      divider: () => <hr className="border-[var(--bui-table-border-color)]" />,
+      bulletList: ({ row, column }) => {
+        const value = getCellData(row.cells?.[column.key]);
+        return (
+          <ul className="m-0 list-disc pl-4">
+            {(value?.items ?? []).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        );
+      },
+      orderedList: ({ row, column }) => {
+        const value = getCellData(row.cells?.[column.key]);
+        return (
+          <ol className="m-0 list-decimal pl-4">
+            {(value?.items ?? []).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ol>
+        );
+      },
+      actions: () => (
         <span className="inline-flex items-center gap-2">
-          <ImageIcon size={14} aria-hidden />
-          {value?.alt ?? 'Image'}
+          <Pencil size={14} aria-label="Edit" />
+          <Trash2 size={14} aria-label="Delete" />
+          <MoreHorizontal size={14} aria-label="More" />
         </span>
-      );
+      ),
     },
-    divider: () => <hr className="border-[var(--bui-table-border-color)]" />,
-    bulletList: ({ row, column }) => {
-      const value = getCellData(row.cells?.[column.key]);
-      return (
-        <ul className="m-0 list-disc pl-4">
-          {(value?.items ?? []).map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      );
-    },
-    orderedList: ({ row, column }) => {
-      const value = getCellData(row.cells?.[column.key]);
-      return (
-        <ol className="m-0 list-decimal pl-4">
-          {(value?.items ?? []).map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ol>
-      );
-    },
-    actions: () => (
-      <span className="inline-flex items-center gap-2">
-        <Pencil size={14} aria-label="Edit" />
-        <Trash2 size={14} aria-label="Delete" />
-        <MoreHorizontal size={14} aria-label="More" />
-      </span>
-    ),
   },
-});
+);
 
-export const editableRows: TableDataRow<ProjectRecord, DocCellData>[] = projects.slice(0, 3).map((project) => ({
-  key: project.id,
-  record: project,
-  editable: {
-    mode: 'row',
-    initialValues: (record) => ({ name: record.name, owner: record.owner, budget: record.budget }),
-  },
-}));
+export const editableRows: TableDataRow<ProjectRecord, DocCellData>[] = projects
+  .slice(0, 3)
+  .map((project) => ({
+    key: project.id,
+    record: project,
+    editable: {
+      mode: 'row',
+      initialValues: (record) => ({
+        name: record.name,
+        owner: record.owner,
+        budget: record.budget,
+      }),
+    },
+  }));
 
-export const draggableRows: TableDataRow<ProjectRecord, DocCellData>[] = projects.slice(0, 4).map((project) => ({
-  key: project.id,
-  record: project,
-  draggable: !project.disabled,
-  disabled: project.disabled,
-}));
+export const draggableRows: TableDataRow<ProjectRecord, DocCellData>[] = projects
+  .slice(0, 4)
+  .map((project) => ({
+    key: project.id,
+    record: project,
+    draggable: !project.disabled,
+    disabled: project.disabled,
+  }));
 
 export const dragHandleColumn: TableColumn<ProjectRecord> = {
   key: 'drag',
@@ -452,7 +526,9 @@ export const dragHandleColumn: TableColumn<ProjectRecord> = {
   width: 72,
 };
 
-export const basicDataSourceTableFactory = (props: Partial<TableProps<ProjectRecord, DocCellData>> = {}): TableProps<ProjectRecord, DocCellData> => ({
+export const basicDataSourceTableFactory = (
+  props: Partial<TableProps<ProjectRecord, DocCellData>> = {},
+): TableProps<ProjectRecord, DocCellData> => ({
   columns: defaultColumns as TableColumn<ProjectRecord, DocCellData>[],
   dataSource: projects,
   ...props,

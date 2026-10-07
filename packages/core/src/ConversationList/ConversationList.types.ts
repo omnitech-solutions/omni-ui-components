@@ -1,5 +1,4 @@
-import * as React from 'react';
-
+import type * as React from 'react';
 
 /** A value, or a function of the row it is rendered for (so one action config can show Pin on one row and Unpin on another). */
 export type PerItem<T, R> = R | ((item: T) => R);

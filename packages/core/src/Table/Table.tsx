@@ -12,6 +12,23 @@ import './Table.tokens.css';
 import './Table.theme.css';
 import './Table.drag.css';
 
+import { TableRoot } from './components/TableRoot';
+import {
+  type TableContextShape,
+  TableProvider,
+  useDerivedColumns,
+  useEditableHandlers,
+  usePaginationHandlers,
+  useReorderHandlers,
+  useSelectionHandlers,
+  useTableContextValue,
+  useTableHandlers,
+  useTableInstance,
+  useTableRefHandle,
+  useTableSlots,
+  useTableState,
+  useVirtualization,
+} from './hooks';
 import {
   appearanceStyle,
   DEFAULT_SORT_DIRECTIONS,
@@ -25,26 +42,11 @@ import {
   useResolvedRows,
   useRowDataTypeMap,
 } from './internal';
-import {
-  TableProvider,
-  useDerivedColumns,
-  useEditableHandlers,
-  usePaginationHandlers,
-  useReorderHandlers,
-  useSelectionHandlers,
-  useTableInstance,
-  useTableState,
-  useTableContextValue,
-  useTableHandlers,
-  useTableRefHandle,
-  useTableSlots,
-  useVirtualization,
-  type TableContextShape,
-} from './hooks';
 
-import { TableRoot } from './components/TableRoot';
-
-function TableImpl<TRecord, TRowData = unknown>(rawProps: TableProps<TRecord, TRowData>, ref: React.Ref<TableRef>) {
+function TableImpl<TRecord, TRowData = unknown>(
+  rawProps: TableProps<TRecord, TRowData>,
+  ref: React.Ref<TableRef>,
+) {
   const {
     bordered = false,
     columns,
@@ -89,7 +91,10 @@ function TableImpl<TRecord, TRowData = unknown>(rawProps: TableProps<TRecord, TR
     onEdit,
     extendable,
     rowDataTypes: rowDataTypesOverride,
-  } = { ...rawProps, appearance: { borders: 'grid' as const, headerRow: true, ...rawProps.appearance } };
+  } = {
+    ...rawProps,
+    appearance: { borders: 'grid' as const, headerRow: true, ...rawProps.appearance },
+  };
   const { state: loadingState, variant: loadingVariant } = useLoadingState(loading);
   const {
     resolvedExtendable,
@@ -158,12 +163,28 @@ function TableImpl<TRecord, TRowData = unknown>(rawProps: TableProps<TRecord, TR
         ...partial,
       });
     },
-    [columnFilters, columnOrder, columnPinning, columnSizing, columnVisibility, expanded, onStateChange, paginationStateValue, sorting, tanStackRowSelection],
+    [
+      columnFilters,
+      columnOrder,
+      columnPinning,
+      columnSizing,
+      columnVisibility,
+      expanded,
+      onStateChange,
+      paginationStateValue,
+      sorting,
+      tanStackRowSelection,
+    ],
   );
 
   const registry = React.useMemo(() => {
-    const merged = mergeTableRegistry(getDefaultTableRegistry<TRecord, TRowData>(), registryOverride);
-    return mergeTableRegistry(merged, { components, renderers } as Partial<TableRegistry<TRecord, TRowData>>);
+    const merged = mergeTableRegistry(
+      getDefaultTableRegistry<TRecord, TRowData>(),
+      registryOverride,
+    );
+    return mergeTableRegistry(merged, { components, renderers } as Partial<
+      TableRegistry<TRecord, TRowData>
+    >);
   }, [components, registryOverride, renderers]);
 
   const { childrenColumnName, treeMode, mergedColumns, mergedLeafColumns } = useDerivedColumns({
@@ -185,7 +206,11 @@ function TableImpl<TRecord, TRowData = unknown>(rawProps: TableProps<TRecord, TR
     rowOrder,
   });
 
-  const paginationStateRef = React.useRef<() => TablePaginationState>(() => ({ current: 1, pageSize: 1, total: 0 }));
+  const paginationStateRef = React.useRef<() => TablePaginationState>(() => ({
+    current: 1,
+    pageSize: 1,
+    total: 0,
+  }));
   const scrollToFirstRowRef = React.useRef<() => void>(() => {});
 
   const { table, applySortingChange } = useTableInstance({
@@ -247,51 +272,75 @@ function TableImpl<TRecord, TRowData = unknown>(rawProps: TableProps<TRecord, TR
     clearSelection,
     runBulkAction,
   } = selection;
-  const { enableVirtualRows, rowVirtualizer, virtualItems, renderRows, renderedLeafColumns } = useVirtualization({
-    virtual,
-    visibleRows,
-    scrollRef,
-    mergedLeafColumns,
-    columnPinning,
-  });
+  const { enableVirtualRows, rowVirtualizer, virtualItems, renderRows, renderedLeafColumns } =
+    useVirtualization({
+      virtual,
+      visibleRows,
+      scrollRef,
+      mergedLeafColumns,
+      columnPinning,
+    });
   const virtualRowsEnabled = Boolean(enableVirtualRows);
   const classMap = resolveClassNames(props);
   const styleMap = resolveStyles(props);
-  const rootStyle = { ...appearanceStyle(appearance), ...styleMap.root, ...style } as React.CSSProperties;
+  const rootStyle = {
+    ...appearanceStyle(appearance),
+    ...styleMap.root,
+    ...style,
+  } as React.CSSProperties;
   const borders = bordered ? 'grid' : (appearance.borders ?? 'grid');
   const currentRows = resolvedRows.map((r) => r.row);
   const currentData = resolvedRows.map((r) => r.record);
-  const resolvedTableLayout = tableLayout ?? (mergedLeafColumns.some(isEllipsisEnabled) ? 'fixed' : undefined);
-  const stickyContainer = React.useMemo(() => (typeof sticky === 'object' ? sticky.getContainer?.() : undefined), [sticky]);
+  const resolvedTableLayout =
+    tableLayout ?? (mergedLeafColumns.some(isEllipsisEnabled) ? 'fixed' : undefined);
+  const stickyContainer = React.useMemo(
+    () => (typeof sticky === 'object' ? sticky.getContainer?.() : undefined),
+    [sticky],
+  );
 
-  const { paginationState, scrollToFirstRow, committedFilterKeys, commitFilter, toggleExpanded } = useTableHandlers<TRecord, TRowData>({
-    columnFilters,
-    setColumnFilters,
-    paginationStateValue,
-    setPaginationStateValue,
-    expanded,
-    setExpanded,
-    sorting,
-    tanStackRowSelection,
-    emitStateChange,
-    onStateChange,
-    onChange,
-    allResolvedRows,
-    resolvedRows,
-    mergedLeafColumns,
-    table,
-    pagination,
-    expandable,
-    scroll,
-    scrollRef,
-  });
+  const { paginationState, scrollToFirstRow, committedFilterKeys, commitFilter, toggleExpanded } =
+    useTableHandlers<TRecord, TRowData>({
+      columnFilters,
+      setColumnFilters,
+      paginationStateValue,
+      setPaginationStateValue,
+      expanded,
+      setExpanded,
+      sorting,
+      tanStackRowSelection,
+      emitStateChange,
+      onStateChange,
+      onChange,
+      allResolvedRows,
+      resolvedRows,
+      mergedLeafColumns,
+      table,
+      pagination,
+      expandable,
+      scroll,
+      scrollRef,
+    });
 
   paginationStateRef.current = paginationState;
   scrollToFirstRowRef.current = scrollToFirstRow;
 
-  useTableRefHandle({ ref, rootRef, scrollRef, visibleRows, enableVirtualRows: virtualRowsEnabled, rowVirtualizer });
+  useTableRefHandle({
+    ref,
+    rootRef,
+    scrollRef,
+    visibleRows,
+    enableVirtualRows: virtualRowsEnabled,
+    rowVirtualizer,
+  });
 
-  const { draggableRowKeys, hasDraggableRows, draggableColumnKeys, moveRowByKeyboard, moveColumnByKeyboard, handleDragEnd } = useReorderHandlers({
+  const {
+    draggableRowKeys,
+    hasDraggableRows,
+    draggableColumnKeys,
+    moveRowByKeyboard,
+    moveColumnByKeyboard,
+    handleDragEnd,
+  } = useReorderHandlers({
     resolvedRows,
     mergedLeafColumns,
     setRowOrder,

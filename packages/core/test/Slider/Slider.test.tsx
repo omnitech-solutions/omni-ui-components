@@ -11,7 +11,8 @@ beforeAll(() => {
 
 import { Slider, type SliderProps } from '@oc-tech/omni-ui-components/Slider';
 
-const renderSlider = (overrides: Partial<SliderProps> = {}) => render(<Slider data-testid="s" label="Volume" min={0} max={100} value={35} {...overrides} />);
+const renderSlider = (overrides: Partial<SliderProps> = {}) =>
+  render(<Slider data-testid="s" label="Volume" min={0} max={100} value={35} {...overrides} />);
 
 describe('omni-ui-components/Slider', () => {
   describe('shape', () => {
@@ -52,7 +53,10 @@ describe('omni-ui-components/Slider', () => {
   describe('aria + state', () => {
     it('flags aria-invalid on the slider root when error is present', () => {
       renderSlider({ error: 'too low' });
-      expect(document.querySelector('[data-slot="slider"]')).toHaveAttribute('aria-invalid', 'true');
+      expect(document.querySelector('[data-slot="slider"]')).toHaveAttribute(
+        'aria-invalid',
+        'true',
+      );
     });
 
     it('exposes the radix role=slider thumb', () => {

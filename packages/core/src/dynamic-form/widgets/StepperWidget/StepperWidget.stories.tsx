@@ -1,13 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
   disabledPagesFixture,
   minMaxPagesFixture,
+  type PageCountFormData,
   plainPagesFixture,
   prefilledPagesFixture,
-  type PageCountFormData,
 } from 'factories/dynamic-form/widgets/StepperWidget/StepperWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<PageCountFormData>;
 

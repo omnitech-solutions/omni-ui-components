@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** `live`: red record icon + timer. `paused`: amber pause icon + amber timer + the paused label. */
 export type StatusClockState = 'live' | 'paused';

@@ -1,7 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
-import { companyScenarioFixture, type CompanyScenarioFormData } from 'factories/dynamic-form/DynamicForm/companyScenario.factories';
+import {
+  type CompanyScenarioFormData,
+  companyScenarioFixture,
+} from 'factories/dynamic-form/DynamicForm/companyScenario.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<CompanyScenarioFormData>;
 

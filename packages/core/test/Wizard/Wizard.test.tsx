@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { Wizard, type WizardProps } from '@oc-tech/omni-ui-components/Wizard';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 const STEPS = [
   { name: 'basic', label: 'Basic', content: <p>basic-content</p> },
@@ -11,13 +10,16 @@ const STEPS = [
   { name: 'review', label: 'Review', content: <p>review-content</p> },
 ];
 
-const renderWizard = (overrides: Partial<WizardProps> = {}) => render(<Wizard data-testid="w" steps={STEPS} {...overrides} />);
+const renderWizard = (overrides: Partial<WizardProps> = {}) =>
+  render(<Wizard data-testid="w" steps={STEPS} {...overrides} />);
 
 describe('omni-ui-components/Wizard', () => {
   describe('shape', () => {
     it('renders the step indicator with one trigger per step', () => {
       renderWizard();
-      STEPS.forEach((s) => expect(screen.getByTestId(`w-steps-step-${s.name}`)).toBeInTheDocument());
+      STEPS.forEach((s) =>
+        expect(screen.getByTestId(`w-steps-step-${s.name}`)).toBeInTheDocument(),
+      );
     });
 
     it('renders the first step content by default', () => {
@@ -101,7 +103,9 @@ describe('omni-ui-components/Wizard', () => {
     it('uses currentStep instead of internal state when provided', () => {
       const { rerender } = renderWizard({ currentStep: 'payment', onStepChange: jest.fn() });
       expect(screen.getByText('payment-content')).toBeInTheDocument();
-      rerender(<Wizard data-testid="w" steps={STEPS} currentStep="review" onStepChange={jest.fn()} />);
+      rerender(
+        <Wizard data-testid="w" steps={STEPS} currentStep="review" onStepChange={jest.fn()} />,
+      );
       expect(screen.getByText('review-content')).toBeInTheDocument();
     });
 

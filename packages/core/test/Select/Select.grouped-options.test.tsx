@@ -1,9 +1,7 @@
-import * as React from 'react';
+import type { SelectOption } from '@oc-tech/omni-ui-components/Select/Select.types';
+import { SelectPrimitive } from '@oc-tech/omni-ui-components/Select/SelectPrimitive';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-import { SelectPrimitive } from '@oc-tech/omni-ui-components/Select/SelectPrimitive';
-import type { SelectOption } from '@oc-tech/omni-ui-components/Select/Select.types';
 
 /* cmdk auto-scrolls the focused option; jsdom has no scrollIntoView. */
 beforeAll(() => {
@@ -83,7 +81,14 @@ describe('SelectPrimitive — grouped options + footer action', () => {
     const { container } = render(
       <SelectPrimitive
         id="proj"
-        options={[{ value: 'p1', label: 'Bugs - Week 27', description: 'Omni Product Development', color: '#ff0000' }]}
+        options={[
+          {
+            value: 'p1',
+            label: 'Bugs - Week 27',
+            description: 'Omni Product Development',
+            color: '#ff0000',
+          },
+        ]}
         value=""
         onChange={jest.fn()}
       />,

@@ -1,9 +1,8 @@
-import * as React from 'react';
 import type { Meta } from '@storybook/react';
-
+import type { FormFixture } from 'factories/dynamic-form/DynamicForm/DynamicForm.factories';
+import * as React from 'react';
 import { DynamicFormStoryShell } from './DynamicFormStoryShell';
 import { buildDynamicFormSnippet } from './snippets/dynamicFormSnippet';
-import type { FormFixture } from 'factories/dynamic-form/DynamicForm/DynamicForm.factories';
 
 export type SubmitMode = 'resolve' | 'reject' | 'slow';
 
@@ -71,7 +70,10 @@ function DynamicFormStoryRenderer<TFormData>(props: {
   const { fixtures, titles, submitLabels, args } = props;
   const fixture = React.useMemo(() => fixtures[args.fixture](), [fixtures, args.fixture]);
   const onSubmit = React.useMemo(() => buildOnSubmit(args.onSubmitMode), [args.onSubmitMode]);
-  const formData = args.prefilled || args.formData ? ({ ...fixture.defaults, ...args.formData } as TFormData) : undefined;
+  const formData =
+    args.prefilled || args.formData
+      ? ({ ...fixture.defaults, ...args.formData } as TFormData)
+      : undefined;
   const title = args.title ?? titles?.[args.fixture] ?? args.fixture;
   const submitLabel = args.submitLabel ?? submitLabels?.[args.fixture];
   return (
@@ -95,7 +97,9 @@ function DynamicFormStoryRenderer<TFormData>(props: {
  * DynamicForm stories. The `Show code` panel pulls from the live fixture
  * via `buildDynamicFormSnippet`.
  */
-export function defineDynamicFormStories<TFormData>(config: DefineDynamicFormStoriesConfig<TFormData>): DefineDynamicFormStoriesResult<TFormData> {
+export function defineDynamicFormStories<TFormData>(
+  config: DefineDynamicFormStoriesConfig<TFormData>,
+): DefineDynamicFormStoriesResult<TFormData> {
   const fixtureKeys = Object.keys(config.fixtures);
 
   const parameters: Meta<DynamicFormStoryArgs<TFormData>>['parameters'] = {
@@ -103,7 +107,12 @@ export function defineDynamicFormStories<TFormData>(config: DefineDynamicFormSto
     docs: {
       description: config.docs
         ? {
-            component: [config.docs.whenToUse, config.docs.accessibility ? `\n### Accessibility\n${config.docs.accessibility}` : ''].filter(Boolean).join('\n'),
+            component: [
+              config.docs.whenToUse,
+              config.docs.accessibility ? `\n### Accessibility\n${config.docs.accessibility}` : '',
+            ]
+              .filter(Boolean)
+              .join('\n'),
           }
         : undefined,
       source: {
@@ -126,7 +135,10 @@ export function defineDynamicFormStories<TFormData>(config: DefineDynamicFormSto
     },
     title: { control: 'text', description: 'Heading shown above the form card.' },
     submitLabel: { control: 'text', description: 'Submit button label.' },
-    prefilled: { control: 'boolean', description: 'Seed the form with fixture defaults (merged with `formData`).' },
+    prefilled: {
+      control: 'boolean',
+      description: 'Seed the form with fixture defaults (merged with `formData`).',
+    },
     formData: { control: 'object', description: 'Custom prefilled overrides.' },
     disabled: { control: 'boolean' },
     readOnly: { control: 'boolean' },
@@ -150,7 +162,12 @@ export function defineDynamicFormStories<TFormData>(config: DefineDynamicFormSto
   } as DynamicFormStoryArgs<TFormData>;
 
   const render = (args: DynamicFormStoryArgs<TFormData>) => (
-    <DynamicFormStoryRenderer fixtures={config.fixtures} titles={config.titles} submitLabels={config.submitLabels} args={args} />
+    <DynamicFormStoryRenderer
+      fixtures={config.fixtures}
+      titles={config.titles}
+      submitLabels={config.submitLabels}
+      args={args}
+    />
   );
 
   return {

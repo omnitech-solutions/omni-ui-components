@@ -1,6 +1,6 @@
 import path from 'node:path';
-import { defineConfig, mergeConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
+import { defineConfig, mergeConfig } from 'vitest/config';
 import viteConfig from './vite.config';
 
 // Screenshot baselines for the Native App showcase (see `pnpm test:visual`, `pnpm test:visual:update`).
@@ -20,7 +20,9 @@ export default mergeConfig(
         provider: playwright(),
         // One pinned viewport and device scale factor for every capture.
         viewport: { width: 1280, height: 900 },
-        instances: [{ browser: 'chromium', context: { deviceScaleFactor: 1, reducedMotion: 'reduce' } }],
+        instances: [
+          { browser: 'chromium', context: { deviceScaleFactor: 1, reducedMotion: 'reduce' } },
+        ],
         expect: {
           toMatchScreenshot: {
             comparatorName: 'pixelmatch',

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** What an attachment is: a file, an image (may carry a thumbnail) or a piece of the host UI added with `@`. */
 export type AttachmentKind = 'file' | 'image' | 'surface';
@@ -50,7 +50,8 @@ export const DEFAULT_ATTACHMENT_LABELS: AttachmentLabels = {
   dropHere: 'Drop files here…',
 };
 
-export interface AttachmentCardProps<T extends AttachmentItem = AttachmentItem> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onClick'> {
+export interface AttachmentCardProps<T extends AttachmentItem = AttachmentItem>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onClick'> {
   /** The attachment. Extend {@link AttachmentItem} with your own fields: the callbacks hand the same object back, never a copy. */
   item: T;
   /**
@@ -71,7 +72,8 @@ export interface AttachmentCardProps<T extends AttachmentItem = AttachmentItem> 
   labels?: Partial<AttachmentLabels>;
 }
 
-export interface AttachmentStripProps<T extends AttachmentItem = AttachmentItem> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onClick'> {
+export interface AttachmentStripProps<T extends AttachmentItem = AttachmentItem>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onClick'> {
   items: T[];
   /** A card's remove button was chosen. Payload: the full item (the same object from `items`). Absent: no remove buttons. */
   onRemove?: (item: T) => void | Promise<void>;

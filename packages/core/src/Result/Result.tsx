@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { AlertCircle, CheckCircle2, Info, XCircle } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { AlertCircle, CheckCircle2, Info, XCircle } from 'lucide-react';
+import type * as React from 'react';
 
 export interface ResultProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   status?: 'info' | 'success' | 'warning' | 'error';
@@ -17,11 +16,33 @@ const icons = {
   error: XCircle,
 } as const;
 
-export const Result = ({ status = 'info', title, subTitle, extra, className, ...props }: ResultProps) => {
+export const Result = ({
+  status = 'info',
+  title,
+  subTitle,
+  extra,
+  className,
+  ...props
+}: ResultProps) => {
   const Icon = icons[status];
   return (
-    <div className={cn('flex flex-col items-center justify-center gap-3 rounded-lg border px-6 py-10 text-center', className)} {...props}>
-      <Icon className={cn('h-10 w-10', status === 'error' ? 'text-destructive' : status === 'success' ? 'text-primary' : 'text-muted-foreground')} />
+    <div
+      className={cn(
+        'flex flex-col items-center justify-center gap-3 rounded-lg border px-6 py-10 text-center',
+        className,
+      )}
+      {...props}
+    >
+      <Icon
+        className={cn(
+          'h-10 w-10',
+          status === 'error'
+            ? 'text-destructive'
+            : status === 'success'
+              ? 'text-primary'
+              : 'text-muted-foreground',
+        )}
+      />
       {title ? <div className="text-lg font-semibold">{title}</div> : null}
       {subTitle ? <div className="text-sm text-muted-foreground">{subTitle}</div> : null}
       {extra}

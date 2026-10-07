@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { useSelectionHandlers } from '../../../src/Table/hooks/useSelectionHandlers';
 import { useSelectionState } from '../../../src/Table/hooks/useTableState/useSelectionState';
 import type { TableDataRow, TableProps } from '../../../src/Table/Table.types';
-import { byKey, people, resolve, type Person } from './support';
+import { byKey, type Person, people, resolve } from './support';
 
 type Selection = NonNullable<TableProps<Person>['rowSelection']>;
 

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { z } from 'zod';
 import type { RJSFSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import { renderDynamicForm } from './testing/renderDynamicForm';
 
@@ -53,7 +53,9 @@ describe('DynamicForm — IconToolbarWidget', () => {
       formData: {},
     });
 
-    const trash = document.querySelector('[data-slot="icon-toolbar"] button[data-slot="icon-button"]');
+    const trash = document.querySelector(
+      '[data-slot="icon-toolbar"] button[data-slot="icon-button"]',
+    );
     expect(trash).toHaveAttribute('data-variant', 'destructive');
     expect(trash).toHaveAttribute('aria-label', 'Delete');
   });
@@ -77,7 +79,9 @@ describe('DynamicForm — IconToolbarWidget', () => {
       disabled: true,
     });
 
-    const buttons = document.querySelectorAll('[data-slot="icon-toolbar"] button[data-slot="icon-button"]');
+    const buttons = document.querySelectorAll(
+      '[data-slot="icon-toolbar"] button[data-slot="icon-button"]',
+    );
     expect(buttons.length).toBe(2);
     buttons.forEach((btn) => expect(btn).toBeDisabled());
   });

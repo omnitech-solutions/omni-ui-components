@@ -1,5 +1,5 @@
-import * as React from 'react';
 import classNames from 'classnames';
+import * as React from 'react';
 import { useTable } from '../hooks/useTable';
 import {
   alignStyle,
@@ -12,10 +12,10 @@ import {
   isEllipsisEnabled,
   isExpandedKey,
   normalizeEditableInputValue,
+  type ResolvedCellEditable,
   rawCellValue,
   renderCellContent,
   shouldShowEllipsisTitle,
-  type ResolvedCellEditable,
 } from '../internal';
 import { TreeExpandToggle } from '../Table.tree';
 import type {
@@ -79,9 +79,15 @@ export interface BodyCellProps<TRecord, TRowData> {
     ctx: TableCellRenderContext<TRecord, TRowData>,
     nextValue?: unknown,
   ) => Promise<boolean>;
-  saveRowEdit: (resolved: TableResolvedRow<TRecord, TRowData>, rowConfig: TableEditableRowConfig<TRecord, TRowData>) => Promise<void>;
+  saveRowEdit: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    rowConfig: TableEditableRowConfig<TRecord, TRowData>,
+  ) => Promise<void>;
   cancelCellEdit: (rowKey: string, columnKey: string) => void;
-  cancelRowEdit: (resolved: TableResolvedRow<TRecord, TRowData>, rowConfig: TableEditableRowConfig<TRecord, TRowData>) => void;
+  cancelRowEdit: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    rowConfig: TableEditableRowConfig<TRecord, TRowData>,
+  ) => void;
   setEditableValue: (rowKey: string, columnKey: string, value: unknown) => void;
   rowInitialEditableValues: (
     resolved: TableResolvedRow<TRecord, TRowData>,
@@ -136,10 +142,26 @@ export function BodyCell<TRecord, TRowData>({
 
   const override = resolved.row.cells?.[col.key];
   const internalOverride = internalCellValues[String(resolved.key)]?.[col.key];
-  const rawValue = internalOverride !== undefined ? internalOverride : rawCellValue(resolved.record, resolved.row, col);
-  const value = internalOverride !== undefined ? internalOverride : cellValue(resolved.record, resolved.row, col);
-  const ctx: TableCellRenderContext<TRecord, TRowData> = { record: resolved.record, row: resolved.row, column: col, rowIndex, columnIndex, registry };
-  const cellProps = { ...resolved.row.onCell?.(col, columnIndex), ...col.onCell?.(resolved.record, rowIndex, resolved.row) };
+  const rawValue =
+    internalOverride !== undefined
+      ? internalOverride
+      : rawCellValue(resolved.record, resolved.row, col);
+  const value =
+    internalOverride !== undefined
+      ? internalOverride
+      : cellValue(resolved.record, resolved.row, col);
+  const ctx: TableCellRenderContext<TRecord, TRowData> = {
+    record: resolved.record,
+    row: resolved.row,
+    column: col,
+    rowIndex,
+    columnIndex,
+    registry,
+  };
+  const cellProps = {
+    ...resolved.row.onCell?.(col, columnIndex),
+    ...col.onCell?.(resolved.record, rowIndex, resolved.row),
+  };
   const {
     className: cellClassName,
     style: cellStyle,
@@ -160,19 +182,29 @@ export function BodyCell<TRecord, TRowData>({
   const errorKey = editableErrorKey(rowKey, col.key);
   const savedByNavigateRef = React.useRef(false);
   const isRowEditing = editingRowKey === rowKey && Boolean(rowConfig);
-  const isCellEditing = editingCell?.rowKey === rowKey && editingCell.columnKey === col.key && editableConfig?.mode === 'cell';
+  const isCellEditing =
+    editingCell?.rowKey === rowKey &&
+    editingCell.columnKey === col.key &&
+    editableConfig?.mode === 'cell';
   const isEditing = isRowEditing || isCellEditing;
-  const editingValue = editValues[rowKey]?.[col.key] ?? (isRowEditing ? rowInitialEditableValues(resolved, rowConfig)[col.key] : rawValue);
+  const editingValue =
+    editValues[rowKey]?.[col.key] ??
+    (isRowEditing ? rowInitialEditableValues(resolved, rowConfig)[col.key] : rawValue);
   const inputValue = normalizeEditableInputValue(editingValue);
   const readContent = renderCellContent(ctx, rawValue, override, rowDataTypeMap);
-  const renderCustomEditor = editableConfig ? editableRenderer(registry, col, override, editableConfig) : undefined;
+  const renderCustomEditor = editableConfig
+    ? editableRenderer(registry, col, override, editableConfig)
+    : undefined;
 
   const navigateCellEdit = (direction: -1 | 1, nextValue?: unknown): boolean => {
     if (!editableConfig || isRowEditing) return false;
     const target = editableCellTarget(rowKey, col.key, direction);
     // Tab-in-last-cell appends via editable.onAppendRow or extendable.rows fallback.
     const canAppendRow =
-      direction === 1 && !target && (Boolean(rootEditableConfig?.appendRowOnTab && rootEditableConfig.onAppendRow) || Boolean(resolvedExtendable.rows));
+      direction === 1 &&
+      !target &&
+      (Boolean(rootEditableConfig?.appendRowOnTab && rootEditableConfig.onAppendRow) ||
+        Boolean(resolvedExtendable.rows));
     if (!target && !canAppendRow) return false;
     void (async () => {
       const didSave = await saveCellEdit(rowKey, col, editableConfig, ctx, nextValue);
@@ -181,12 +213,20 @@ export function BodyCell<TRecord, TRowData>({
         return;
       }
       if (target) {
-        beginCellEdit(target.resolved, target.column, target.value, target.rowConfig, target.editableConfig);
+        beginCellEdit(
+          target.resolved,
+          target.column,
+          target.value,
+          target.rowConfig,
+          target.editableConfig,
+        );
         return;
       }
       const appendedRow =
-        (await rootEditableConfig?.onAppendRow?.({ rows: currentRows, columns: renderedLeafColumns })) ??
-        (resolvedExtendable.rows ? await handleAppendRow() : undefined);
+        (await rootEditableConfig?.onAppendRow?.({
+          rows: currentRows,
+          columns: renderedLeafColumns,
+        })) ?? (resolvedExtendable.rows ? await handleAppendRow() : undefined);
       if (!appendedRow) return;
       const appendedResolved: TableResolvedRow<TRecord, TRowData> = {
         key: appendedRow.key,
@@ -196,12 +236,19 @@ export function BodyCell<TRecord, TRowData>({
       };
       const appendedTarget = firstEditableCellTarget(appendedResolved);
       if (!appendedTarget) return;
-      beginCellEdit(appendedTarget.resolved, appendedTarget.column, appendedTarget.value, appendedTarget.rowConfig, appendedTarget.editableConfig);
+      beginCellEdit(
+        appendedTarget.resolved,
+        appendedTarget.column,
+        appendedTarget.value,
+        appendedTarget.rowConfig,
+        appendedTarget.editableConfig,
+      );
     })();
     return true;
   };
 
-  const inlineExpandActive = (treeMode || expandable?.showExpandColumn === false) && col === renderedLeafColumns[0];
+  const inlineExpandActive =
+    (treeMode || expandable?.showExpandColumn === false) && col === renderedLeafColumns[0];
   const inlineExpand = inlineExpandActive
     ? (() => {
         const hasChildren = Boolean(resolved.row.children?.length);
@@ -236,7 +283,10 @@ export function BodyCell<TRecord, TRowData>({
     : null;
 
   const editorContent = isEditing ? (
-    <span className="block space-y-1" data-testid={`${testIdPrefix}-edit-wrapper-${rowKey}-${col.key}`}>
+    <span
+      className="block space-y-1"
+      data-testid={`${testIdPrefix}-edit-wrapper-${rowKey}-${col.key}`}
+    >
       {renderCustomEditor ? (
         renderCustomEditor({
           ...ctx,
@@ -248,7 +298,10 @@ export function BodyCell<TRecord, TRowData>({
           onSave: (nextValue?: unknown) => {
             if (nextValue !== undefined) setEditableValue(rowKey, col.key, nextValue);
             if (isRowEditing && rowConfig) return saveRowEdit(resolved, rowConfig);
-            if (editableConfig) return saveCellEdit(rowKey, col, editableConfig, ctx, nextValue).then(() => undefined);
+            if (editableConfig)
+              return saveCellEdit(rowKey, col, editableConfig, ctx, nextValue).then(
+                () => undefined,
+              );
             return undefined;
           },
           onCancel: () => {
@@ -274,7 +327,10 @@ export function BodyCell<TRecord, TRowData>({
             }
             if (event.key === 'Tab' && !isRowEditing && editableConfig) {
               savedByNavigateRef.current = true;
-              const didNavigate = navigateCellEdit(event.shiftKey ? -1 : 1, event.currentTarget.value);
+              const didNavigate = navigateCellEdit(
+                event.shiftKey ? -1 : 1,
+                event.currentTarget.value,
+              );
               if (didNavigate) event.preventDefault();
               else savedByNavigateRef.current = false;
             }
@@ -289,13 +345,18 @@ export function BodyCell<TRecord, TRowData>({
               savedByNavigateRef.current = false;
               return;
             }
-            if (!isRowEditing && editableConfig) void saveCellEdit(rowKey, col, editableConfig, ctx);
+            if (!isRowEditing && editableConfig)
+              void saveCellEdit(rowKey, col, editableConfig, ctx);
           }}
           data-testid={`${testIdPrefix}-edit-input-${rowKey}-${col.key}`}
         />
       )}
       {editErrors[errorKey] && (
-        <span className="block text-xs text-[var(--bui-table-error-fg,#b42318)]" role="alert" data-testid={`${testIdPrefix}-edit-error-${rowKey}-${col.key}`}>
+        <span
+          className="block text-xs text-[var(--bui-table-error-fg,#b42318)]"
+          role="alert"
+          data-testid={`${testIdPrefix}-edit-error-${rowKey}-${col.key}`}
+        >
           {editErrors[errorKey]}
         </span>
       )}
@@ -304,9 +365,17 @@ export function BodyCell<TRecord, TRowData>({
     readContent
   );
 
-  const isPinned = columnPinning.left?.includes(col.key) || columnPinning.right?.includes(col.key) || col.fixed;
-  const pinnedSide = columnPinning.left?.includes(col.key) || col.fixed === 'left' || col.fixed === 'start' || col.fixed === true ? 'left' : 'right';
-  const titleAttribute = isEllipsisEnabled(col) && shouldShowEllipsisTitle(col) ? componentTitle(value) : undefined;
+  const isPinned =
+    columnPinning.left?.includes(col.key) || columnPinning.right?.includes(col.key) || col.fixed;
+  const pinnedSide =
+    columnPinning.left?.includes(col.key) ||
+    col.fixed === 'left' ||
+    col.fixed === 'start' ||
+    col.fixed === true
+      ? 'left'
+      : 'right';
+  const titleAttribute =
+    isEllipsisEnabled(col) && shouldShowEllipsisTitle(col) ? componentTitle(value) : undefined;
   const beginEditFromCell = () => beginCellEdit(resolved, col, value, rowConfig, editableConfig);
 
   const { BodyCell: BC } = registry.components;
@@ -349,11 +418,17 @@ export function BodyCell<TRecord, TRowData>({
       rowSpan={resolvedRowSpan}
       onClick={(event) => {
         cellOnClick?.(event);
-        if (!event.defaultPrevented && (editableConfig || rowConfig) && !isEditing) beginEditFromCell();
+        if (!event.defaultPrevented && (editableConfig || rowConfig) && !isEditing)
+          beginEditFromCell();
       }}
       onKeyDown={(event) => {
         cellOnKeyDown?.(event);
-        if (!event.defaultPrevented && (editableConfig || rowConfig) && !isEditing && (event.key === 'Enter' || event.key === ' ')) {
+        if (
+          !event.defaultPrevented &&
+          (editableConfig || rowConfig) &&
+          !isEditing &&
+          (event.key === 'Enter' || event.key === ' ')
+        ) {
           event.preventDefault();
           beginEditFromCell();
         }

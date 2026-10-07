@@ -1,11 +1,16 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
+
+import {
+  Segmented,
+  type SegmentedOption,
+  SegmentedPrimitive,
+  type SegmentedProps,
+} from '@oc-tech/omni-ui-components/Segmented';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Code, Lightbulb, MessageSquare } from 'lucide-react';
-
-import { Segmented, SegmentedPrimitive, type SegmentedOption, type SegmentedProps } from '@oc-tech/omni-ui-components/Segmented';
 import { segmentedControlVariants } from 'factories/omni-ui-components/Segmented/Segmented.factories';
+import { Code, Lightbulb, MessageSquare } from 'lucide-react';
+import * as React from 'react';
 
 const panels: SegmentedOption[] = [
   { value: 'chat', icon: <MessageSquare />, ariaLabel: 'Chat' },
@@ -14,7 +19,11 @@ const panels: SegmentedOption[] = [
 ];
 
 /** Controlled harness so a multiple-mode value follows onChange like a real consumer. */
-const Harness = ({ initial, onChange, ...rest }: { initial: string[]; onChange?: (next: string[]) => void } & Record<string, unknown>) => {
+const Harness = ({
+  initial,
+  onChange,
+  ...rest
+}: { initial: string[]; onChange?: (next: string[]) => void } & Record<string, unknown>) => {
   const [value, setValue] = React.useState(initial);
   return (
     <SegmentedPrimitive
@@ -37,7 +46,10 @@ describe('omni-ui-components/Segmented control and multiple mode', () => {
     it('shows every on-option as pressed (aria-pressed buttons)', () => {
       render(<Harness initial={['chat', 'code']} />);
       expect(screen.getByRole('button', { name: 'Chat' })).toHaveAttribute('aria-pressed', 'true');
-      expect(screen.getByRole('button', { name: 'Answer' })).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.getByRole('button', { name: 'Answer' })).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
       expect(screen.getByRole('button', { name: 'Code' })).toHaveAttribute('aria-pressed', 'true');
     });
 
@@ -65,7 +77,14 @@ describe('omni-ui-components/Segmented control and multiple mode', () => {
     it('the last active option cannot be turned off and says why', async () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
-      render(<Harness initial={['answer']} onChange={onChange} minActive={1} minActiveReason="At least one panel stays visible" />);
+      render(
+        <Harness
+          initial={['answer']}
+          onChange={onChange}
+          minActive={1}
+          minActiveReason="At least one panel stays visible"
+        />,
+      );
       const last = screen.getByRole('button', { name: 'Answer' });
       expect(last).toHaveAttribute('aria-disabled', 'true');
       expect(last).toHaveAttribute('data-locked', 'true');
@@ -75,7 +94,9 @@ describe('omni-ui-components/Segmented control and multiple mode', () => {
       expect(onChange).not.toHaveBeenCalled();
       expect(last).toHaveAttribute('aria-pressed', 'true');
       await user.hover(last);
-      expect(await screen.findByRole('tooltip')).toHaveTextContent('At least one panel stays visible');
+      expect(await screen.findByRole('tooltip')).toHaveTextContent(
+        'At least one panel stays visible',
+      );
     });
 
     it('does not lock the other (off) options', async () => {
@@ -94,7 +115,10 @@ describe('omni-ui-components/Segmented control and multiple mode', () => {
       await user.click(screen.getByRole('button', { name: 'Chat' }));
       expect(screen.getByRole('button', { name: 'Answer' })).not.toHaveAttribute('aria-disabled');
       await user.click(screen.getByRole('button', { name: 'Answer' }));
-      expect(screen.getByRole('button', { name: 'Answer' })).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.getByRole('button', { name: 'Answer' })).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
       // Chat is now the last one on.
       expect(screen.getByRole('button', { name: 'Chat' })).toHaveAttribute('data-locked', 'true');
     });
@@ -110,7 +134,13 @@ describe('omni-ui-components/Segmented control and multiple mode', () => {
 
   describe('options: icon, label, disabledReason', () => {
     it('renders the icon and an optional visible label', () => {
-      render(<SegmentedPrimitive data-testid="s" options={[{ value: 'a', icon: <Code data-testid="ic" />, label: 'Code' }]} value="a" />);
+      render(
+        <SegmentedPrimitive
+          data-testid="s"
+          options={[{ value: 'a', icon: <Code data-testid="ic" />, label: 'Code' }]}
+          value="a"
+        />,
+      );
       expect(screen.getByTestId('ic')).toBeInTheDocument();
       expect(screen.getByRole('radio', { name: 'Code' })).toHaveTextContent('Code');
     });
@@ -127,7 +157,9 @@ describe('omni-ui-components/Segmented control and multiple mode', () => {
         <Harness
           initial={['chat']}
           onChange={onChange}
-          options={panels.map((o) => (o.value === 'code' ? { ...o, disabledReason: 'Starts after the approach' } : o))}
+          options={panels.map((o) =>
+            o.value === 'code' ? { ...o, disabledReason: 'Starts after the approach' } : o,
+          )}
         />,
       );
       const code = screen.getByRole('button', { name: 'Code' });
@@ -142,7 +174,9 @@ describe('omni-ui-components/Segmented control and multiple mode', () => {
 
     it('native disabled still works per option and for the group', () => {
       render(<Harness initial={[]} disabled />);
-      panels.forEach((o) => expect(screen.getByRole('button', { name: o.ariaLabel })).toBeDisabled());
+      panels.forEach((o) =>
+        expect(screen.getByRole('button', { name: o.ariaLabel })).toBeDisabled(),
+      );
     });
   });
 
@@ -174,7 +208,15 @@ describe('omni-ui-components/Segmented control and multiple mode', () => {
     it('works in single mode too (one value, string onChange)', async () => {
       const user = userEvent.setup();
       const onChange = jest.fn();
-      render(<SegmentedPrimitive data-testid="s" appearance="control" options={panels} value="chat" onChange={onChange} />);
+      render(
+        <SegmentedPrimitive
+          data-testid="s"
+          appearance="control"
+          options={panels}
+          value="chat"
+          onChange={onChange}
+        />,
+      );
       await user.click(screen.getByRole('radio', { name: 'Answer' }));
       expect(onChange).toHaveBeenCalledWith('answer');
     });
@@ -183,7 +225,9 @@ describe('omni-ui-components/Segmented control and multiple mode', () => {
   it('renders every factory control variant', () => {
     segmentedControlVariants.forEach((variant) => {
       const { unmount } = render(<Segmented {...(variant.args as SegmentedProps)} />);
-      expect(screen.getAllByRole(variant.args.mode === 'multiple' ? 'button' : 'radio').length).toBeGreaterThan(0);
+      expect(
+        screen.getAllByRole(variant.args.mode === 'multiple' ? 'button' : 'radio').length,
+      ).toBeGreaterThan(0);
       unmount();
     });
   });

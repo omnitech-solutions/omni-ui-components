@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Pagination } from '@oc-tech/omni-ui-components/Pagination';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Pagination> = {
   title: 'omni-ui-components/Pagination',

@@ -22,17 +22,22 @@ export const stepSpinnerClasses =
   'inline-block size-3.5 flex-none animate-spin rounded-full border-2 border-solid border-current border-t-transparent motion-reduce:animate-none';
 
 /** Rail dot: empty circle, accent ring while running, success tint when done, danger tint when failed. */
-export const railDotVariants = cva('flex size-[18px] flex-none items-center justify-center rounded-full [&_svg]:size-3', {
-  variants: {
-    state: {
-      pending: 'border border-dotted border-[color:var(--oui-panel-divider)] bg-transparent text-[color:var(--oui-panel-meta-fg)]',
-      running: 'bg-transparent text-[color:var(--oui-tone-accent-fg)]',
-      done: 'bg-[color:var(--oui-tone-success-bg)] text-[color:var(--oui-tone-success-fg)]',
-      failed: 'bg-[color:var(--oui-tone-danger-bg)] text-[color:var(--oui-tone-danger-fg)]',
+export const railDotVariants = cva(
+  'flex size-[18px] flex-none items-center justify-center rounded-full [&_svg]:size-3',
+  {
+    variants: {
+      state: {
+        pending:
+          'border border-dotted border-[color:var(--oui-panel-divider)] bg-transparent text-[color:var(--oui-panel-meta-fg)]',
+        running: 'bg-transparent text-[color:var(--oui-tone-accent-fg)]',
+        done: 'bg-[color:var(--oui-tone-success-bg)] text-[color:var(--oui-tone-success-fg)]',
+        failed: 'bg-[color:var(--oui-tone-danger-bg)] text-[color:var(--oui-tone-danger-fg)]',
+      },
     },
+    defaultVariants: { state: 'pending' },
   },
-  defaultVariants: { state: 'pending' },
-});
+);
 
 /** The dotted connector between two rail dots. */
-export const railLineClasses = 'my-0.5 min-h-3 w-0 flex-1 border-s-[1.5px] border-dotted border-[color:var(--oui-panel-divider)]';
+export const railLineClasses =
+  'my-0.5 min-h-3 w-0 flex-1 border-s-[1.5px] border-dotted border-[color:var(--oui-panel-divider)]';

@@ -1,10 +1,9 @@
-import * as React from 'react';
-import { ArrowDown } from 'lucide-react';
-
 import { cn } from 'lib/utils';
-import { useFollowLatest } from '../lib/use-follow-latest';
+import { ArrowDown } from 'lucide-react';
+import * as React from 'react';
 import { Button } from '../Button';
 import { Empty } from '../Empty';
+import { useFollowLatest } from '../lib/use-follow-latest';
 import type { PanelPadding, PanelProps } from './Panel.types';
 
 /**
@@ -12,9 +11,12 @@ import type { PanelPadding, PanelProps } from './Panel.types';
  * token can be set on any ancestor. Only backgrounds use it; text, icons and borders stay at full opacity.
  * Written out in full so Tailwind's source scan sees each class.
  */
-const BG_PANEL = 'bg-[color:color-mix(in_srgb,var(--oui-panel-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)]';
-const BG_HEADER = 'bg-[color:color-mix(in_srgb,var(--oui-panel-header-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)]';
-const BG_DOCK = 'bg-[color:color-mix(in_srgb,var(--oui-panel-dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)]';
+const BG_PANEL =
+  'bg-[color:color-mix(in_srgb,var(--oui-panel-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)]';
+const BG_HEADER =
+  'bg-[color:color-mix(in_srgb,var(--oui-panel-header-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)]';
+const BG_DOCK =
+  'bg-[color:color-mix(in_srgb,var(--oui-panel-dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)]';
 
 const PADDING: Record<PanelPadding, string> = {
   none: '',
@@ -22,7 +24,8 @@ const PADDING: Record<PanelPadding, string> = {
   md: 'px-5 py-4',
 };
 
-const toCss = (value: number | string | undefined) => (typeof value === 'number' ? `${value}px` : value);
+const toCss = (value: number | string | undefined) =>
+  typeof value === 'number' ? `${value}px` : value;
 
 const hasBody = (children: React.ReactNode) => React.Children.toArray(children).length > 0;
 
@@ -74,7 +77,11 @@ export const Panel = React.forwardRef<HTMLElement, PanelProps>(
     const titleId = `${generatedId}-title`;
 
     const follow = Boolean(scroll?.stickToBottom);
-    const log = useFollowLatest<HTMLDivElement>(scroll?.lines ?? React.Children.count(children), scroll?.activity, scroll?.threshold);
+    const log = useFollowLatest<HTMLDivElement>(
+      scroll?.lines ?? React.Children.count(children),
+      scroll?.activity,
+      scroll?.threshold,
+    );
 
     const showEmpty = Boolean(empty) && !hasBody(children);
     const hasActions = actions !== undefined && actions !== null && actions !== false;
@@ -123,18 +130,28 @@ export const Panel = React.forwardRef<HTMLElement, PanelProps>(
             hasActions ? 'pr-2' : 'pr-[var(--oui-panel-pad-x)]',
           )}
         >
-          <span id={titleId} data-slot="panel-title" className="flex-none text-[13px] leading-none font-semibold whitespace-nowrap">
+          <span
+            id={titleId}
+            data-slot="panel-title"
+            className="flex-none text-[13px] leading-none font-semibold whitespace-nowrap"
+          >
             {title}
           </span>
           {subtitle ? (
-            <span data-slot="panel-subtitle" className="min-w-0 truncate text-xs text-[color:var(--oui-panel-meta-fg)]">
+            <span
+              data-slot="panel-subtitle"
+              className="min-w-0 truncate text-xs text-[color:var(--oui-panel-meta-fg)]"
+            >
               {subtitle}
             </span>
           ) : null}
           {hasMeta || hasActions ? (
             <div data-slot="panel-header-end" className="ml-auto flex min-w-0 items-center gap-2">
               {hasMeta ? (
-                <span data-slot="panel-meta" className="min-w-0 truncate text-xs text-[color:var(--oui-panel-meta-fg)] [&>*+*]:ml-1.5">
+                <span
+                  data-slot="panel-meta"
+                  className="min-w-0 truncate text-xs text-[color:var(--oui-panel-meta-fg)] [&>*+*]:ml-1.5"
+                >
                   {meta}
                 </span>
               ) : null}
@@ -175,7 +192,10 @@ export const Panel = React.forwardRef<HTMLElement, PanelProps>(
           {showEmpty && empty ? <Empty variant="tile" {...empty} /> : children}
           {follow && !log.following ? (
             // Sticky and zero-height: the pill rides the bottom-right of the visible body without taking space or leaving the panel.
-            <div data-slot="panel-jump" className="sticky bottom-2.5 mt-auto flex h-0 flex-none justify-end overflow-visible pr-2.5">
+            <div
+              data-slot="panel-jump"
+              className="sticky bottom-2.5 mt-auto flex h-0 flex-none justify-end overflow-visible pr-2.5"
+            >
               <Button
                 buttonSize="sm"
                 tone="accent"

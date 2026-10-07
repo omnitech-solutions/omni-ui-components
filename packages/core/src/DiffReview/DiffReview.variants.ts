@@ -7,19 +7,22 @@ export const diffReviewClasses =
   'min-w-0 overflow-hidden rounded-xl border border-solid border-[color:var(--oui-panel-border)] bg-[color:var(--oui-panel-bg)] text-[13px] text-[color:var(--oui-foreground)]';
 
 /** The status pill, tinted from the tone tokens. Written out in full for Tailwind's source scan. */
-export const diffReviewPillVariants = cva('ml-auto shrink-0 rounded-full px-2 py-0.5 text-[11.5px] leading-4 font-medium', {
-  variants: {
-    status: {
-      pending: 'bg-[color:var(--oui-tone-warning-bg)] text-[color:var(--oui-tone-warning-fg)]',
-      preview: 'bg-[color:var(--oui-tone-accent-bg)] text-[color:var(--oui-tone-accent-fg)]',
-      applied: 'bg-[color:var(--oui-tone-success-bg)] text-[color:var(--oui-tone-success-fg)]',
-      rejected: 'bg-[color:var(--oui-panel-dock-bg)] text-[color:var(--oui-panel-meta-fg)]',
-      reverted: 'bg-[color:var(--oui-panel-dock-bg)] text-[color:var(--oui-panel-meta-fg)]',
-      conflicted: 'bg-[color:var(--oui-tone-danger-bg)] text-[color:var(--oui-tone-danger-fg)]',
-    } satisfies Record<DiffReviewStatus, string>,
+export const diffReviewPillVariants = cva(
+  'ml-auto shrink-0 rounded-full px-2 py-0.5 text-[11.5px] leading-4 font-medium',
+  {
+    variants: {
+      status: {
+        pending: 'bg-[color:var(--oui-tone-warning-bg)] text-[color:var(--oui-tone-warning-fg)]',
+        preview: 'bg-[color:var(--oui-tone-accent-bg)] text-[color:var(--oui-tone-accent-fg)]',
+        applied: 'bg-[color:var(--oui-tone-success-bg)] text-[color:var(--oui-tone-success-fg)]',
+        rejected: 'bg-[color:var(--oui-panel-dock-bg)] text-[color:var(--oui-panel-meta-fg)]',
+        reverted: 'bg-[color:var(--oui-panel-dock-bg)] text-[color:var(--oui-panel-meta-fg)]',
+        conflicted: 'bg-[color:var(--oui-tone-danger-bg)] text-[color:var(--oui-tone-danger-fg)]',
+      } satisfies Record<DiffReviewStatus, string>,
+    },
+    defaultVariants: { status: 'pending' },
   },
-  defaultVariants: { status: 'pending' },
-});
+);
 export type DiffReviewPillVariantProps = VariantProps<typeof diffReviewPillVariants>;
 
 /** A diff row: a tinted band for added and removed lines. */

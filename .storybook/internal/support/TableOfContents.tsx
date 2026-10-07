@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { ArrowUp } from 'lucide-react';
+import * as React from 'react';
 
 export interface TocItem {
   id: string;
@@ -20,7 +20,9 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ items, title =
     if (!items.length) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
         if (visible[0]) setActive(visible[0].target.id);
       },
       { rootMargin: '0px 0px -70% 0px', threshold: 0 },
@@ -52,11 +54,17 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ items, title =
         <ArrowUp aria-hidden="true" className="size-3.5" />
         Top of page
       </button>
-      <div className="mb-4 px-3 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground/75">{title}</div>
+      <div className="mb-4 px-3 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground/75">
+        {title}
+      </div>
       <div className="flex flex-col">
         {grouped.map((group, groupIndex) => (
           <div key={groupIndex} className="mb-5 last:mb-0">
-            {group.group ? <div className="mb-2 px-3 text-[13px] font-semibold text-[var(--color-primary)]">{group.group}</div> : null}
+            {group.group ? (
+              <div className="mb-2 px-3 text-[13px] font-semibold text-[var(--color-primary)]">
+                {group.group}
+              </div>
+            ) : null}
             <ul className="m-0 flex list-none flex-col gap-0.5 p-0">
               {group.items.map((item) => {
                 const isActive = item.id === active;
@@ -66,7 +74,9 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ items, title =
                       href={`#${item.id}`}
                       onClick={(event) => {
                         event.preventDefault();
-                        document.getElementById(item.id)?.scrollIntoView({ behavior: 'auto', block: 'start' });
+                        document
+                          .getElementById(item.id)
+                          ?.scrollIntoView({ behavior: 'auto', block: 'start' });
                         setActive(item.id);
                       }}
                       className={[

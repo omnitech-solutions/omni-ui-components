@@ -1,7 +1,5 @@
-import * as React from 'react';
-import { Check, ChevronDown, FilePen, Search, X } from 'lucide-react';
-
 import type { StepTimelineProps, StepTimelineStep } from '@oc-tech/omni-ui-components/StepTimeline';
+import { Check, ChevronDown, FilePen, Search, X } from 'lucide-react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const doneSteps = (): StepTimelineStep[] => [
@@ -72,7 +70,9 @@ export const failedSteps = (): StepTimelineStep[] => [
 ];
 
 /** Build `<StepTimeline>` props for stories and tests. */
-export const stepTimelinePropsFactory = (overrides: Partial<StepTimelineProps> = {}): StepTimelineProps => ({
+export const stepTimelinePropsFactory = (
+  overrides: Partial<StepTimelineProps> = {},
+): StepTimelineProps => ({
   steps: doneSteps(),
   seconds: 4.2,
   icons: { done: <Check />, failed: <X />, chevron: <ChevronDown /> },

@@ -1,16 +1,30 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { StepperPrimitive } from './StepperPrimitive';
 import type { StepperProps } from './Stepper.types';
+import { StepperPrimitive } from './StepperPrimitive';
 
 /**
  * Chrome-wrapped Omni Stepper. Composes {@link StepperPrimitive} with a
  * label / description / error stack via {@link FieldShell}.
  */
 const StepperInner = React.forwardRef<HTMLDivElement, StepperProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,
@@ -35,7 +49,10 @@ const StepperInner = React.forwardRef<HTMLDivElement, StepperProps>(
         role="group"
         ariaLabelledBy={labelId}
         wrapperClassName={cn(wrapperClassName, layout === 'vertical' && 'gap-2')}
-        labelClassName={cn('text-xs font-semibold uppercase tracking-wide text-[var(--oui-foreground-muted)]', labelClassName)}
+        labelClassName={cn(
+          'text-xs font-semibold uppercase tracking-wide text-[var(--oui-foreground-muted)]',
+          labelClassName,
+        )}
       >
         <StepperPrimitive
           ref={ref}

@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import type { CodeToken } from './Highlight.types';
 
 export interface TokenLinesProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -17,7 +16,13 @@ export interface TokenLinesProps extends React.HTMLAttributes<HTMLSpanElement> {
  * never pulls in the grammars. Meant to sit inside a `<pre><code>`; lines are block spans so selection and copy
  * keep real newlines.
  */
-export const TokenLines: React.FC<TokenLinesProps> = ({ lines, lineNumbers = false, markedLines, className, ...rest }) => (
+export const TokenLines: React.FC<TokenLinesProps> = ({
+  lines,
+  lineNumbers = false,
+  markedLines,
+  className,
+  ...rest
+}) => (
   <span data-slot="code-lines" className={cn('block', className)} {...rest}>
     {lines.map((line, index) => (
       <span
@@ -27,7 +32,11 @@ export const TokenLines: React.FC<TokenLinesProps> = ({ lines, lineNumbers = fal
         className="block min-h-[1.5em] data-[marked=true]:bg-[color:var(--oui-code-mark-bg)]"
       >
         {lineNumbers ? (
-          <span aria-hidden="true" data-slot="code-line-number" className="mr-3 inline-block min-w-[2ch] text-right text-[color:var(--oui-code-gutter)] select-none">
+          <span
+            aria-hidden="true"
+            data-slot="code-line-number"
+            className="mr-3 inline-block min-w-[2ch] text-right text-[color:var(--oui-code-gutter)] select-none"
+          >
             {index + 1}
           </span>
         ) : null}

@@ -1,2 +1,2 @@
-export { Tour } from './Tour';
 export type { TourProps, TourStep } from './Tour';
+export { Tour } from './Tour';

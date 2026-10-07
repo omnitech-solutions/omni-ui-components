@@ -1,16 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineFormStories, type FormStoryArgs } from 'storybook-helpers/defineFormStories';
 import {
-  addressFormFactory,
-  contactFormFactory,
-  kitchenSinkFormFactory,
-  signupFormFactory,
   type AddressFormData,
+  addressFormFactory,
   type ContactFormData,
+  contactFormFactory,
   type KitchenSinkFormData,
+  kitchenSinkFormFactory,
   type SignupFormData,
+  signupFormFactory,
 } from 'factories/omni-ui-components/Form/Form.factories';
+import { defineFormStories, type FormStoryArgs } from 'storybook-helpers/defineFormStories';
 
 type AnyFormData = AddressFormData | ContactFormData | SignupFormData | KitchenSinkFormData;
 type Args = FormStoryArgs<AnyFormData>;
@@ -63,13 +62,25 @@ const config = defineFormStories<AnyFormData>({
     Disabled: {
       fixture: 'kitchenSink',
       prefilled: true,
-      formData: { full_name: 'Ada', email: 'ada@example.com', label: 'HQ', city: 'SF', country: 'US' } as any,
+      formData: {
+        full_name: 'Ada',
+        email: 'ada@example.com',
+        label: 'HQ',
+        city: 'SF',
+        country: 'US',
+      } as any,
       disabled: true,
     },
     ReadOnly: {
       fixture: 'kitchenSink',
       prefilled: true,
-      formData: { full_name: 'Ada', email: 'ada@example.com', label: 'HQ', city: 'SF', country: 'US' } as any,
+      formData: {
+        full_name: 'Ada',
+        email: 'ada@example.com',
+        label: 'HQ',
+        city: 'SF',
+        country: 'US',
+      } as any,
       readOnly: true,
     },
     ValidationErrors: {
@@ -148,6 +159,9 @@ export const Contact: Story = { args: config.stories.Contact };
 export const Prefilled: Story = { args: config.stories.Prefilled };
 export const Disabled: Story = { args: config.stories.Disabled };
 export const ReadOnly: Story = { args: config.stories.ReadOnly };
-export const ValidationErrors: Story = { args: config.stories.ValidationErrors, play: config.play.ValidationErrors };
+export const ValidationErrors: Story = {
+  args: config.stories.ValidationErrors,
+  play: config.play.ValidationErrors,
+};
 export const ApiError: Story = { args: config.stories.ApiError, play: config.play.ApiError };
 export const AsyncSubmit: Story = { args: config.stories.AsyncSubmit };

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { z } from 'zod';
 import type { RJSFSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import { renderDynamicForm, screen } from './testing/renderDynamicForm';
 
@@ -31,14 +31,20 @@ describe('DynamicForm — Omni IconButton ButtonTemplates', () => {
     expect(buttons.length).toBeGreaterThan(0);
 
     /* Remove button uses our destructive variant. */
-    const removes = document.querySelectorAll('button[data-slot="icon-button"][data-variant="destructive"]');
+    const removes = document.querySelectorAll(
+      'button[data-slot="icon-button"][data-variant="destructive"]',
+    );
     expect(removes.length).toBeGreaterThan(0);
 
     /* Remove fires through the array field — clicking the first row's
      * remove should drop us from 2 items to 1. */
-    const initialRowButtons = document.querySelectorAll('button[data-slot="icon-button"][data-variant="destructive"]');
+    const initialRowButtons = document.querySelectorAll(
+      'button[data-slot="icon-button"][data-variant="destructive"]',
+    );
     await user.click(initialRowButtons[0]);
-    const afterRowButtons = document.querySelectorAll('button[data-slot="icon-button"][data-variant="destructive"]');
+    const afterRowButtons = document.querySelectorAll(
+      'button[data-slot="icon-button"][data-variant="destructive"]',
+    );
     expect(afterRowButtons.length).toBe(initialRowButtons.length - 1);
 
     /* Sanity — RJSF "Add Item" still wires (it uses the default add button

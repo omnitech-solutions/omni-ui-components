@@ -1,11 +1,10 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
-import { Table } from '@oc-tech/omni-ui-components/Table';
 import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
 
+import { Table } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
+
 import { ComponentWrapper } from './storySupport';
-import { projects, type ProjectRecord } from './Table.story.fixtures';
+import { type ProjectRecord, projects } from './Table.story.fixtures';
 
 const columns: TableColumn<ProjectRecord>[] = [
   { key: 'name', dataIndex: 'name', title: 'Project', editable: true },

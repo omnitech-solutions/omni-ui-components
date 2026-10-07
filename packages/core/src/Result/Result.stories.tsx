@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Result } from '@oc-tech/omni-ui-components/Result';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Result> = {
   title: 'omni-ui-components/Result',
@@ -21,4 +20,10 @@ export default meta;
 type Story = StoryObj<typeof Result>;
 export const Default: Story = {};
 
-export const Error: Story = { args: { status: 'error', title: 'Publishing failed', subTitle: 'Resolve validation issues and try again.' } };
+export const Error: Story = {
+  args: {
+    status: 'error',
+    title: 'Publishing failed',
+    subTitle: 'Resolve validation issues and try again.',
+  },
+};

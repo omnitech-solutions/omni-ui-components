@@ -1,5 +1,5 @@
-import { renderStringField } from './Table.registry';
 import type { RowDataType } from './Table.RowData';
+import { renderStringField } from './Table.registry';
 
 export const RowDataTextType: RowDataType = {
   type: 'text',

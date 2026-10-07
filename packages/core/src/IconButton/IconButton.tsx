@@ -1,18 +1,18 @@
-import * as React from 'react';
-import { Trash2 } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Trash2 } from 'lucide-react';
+import * as React from 'react';
 import { ControlBadge } from '../internal/support/ControlBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../Tooltip';
-import { iconButtonVariants } from './IconButton.variants';
 import type { IconButtonProps } from './IconButton.types';
+import { iconButtonVariants } from './IconButton.variants';
 
 /**
  * Trash2 from lucide-react implies a destructive action — auto-default
  * the variant to `destructive` so callers don't have to repeat themselves.
  */
 const isTrashIcon = (icon: React.ReactNode): boolean =>
-  React.isValidElement(icon) && (icon.type === Trash2 || (icon.type as { displayName?: string })?.displayName === 'Trash2');
+  React.isValidElement(icon) &&
+  (icon.type === Trash2 || (icon.type as { displayName?: string })?.displayName === 'Trash2');
 
 /**
  * Omni IconButton — square, icon-only button used by RJSF array
@@ -37,13 +37,30 @@ const isTrashIcon = (icon: React.ReactNode): boolean =>
  */
 const IconButtonInner = React.forwardRef<HTMLButtonElement, IconButtonProps>(
   (
-    { icon, variant, iconSize, tone, pressed, badge, tooltip, disabledReason, label, title, className, type = 'button', disabled, onClick, ...rest },
+    {
+      icon,
+      variant,
+      iconSize,
+      tone,
+      pressed,
+      badge,
+      tooltip,
+      disabledReason,
+      label,
+      title,
+      className,
+      type = 'button',
+      disabled,
+      onClick,
+      ...rest
+    },
     ref,
   ) => {
     const restAny = rest as Record<string, unknown>;
     const ariaLabel = label ?? (restAny['aria-label'] as string | undefined);
     // A tone replaces the variant colours, so it sits on the quiet `secondary` base unless a variant is asked for.
-    const resolvedVariant = variant ?? (tone ? 'secondary' : isTrashIcon(icon) ? 'destructive' : 'outline');
+    const resolvedVariant =
+      variant ?? (tone ? 'secondary' : isTrashIcon(icon) ? 'destructive' : 'outline');
     const badgeDescriptionId = React.useId();
     const reasoned = disabledReason !== undefined && disabledReason !== '';
     const tipContent = reasoned ? disabledReason : tooltip;
@@ -73,13 +90,23 @@ const IconButtonInner = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         data-icon-size={iconSize ?? 'default'}
         data-tone={tone}
         data-disabled={reasoned ? '' : undefined}
-        className={cn(iconButtonVariants({ variant: resolvedVariant, iconSize, tone }), badge && 'relative', className)}
+        className={cn(
+          iconButtonVariants({ variant: resolvedVariant, iconSize, tone }),
+          badge && 'relative',
+          className,
+        )}
         onClick={handleClick}
         {...rest}
       >
         {icon}
         {badge ? (
-          <ControlBadge slot="icon-button-badge" tone={badge.tone} label={badge.label} description={badge.description} descriptionId={badgeDescriptionId} />
+          <ControlBadge
+            slot="icon-button-badge"
+            tone={badge.tone}
+            label={badge.label}
+            description={badge.description}
+            descriptionId={badgeDescriptionId}
+          />
         ) : null}
       </button>
     );

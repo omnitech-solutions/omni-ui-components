@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import type * as React from 'react';
 
 export interface DescriptionItem {
   key?: React.Key;
@@ -14,13 +13,24 @@ export interface DescriptionsProps extends Omit<React.HTMLAttributes<HTMLDivElem
   columns?: number;
 }
 
-export const Descriptions = ({ title, items, columns = 2, className, ...props }: DescriptionsProps) => (
+export const Descriptions = ({
+  title,
+  items,
+  columns = 2,
+  className,
+  ...props
+}: DescriptionsProps) => (
   <div className={cn('rounded-lg border bg-background', className)} {...props}>
     {title ? <div className="border-b px-4 py-3 text-sm font-semibold">{title}</div> : null}
-    <dl className="grid gap-x-6 gap-y-4 px-4 py-4" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+    <dl
+      className="grid gap-x-6 gap-y-4 px-4 py-4"
+      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+    >
       {items.map((item, index) => (
         <div key={item.key ?? index} className="space-y-1">
-          <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{item.label}</dt>
+          <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {item.label}
+          </dt>
           <dd className="text-sm text-foreground">{item.children}</dd>
         </div>
       ))}

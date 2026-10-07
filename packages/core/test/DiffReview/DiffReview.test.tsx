@@ -1,9 +1,16 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen, within } from '@testing-library/react';
 
-import { DiffReview, diffRows, diffStats, highlightLines, type DiffChange, type DiffReviewActionContext, type DiffReviewStatus } from '@oc-tech/omni-ui-components';
+import {
+  type DiffChange,
+  DiffReview,
+  type DiffReviewActionContext,
+  type DiffReviewStatus,
+  diffRows,
+  diffStats,
+  highlightLines,
+} from '@oc-tech/omni-ui-components';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   CODE_CHANGE,
   DIFF_REVIEW_STATUSES,
@@ -36,52 +43,104 @@ describe('omni-ui-components/DiffReview', () => {
     const kinds = (rows: ReturnType<typeof diffRows>) => rows.map((row) => row.kind);
 
     it('keeps one line of context around each change and a gap row between distant changes', () => {
-      expect(kinds(diffRows(before, after))).toEqual(['context', 'remove', 'add', 'context', 'gap', 'context', 'remove', 'add', 'context']);
+      expect(kinds(diffRows(before, after))).toEqual([
+        'context',
+        'remove',
+        'add',
+        'context',
+        'gap',
+        'context',
+        'remove',
+        'add',
+        'context',
+      ]);
     });
     it('contextLines widens the window and closes the gap when it is large enough', () => {
       expect(kinds(diffRows(before, after, { contextLines: 3 }))).not.toContain('gap');
-      expect(kinds(diffRows(before, after, { contextLines: 0 }))).toEqual(['remove', 'add', 'gap', 'remove', 'add']);
+      expect(kinds(diffRows(before, after, { contextLines: 0 }))).toEqual([
+        'remove',
+        'add',
+        'gap',
+        'remove',
+        'add',
+      ]);
     });
     it('gives plain tokens without a highlighter and class tokens with one', () => {
       const plain = diffRows('const a = 1;', 'const a = 2;');
       expect(plain[0]).toEqual({ kind: 'remove', tokens: [{ text: 'const a = 1;' }] });
-      const colored = diffRows('const a = 1;', 'const a = 2;', { highlight: highlightLines, language: 'ts' });
-      expect((colored[0] as { tokens: { className?: string }[] }).tokens.some((token) => token.className?.includes('hljs-keyword'))).toBe(true);
+      const colored = diffRows('const a = 1;', 'const a = 2;', {
+        highlight: highlightLines,
+        language: 'ts',
+      });
+      expect(
+        (colored[0] as { tokens: { className?: string }[] }).tokens.some((token) =>
+          token.className?.includes('hljs-keyword'),
+        ),
+      ).toBe(true);
     });
   });
 
   describe('card', () => {
     it('is a region with a title, a summary with the totals and one tab per change', () => {
       render(<DiffReview {...diffReviewPropsFactory()} />);
-      expect(screen.getByRole('region', { name: 'Proposed change' })).toHaveAttribute('data-slot', 'diff-review');
+      expect(screen.getByRole('region', { name: 'Proposed change' })).toHaveAttribute(
+        'data-slot',
+        'diff-review',
+      );
       expect(screen.getByText(/3 surfaces · \+\d+ −\d+/)).toBeInTheDocument();
       expect(screen.getAllByRole('tab')).toHaveLength(3);
       expect(screen.getByRole('tab', { name: /Code/ })).toHaveTextContent(/\+\d+/);
     });
 
-    it.each(DIFF_REVIEW_STATUSES)('shows the %s pill and its footer note', (status: DiffReviewStatus) => {
-      render(<DiffReview {...diffReviewPropsFactory({ status })} />);
-      const expected = { pending: 'Not applied', preview: 'Previewing', applied: 'Applied', rejected: 'Rejected', reverted: 'Rolled back', conflicted: 'Not applied' }[status];
-      expect(slot('diff-review-status')).toHaveTextContent(expected);
-      expect(slot('diff-review-status')).toHaveAttribute('data-status', status);
-      expect(slot('diff-review-note').textContent).not.toContain('{product}');
-    });
+    it.each(DIFF_REVIEW_STATUSES)(
+      'shows the %s pill and its footer note',
+      (status: DiffReviewStatus) => {
+        render(<DiffReview {...diffReviewPropsFactory({ status })} />);
+        const expected = {
+          pending: 'Not applied',
+          preview: 'Previewing',
+          applied: 'Applied',
+          rejected: 'Rejected',
+          reverted: 'Rolled back',
+          conflicted: 'Not applied',
+        }[status];
+        expect(slot('diff-review-status')).toHaveTextContent(expected);
+        expect(slot('diff-review-status')).toHaveAttribute('data-status', status);
+        expect(slot('diff-review-note').textContent).not.toContain('{product}');
+      },
+    );
 
     it('fills {product} in the notes and lets a note prop replace them', () => {
-      const { rerender } = render(<DiffReview {...diffReviewPropsFactory({ status: 'applied', product: 'Studio' })} />);
+      const { rerender } = render(
+        <DiffReview {...diffReviewPropsFactory({ status: 'applied', product: 'Studio' })} />,
+      );
       expect(slot('diff-review-note')).toHaveTextContent('Applied to Studio');
-      rerender(<DiffReview {...diffReviewPropsFactory({ status: 'conflicted', note: 'Edited elsewhere' })} />);
+      rerender(
+        <DiffReview
+          {...diffReviewPropsFactory({ status: 'conflicted', note: 'Edited elsewhere' })}
+        />,
+      );
       expect(slot('diff-review-note')).toHaveTextContent('Edited elsewhere');
     });
 
     it('takes every string from labels', () => {
-      render(<DiffReview {...diffReviewPropsFactory({ labels: { title: 'Cambio propuesto', statuses: { pending: 'Sin aplicar' } as never } })} />);
+      render(
+        <DiffReview
+          {...diffReviewPropsFactory({
+            labels: { title: 'Cambio propuesto', statuses: { pending: 'Sin aplicar' } as never },
+          })}
+        />,
+      );
       expect(screen.getByText('Cambio propuesto')).toBeInTheDocument();
       expect(screen.getByText('Sin aplicar')).toBeInTheDocument();
     });
 
     it('renders the fallback node when there are no changes', () => {
-      render(<DiffReview {...diffReviewPropsFactory({ changes: [], fallback: <code>raw patch</code> })} />);
+      render(
+        <DiffReview
+          {...diffReviewPropsFactory({ changes: [], fallback: <code>raw patch</code> })}
+        />,
+      );
       expect(slot('diff-review-fallback')).toHaveTextContent('raw patch');
       expect(screen.queryByRole('tablist')).toBeNull();
       expect(screen.getByText('Review before applying')).toBeInTheDocument();
@@ -93,15 +152,23 @@ describe('omni-ui-components/DiffReview', () => {
       render(<DiffReview {...diffReviewPropsFactory({ changes: [longChange()] })} />);
       const panel = screen.getByRole('tabpanel');
       expect(panel).toHaveAttribute('aria-labelledby', screen.getByRole('tab').id);
-      expect(screen.getByRole('separator', { name: 'Unchanged lines hidden' })).toHaveTextContent('⋯');
+      expect(screen.getByRole('separator', { name: 'Unchanged lines hidden' })).toHaveTextContent(
+        '⋯',
+      );
       expect(within(panel).getAllByText('+').length).toBe(2);
       expect(within(panel).getAllByText('−').length).toBe(2);
     });
 
     it('colours tokens through the highlight prop and not without it', () => {
-      const { rerender, container } = render(<DiffReview {...diffReviewPropsFactory({ changes: [CODE_CHANGE] })} />);
+      const { rerender, container } = render(
+        <DiffReview {...diffReviewPropsFactory({ changes: [CODE_CHANGE] })} />,
+      );
       expect(container.querySelector('.hljs-keyword')).not.toBeNull();
-      rerender(<DiffReview {...diffReviewPropsFactory({ changes: [CODE_CHANGE], highlight: undefined })} />);
+      rerender(
+        <DiffReview
+          {...diffReviewPropsFactory({ changes: [CODE_CHANGE], highlight: undefined })}
+        />,
+      );
       expect(container.querySelector('.hljs-keyword')).toBeNull();
     });
 
@@ -135,7 +202,12 @@ describe('omni-ui-components/DiffReview', () => {
   });
 
   describe('checklist variant', () => {
-    const checklist = (extra = {}) => diffReviewPropsFactory({ variant: 'checklist', actions: phaseActions({ status: 'pending', variant: 'checklist', onApply: vi.fn() }), ...extra });
+    const checklist = (extra = {}) =>
+      diffReviewPropsFactory({
+        variant: 'checklist',
+        actions: phaseActions({ status: 'pending', variant: 'checklist', onApply: vi.fn() }),
+        ...extra,
+      });
 
     it('lists a toggle per change, all on, and labels Apply by the selection', async () => {
       render(<DiffReview {...checklist()} />);
@@ -159,16 +231,28 @@ describe('omni-ui-components/DiffReview', () => {
     it('applies only the ticked ids and reports each tick', async () => {
       const onApply = vi.fn();
       const onSelectionChange = vi.fn();
-      render(<DiffReview {...checklist({ actions: phaseActions({ status: 'pending', variant: 'checklist', onApply }), onSelectionChange })} />);
+      render(
+        <DiffReview
+          {...checklist({
+            actions: phaseActions({ status: 'pending', variant: 'checklist', onApply }),
+            onSelectionChange,
+          })}
+        />,
+      );
       await userEvent.click(screen.getByRole('button', { name: 'Notes' }));
-      expect(onSelectionChange.mock.lastCall![0].map((change: { id: string }) => change.id)).toEqual(['code', 'tests']);
+      expect(
+        onSelectionChange.mock.lastCall![0].map((change: { id: string }) => change.id),
+      ).toEqual(['code', 'tests']);
       await userEvent.click(screen.getByRole('button', { name: 'Apply 2' }));
-      expect(onApply.mock.calls[0]![0].selected.map((change: { id: string }) => change.id)).toEqual(['code', 'tests']);
+      expect(onApply.mock.calls[0]![0].selected.map((change: { id: string }) => change.id)).toEqual(
+        ['code', 'tests'],
+      );
     });
 
     it('locks the toggles once the proposal is no longer pending, and falls back to tabs for a single change', () => {
       const { rerender } = render(<DiffReview {...checklist({ status: 'applied' })} />);
-      for (const toggle of screen.getAllByRole('button', { pressed: true })) expect(toggle).toBeDisabled();
+      for (const toggle of screen.getAllByRole('button', { pressed: true }))
+        expect(toggle).toBeDisabled();
       rerender(<DiffReview {...checklist({ changes: sampleChanges(1) })} />);
       expect(slot('diff-review')).toHaveAttribute('data-variant', 'diff');
       expect(screen.getByRole('tablist')).toBeInTheDocument();
@@ -176,9 +260,28 @@ describe('omni-ui-components/DiffReview', () => {
   });
 
   describe('phaseActions', () => {
-    const all = { onApply: vi.fn(), onReject: vi.fn(), onPreview: vi.fn(), onStopPreview: vi.fn(), onUndo: vi.fn(), onRestore: vi.fn() };
-    const labelsOf = (status: DiffReviewStatus, variant: 'diff' | 'checklist' = 'diff', handlers = all) => {
-      const { unmount } = render(<DiffReview {...diffReviewPropsFactory({ status, variant, actions: phaseActions({ status, variant, ...handlers }) })} />);
+    const all = {
+      onApply: vi.fn(),
+      onReject: vi.fn(),
+      onPreview: vi.fn(),
+      onStopPreview: vi.fn(),
+      onUndo: vi.fn(),
+      onRestore: vi.fn(),
+    };
+    const labelsOf = (
+      status: DiffReviewStatus,
+      variant: 'diff' | 'checklist' = 'diff',
+      handlers = all,
+    ) => {
+      const { unmount } = render(
+        <DiffReview
+          {...diffReviewPropsFactory({
+            status,
+            variant,
+            actions: phaseActions({ status, variant, ...handlers }),
+          })}
+        />,
+      );
       const result = names();
       unmount();
       return result;
@@ -195,12 +298,21 @@ describe('omni-ui-components/DiffReview', () => {
     });
 
     it('leaves out the buttons whose handler is missing', () => {
-      expect(labelsOf('pending', 'diff', { ...all, onPreview: undefined as never })).toEqual(['Reject', 'Apply']);
+      expect(labelsOf('pending', 'diff', { ...all, onPreview: undefined as never })).toEqual([
+        'Reject',
+        'Apply',
+      ]);
       expect(labelsOf('applied', 'diff', { onApply: vi.fn() } as never)).toEqual([]);
     });
 
     it('disables everything while working', () => {
-      render(<DiffReview {...diffReviewPropsFactory({ actions: phaseActions({ status: 'pending', working: true, ...all }) })} />);
+      render(
+        <DiffReview
+          {...diffReviewPropsFactory({
+            actions: phaseActions({ status: 'pending', working: true, ...all }),
+          })}
+        />,
+      );
       for (const button of buttons()) expect(button).toBeDisabled();
     });
   });
@@ -218,28 +330,57 @@ describe('omni-ui-components/DiffReview', () => {
   });
 
   it('does not render an action without a handler', () => {
-    render(<DiffReview {...diffReviewPropsFactory({ actions: [{ key: 'x', label: 'Ghost' } as never] })} />);
+    render(
+      <DiffReview
+        {...diffReviewPropsFactory({ actions: [{ key: 'x', label: 'Ghost' } as never] })}
+      />,
+    );
     expect(screen.queryByRole('button', { name: 'Ghost' })).toBeNull();
   });
 
   describe('callbacks', () => {
     it('action onClick gets the ticked changes and the context', async () => {
       const onClick = vi.fn();
-      render(<DiffReview {...diffReviewPropsFactory({ variant: 'checklist', actions: [{ key: 'go', label: 'Go', onClick }] })} />);
+      render(
+        <DiffReview
+          {...diffReviewPropsFactory({
+            variant: 'checklist',
+            actions: [{ key: 'go', label: 'Go', onClick }],
+          })}
+        />,
+      );
       await userEvent.click(screen.getByRole('button', { name: 'Tests' }));
       await userEvent.click(screen.getByRole('button', { name: 'Go' }));
       const changes = sampleChanges();
-      expect(onClick).toHaveBeenCalledWith({ changes: expect.any(Array), selected: [expect.objectContaining({ id: 'notes' }), expect.objectContaining({ id: 'code' })], variant: 'checklist', status: 'pending' });
+      expect(onClick).toHaveBeenCalledWith({
+        changes: expect.any(Array),
+        selected: [
+          expect.objectContaining({ id: 'notes' }),
+          expect.objectContaining({ id: 'code' }),
+        ],
+        variant: 'checklist',
+        status: 'pending',
+      });
       expect(onClick.mock.calls[0]![0].changes).toHaveLength(changes.length);
     });
 
     it('selection works controlled: the ids come from the prop and the change is reported', async () => {
       const onSelectionChange = vi.fn();
-      render(<DiffReview {...diffReviewPropsFactory({ variant: 'checklist', selectedIds: ['notes'], onSelectionChange })} />);
+      render(
+        <DiffReview
+          {...diffReviewPropsFactory({
+            variant: 'checklist',
+            selectedIds: ['notes'],
+            onSelectionChange,
+          })}
+        />,
+      );
       expect(screen.getByRole('button', { name: 'Notes' })).toHaveAttribute('aria-pressed', 'true');
       expect(screen.getByRole('button', { name: 'Code' })).toHaveAttribute('aria-pressed', 'false');
       await userEvent.click(screen.getByRole('button', { name: 'Code' }));
-      expect(onSelectionChange.mock.lastCall![0].map((change: { id: string }) => change.id)).toEqual(['notes', 'code']);
+      expect(
+        onSelectionChange.mock.lastCall![0].map((change: { id: string }) => change.id),
+      ).toEqual(['notes', 'code']);
       expect(screen.getByRole('button', { name: 'Code' })).toHaveAttribute('aria-pressed', 'false');
     });
 
@@ -253,10 +394,12 @@ describe('omni-ui-components/DiffReview', () => {
     });
   });
 
-
-  it('passes the caller\'s own change objects to every callback, extra fields intact (generic over the item)', async () => {
+  it("passes the caller's own change objects to every callback, extra fields intact (generic over the item)", async () => {
     type Owned = DiffChange & { owner: string };
-    const changes: Owned[] = sampleChanges().map((change, index) => ({ ...change, owner: `owner-${index}` }));
+    const changes: Owned[] = sampleChanges().map((change, index) => ({
+      ...change,
+      owner: `owner-${index}`,
+    }));
     const onClick = vi.fn((context: DiffReviewActionContext<Owned>) => {
       // Compile-time: the extra field is visible on the full change.
       const owner: string = context.selected[0]!.owner;

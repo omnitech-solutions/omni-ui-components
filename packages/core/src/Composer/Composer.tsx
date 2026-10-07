@@ -1,28 +1,45 @@
 // Composer is a preset over `Input`: its message field IS `<Input multiline variant="panel">` (auto-grow to `maxHeight`, Enter
 // to send with Shift+Enter newline and IME safety, the see-through panel look). Composer adds what a single field cannot
 // express: the box around field AND toolbar, send/stop/queue states, attachments, triggers, dictation and ArrowUp recall.
-import * as React from 'react';
 
 import { cn } from 'lib/utils';
-import { AttachmentStrip, acceptAttribute, useAttachmentDrop, type AttachmentItem } from '../Attachment';
-import { attachmentDropOverlayClasses } from '../Attachment/Attachment.variants';
+import * as React from 'react';
+import {
+  type AttachmentItem,
+  AttachmentStrip,
+  acceptAttribute,
+  useAttachmentDrop,
+} from '../Attachment';
 import { DEFAULT_ATTACHMENT_LABELS } from '../Attachment/Attachment.types';
+import { attachmentDropOverlayClasses } from '../Attachment/Attachment.variants';
 import { DictationBar } from '../DictationBar';
 import { IconButton } from '../IconButton';
 import { InputPrimitive } from '../Input/InputPrimitive';
 import { useHoldToTalk } from '../lib';
 import { useControllableState } from '../lib/use-controllable-state';
-import { QueuedList, type QueuedItem } from '../QueuedList';
-import { DEFAULT_COMPOSER_LABELS, sendStateOf, type ComposerApi, type ComposerProps } from './Composer.types';
-import { composerBoxVariants, composerHintClasses, composerRoundClasses, composerTextareaClasses } from './Composer.variants';
+import { type QueuedItem, QueuedList } from '../QueuedList';
+import {
+  type ComposerApi,
+  type ComposerProps,
+  DEFAULT_COMPOSER_LABELS,
+  sendStateOf,
+} from './Composer.types';
+import {
+  composerBoxVariants,
+  composerHintClasses,
+  composerRoundClasses,
+  composerTextareaClasses,
+} from './Composer.variants';
 import { SendButton } from './SendButton';
 
 /** The caret is collapsed and no line break lies before it: Up has nowhere to go inside the text. */
 const isOnFirstLine = (element: HTMLTextAreaElement) =>
-  element.selectionStart === element.selectionEnd && !element.value.slice(0, element.selectionStart).includes('\n');
+  element.selectionStart === element.selectionEnd &&
+  !element.value.slice(0, element.selectionStart).includes('\n');
 /** The caret is collapsed and no line break lies after it: Down has nowhere to go inside the text. */
 const isOnLastLine = (element: HTMLTextAreaElement) =>
-  element.selectionStart === element.selectionEnd && !element.value.slice(element.selectionEnd).includes('\n');
+  element.selectionStart === element.selectionEnd &&
+  !element.value.slice(element.selectionEnd).includes('\n');
 
 /** Assigns a value to a ref of either kind. */
 const setRef = <T,>(ref: React.Ref<T> | undefined, value: T | null) => {
@@ -54,189 +71,212 @@ const setRef = <T,>(ref: React.Ref<T> | undefined, value: T | null) => {
  * @example
  * <Composer value={text} onChange={setText} onSubmit={({ value, attachments }) => send(value, attachments)} onStop={stop} streaming={busy} sendIcon={<ArrowUp />} stopIcon={<Square />} />
  */
-function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends QueuedItem = QueuedItem>(
-    {
-      value: valueProp,
-      defaultValue = '',
-      onChange,
-      onSubmit,
-      onQueue,
-      onStop,
-      onRecallPrevious,
-      onRecallNext,
-      onFocus,
-      onBlur,
-      streaming = false,
-      placeholder,
-      sendOnEnter = true,
-      maxHeight = 200,
-      variant = 'stacked',
-      disabled = false,
-      stopOnEscape = true,
-      attachmentItems,
-      onRemoveAttachment,
-      onAttachmentClick,
-      attachmentRemoveIcon,
-      attachmentKindIcons,
-      onFiles,
-      onReject,
-      fileLimits,
-      queued,
-      onRemoveQueued,
-      queuedIcon,
-      queuedRemoveIcon,
-      triggers,
-      onTrigger,
-      onDictationStart,
-      onDictationFinish,
-      onDictationCancel,
-      dictationText = '',
-      dictationKey,
-      dictating: dictatingProp,
-      micIcon,
-      dictationCancelIcon,
-      dictationDoneIcon,
-      onBeforeKeyDown,
-      onPaste,
-      inputRef,
-      textareaProps,
-      leading,
-      toolbar,
-      trailing,
-      attachments,
-      above,
-      popover,
-      dictation,
-      hint,
-      sendIcon,
-      stopIcon,
-      queueIcon,
-      showSend = true,
-      labels: labelsProp,
-      attachmentLabels,
-      queuedLabels,
-      className,
-      ...rest
-    }: ComposerProps<A, Q>,
-    ref: React.ForwardedRef<HTMLDivElement>,
-  ) {
-    const labels = { ...DEFAULT_COMPOSER_LABELS, ...labelsProp };
-    const [value, setValue] = useControllableState<string>(valueProp, defaultValue, onChange);
-    const [listening, setListening] = useControllableState<boolean>(dictatingProp, false);
-    const area = React.useRef<HTMLTextAreaElement | null>(null);
-    const [rootEl, setRootEl] = React.useState<HTMLDivElement | null>(null);
-    const caretToEnd = React.useRef(false);
-    // The draft typed before a recall began (null: not recalling). Cleared by typing.
-    const stash = React.useRef<string | null>(null);
-    const items: A[] = attachmentItems ?? [];
-    const hasText = value.trim().length > 0;
-    const hasDraft = hasText || items.length > 0;
-    const canQueue = Boolean(onQueue);
-    const state = sendStateOf({ streaming, hasDraft, canQueue });
+function ComposerInner<
+  A extends AttachmentItem = AttachmentItem,
+  Q extends QueuedItem = QueuedItem,
+>(
+  {
+    value: valueProp,
+    defaultValue = '',
+    onChange,
+    onSubmit,
+    onQueue,
+    onStop,
+    onRecallPrevious,
+    onRecallNext,
+    onFocus,
+    onBlur,
+    streaming = false,
+    placeholder,
+    sendOnEnter = true,
+    maxHeight = 200,
+    variant = 'stacked',
+    disabled = false,
+    stopOnEscape = true,
+    attachmentItems,
+    onRemoveAttachment,
+    onAttachmentClick,
+    attachmentRemoveIcon,
+    attachmentKindIcons,
+    onFiles,
+    onReject,
+    fileLimits,
+    queued,
+    onRemoveQueued,
+    queuedIcon,
+    queuedRemoveIcon,
+    triggers,
+    onTrigger,
+    onDictationStart,
+    onDictationFinish,
+    onDictationCancel,
+    dictationText = '',
+    dictationKey,
+    dictating: dictatingProp,
+    micIcon,
+    dictationCancelIcon,
+    dictationDoneIcon,
+    onBeforeKeyDown,
+    onPaste,
+    inputRef,
+    textareaProps,
+    leading,
+    toolbar,
+    trailing,
+    attachments,
+    above,
+    popover,
+    dictation,
+    hint,
+    sendIcon,
+    stopIcon,
+    queueIcon,
+    showSend = true,
+    labels: labelsProp,
+    attachmentLabels,
+    queuedLabels,
+    className,
+    ...rest
+  }: ComposerProps<A, Q>,
+  ref: React.ForwardedRef<HTMLDivElement>,
+) {
+  const labels = { ...DEFAULT_COMPOSER_LABELS, ...labelsProp };
+  const [value, setValue] = useControllableState<string>(valueProp, defaultValue, onChange);
+  const [listening, setListening] = useControllableState<boolean>(dictatingProp, false);
+  const area = React.useRef<HTMLTextAreaElement | null>(null);
+  const [rootEl, setRootEl] = React.useState<HTMLDivElement | null>(null);
+  const caretToEnd = React.useRef(false);
+  // The draft typed before a recall began (null: not recalling). Cleared by typing.
+  const stash = React.useRef<string | null>(null);
+  const items: A[] = attachmentItems ?? [];
+  const hasText = value.trim().length > 0;
+  const hasDraft = hasText || items.length > 0;
+  const canQueue = Boolean(onQueue);
+  const state = sendStateOf({ streaming, hasDraft, canQueue });
 
-    // [STATE] Files: one allowlist for drop, paste and the picker; only when the host listens (`onFiles`).
-    const drop = useAttachmentDrop({ ...fileLimits, current: items.length, onFiles, onReject, disabled: disabled || !onFiles });
-    const api: ComposerApi = { openPicker: drop.openPicker, focus: () => area.current?.focus() };
-    const slot = (node: React.ReactNode | ((api: ComposerApi) => React.ReactNode)) => (typeof node === 'function' ? node(api) : node);
+  // [STATE] Files: one allowlist for drop, paste and the picker; only when the host listens (`onFiles`).
+  const drop = useAttachmentDrop({
+    ...fileLimits,
+    current: items.length,
+    onFiles,
+    onReject,
+    disabled: disabled || !onFiles,
+  });
+  const api: ComposerApi = { openPicker: drop.openPicker, focus: () => area.current?.focus() };
+  const slot = (node: React.ReactNode | ((api: ComposerApi) => React.ReactNode)) =>
+    typeof node === 'function' ? node(api) : node;
 
-    // [STATE] A recalled prompt puts the caret at the end, as the original focusInput does. (Growth is the Input's job.)
-    React.useLayoutEffect(() => {
-      const element = area.current;
-      if (element && caretToEnd.current) {
-        caretToEnd.current = false;
-        element.setSelectionRange(value.length, value.length);
+  // [STATE] A recalled prompt puts the caret at the end, as the original focusInput does. (Growth is the Input's job.)
+  React.useLayoutEffect(() => {
+    const element = area.current;
+    if (element && caretToEnd.current) {
+      caretToEnd.current = false;
+      element.setSelectionRange(value.length, value.length);
+    }
+  }, [value]);
+
+  // [STATE] Triggers: tell the host when one starts, changes or ends (so it can open its own popover).
+  const lastTrigger = React.useRef<string>('');
+  React.useEffect(() => {
+    if (!onTrigger || !triggers) return;
+    let hit: { id: string; query: string } | null = null;
+    for (const trigger of triggers) {
+      const match = trigger.pattern.exec(value);
+      if (match) {
+        hit = { id: trigger.id, query: match[1] ?? '' };
+        break;
       }
-    }, [value]);
+    }
+    const key = hit ? `${hit.id}\u0000${hit.query}` : '';
+    if (key === lastTrigger.current) return;
+    lastTrigger.current = key;
+    onTrigger({ trigger: hit?.id ?? null, query: hit?.query ?? '' });
+  }, [value, triggers, onTrigger]);
 
-    // [STATE] Triggers: tell the host when one starts, changes or ends (so it can open its own popover).
-    const lastTrigger = React.useRef<string>('');
-    React.useEffect(() => {
-      if (!onTrigger || !triggers) return;
-      let hit: { id: string; query: string } | null = null;
-      for (const trigger of triggers) {
-        const match = trigger.pattern.exec(value);
-        if (match) {
-          hit = { id: trigger.id, query: match[1] ?? '' };
-          break;
-        }
-      }
-      const key = hit ? `${hit.id}\u0000${hit.query}` : '';
-      if (key === lastTrigger.current) return;
-      lastTrigger.current = key;
-      onTrigger({ trigger: hit?.id ?? null, query: hit?.query ?? '' });
-    }, [value, triggers, onTrigger]);
+  const submit = () => {
+    stash.current = null;
+    // [GUARD] A running reply with nothing typed: the button is Stop (absent without onStop).
+    if (streaming && !hasText) {
+      void onStop?.();
+      return;
+    }
+    if (!hasText || disabled) return;
+    // A draft typed while a reply runs is queued when the host listens for that; otherwise it is an ordinary submit.
+    if (streaming && onQueue) void onQueue({ value, attachments: items });
+    else void onSubmit?.({ value, attachments: items });
+  };
 
-    const submit = () => {
-      stash.current = null;
-      // [GUARD] A running reply with nothing typed: the button is Stop (absent without onStop).
-      if (streaming && !hasText) {
-        void onStop?.();
-        return;
-      }
-      if (!hasText || disabled) return;
-      // A draft typed while a reply runs is queued when the host listens for that; otherwise it is an ordinary submit.
-      if (streaming && onQueue) void onQueue({ value, attachments: items });
-      else void onSubmit?.({ value, attachments: items });
-    };
+  const startDictation = () => {
+    if (!onDictationStart || listening) return;
+    setListening(true);
+    void onDictationStart();
+  };
+  const finishDictation = () => {
+    if (!listening) return;
+    setListening(false);
+    void onDictationFinish?.(dictationText);
+    setTimeout(() => area.current?.focus(), 0);
+  };
+  const cancelDictation = () => {
+    setListening(false);
+    void onDictationCancel?.();
+    setTimeout(() => area.current?.focus(), 0);
+  };
+  useHoldToTalk({
+    code: dictationKey ?? '',
+    enabled: Boolean(onDictationStart && dictationKey) && !disabled,
+    active: listening,
+    onStart: startDictation,
+    onFinish: finishDictation,
+  });
 
-    const startDictation = () => {
-      if (!onDictationStart || listening) return;
-      setListening(true);
-      void onDictationStart();
-    };
-    const finishDictation = () => {
-      if (!listening) return;
-      setListening(false);
-      void onDictationFinish?.(dictationText);
-      setTimeout(() => area.current?.focus(), 0);
-    };
-    const cancelDictation = () => {
-      setListening(false);
-      void onDictationCancel?.();
-      setTimeout(() => area.current?.focus(), 0);
-    };
-    useHoldToTalk({ code: dictationKey ?? '', enabled: Boolean(onDictationStart && dictationKey) && !disabled, active: listening, onStart: startDictation, onFinish: finishDictation });
-
-    const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      // [GUARD] An open popover owns the arrows, Enter, Tab and Escape.
-      if (onBeforeKeyDown?.(event) === true) {
-        // The Input sends on Enter unless the key was taken: a popover that handled it owns it.
-        event.preventDefault();
-        return;
-      }
-      // [GUARD] History recall: the arrow only recalls at the edge of the text (first line for Up, last for Down) with no
-      // selection; Cmd/Ctrl+Arrow recalls from anywhere. Shift/Alt keep their native meaning; IME composition is never touched.
-      if ((event.key === 'ArrowUp' || event.key === 'ArrowDown') && !event.shiftKey && !event.altKey && !event.nativeEvent.isComposing) {
-        const goesUp = event.key === 'ArrowUp';
-        if (goesUp ? onRecallPrevious : onRecallNext || stash.current !== null) {
-          const target = event.currentTarget;
-          const edge = goesUp ? isOnFirstLine(target) : isOnLastLine(target);
-          if (edge || event.metaKey || event.ctrlKey) {
-            const next = goesUp ? onRecallPrevious?.() : onRecallNext?.();
-            if (next) {
-              // Remember the draft being left so Down past the newest entry brings it back.
-              if (stash.current === null) stash.current = value;
-              event.preventDefault();
-              caretToEnd.current = true;
-              setValue(next);
-            } else if (!goesUp && stash.current !== null) {
-              const back = stash.current;
-              stash.current = null;
-              event.preventDefault();
-              caretToEnd.current = true;
-              setValue(back);
-            }
-            return;
+  const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // [GUARD] An open popover owns the arrows, Enter, Tab and Escape.
+    if (onBeforeKeyDown?.(event) === true) {
+      // The Input sends on Enter unless the key was taken: a popover that handled it owns it.
+      event.preventDefault();
+      return;
+    }
+    // [GUARD] History recall: the arrow only recalls at the edge of the text (first line for Up, last for Down) with no
+    // selection; Cmd/Ctrl+Arrow recalls from anywhere. Shift/Alt keep their native meaning; IME composition is never touched.
+    if (
+      (event.key === 'ArrowUp' || event.key === 'ArrowDown') &&
+      !event.shiftKey &&
+      !event.altKey &&
+      !event.nativeEvent.isComposing
+    ) {
+      const goesUp = event.key === 'ArrowUp';
+      if (goesUp ? onRecallPrevious : onRecallNext || stash.current !== null) {
+        const target = event.currentTarget;
+        const edge = goesUp ? isOnFirstLine(target) : isOnLastLine(target);
+        if (edge || event.metaKey || event.ctrlKey) {
+          const next = goesUp ? onRecallPrevious?.() : onRecallNext?.();
+          if (next) {
+            // Remember the draft being left so Down past the newest entry brings it back.
+            if (stash.current === null) stash.current = value;
+            event.preventDefault();
+            caretToEnd.current = true;
+            setValue(next);
+          } else if (!goesUp && stash.current !== null) {
+            const back = stash.current;
+            stash.current = null;
+            event.preventDefault();
+            caretToEnd.current = true;
+            setValue(back);
           }
+          return;
         }
       }
-      if (event.key === 'Escape' && stopOnEscape && streaming && onStop) {
-        event.preventDefault();
-        void onStop();
-      }
-    };
+    }
+    if (event.key === 'Escape' && stopOnEscape && streaming && onStop) {
+      event.preventDefault();
+      void onStop();
+    }
+  };
 
-    const bar = dictation ?? (listening ? (
+  const bar =
+    dictation ??
+    (listening ? (
       <DictationBar
         text={dictationText}
         variant={variant}
@@ -247,124 +287,164 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
       />
     ) : null);
 
-    const field = bar ?? (
-      <InputPrimitive
-        multiline
-        variant="ghost"
-        ref={(node) => {
-          area.current = node as unknown as HTMLTextAreaElement | null;
-          setRef(inputRef, node as unknown as HTMLTextAreaElement | null);
-        }}
-        data-slot="composer-input"
-        aria-label={labels.message}
-        value={value}
-        placeholder={placeholder}
-        disabled={disabled}
-        maxHeight={maxHeight}
-        sendOnEnter={sendOnEnter}
-        onSubmit={submit}
-        className={composerTextareaClasses}
-        onChange={(next) => {
-          // Typing turns a recalled prompt into a new draft: nothing to restore any more.
-          stash.current = null;
-          setValue(next);
-        }}
-        onKeyDown={onKeyDown as unknown as React.KeyboardEventHandler<HTMLInputElement>}
-        onFocus={() => onFocus?.()}
-        onBlur={() => onBlur?.()}
-        onPaste={
-          ((event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-            if (onFiles) drop.onPaste(event);
-            if (!event.defaultPrevented) onPaste?.(event);
-          }) as unknown as React.ClipboardEventHandler<HTMLInputElement>
-        }
-        {...(textareaProps as Record<string, unknown>)}
-      />
-    );
+  const field = bar ?? (
+    <InputPrimitive
+      multiline
+      variant="ghost"
+      ref={(node) => {
+        area.current = node as unknown as HTMLTextAreaElement | null;
+        setRef(inputRef, node as unknown as HTMLTextAreaElement | null);
+      }}
+      data-slot="composer-input"
+      aria-label={labels.message}
+      value={value}
+      placeholder={placeholder}
+      disabled={disabled}
+      maxHeight={maxHeight}
+      sendOnEnter={sendOnEnter}
+      onSubmit={submit}
+      className={composerTextareaClasses}
+      onChange={(next) => {
+        // Typing turns a recalled prompt into a new draft: nothing to restore any more.
+        stash.current = null;
+        setValue(next);
+      }}
+      onKeyDown={onKeyDown as unknown as React.KeyboardEventHandler<HTMLInputElement>}
+      onFocus={() => onFocus?.()}
+      onBlur={() => onBlur?.()}
+      onPaste={
+        ((event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+          if (onFiles) drop.onPaste(event);
+          if (!event.defaultPrevented) onPaste?.(event);
+        }) as unknown as React.ClipboardEventHandler<HTMLInputElement>
+      }
+      {...(textareaProps as Record<string, unknown>)}
+    />
+  );
 
-    const showSendButton = showSend && (state === 'streaming' ? Boolean(onStop) : Boolean(onSubmit) || (state === 'queue' && canQueue));
-    const actions = bar ? null : (
-      <>
-        {onDictationStart ? (
-          <IconButton
-            variant="ghost"
-            iconSize="md"
-            icon={micIcon ?? <span aria-hidden="true">●</span>}
-            label={labels.dictate}
-            data-slot="composer-mic"
-            className={composerRoundClasses}
-            onClick={startDictation}
-          />
-        ) : null}
-        {slot(trailing)}
-        {showSendButton ? (
-          <SendButton state={state} sendIcon={sendIcon ?? <span aria-hidden="true">↑</span>} stopIcon={stopIcon} queueIcon={queueIcon} labels={labels} onClick={submit} />
-        ) : null}
-      </>
-    );
+  const showSendButton =
+    showSend &&
+    (state === 'streaming'
+      ? Boolean(onStop)
+      : Boolean(onSubmit) || (state === 'queue' && canQueue));
+  const actions = bar ? null : (
+    <>
+      {onDictationStart ? (
+        <IconButton
+          variant="ghost"
+          iconSize="md"
+          icon={micIcon ?? <span aria-hidden="true">●</span>}
+          label={labels.dictate}
+          data-slot="composer-mic"
+          className={composerRoundClasses}
+          onClick={startDictation}
+        />
+      ) : null}
+      {slot(trailing)}
+      {showSendButton ? (
+        <SendButton
+          state={state}
+          sendIcon={sendIcon ?? <span aria-hidden="true">↑</span>}
+          stopIcon={stopIcon}
+          queueIcon={queueIcon}
+          labels={labels}
+          onClick={submit}
+        />
+      ) : null}
+    </>
+  );
 
-    const dropLabel = { ...DEFAULT_ATTACHMENT_LABELS, ...attachmentLabels }.dropHere;
-    const { ref: pickerRef, ...pickerProps } = drop.inputProps;
+  const dropLabel = { ...DEFAULT_ATTACHMENT_LABELS, ...attachmentLabels }.dropHere;
+  const { ref: pickerRef, ...pickerProps } = drop.inputProps;
 
-    return (
-      <div
-        ref={(node) => {
-          setRootEl(node);
-          setRef(ref, node);
-        }}
-        data-slot="composer"
-        data-variant={variant}
-        data-streaming={streaming ? 'true' : undefined}
-        data-dragging={drop.dragging ? 'true' : undefined}
-        className={cn('relative flex min-w-0 flex-col gap-2', className)}
-        {...(onFiles ? drop.dropProps : {})}
-        {...rest}
-      >
-        {above}
-        {queued && queued.length > 0 ? <QueuedList items={queued} icon={queuedIcon} removeIcon={queuedRemoveIcon} onRemove={onRemoveQueued} labels={queuedLabels} /> : null}
-        {items.length > 0 ? (
-          <AttachmentStrip items={items} onRemove={onRemoveAttachment} onClick={onAttachmentClick} removeIcon={attachmentRemoveIcon} kindIcons={attachmentKindIcons} labels={attachmentLabels} />
-        ) : null}
-        {attachments}
-        {typeof popover === 'function' ? popover({ anchor: rootEl }) : popover}
-        <div data-slot="composer-box" className={composerBoxVariants({ variant, disabled })}>
-          {variant === 'pill' ? (
-            <>
-              {bar ? null : slot(leading)}
-              {field}
-              {bar ? null : slot(toolbar)}
-              {actions}
-            </>
-          ) : (
-            <>
-              {field}
-              {bar ? null : (
-                <div data-slot="composer-toolbar" className="flex min-w-0 items-center gap-1.5">
-                  {slot(leading)}
-                  {slot(toolbar)}
-                  <div className="flex-1" />
-                  {actions}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-        {hint ? (
-          <div data-slot="composer-hint" className={composerHintClasses}>
-            {hint}
-          </div>
-        ) : null}
-        {onFiles ? <input ref={pickerRef} aria-label="Attach files" {...pickerProps} accept={acceptAttribute(fileLimits?.accept)} /> : null}
-        {drop.dragging ? (
-          <div data-slot="attachment-drop-overlay" role="status" className={attachmentDropOverlayClasses}>
-            {dropLabel}
-          </div>
-        ) : null}
+  return (
+    <div
+      ref={(node) => {
+        setRootEl(node);
+        setRef(ref, node);
+      }}
+      data-slot="composer"
+      data-variant={variant}
+      data-streaming={streaming ? 'true' : undefined}
+      data-dragging={drop.dragging ? 'true' : undefined}
+      className={cn('relative flex min-w-0 flex-col gap-2', className)}
+      {...(onFiles ? drop.dropProps : {})}
+      {...rest}
+    >
+      {above}
+      {queued && queued.length > 0 ? (
+        <QueuedList
+          items={queued}
+          icon={queuedIcon}
+          removeIcon={queuedRemoveIcon}
+          onRemove={onRemoveQueued}
+          labels={queuedLabels}
+        />
+      ) : null}
+      {items.length > 0 ? (
+        <AttachmentStrip
+          items={items}
+          onRemove={onRemoveAttachment}
+          onClick={onAttachmentClick}
+          removeIcon={attachmentRemoveIcon}
+          kindIcons={attachmentKindIcons}
+          labels={attachmentLabels}
+        />
+      ) : null}
+      {attachments}
+      {typeof popover === 'function' ? popover({ anchor: rootEl }) : popover}
+      <div data-slot="composer-box" className={composerBoxVariants({ variant, disabled })}>
+        {variant === 'pill' ? (
+          <>
+            {bar ? null : slot(leading)}
+            {field}
+            {bar ? null : slot(toolbar)}
+            {actions}
+          </>
+        ) : (
+          <>
+            {field}
+            {bar ? null : (
+              <div data-slot="composer-toolbar" className="flex min-w-0 items-center gap-1.5">
+                {slot(leading)}
+                {slot(toolbar)}
+                <div className="flex-1" />
+                {actions}
+              </div>
+            )}
+          </>
+        )}
       </div>
-    );
+      {hint ? (
+        <div data-slot="composer-hint" className={composerHintClasses}>
+          {hint}
+        </div>
+      ) : null}
+      {onFiles ? (
+        <input
+          ref={pickerRef}
+          aria-label="Attach files"
+          {...pickerProps}
+          accept={acceptAttribute(fileLimits?.accept)}
+        />
+      ) : null}
+      {drop.dragging ? (
+        <div
+          data-slot="attachment-drop-overlay"
+          role="status"
+          className={attachmentDropOverlayClasses}
+        >
+          {dropLabel}
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
-export const Composer = React.forwardRef(ComposerInner) as <A extends AttachmentItem = AttachmentItem, Q extends QueuedItem = QueuedItem>(
+export const Composer = React.forwardRef(ComposerInner) as <
+  A extends AttachmentItem = AttachmentItem,
+  Q extends QueuedItem = QueuedItem,
+>(
   props: ComposerProps<A, Q> & { ref?: React.Ref<HTMLDivElement> },
 ) => React.ReactElement | null;
 (Composer as { displayName?: string }).displayName = 'Composer';

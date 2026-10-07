@@ -1,20 +1,28 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { AttachmentStrip } from '../Attachment';
-import { VersionPager } from '../VersionPager';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
-import { useControllableState } from '../lib/use-controllable-state';
 import { useHistoryWindow } from '../lib/chat/window';
-import { DEFAULT_TRANSCRIPT_LABELS, type ChatAttachmentPart, type ChatVersion, type ConversationTurn, type TranscriptConversationProps, type TranscriptLabels, type TurnContext, type TurnSlot } from './Transcript.conversation.types';
+import { useControllableState } from '../lib/use-controllable-state';
+import { VersionPager } from '../VersionPager';
+import {
+  type ChatAttachmentPart,
+  type ChatVersion,
+  type ConversationTurn,
+  DEFAULT_TRANSCRIPT_LABELS,
+  type TranscriptConversationProps,
+  type TranscriptLabels,
+  type TurnContext,
+  type TurnSlot,
+} from './Transcript.conversation.types';
 import { promptOf } from './Transcript.turns';
 import {
-  conversationReplyClasses,
   conversationColumnClasses,
   conversationCursorClasses,
   conversationEditorClasses,
   conversationEditorTextareaClasses,
+  conversationReplyClasses,
   conversationStoppedClasses,
   conversationTurnClasses,
   conversationUserActionsClasses,
@@ -49,7 +57,18 @@ export interface TranscriptEditorProps {
  * @example
  * <TranscriptEditor value={text} onChange={setText} onSubmit={resend} onCancel={() => setEditing(null)} />
  */
-export function TranscriptEditor({ value, onChange, onSubmit, onCancel, hint, submitOnEnter = true, busy = false, rows = 3, labels: labelsProp, className }: TranscriptEditorProps) {
+export function TranscriptEditor({
+  value,
+  onChange,
+  onSubmit,
+  onCancel,
+  hint,
+  submitOnEnter = true,
+  busy = false,
+  rows = 3,
+  labels: labelsProp,
+  className,
+}: TranscriptEditorProps) {
   const labels = { ...DEFAULT_TRANSCRIPT_LABELS, ...labelsProp };
   const area = React.useRef<HTMLTextAreaElement>(null);
   React.useEffect(() => {
@@ -75,21 +94,34 @@ export function TranscriptEditor({ value, onChange, onSubmit, onCancel, hint, su
             if (!onCancel) return;
             event.preventDefault();
             void onCancel();
-          } else if (event.key === 'Enter' && !event.shiftKey && submitOnEnter && !event.nativeEvent.isComposing) {
+          } else if (
+            event.key === 'Enter' &&
+            !event.shiftKey &&
+            submitOnEnter &&
+            !event.nativeEvent.isComposing
+          ) {
             event.preventDefault();
             if (canSend) void onSubmit?.(value);
           }
         }}
       />
       <div className="flex items-center gap-2">
-        <span className="min-w-0 flex-1 text-xs text-[color:var(--oui-panel-meta-fg)]">{hint ?? labels.editHint}</span>
+        <span className="min-w-0 flex-1 text-xs text-[color:var(--oui-panel-meta-fg)]">
+          {hint ?? labels.editHint}
+        </span>
         {onCancel ? (
           <Button type="button" variant="outline" buttonSize="sm" onClick={() => void onCancel()}>
             {labels.cancel}
           </Button>
         ) : null}
         {onSubmit ? (
-          <Button type="button" tone="accent" buttonSize="sm" disabled={!canSend} onClick={() => void onSubmit(value)}>
+          <Button
+            type="button"
+            tone="accent"
+            buttonSize="sm"
+            disabled={!canSend}
+            onClick={() => void onSubmit(value)}
+          >
             {labels.send}
           </Button>
         ) : null}
@@ -98,14 +130,22 @@ export function TranscriptEditor({ value, onChange, onSubmit, onCancel, hint, su
   );
 }
 
-type ConversationProps<U extends ConversationTurn, V extends ChatVersion, A extends ChatAttachmentPart> = TranscriptConversationProps<U, V, A> &
+type ConversationProps<
+  U extends ConversationTurn,
+  V extends ChatVersion,
+  A extends ChatAttachmentPart,
+> = TranscriptConversationProps<U, V, A> &
   Required<Pick<TranscriptConversationProps<U, V, A>, 'turns'>> & {
     copyIcon?: React.ReactNode;
     copyLabel?: string;
   };
 
 /** Whether a slot draws only once its part is `ready`; the Transcript decides when, the caller supplies what. */
-const call = <U extends ConversationTurn>(slot: TurnSlot<U> | undefined, turn: U, context: TurnContext) => (slot ? slot(turn, context) : null);
+const call = <U extends ConversationTurn>(
+  slot: TurnSlot<U> | undefined,
+  turn: U,
+  context: TurnContext,
+) => (slot ? slot(turn, context) : null);
 
 /**
  * The turn-oriented body of the Transcript (use it through `<Transcript turns={...} />`): the "Load previous messages"
@@ -114,7 +154,11 @@ const call = <U extends ConversationTurn>(slot: TurnSlot<U> | undefined, turn: U
  * follow-ups) with approvals and the error around it. The order and visibility rules are the original's (see
  * {@link TranscriptTurnSlots}); the parts themselves are slots, so this file owns no Markdown, timeline or feedback code.
  */
-export function TranscriptConversation<U extends ConversationTurn = ConversationTurn, V extends ChatVersion = ChatVersion, A extends ChatAttachmentPart = ChatAttachmentPart>({
+export function TranscriptConversation<
+  U extends ConversationTurn = ConversationTurn,
+  V extends ChatVersion = ChatVersion,
+  A extends ChatAttachmentPart = ChatAttachmentPart,
+>({
   turns,
   busy = false,
   waiting = false,
@@ -151,9 +195,16 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
   copyLabel,
   labels: labelsProp,
 }: ConversationProps<U, V, A>) {
-  const labels = { ...DEFAULT_TRANSCRIPT_LABELS, ...labelsProp, ...(copyLabel ? { copy: copyLabel } : {}) };
+  const labels = {
+    ...DEFAULT_TRANSCRIPT_LABELS,
+    ...labelsProp,
+    ...(copyLabel ? { copy: copyLabel } : {}),
+  };
   // Editing state is controlled when `editingId` / `editValue` are given and kept inside otherwise; onEditChange fires in both.
-  const [editingId, setEditingId] = useControllableState<string | null>(editingProp, defaultEditingId);
+  const [editingId, setEditingId] = useControllableState<string | null>(
+    editingProp,
+    defaultEditingId,
+  );
   const [editValue, setEditValue] = useControllableState<string>(editValueProp, '', onEditChange);
   const root = React.useRef<HTMLDivElement>(null);
   const lastIndex = turns.length - 1;
@@ -166,7 +217,9 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
     const previous = wasEditing.current;
     wasEditing.current = editingId;
     if (previous && !editingId) {
-      const turn = Array.from(root.current?.querySelectorAll<HTMLElement>('[data-turn-id]') ?? []).find((element) => element.dataset.turnId === previous);
+      const turn = Array.from(
+        root.current?.querySelectorAll<HTMLElement>('[data-turn-id]') ?? [],
+      ).find((element) => element.dataset.turnId === previous);
       turn?.querySelector<HTMLElement>('[data-slot="transcript-edit"]')?.focus();
     }
   }, [editingId]);
@@ -174,7 +227,9 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
   const drawUser = (turn: U, context: TurnContext) => {
     const prompt = promptOf(turn.user);
     // The attachment parts themselves are the items (by reference), so extra fields reach `onAttachmentClick`.
-    const chips = turn.user.parts.filter((part): part is ChatAttachmentPart & A => part.type === 'attachment');
+    const chips = turn.user.parts.filter(
+      (part): part is ChatAttachmentPart & A => part.type === 'attachment',
+    );
     const siblings = turn.user.siblings ?? [];
     const editing = editingId === turn.id && !readOnly;
     const index = siblings.findIndex((version) => version.id === turn.user.id);
@@ -197,7 +252,17 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
     const hasActions = Boolean(versions) || canCopy || canEdit || Boolean(userActions);
     return (
       <div data-slot="transcript-user" className={conversationUserClasses}>
-        {chips.length > 0 ? <AttachmentStrip items={chips} variant={attachmentVariant} readOnly layout="wrap" className="justify-end" kindIcons={attachmentIcons} onClick={onAttachmentClick} /> : null}
+        {chips.length > 0 ? (
+          <AttachmentStrip
+            items={chips}
+            variant={attachmentVariant}
+            readOnly
+            layout="wrap"
+            className="justify-end"
+            kindIcons={attachmentIcons}
+            onClick={onAttachmentClick}
+          />
+        ) : null}
         {editing ? (
           <TranscriptEditor
             value={editValue}
@@ -219,12 +284,20 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
             labels={labels}
           />
         ) : (
-          <div data-slot="transcript-message" className={transcriptBubbleVariants({ kind: 'message' })} style={{ maxWidth: '100%' }}>
+          <div
+            data-slot="transcript-message"
+            className={transcriptBubbleVariants({ kind: 'message' })}
+            style={{ maxWidth: '100%' }}
+          >
             {prompt}
           </div>
         )}
         {hasActions ? (
-          <div data-slot="transcript-user-actions" data-shown={siblings.length > 1 ? 'true' : undefined} className={conversationUserActionsClasses}>
+          <div
+            data-slot="transcript-user-actions"
+            data-shown={siblings.length > 1 ? 'true' : undefined}
+            className={conversationUserActionsClasses}
+          >
             {versions}
             {canCopy ? (
               <IconButton
@@ -271,18 +344,34 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
       </div>
     );
     return (
-      <div data-slot="transcript-reply" data-status={running ? 'running' : stopped ? 'stopped' : 'done'} className={conversationReplyClasses}>
+      <div
+        data-slot="transcript-reply"
+        data-status={running ? 'running' : stopped ? 'stopped' : 'done'}
+        className={conversationReplyClasses}
+      >
         {call(slots.timeline, turn, context)}
         {call(slots.thinking, turn, context)}
         {text || running ? (
           <div data-slot="transcript-body" className="min-w-0">
             {content}
-            {running ? (cursor ?? <span data-slot="transcript-cursor" aria-hidden="true" className={conversationCursorClasses} />) : null}
+            {running
+              ? (cursor ?? (
+                  <span
+                    data-slot="transcript-cursor"
+                    aria-hidden="true"
+                    className={conversationCursorClasses}
+                  />
+                ))
+              : null}
           </div>
         ) : null}
         {stopped ? (
           <div data-slot="transcript-stopped" className={conversationStoppedClasses}>
-            {stoppedIcon ? <span aria-hidden="true" className="inline-flex">{stoppedIcon}</span> : null}
+            {stoppedIcon ? (
+              <span aria-hidden="true" className="inline-flex">
+                {stoppedIcon}
+              </span>
+            ) : null}
             {labels.stopped}
           </div>
         ) : null}
@@ -300,7 +389,10 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
     const live_ = last && live ? live : undefined;
     const isWaiting = last && waiting;
     const running = last && busy && !isWaiting;
-    const failed = !turn.answer?.final && !running && (turn.run?.status === 'failed' || turn.run?.status === 'interrupted');
+    const failed =
+      !turn.answer?.final &&
+      !running &&
+      (turn.run?.status === 'failed' || turn.run?.status === 'interrupted');
     const stopped = !running && turn.run?.status === 'cancelled';
     const context: TurnContext = {
       index,
@@ -313,12 +405,19 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
       liveReasoning: live_?.reasoning,
       retry: onRetry ? () => void onRetry(turn) : undefined,
       regenerate: onRegenerate ? () => void onRegenerate(turn) : undefined,
-      selectVersion: onSelectVersion ? (version) => void onSelectVersion(turn, version as V) : undefined,
+      selectVersion: onSelectVersion
+        ? (version) => void onSelectVersion(turn, version as V)
+        : undefined,
     };
     const custom = renderTurn?.(turn, context);
     if (custom !== undefined) {
       return (
-        <div key={turn.id} data-slot="transcript-turn" data-turn-id={turn.id} className={conversationTurnClasses}>
+        <div
+          key={turn.id}
+          data-slot="transcript-turn"
+          data-turn-id={turn.id}
+          className={conversationTurnClasses}
+        >
           {custom}
         </div>
       );
@@ -334,10 +433,22 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
           {readOnly ? null : call(slots.approvalsAfter, turn, context)}
           {failed && !readOnly
             ? (call(slots.error, turn, context) ?? (
-                <div role="alert" data-slot="transcript-error" className="flex items-center gap-2 text-sm text-[color:var(--oui-tone-danger-fg)]">
-                  <span className="min-w-0 flex-1">{turn.run?.error?.message ?? labels.failed}</span>
+                <div
+                  role="alert"
+                  data-slot="transcript-error"
+                  className="flex items-center gap-2 text-sm text-[color:var(--oui-tone-danger-fg)]"
+                >
+                  <span className="min-w-0 flex-1">
+                    {turn.run?.error?.message ?? labels.failed}
+                  </span>
                   {onRetry ? (
-                    <Button type="button" variant="outline" buttonSize="sm" data-slot="transcript-retry" onClick={() => void onRetry(turn)}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      buttonSize="sm"
+                      data-slot="transcript-retry"
+                      onClick={() => void onRetry(turn)}
+                    >
                       {labels.retry}
                     </Button>
                   ) : null}

@@ -1,28 +1,45 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
+import {
+  defaultWindowStart,
+  offsetFromBottom,
+  restoreFromBottom,
+} from '@oc-tech/omni-ui-components/lib/chat/window';
+import { type ConversationTurn, Transcript } from '@oc-tech/omni-ui-components/Transcript';
 import { render, screen } from '@testing-library/react';
-
-import { Transcript, type ConversationTurn } from '@oc-tech/omni-ui-components/Transcript';
-import { defaultWindowStart, offsetFromBottom, restoreFromBottom } from '@oc-tech/omni-ui-components/lib/chat/window';
+import userEvent from '@testing-library/user-event';
+import * as React from 'react';
 
 const turn = (n: number): ConversationTurn => ({
   id: `t${n}`,
-  user: { id: `u${n}`, role: 'user', createdAt: '2026-10-06T09:00:00Z', parts: [{ type: 'text', text: `Question ${n}` }] },
+  user: {
+    id: `u${n}`,
+    role: 'user',
+    createdAt: '2026-10-06T09:00:00Z',
+    parts: [{ type: 'text', text: `Question ${n}` }],
+  },
 });
 const turns = (count: number, from = 0) => Array.from({ length: count }, (_, i) => turn(from + i));
-const ids = (container: HTMLElement) => Array.from(container.querySelectorAll<HTMLElement>('[data-turn-id]')).map((node) => node.dataset.turnId);
+const ids = (container: HTMLElement) =>
+  Array.from(container.querySelectorAll<HTMLElement>('[data-turn-id]')).map(
+    (node) => node.dataset.turnId,
+  );
 
 const ITEM_PX = 100;
 const VIEWPORT_PX = 300;
 
 /** A scroll container whose geometry follows what is drawn: each turn is ITEM_PX tall (jsdom has no layout). */
-function Harness({ all, ...rest }: { all: ConversationTurn[] } & Partial<React.ComponentProps<typeof Transcript>>) {
+function Harness({
+  all,
+  ...rest
+}: { all: ConversationTurn[] } & Partial<React.ComponentProps<typeof Transcript>>) {
   const box = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     const node = box.current!;
     const count = () => node.querySelectorAll('[data-turn-id]').length;
-    Object.defineProperty(node, 'scrollHeight', { configurable: true, get: () => count() * ITEM_PX });
+    Object.defineProperty(node, 'scrollHeight', {
+      configurable: true,
+      get: () => count() * ITEM_PX,
+    });
     Object.defineProperty(node, 'clientHeight', { configurable: true, get: () => VIEWPORT_PX });
   }, []);
   return (
@@ -64,7 +81,15 @@ describe('omni-ui-components/Transcript history windowing', () => {
   it('reveals windowStep more per press without calling the host, then hands over to onLoadEarlier', async () => {
     const onLoadEarlier = vi.fn();
     const user = userEvent.setup();
-    const { container } = render(<Transcript turns={turns(7)} windowSize={3} windowStep={2} hasEarlier onLoadEarlier={onLoadEarlier} />);
+    const { container } = render(
+      <Transcript
+        turns={turns(7)}
+        windowSize={3}
+        windowStep={2}
+        hasEarlier
+        onLoadEarlier={onLoadEarlier}
+      />,
+    );
     const press = () => user.click(screen.getByRole('button', { name: 'Load previous messages' }));
     expect(ids(container)).toHaveLength(3);
     await press();
@@ -117,7 +142,16 @@ describe('omni-ui-components/Transcript history windowing', () => {
     type Mine = ConversationTurn & { tag: string };
     const mine: Mine[] = turns(5).map((t) => ({ ...t, tag: 'x' }));
     const got: Mine[] = [];
-    render(<Transcript<never, Mine> turns={mine} windowSize={2} renderTurn={(t) => { got.push(t); return t.tag; }} />);
+    render(
+      <Transcript<never, Mine>
+        turns={mine}
+        windowSize={2}
+        renderTurn={(t) => {
+          got.push(t);
+          return t.tag;
+        }}
+      />,
+    );
     expect(got.every((t) => mine.includes(t))).toBe(true);
     expect(got.at(-1)?.tag).toBe('x');
   });

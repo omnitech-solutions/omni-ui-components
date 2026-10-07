@@ -1,20 +1,30 @@
 import * as React from 'react';
 
 /** True on Apple platforms (⌘ ⇧ ⌥ glyphs). Pass a platform string to test; default reads `navigator.platform`. */
-export const isMac = (platform: string = globalThis.navigator?.platform ?? ''): boolean => /Mac|iPhone|iPad/.test(platform);
+export const isMac = (platform: string = globalThis.navigator?.platform ?? ''): boolean =>
+  /Mac|iPhone|iPad/.test(platform);
 
 /**
  * Does the keyboard event match a shortcut string such as `mod+shift+o`? `mod` is Meta or Ctrl, `shift` and `alt` are
  * exact (an unlisted modifier must be up). The last part is the key; it matches `event.key` (case-insensitive) or the
  * physical key (`KeyO`, `Digit1`), so ⌥ on a Mac (which changes `event.key`) still matches.
  */
-export const matchesShortcut = (event: Pick<KeyboardEvent, 'key' | 'code' | 'metaKey' | 'ctrlKey' | 'shiftKey' | 'altKey'>, shortcut: string): boolean => {
+export const matchesShortcut = (
+  event: Pick<KeyboardEvent, 'key' | 'code' | 'metaKey' | 'ctrlKey' | 'shiftKey' | 'altKey'>,
+  shortcut: string,
+): boolean => {
   const parts = shortcut.toLowerCase().split('+');
   const key = parts[parts.length - 1];
   const wants = (name: string) => parts.includes(name);
   const code = (event.code ?? '').toLowerCase();
-  const keyMatches = (event.key ?? '').toLowerCase() === key || code === `key${key}` || code === `digit${key}`;
-  return keyMatches && (event.metaKey || event.ctrlKey) === wants('mod') && event.shiftKey === wants('shift') && event.altKey === wants('alt');
+  const keyMatches =
+    (event.key ?? '').toLowerCase() === key || code === `key${key}` || code === `digit${key}`;
+  return (
+    keyMatches &&
+    (event.metaKey || event.ctrlKey) === wants('mod') &&
+    event.shiftKey === wants('shift') &&
+    event.altKey === wants('alt')
+  );
 };
 
 /** The key glyphs of a shortcut, one entry per key: `mod+shift+o` is `['⌘', '⇧', 'O']` on a Mac and `['Ctrl', '⇧', 'O']` elsewhere. */
@@ -28,8 +38,10 @@ export const describeShortcutKeys = (shortcut: string, mac: boolean = isMac()): 
   });
 
 /** A shortcut as text: `mod+shift+o` is `⌘ ⇧ O` on a Mac. Use `separator: ''` for `⌘⇧O`. */
-export const describeShortcut = (shortcut: string, options: { mac?: boolean; separator?: string } = {}): string =>
-  describeShortcutKeys(shortcut, options.mac).join(options.separator ?? ' ');
+export const describeShortcut = (
+  shortcut: string,
+  options: { mac?: boolean; separator?: string } = {},
+): string => describeShortcutKeys(shortcut, options.mac).join(options.separator ?? ' ');
 
 export interface HotkeyBinding {
   /** A shortcut string such as `mod+k`. */
@@ -54,11 +66,15 @@ export interface UseHotkeysOptions {
  * @example
  * useHotkeys([{ shortcut: 'mod+k', handler: () => searchRef.current?.focus() }]);
  */
-export const useHotkeys = (bindings: readonly HotkeyBinding[], options: UseHotkeysOptions = {}): void => {
+export const useHotkeys = (
+  bindings: readonly HotkeyBinding[],
+  options: UseHotkeysOptions = {},
+): void => {
   const { enabled = true } = options;
   const latest = React.useRef(bindings);
   latest.current = bindings;
-  const target = options.target === undefined ? (typeof window === 'undefined' ? null : window) : options.target;
+  const target =
+    options.target === undefined ? (typeof window === 'undefined' ? null : window) : options.target;
   React.useEffect(() => {
     if (!enabled || !target) return undefined;
     const onKeyDown = (event: Event) => {

@@ -1,9 +1,8 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
+import type { InputProps } from '../Input/Input.types';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
 import { EmailInputPrimitive } from './EmailInputPrimitive';
-import type { InputProps } from '../Input/Input.types';
 
 export type EmailInputProps = Omit<InputProps, 'type' | 'inputMode'>;
 
@@ -14,7 +13,22 @@ export type EmailInputProps = Omit<InputProps, 'type' | 'inputMode'>;
  * <EmailInput label="Email" value={email} onChange={setEmail} />
  */
 const EmailInputInner = React.forwardRef<HTMLInputElement, EmailInputProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

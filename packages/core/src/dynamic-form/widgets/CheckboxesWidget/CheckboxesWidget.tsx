@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { WidgetProps } from '@rjsf/utils';
-
 import { CheckboxGroupPrimitive, type CheckboxOption } from '@oc-tech/omni-ui-components';
+import type { WidgetProps } from '@rjsf/utils';
+import * as React from 'react';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Checkboxes widget for `type: 'array'` with `items.enum` / `items.oneOf`. */
@@ -10,7 +9,8 @@ export const CheckboxesWidget = (props: WidgetProps) => {
   const { onChange, onBlur, onFocus } = useStableRjsfCallbacks<string[]>(props, (next) => next);
 
   const checkboxOptions: CheckboxOption[] = React.useMemo(() => {
-    const enumOptions = (options?.enumOptions as { value: unknown; label: string }[] | undefined) ?? [];
+    const enumOptions =
+      (options?.enumOptions as { value: unknown; label: string }[] | undefined) ?? [];
     const enumDisabled = (options?.enumDisabled as unknown[] | undefined) ?? [];
     const descriptions = (options?.optionDescriptions as Record<string, string> | undefined) ?? {};
     return enumOptions.map((opt) => ({
@@ -22,7 +22,10 @@ export const CheckboxesWidget = (props: WidgetProps) => {
   }, [options?.enumOptions, options?.enumDisabled, options?.optionDescriptions]);
 
   const orientation = options?.inline ? 'horizontal' : 'vertical';
-  const valueArray = React.useMemo(() => (Array.isArray(value) ? (value as unknown[]).map(String) : []), [value]);
+  const valueArray = React.useMemo(
+    () => (Array.isArray(value) ? (value as unknown[]).map(String) : []),
+    [value],
+  );
 
   return (
     <CheckboxGroupPrimitive

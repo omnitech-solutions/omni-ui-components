@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import type { AttachmentKind, AttachmentStatus } from '../Attachment';
 
@@ -54,7 +54,14 @@ export interface ChatMessage {
   siblings?: ChatVersion[];
 }
 
-export type ChatRunStatus = 'queued' | 'running' | 'waiting' | 'completed' | 'failed' | 'cancelled' | 'interrupted';
+export type ChatRunStatus =
+  | 'queued'
+  | 'running'
+  | 'waiting'
+  | 'completed'
+  | 'failed'
+  | 'cancelled'
+  | 'interrupted';
 
 export interface ChatRun {
   id: string;
@@ -124,7 +131,10 @@ export interface TurnContext {
   liveReasoning?: string;
 }
 
-export type TurnSlot<U extends ConversationTurn = ConversationTurn> = (turn: U, context: TurnContext) => React.ReactNode;
+export type TurnSlot<U extends ConversationTurn = ConversationTurn> = (
+  turn: U,
+  context: TurnContext,
+) => React.ReactNode;
 
 /**
  * Where the parts built elsewhere (Markdown, Thinking, StepTimeline, Sources, Suggestions, MessageActions, FeedbackPanel,
@@ -200,7 +210,11 @@ export const DEFAULT_TRANSCRIPT_LABELS: TranscriptLabels = {
  * version type and `A` your attachment part type: every callback and slot gets the SAME object back (never a copy), so
  * extra fields you add are visible there.
  */
-export interface TranscriptConversationProps<U extends ConversationTurn = ConversationTurn, V extends ChatVersion = ChatVersion, A extends ChatAttachmentPart = ChatAttachmentPart> {
+export interface TranscriptConversationProps<
+  U extends ConversationTurn = ConversationTurn,
+  V extends ChatVersion = ChatVersion,
+  A extends ChatAttachmentPart = ChatAttachmentPart,
+> {
   /** Turns from {@link buildTurns} (or your own): switches the Transcript to conversation mode. */
   turns?: U[];
   /** A reply is running (submitting, queued, running or waiting). The newest turn then streams. */

@@ -1,5 +1,5 @@
-import { act, renderHook } from '@testing-library/react';
 import type { Row } from '@tanstack/react-table';
+import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { useEditableHandlers } from '../../../src/Table/hooks/useEditableHandlers';
 import { useEditingState } from '../../../src/Table/hooks/useTableState/useEditingState';
@@ -10,7 +10,7 @@ import type {
   TableEditableConfig,
   TableProps,
 } from '../../../src/Table/Table.types';
-import { column, people, resolve, type Person } from './support';
+import { column, type Person, people, resolve } from './support';
 
 type Opts = {
   columns?: TableColumn<Person>[];

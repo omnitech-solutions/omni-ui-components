@@ -1,11 +1,11 @@
 import { renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import {
-  useTableHandlers,
   type UseTableHandlersInput,
+  useTableHandlers,
 } from '../../../src/Table/hooks/useTableHandlers';
 import type { TableProps } from '../../../src/Table/Table.types';
-import { column, people, resolve, type Person } from './support';
+import { column, type Person, people, resolve } from './support';
 
 const cols = [
   column('name', { onFilter: (value, record) => record.name === value }),

@@ -1,7 +1,6 @@
+import { Menu } from '@oc-tech/omni-ui-components/Menu';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Folder, Home, Settings } from 'lucide-react';
-
-import { Menu } from '@oc-tech/omni-ui-components/Menu';
 
 const meta: Meta<typeof Menu> = {
   title: 'omni-ui-components/Menu',

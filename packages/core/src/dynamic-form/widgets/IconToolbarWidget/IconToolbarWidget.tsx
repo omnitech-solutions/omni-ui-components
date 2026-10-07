@@ -1,8 +1,6 @@
-import * as React from 'react';
-import type { WidgetProps } from '@rjsf/utils';
-import { ChevronDown, ChevronUp, Copy, Trash2, X, type LucideIcon } from 'lucide-react';
-
 import { IconButton, type IconButtonVariant } from '@oc-tech/omni-ui-components';
+import type { WidgetProps } from '@rjsf/utils';
+import { ChevronDown, ChevronUp, Copy, type LucideIcon, Trash2, X } from 'lucide-react';
 
 /**
  * IconToolbarWidget — a non-data RJSF widget that renders a row of
@@ -53,7 +51,11 @@ export const IconToolbarWidget = (props: WidgetProps) => {
   const isDisabled = Boolean(disabled || readonly);
 
   return (
-    <div id={id} data-slot="icon-toolbar" className="inline-flex items-center gap-1 self-start rounded-md border border-[var(--oui-border-field)] p-1">
+    <div
+      id={id}
+      data-slot="icon-toolbar"
+      className="inline-flex items-center gap-1 self-start rounded-md border border-[var(--oui-border-field)] p-1"
+    >
       {actions.map((action, idx) => {
         const Icon = ICON_MAP[action.icon];
         return (

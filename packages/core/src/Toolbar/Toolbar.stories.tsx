@@ -1,15 +1,14 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
-
 import { Toolbar, type ToolbarProps } from '@oc-tech/omni-ui-components/Toolbar';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   NativeToolbarDemo,
+  type NativeToolbarDemoProps,
   toolbarLabelledVariants,
   toolbarVariants,
   WindowDotsSample,
-  type NativeToolbarDemoProps,
 } from 'factories/omni-ui-components/Toolbar/Toolbar.factories';
+import type * as React from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 /** Story-only extras: the demo state and the callback every control reports through (Actions panel). */
 type StoryArgs = ToolbarProps & Partial<NativeToolbarDemoProps>;
@@ -44,18 +43,28 @@ const meta: Meta<StoryArgs> = {
     mic: { status: 'listening' },
   },
   argTypes: {
-    size: { control: 'inline-radio', options: ['control', 'control-labelled'], description: 'Control size handed to children through context.' },
+    size: {
+      control: 'inline-radio',
+      options: ['control', 'control-labelled'],
+      description: 'Control size handed to children through context.',
+    },
     variant: { control: 'inline-radio', options: ['plain', 'floating', 'bar'] },
     separators: { control: 'boolean' },
     label: { control: 'text', description: 'aria-label of the toolbar.' },
     leading: { control: false },
     trailing: { control: false },
     groups: { control: false },
-    capture: { control: 'object', description: 'Demo: { mode, display, analysing, problem, paused }.' },
+    capture: {
+      control: 'object',
+      description: 'Demo: { mode, display, analysing, problem, paused }.',
+    },
     mic: { control: 'object', description: 'Demo: { status, device }.' },
     panels: { control: 'object', description: 'Demo: visible panels.' },
     style: { control: 'text', description: 'Demo: initial answer style id.' },
-    onAction: { action: 'toolbar', description: 'Story-only: reports presses, menu choices, panel changes and menu open state.' },
+    onAction: {
+      action: 'toolbar',
+      description: 'Story-only: reports presses, menu choices, panel changes and menu open state.',
+    },
   },
   render: (args) => (
     <Backdrop>
@@ -83,7 +92,11 @@ export const MicLostRetrying: Story = { args: { mic: { status: 'lost' } } };
 export const ScreenPermissionLost: Story = { args: { capture: { mode: 'manual', problem: true } } };
 export const MicMuted: Story = { args: { mic: { status: 'muted' } } };
 export const PausedCodeHidden: Story = {
-  args: { capture: { mode: 'manual', paused: true }, mic: { status: 'paused' }, panels: ['chat', 'answer'] },
+  args: {
+    capture: { mode: 'manual', paused: true },
+    mic: { status: 'paused' },
+    panels: ['chat', 'answer'],
+  },
 };
 export const Labelled: Story = { args: { size: 'control-labelled' } };
 
@@ -92,7 +105,9 @@ export const AllStates: Story = {
     <div className="flex flex-col gap-4 overflow-x-auto p-8">
       {[...toolbarVariants, ...toolbarLabelledVariants].map((variant) => (
         <div key={variant.name} className="flex w-max flex-col gap-1.5">
-          <span className="font-mono text-[11.5px] text-[var(--oui-foreground-muted)]">{variant.name}</span>
+          <span className="font-mono text-[11.5px] text-[var(--oui-foreground-muted)]">
+            {variant.name}
+          </span>
           <div className="w-max rounded-xl px-4 py-3.5" style={{ background: '#1a4f96' }}>
             <NativeToolbarDemo {...variant.args} size={variant.args.size ?? args.size} />
           </div>
@@ -129,10 +144,14 @@ export const ChooseAnswerStyle: Story = {
     const trigger = within(canvasElement).getByTestId('answer-style-trigger');
     await expect(trigger).toHaveTextContent('Data Structures & Algorithms');
     await userEvent.click(trigger);
-    await userEvent.click(await body.findByRole('menuitemradio', { name: 'DevOps & Infrastructure' }));
+    await userEvent.click(
+      await body.findByRole('menuitemradio', { name: 'DevOps & Infrastructure' }),
+    );
     await waitFor(() => expect(trigger).toHaveTextContent('DevOps & Infrastructure'));
     await userEvent.click(trigger);
-    await expect(await body.findByRole('menuitemradio', { name: 'DevOps & Infrastructure' })).toHaveAttribute('aria-checked', 'true');
+    await expect(
+      await body.findByRole('menuitemradio', { name: 'DevOps & Infrastructure' }),
+    ).toHaveAttribute('aria-checked', 'true');
     await userEvent.keyboard('{Escape}');
   },
 };

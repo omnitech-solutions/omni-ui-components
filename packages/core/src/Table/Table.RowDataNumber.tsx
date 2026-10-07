@@ -1,5 +1,5 @@
-import { renderNumberField } from './Table.registry';
 import type { RowDataType } from './Table.RowData';
+import { renderNumberField } from './Table.registry';
 
 export const RowDataNumberType: RowDataType = {
   type: 'number',

@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import type { SuggestionItem, SuggestionsProps } from './Suggestions.types';
 import { suggestionChipVariants } from './Suggestions.variants';
 
@@ -14,7 +13,20 @@ import { suggestionChipVariants } from './Suggestions.variants';
  * <Suggestions items={['Show a test', 'Explain the complexity']} icon={<CornerDownRight />} onSelect={send} />
  */
 const SuggestionsImpl = React.forwardRef<HTMLDivElement, SuggestionsProps>(
-  ({ items, onSelect, renderItem, icon, disabled = false, layout = 'column', label = 'Follow-up suggestions', className, ...rest }, ref) => {
+  (
+    {
+      items,
+      onSelect,
+      renderItem,
+      icon,
+      disabled = false,
+      layout = 'column',
+      label = 'Follow-up suggestions',
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
     if (items.length === 0 || !onSelect) return null;
     return (
       <div
@@ -23,7 +35,11 @@ const SuggestionsImpl = React.forwardRef<HTMLDivElement, SuggestionsProps>(
         aria-label={label}
         data-slot="suggestions"
         data-layout={layout}
-        className={cn('flex gap-1.5', layout === 'column' ? 'flex-col items-start' : 'flex-wrap', className)}
+        className={cn(
+          'flex gap-1.5',
+          layout === 'column' ? 'flex-col items-start' : 'flex-wrap',
+          className,
+        )}
         {...rest}
       >
         {items.map((item, index) => {
@@ -48,6 +64,8 @@ const SuggestionsImpl = React.forwardRef<HTMLDivElement, SuggestionsProps>(
 SuggestionsImpl.displayName = 'Suggestions';
 
 /** Generic over the item type: an extended item flows to every callback and slot, by reference. */
-export const Suggestions = SuggestionsImpl as unknown as <T extends SuggestionItem = SuggestionItem>(
+export const Suggestions = SuggestionsImpl as unknown as <
+  T extends SuggestionItem = SuggestionItem,
+>(
   props: SuggestionsProps<T> & React.RefAttributes<HTMLDivElement>,
 ) => React.ReactElement | null;

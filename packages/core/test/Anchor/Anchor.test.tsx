@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Anchor } from '@oc-tech/omni-ui-components/Anchor';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/Anchor', () => {
   it('renders anchor links', () => {

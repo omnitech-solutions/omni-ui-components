@@ -23,8 +23,16 @@ describe('export helpers', () => {
   });
 
   it('writes Markdown with a title and You / Assistant sections, and translates the headings', () => {
-    expect(toMarkdown('Closures', messages)).toBe('# Closures\n\n## You\n\nExplain closures\n\n## Assistant\n\nA closure keeps its scope.\n');
-    expect(toMarkdown(undefined, messages, { user: 'Tú', assistant: 'Asistente', untitled: 'Conversación' })).toContain('# Conversación\n\n## Tú');
+    expect(toMarkdown('Closures', messages)).toBe(
+      '# Closures\n\n## You\n\nExplain closures\n\n## Assistant\n\nA closure keeps its scope.\n',
+    );
+    expect(
+      toMarkdown(undefined, messages, {
+        user: 'Tú',
+        assistant: 'Asistente',
+        untitled: 'Conversación',
+      }),
+    ).toContain('# Conversación\n\n## Tú');
   });
 
   it('writes JSON with the thread and every message', () => {
@@ -46,7 +54,9 @@ describe('export helpers', () => {
   });
 
   it('download clicks a temporary link with the file name and removes it', () => {
-    const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+    const click = jest
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => undefined);
     const create = jest.fn(() => 'blob:x');
     const revoke = jest.fn();
     Object.assign(URL, { createObjectURL: create, revokeObjectURL: revoke });
@@ -61,17 +71,28 @@ describe('export helpers', () => {
 describe('clipboard, speech text and initials', () => {
   it('copyText resolves true when written and false when unavailable or refused', async () => {
     const writeText = jest.fn(() => Promise.resolve());
-    Object.defineProperty(globalThis.navigator, 'clipboard', { value: { writeText }, configurable: true });
+    Object.defineProperty(globalThis.navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
     expect(await copyText('hi')).toBe(true);
     expect(writeText).toHaveBeenCalledWith('hi');
-    Object.defineProperty(globalThis.navigator, 'clipboard', { value: { writeText: () => Promise.reject(new Error('no')) }, configurable: true });
+    Object.defineProperty(globalThis.navigator, 'clipboard', {
+      value: { writeText: () => Promise.reject(new Error('no')) },
+      configurable: true,
+    });
     expect(await copyText('hi')).toBe(false);
-    Object.defineProperty(globalThis.navigator, 'clipboard', { value: undefined, configurable: true });
+    Object.defineProperty(globalThis.navigator, 'clipboard', {
+      value: undefined,
+      configurable: true,
+    });
     expect(await copyText('hi')).toBe(false);
   });
 
   it('speakable strips code blocks, citations and Markdown punctuation', () => {
-    expect(speakable('## Title\n\nUse `map` [1].\n\n```ts\nconst a = 1\n```\n\n- **bold** done')).toBe('Title Use map . (code omitted) bold done');
+    expect(
+      speakable('## Title\n\nUse `map` [1].\n\n```ts\nconst a = 1\n```\n\n- **bold** done'),
+    ).toBe('Title Use map . (code omitted) bold done');
     expect(speakable('```x```', '(código omitido)')).toBe('(código omitido)');
   });
 

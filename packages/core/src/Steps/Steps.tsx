@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { Check } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Check } from 'lucide-react';
+import * as React from 'react';
 import { Progress } from '../Progress';
 
 /** Checklist progress of one item. */
@@ -36,7 +35,17 @@ export interface StepsProps extends Omit<React.HTMLAttributes<HTMLOListElement>,
 
 export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
   (
-    { variant = 'default', items = [], current = 0, direction = 'horizontal', size = 'default', status = 'process', onChange, className, ...props },
+    {
+      variant = 'default',
+      items = [],
+      current = 0,
+      direction = 'horizontal',
+      size = 'default',
+      status = 'process',
+      onChange,
+      className,
+      ...props
+    },
     ref,
   ) => {
     if (variant === 'checklist') {
@@ -63,7 +72,11 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                   state === 'pending' && 'opacity-50',
                 )}
               >
-                <span data-slot="steps-marker" aria-hidden="true" className="flex size-[19px] shrink-0 items-center justify-center">
+                <span
+                  data-slot="steps-marker"
+                  aria-hidden="true"
+                  className="flex size-[19px] shrink-0 items-center justify-center"
+                >
                   {state === 'done' ? (
                     <span className="flex size-[19px] items-center justify-center rounded-full bg-[color:var(--oui-tone-success-solid-bg)] text-[color:var(--oui-tone-success-solid-fg)]">
                       <Check className="size-3 stroke-[3]" />
@@ -75,7 +88,13 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                   )}
                 </span>
                 <span>{item.label ?? item.title}</span>
-                <span className="sr-only">{state === 'done' ? '(done)' : state === 'current' ? '(in progress)' : '(pending)'}</span>
+                <span className="sr-only">
+                  {state === 'done'
+                    ? '(done)'
+                    : state === 'current'
+                      ? '(in progress)'
+                      : '(pending)'}
+                </span>
               </li>
             );
           })}
@@ -86,13 +105,22 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
       <ol
         ref={ref}
         aria-label="Steps"
-        className={cn('m-0 flex list-none items-start gap-4 p-0', direction === 'vertical' && 'flex-col', size === 'small' && 'text-sm', className)}
+        className={cn(
+          'm-0 flex list-none items-start gap-4 p-0',
+          direction === 'vertical' && 'flex-col',
+          size === 'small' && 'text-sm',
+          className,
+        )}
         {...props}
       >
         {items.map((item, index) => {
-          const itemStatus = item.status ?? (index < current ? 'finish' : index === current ? status : 'wait');
+          const itemStatus =
+            item.status ?? (index < current ? 'finish' : index === current ? status : 'wait');
           return (
-            <li key={item.key ?? index} className={cn('flex min-w-0 gap-2', direction === 'horizontal' && 'flex-1')}>
+            <li
+              key={item.key ?? index}
+              className={cn('flex min-w-0 gap-2', direction === 'horizontal' && 'flex-1')}
+            >
               <button
                 type="button"
                 disabled={item.disabled}
@@ -105,12 +133,17 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                 )}
                 onClick={() => onChange?.(index)}
               >
-                <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center rounded-full border">
+                <span
+                  aria-hidden="true"
+                  className="flex size-6 shrink-0 items-center justify-center rounded-full border"
+                >
                   {index + 1}
                 </span>
                 <span>
                   <span className="block font-medium">{item.title}</span>
-                  {item.description && <span className="text-muted-foreground">{item.description}</span>}
+                  {item.description && (
+                    <span className="text-muted-foreground">{item.description}</span>
+                  )}
                 </span>
               </button>
             </li>

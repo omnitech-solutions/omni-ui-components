@@ -1,7 +1,9 @@
 import type { EmailInputProps } from '@oc-tech/omni-ui-components/EmailInput';
 import type { Variant } from '../../internal/support/makeFactory';
 
-export const emailInputPropsFactory = (overrides: Partial<EmailInputProps> = {}): EmailInputProps => ({
+export const emailInputPropsFactory = (
+  overrides: Partial<EmailInputProps> = {},
+): EmailInputProps => ({
   id: 'demo-email',
   label: 'Email',
   placeholder: 'name@company.com',
@@ -17,5 +19,8 @@ export const emailInputVariants: Variant<EmailInputProps>[] = [
   { name: 'Prefilled', args: { label: 'Prefilled', value: 'ada@omni.com' } },
   { name: 'Required', args: { label: 'Required', required: true } },
   { name: 'Disabled', args: { label: 'Disabled', disabled: true, value: 'locked@omni.com' } },
-  { name: 'Invalid', args: { label: 'Invalid', error: 'Enter a valid email', value: 'not-an-email' } },
+  {
+    name: 'Invalid',
+    args: { label: 'Invalid', error: 'Enter a valid email', value: 'not-an-email' },
+  },
 ];

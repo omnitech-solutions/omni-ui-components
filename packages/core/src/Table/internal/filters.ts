@@ -5,11 +5,15 @@ import { cellValue } from './values';
 
 export type TableFilterSearch = boolean | ((input: string, record: TableFilterItem) => boolean);
 
-export const initialColumnFilters = <TRecord, TRowData>(columns: TableColumn<TRecord, TRowData>[], filters?: ColumnFiltersState): ColumnFiltersState => {
+export const initialColumnFilters = <TRecord, TRowData>(
+  columns: TableColumn<TRecord, TRowData>[],
+  filters?: ColumnFiltersState,
+): ColumnFiltersState => {
   if (filters) return filters;
   return leafColumns(columns)
     .map((column) => {
-      const value = column.filteredValue !== undefined ? column.filteredValue : column.defaultFilteredValue;
+      const value =
+        column.filteredValue !== undefined ? column.filteredValue : column.defaultFilteredValue;
       return value && value.length ? { id: column.key, value } : null;
     })
     .filter(Boolean) as ColumnFiltersState;
@@ -34,7 +38,8 @@ export const filtersRecordForColumn = <TRecord, TRowData>(
   col: TableColumn<TRecord, TRowData>,
 ): Record<string, TableKey[] | null> => ({
   ...filtersRecord(filters),
-  [col.key]: (filters.find((filter) => filter.id === col.key)?.value as TableKey[] | undefined) ?? null,
+  [col.key]:
+    (filters.find((filter) => filter.id === col.key)?.value as TableKey[] | undefined) ?? null,
 });
 
 export const rowsForFilters = <TRecord, TRowData>(
@@ -46,7 +51,11 @@ export const rowsForFilters = <TRecord, TRowData>(
 
   return rows.filter((resolved) =>
     filters.every((filter) => {
-      const values = Array.isArray(filter.value) ? (filter.value as TableKey[]) : filter.value == null || filter.value === '' ? [] : [filter.value as TableKey];
+      const values = Array.isArray(filter.value)
+        ? (filter.value as TableKey[])
+        : filter.value == null || filter.value === ''
+          ? []
+          : [filter.value as TableKey];
       if (!values.length) return true;
 
       const column = columns.find((item) => item.key === filter.id);
@@ -59,7 +68,11 @@ export const rowsForFilters = <TRecord, TRowData>(
   );
 };
 
-export const filterItemMatchesSearch = (filter: TableFilterItem, search: string, filterSearch: TableFilterSearch | undefined): boolean => {
+export const filterItemMatchesSearch = (
+  filter: TableFilterItem,
+  search: string,
+  filterSearch: TableFilterSearch | undefined,
+): boolean => {
   if (!search || !filterSearch) return true;
   if (typeof filterSearch === 'function') return filterSearch(search, filter);
   return String(filter.text ?? '')

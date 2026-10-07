@@ -1,7 +1,5 @@
-import * as React from 'react';
-import type { WidgetProps } from '@rjsf/utils';
-
 import { InputPrimitive } from '@oc-tech/omni-ui-components';
+import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /**
@@ -34,7 +32,8 @@ const resolveInputType = (props: WidgetProps): string => {
 };
 
 export const TextWidget = (props: WidgetProps) => {
-  const { id, value, required, disabled, readonly, placeholder, rawErrors, options, schema } = props;
+  const { id, value, required, disabled, readonly, placeholder, rawErrors, options, schema } =
+    props;
   const inputType = resolveInputType(props);
   const { onChange, onBlur, onFocus } = useStableRjsfCallbacks<string>(props);
 

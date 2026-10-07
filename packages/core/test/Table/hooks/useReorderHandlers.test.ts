@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { useReorderHandlers } from '../../../src/Table/hooks/useReorderHandlers';
-import { column, people, resolve, type Person } from './support';
+import { column, type Person, people, resolve } from './support';
 
 const setup = (
   rowFor: Parameters<typeof resolve<Person>>[1] = () => ({ draggable: true }),

@@ -1,19 +1,19 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen, within, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
-import { SplitButton, type SplitButtonProps } from '@oc-tech/omni-ui-components/SplitButton';
 import { IconButton } from '@oc-tech/omni-ui-components/IconButton';
+import { SplitButton, type SplitButtonProps } from '@oc-tech/omni-ui-components/SplitButton';
 import { Toolbar } from '@oc-tech/omni-ui-components/Toolbar';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   splitButtonCaptureVariants,
   splitButtonMicVariants,
   splitButtonPropsFactory,
 } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
 
-const renderSplit = (overrides: Partial<SplitButtonProps> = {}) => render(<SplitButton {...splitButtonPropsFactory(overrides)} />);
-const variant = (name: string) => [...splitButtonCaptureVariants, ...splitButtonMicVariants].find((v) => v.name === name)!.args;
+const renderSplit = (overrides: Partial<SplitButtonProps> = {}) =>
+  render(<SplitButton {...splitButtonPropsFactory(overrides)} />);
+const variant = (name: string) =>
+  [...splitButtonCaptureVariants, ...splitButtonMicVariants].find((v) => v.name === name)!.args;
 
 describe('omni-ui-components/SplitButton', () => {
   describe('one control, one border', () => {
@@ -32,7 +32,10 @@ describe('omni-ui-components/SplitButton', () => {
     it('sizes the control from the control tokens: 36px, 52px labelled, 10px radius', () => {
       const { container, rerender } = renderSplit();
       const root = () => container.querySelector('[data-slot="split-button"]') as HTMLElement;
-      expect(root()).toHaveClass('h-[var(--oui-control-height)]', 'rounded-[var(--oui-control-radius)]');
+      expect(root()).toHaveClass(
+        'h-[var(--oui-control-height)]',
+        'rounded-[var(--oui-control-radius)]',
+      );
       rerender(<SplitButton {...splitButtonPropsFactory({ size: 'control-labelled' })} />);
       expect(root()).toHaveClass('h-[var(--oui-control-height-labelled)]');
       expect(
@@ -61,12 +64,15 @@ describe('omni-ui-components/SplitButton', () => {
   });
 
   describe('tones', () => {
-    it.each(['neutral', 'accent', 'success', 'warning', 'danger', 'dim'] as const)('sets data-tone and the %s tint on the whole control', (tone) => {
-      const { container } = renderSplit({ tone });
-      const root = container.querySelector('[data-slot="split-button"]') as HTMLElement;
-      expect(root).toHaveAttribute('data-tone', tone);
-      expect(root.className).toContain(`--oui-tone-${tone}-border`);
-    });
+    it.each(['neutral', 'accent', 'success', 'warning', 'danger', 'dim'] as const)(
+      'sets data-tone and the %s tint on the whole control',
+      (tone) => {
+        const { container } = renderSplit({ tone });
+        const root = container.querySelector('[data-slot="split-button"]') as HTMLElement;
+        expect(root).toHaveAttribute('data-tone', tone);
+        expect(root.className).toContain(`--oui-tone-${tone}-border`);
+      },
+    );
 
     it('defaults to neutral, and to accent while analysing', () => {
       const { container, rerender } = renderSplit();
@@ -104,15 +110,32 @@ describe('omni-ui-components/SplitButton', () => {
       expect(badge).toHaveTextContent('!');
       expect(badge).toHaveClass('top-[var(--oui-badge-offset)]', 'right-0');
       expect(badge.parentElement).toBe(screen.getByRole('button', { name: 'Capture' }));
-      expect(screen.getByRole('button', { name: 'Capture' })).toHaveAccessibleDescription('Screen recording permission lost');
+      expect(screen.getByRole('button', { name: 'Capture' })).toHaveAccessibleDescription(
+        'Screen recording permission lost',
+      );
     });
 
     it('uses the same size and top offset as the IconButton badge, so the two read as one family', () => {
       const split = renderSplit(variant('Capture · screen permission lost'));
-      const splitBadge = split.container.querySelector('[data-slot="split-button-status"]') as HTMLElement;
-      const icon = render(<IconButton icon={<span />} label="Mic" badge={{ tone: 'warning', label: '!', description: 'Microphone lost' }} />);
-      const iconBadge = icon.container.querySelector('[data-slot="icon-button-badge"]') as HTMLElement;
-      for (const cls of ['size-[var(--oui-badge-size)]', 'top-[var(--oui-badge-offset)]', 'rounded-full', 'text-[11px]']) {
+      const splitBadge = split.container.querySelector(
+        '[data-slot="split-button-status"]',
+      ) as HTMLElement;
+      const icon = render(
+        <IconButton
+          icon={<span />}
+          label="Mic"
+          badge={{ tone: 'warning', label: '!', description: 'Microphone lost' }}
+        />,
+      );
+      const iconBadge = icon.container.querySelector(
+        '[data-slot="icon-button-badge"]',
+      ) as HTMLElement;
+      for (const cls of [
+        'size-[var(--oui-badge-size)]',
+        'top-[var(--oui-badge-offset)]',
+        'rounded-full',
+        'text-[11px]',
+      ]) {
         expect(splitBadge).toHaveClass(cls);
         expect(iconBadge).toHaveClass(cls);
       }
@@ -130,7 +153,10 @@ describe('omni-ui-components/SplitButton', () => {
 
     it('red slash mic: danger tone with the caller icon', () => {
       const { container } = renderSplit(variant('Mic · muted by you'));
-      expect(container.querySelector('[data-slot="split-button"]')).toHaveAttribute('data-tone', 'danger');
+      expect(container.querySelector('[data-slot="split-button"]')).toHaveAttribute(
+        'data-tone',
+        'danger',
+      );
       expect(screen.getByRole('button', { name: 'Unmute' })).toBeInTheDocument();
     });
   });
@@ -259,27 +285,51 @@ describe('omni-ui-components/SplitButton', () => {
 
   describe('board 1c variants', () => {
     it('C2: shows the caption as a word beside the icon while the accessible name stays the label', () => {
-      renderSplit({ main: { label: 'Capture, Manual', caption: 'Manual', labelInline: true, icon: <svg /> } });
+      renderSplit({
+        main: { label: 'Capture, Manual', caption: 'Manual', labelInline: true, icon: <svg /> },
+      });
       const main = screen.getByRole('button', { name: 'Capture, Manual' });
-      expect(within(main).getByText('Manual')).toHaveAttribute('data-slot', 'split-button-inline-label');
+      expect(within(main).getByText('Manual')).toHaveAttribute(
+        'data-slot',
+        'split-button-inline-label',
+      );
     });
 
     it('C2: the labelled size keeps its own caption and does not duplicate the word', () => {
-      const { container } = renderSplit({ size: 'control-labelled', main: { label: 'Capture', caption: 'Manual', labelInline: true, icon: <svg /> } });
+      const { container } = renderSplit({
+        size: 'control-labelled',
+        main: { label: 'Capture', caption: 'Manual', labelInline: true, icon: <svg /> },
+      });
       expect(container.querySelector('[data-slot="split-button-inline-label"]')).toBeNull();
-      expect(container.querySelector('[data-slot="split-button-caption"]')).toHaveTextContent('Manual');
+      expect(container.querySelector('[data-slot="split-button-caption"]')).toHaveTextContent(
+        'Manual',
+      );
     });
 
     it('C3: renders each segment between main and caret, each divided by its own border', () => {
-      const { container } = renderSplit({ segments: [{ id: 'auto', label: 'Auto', icon: <svg /> }, { id: 'b', label: 'Second', icon: <svg /> }] });
-      const slots = [...container.querySelectorAll('[data-slot^="split-button-"]')].map((n) => n.getAttribute('data-slot'));
-      expect(slots.filter((s) => ['split-button-main', 'split-button-segment', 'split-button-caret'].includes(s!))).toEqual([
+      const { container } = renderSplit({
+        segments: [
+          { id: 'auto', label: 'Auto', icon: <svg /> },
+          { id: 'b', label: 'Second', icon: <svg /> },
+        ],
+      });
+      const slots = [...container.querySelectorAll('[data-slot^="split-button-"]')].map((n) =>
+        n.getAttribute('data-slot'),
+      );
+      expect(
+        slots.filter((s) =>
+          ['split-button-main', 'split-button-segment', 'split-button-caret'].includes(s!),
+        ),
+      ).toEqual([
         'split-button-main',
         'split-button-segment',
         'split-button-segment',
         'split-button-caret',
       ]);
-      expect(screen.getByRole('button', { name: 'Auto' })).toHaveClass('border-l', 'border-inherit');
+      expect(screen.getByRole('button', { name: 'Auto' })).toHaveClass(
+        'border-l',
+        'border-inherit',
+      );
     });
 
     it('C3: a segment press calls only its own onPress with the segment by reference, then the event', async () => {
@@ -287,7 +337,10 @@ describe('omni-ui-components/SplitButton', () => {
       const onPress = vi.fn();
       const onMain = vi.fn();
       const segment = { id: 'auto', label: 'Auto', icon: <svg />, pressed: false, onPress };
-      renderSplit({ main: { label: 'Capture', icon: <svg />, onPress: onMain }, segments: [segment] });
+      renderSplit({
+        main: { label: 'Capture', icon: <svg />, onPress: onMain },
+        segments: [segment],
+      });
       await user.click(screen.getByRole('button', { name: 'Auto' }));
       expect(onPress).toHaveBeenCalledTimes(1);
       expect(onPress.mock.calls[0][0]).toBe(segment);
@@ -315,7 +368,9 @@ describe('omni-ui-components/SplitButton', () => {
       const onMain = vi.fn();
       renderSplit({
         main: { label: 'Capture', icon: <svg />, onPress: onMain },
-        segments: [{ id: 'auto', label: 'Auto', icon: <svg />, tooltip: 'Auto mode', shortcut: ['⌥', 'U'] }],
+        segments: [
+          { id: 'auto', label: 'Auto', icon: <svg />, tooltip: 'Auto mode', shortcut: ['⌥', 'U'] },
+        ],
       });
       await user.click(screen.getByRole('button', { name: 'Capture' }));
       expect(onMain).toHaveBeenCalledTimes(1);

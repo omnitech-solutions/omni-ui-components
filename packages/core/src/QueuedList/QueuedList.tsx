@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { IconButton } from '../IconButton';
 import { DEFAULT_QUEUED_LABELS, type QueuedItem, type QueuedListProps } from './QueuedList.types';
 
@@ -12,11 +11,20 @@ import { DEFAULT_QUEUED_LABELS, type QueuedItem, type QueuedListProps } from './
  * @example
  * <QueuedList items={queue} onRemove={(item) => dequeue(item.id)} icon={<Clock />} removeIcon={<X />} />
  */
-function QueuedListInner<T extends QueuedItem = QueuedItem>({ items, onRemove, icon, removeIcon, labels: labelsProp, className, ...rest }: QueuedListProps<T>, ref: React.ForwardedRef<HTMLUListElement>) {
+function QueuedListInner<T extends QueuedItem = QueuedItem>(
+  { items, onRemove, icon, removeIcon, labels: labelsProp, className, ...rest }: QueuedListProps<T>,
+  ref: React.ForwardedRef<HTMLUListElement>,
+) {
   const labels = { ...DEFAULT_QUEUED_LABELS, ...labelsProp };
   if (items.length === 0) return null;
   return (
-    <ul ref={ref} aria-label={labels.list} data-slot="queued-list" className={cn('m-0 flex list-none flex-col gap-1 p-0', className)} {...rest}>
+    <ul
+      ref={ref}
+      aria-label={labels.list}
+      data-slot="queued-list"
+      className={cn('m-0 flex list-none flex-col gap-1 p-0', className)}
+      {...rest}
+    >
       {items.map((item) => (
         <li
           key={item.id}
@@ -24,7 +32,10 @@ function QueuedListInner<T extends QueuedItem = QueuedItem>({ items, onRemove, i
           className="flex min-w-0 items-center gap-2 rounded-lg border border-solid border-[color:var(--oui-panel-divider)] bg-[color:color-mix(in_srgb,var(--oui-panel-dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)] py-1 pr-1 pl-2.5 text-[13px]"
         >
           {icon ? (
-            <span aria-hidden="true" className="inline-flex flex-none text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-3.5">
+            <span
+              aria-hidden="true"
+              className="inline-flex flex-none text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-3.5"
+            >
               {icon}
             </span>
           ) : null}

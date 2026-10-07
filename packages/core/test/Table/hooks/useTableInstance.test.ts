@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { useTableInstance } from '../../../src/Table/hooks/useTableInstance';
 import { useTableState } from '../../../src/Table/hooks/useTableState';
 import type { TableColumn, TableProps } from '../../../src/Table/Table.types';
-import { column, people, resolve, type Person } from './support';
+import { column, type Person, people, resolve } from './support';
 
 type Opts = {
   columns?: TableColumn<Person>[];

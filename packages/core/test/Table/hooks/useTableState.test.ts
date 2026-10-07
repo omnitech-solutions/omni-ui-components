@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { useTableState } from '../../../src/Table/hooks/useTableState';
 import type { TableColumn, TableProps } from '../../../src/Table/Table.types';
-import { column, people, type Person } from './support';
+import { column, type Person, people } from './support';
 
 const render = (props: Partial<TableProps<Person>> = {}, columns?: TableColumn<Person>[]) => {
   const cols = columns ?? [column('name', { sorter: true }), column('age')];

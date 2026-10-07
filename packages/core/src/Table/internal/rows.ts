@@ -27,14 +27,18 @@ export const normalizeRows = <TRecord, TRowData>(
     const key = resolveRowKey(record, index, rowKey);
     const childRecords = pathValue(record, childrenColumnName) as TRecord[] | undefined;
     const children = Array.isArray(childRecords)
-      ? normalizeRows(childRecords, undefined, rowDefaults, rowKey, childrenColumnName).map((item) => item.row)
+      ? normalizeRows(childRecords, undefined, rowDefaults, rowKey, childrenColumnName).map(
+          (item) => item.row,
+        )
       : undefined;
     const row: TableDataRow<TRecord, TRowData> = { ...rowDefaults, key, record, children };
     return { key, record, row, index };
   });
 };
 
-export const flattenResolvedRows = <TRecord, TRowData>(rows: TableResolvedRow<TRecord, TRowData>[]): TableResolvedRow<TRecord, TRowData>[] => {
+export const flattenResolvedRows = <TRecord, TRowData>(
+  rows: TableResolvedRow<TRecord, TRowData>[],
+): TableResolvedRow<TRecord, TRowData>[] => {
   const flattened: TableResolvedRow<TRecord, TRowData>[] = [];
   const walk = (items: TableResolvedRow<TRecord, TRowData>[]) => {
     items.forEach((item) => {
@@ -55,27 +59,40 @@ export const flattenResolvedRows = <TRecord, TRowData>(rows: TableResolvedRow<TR
   return flattened;
 };
 
-export const resolvedRowsLengthHint = <TRecord, TRowData>(props: TableProps<TRecord, TRowData>): number =>
-  Math.max(props.rows?.length ?? props.dataSource?.length ?? 1, 1);
+export const resolvedRowsLengthHint = <TRecord, TRowData>(
+  props: TableProps<TRecord, TRowData>,
+): number => Math.max(props.rows?.length ?? props.dataSource?.length ?? 1, 1);
 
-export const expandedStateFromKeys = (keys: TableKey[] | Iterable<TableKey> = []): ExpandedState => {
+export const expandedStateFromKeys = (
+  keys: TableKey[] | Iterable<TableKey> = [],
+): ExpandedState => {
   const arr = Array.isArray(keys) ? keys : Array.from(keys ?? []);
   return Object.fromEntries(arr.map((key) => [String(key), true]));
 };
 
-export const expandedRecord = (expanded: ExpandedState): Record<string, boolean> => (expanded === true ? {} : expanded);
+export const expandedRecord = (expanded: ExpandedState): Record<string, boolean> =>
+  expanded === true ? {} : expanded;
 
-export const isExpandedKey = (expanded: ExpandedState, key: TableKey): boolean => expanded === true || Boolean(expandedRecord(expanded)[String(key)]);
+export const isExpandedKey = (expanded: ExpandedState, key: TableKey): boolean =>
+  expanded === true || Boolean(expandedRecord(expanded)[String(key)]);
 
-export const expandedKeysFromState = <TRecord, TRowData>(expanded: ExpandedState, rows: TableResolvedRow<TRecord, TRowData>[]): string[] => {
+export const expandedKeysFromState = <TRecord, TRowData>(
+  expanded: ExpandedState,
+  rows: TableResolvedRow<TRecord, TRowData>[],
+): string[] => {
   if (expanded === true) return flattenResolvedRows(rows).map((item) => String(item.key));
   return Object.keys(expanded).filter((key) => expanded[key]);
 };
 
-export const reorderByKeys = <TRecord, TRowData>(items: TableResolvedRow<TRecord, TRowData>[], order: string[]): TableResolvedRow<TRecord, TRowData>[] => {
+export const reorderByKeys = <TRecord, TRowData>(
+  items: TableResolvedRow<TRecord, TRowData>[],
+  order: string[],
+): TableResolvedRow<TRecord, TRowData>[] => {
   if (!order.length) return items;
   const byKey = new Map(items.map((item) => [String(item.key), item]));
-  const ordered = order.map((key) => byKey.get(key)).filter((item): item is TableResolvedRow<TRecord, TRowData> => Boolean(item));
+  const ordered = order
+    .map((key) => byKey.get(key))
+    .filter((item): item is TableResolvedRow<TRecord, TRowData> => Boolean(item));
   const orderedKeys = new Set(ordered.map((item) => String(item.key)));
   return [...ordered, ...items.filter((item) => !orderedKeys.has(String(item.key)))];
 };

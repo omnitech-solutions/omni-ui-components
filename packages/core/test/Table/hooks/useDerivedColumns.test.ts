@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useDerivedColumns } from '../../../src/Table/hooks/useDerivedColumns';
 import type { TableColumn } from '../../../src/Table/Table.types';
-import { column, people, type Person } from './support';
+import { column, type Person, people } from './support';
 
 type Input = Parameters<typeof useDerivedColumns<Person, unknown>>[0];
 

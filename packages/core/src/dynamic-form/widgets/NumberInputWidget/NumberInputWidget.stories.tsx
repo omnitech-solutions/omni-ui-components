@@ -1,25 +1,40 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
   plainNumberFixture,
+  type ScoreFormData,
   thousandSeparatorNumberFixture,
   withSuffixNumberFixture,
-  type ScoreFormData,
 } from 'factories/dynamic-form/widgets/NumberInputWidget/NumberInputWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<ScoreFormData>;
 
 const config = defineDynamicFormStories<ScoreFormData>({
   title: 'dynamic-form/widgets/NumberInputWidget',
-  fixtures: { plain: plainNumberFixture, thousands: thousandSeparatorNumberFixture, suffix: withSuffixNumberFixture },
-  titles: { plain: 'NumberInputWidget', thousands: 'NumberInputWidget · thousand separators', suffix: 'NumberInputWidget · suffix' },
+  fixtures: {
+    plain: plainNumberFixture,
+    thousands: thousandSeparatorNumberFixture,
+    suffix: withSuffixNumberFixture,
+  },
+  titles: {
+    plain: 'NumberInputWidget',
+    thousands: 'NumberInputWidget · thousand separators',
+    suffix: 'NumberInputWidget · suffix',
+  },
   defaultArgs: { fixture: 'plain' },
   docs: {
     name: 'NumberInputWidget',
-    whenToUse: 'Formatted numeric input for `type: number | integer`. `ui:options.thousandSeparator`, `prefix`, `suffix`, `decimals`.',
+    whenToUse:
+      'Formatted numeric input for `type: number | integer`. `ui:options.thousandSeparator`, `prefix`, `suffix`, `decimals`.',
   },
-  stories: { Plain: { fixture: 'plain' }, ThousandSeparator: { fixture: 'thousands' }, WithSuffix: { fixture: 'suffix' } },
+  stories: {
+    Plain: { fixture: 'plain' },
+    ThousandSeparator: { fixture: 'thousands' },
+    WithSuffix: { fixture: 'suffix' },
+  },
 });
 
 const meta: Meta<Args> = {

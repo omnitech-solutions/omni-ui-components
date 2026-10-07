@@ -1,22 +1,21 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
-
 import { Panel, type PanelProps } from '@oc-tech/omni-ui-components/Panel';
+import { Steps } from '@oc-tech/omni-ui-components/Steps';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   AnswerBody,
   analysingSteps,
   ComplexityChips,
   NativePanelsDemo,
+  type NativePanelsDemoProps,
   PANEL_BACKDROP,
   panelVariants,
   StopAction,
   ToApplyDock,
   TranscriptDemo,
-  type NativePanelsDemoProps,
   type TranscriptDemoProps,
 } from 'factories/omni-ui-components/Panel/Panel.factories';
-import { Steps } from '@oc-tech/omni-ui-components/Steps';
+import type * as React from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 import type { OnAction } from '../SplitButton/SplitButton.factories';
 
 /** Story-only extras: the see-through level, the demo state and the callback every control reports through (Actions panel). */
@@ -87,11 +86,13 @@ const meta: Meta<StoryArgs> = {
     },
     empty: {
       control: 'object',
-      description: 'Empty tile config: { icon, title, description, action: { label, onClick, shortcut } }.',
+      description:
+        'Empty tile config: { icon, title, description, action: { label, onClick, shortcut } }.',
     },
     scroll: {
       control: 'object',
-      description: '{ fade, thinScrollbar, stickToBottom, lines, activity, onJumpToLatest, jumpLabel, missedLabel }.',
+      description:
+        '{ fade, thinScrollbar, stickToBottom, lines, activity, onJumpToLatest, jumpLabel, missedLabel }.',
     },
     bodyPadding: { control: 'inline-radio', options: ['none', 'sm', 'md'] },
     width: {
@@ -108,11 +109,13 @@ const meta: Meta<StoryArgs> = {
     seeThrough: {
       control: 'inline-radio',
       options: [1, 0.6, 0.22],
-      description: 'Story-only: sets --oui-panel-see-through on the stage. Backgrounds only; text stays opaque.',
+      description:
+        'Story-only: sets --oui-panel-see-through on the stage. Backgrounds only; text stays opaque.',
     },
     onAction: {
       action: 'panel',
-      description: 'Story-only: reports Capture, Stop, Apply, Clear, Add screenshot, Jump to latest, composer and message events.',
+      description:
+        'Story-only: reports Capture, Stop, Apply, Clear, Add screenshot, Jump to latest, composer and message events.',
     },
     state: {
       control: 'inline-radio',
@@ -188,7 +191,11 @@ export const AnalysingWithStopAndDock: Story = {
     const canvas = within(canvasElement);
     const panel = canvas.getByRole('region', { name: /Answer/ });
     await expect(panel.querySelector('[data-slot="panel-dock"]')).not.toBeNull();
-    await expect(within(panel.querySelector('[data-slot="panel-header"]') as HTMLElement).getByRole('button', { name: /Stop/ })).toBeVisible();
+    await expect(
+      within(panel.querySelector('[data-slot="panel-header"]') as HTMLElement).getByRole('button', {
+        name: /Stop/,
+      }),
+    ).toBeVisible();
     await userEvent.tab();
     await expect(canvas.getByRole('button', { name: /Stop/ })).toHaveFocus();
     await userEvent.tab();
@@ -200,7 +207,13 @@ export const AnalysingWithStopAndDock: Story = {
 export const AnswerReadyWithMetaChips: Story = {
   render: (args) => (
     <Stage seeThrough={args.seeThrough} rowWidth={760} height={320}>
-      <Panel title="Answer" subtitle="S2 · Two Sum" meta={<ComplexityChips />} bodyPadding="md" bodyClassName="gap-2.5 text-sm leading-[1.55]">
+      <Panel
+        title="Answer"
+        subtitle="S2 · Two Sum"
+        meta={<ComplexityChips />}
+        bodyPadding="md"
+        bodyClassName="gap-2.5 text-sm leading-[1.55]"
+      >
         <AnswerBody />
       </Panel>
     </Stage>
@@ -219,7 +232,12 @@ export const ThreePanels: StoryObj<NativePanelsDemoProps & StoryArgs> = {
   },
   render: (args) => (
     <div className="overflow-x-auto p-6">
-      <NativePanelsDemo state={args.state} seeThrough={args.seeThrough} width={Number(args.width ?? 1180)} onAction={args.onAction} />
+      <NativePanelsDemo
+        state={args.state}
+        seeThrough={args.seeThrough}
+        width={Number(args.width ?? 1180)}
+        onAction={args.onAction}
+      />
     </div>
   ),
 };
@@ -227,7 +245,10 @@ export const ThreePanelsAnalysing: StoryObj<NativePanelsDemoProps & StoryArgs> =
   ...ThreePanels,
   args: { ...ThreePanels.args, state: 'analysing' },
 };
-export const TwoPanelsCodeHidden: StoryObj<NativePanelsDemoProps & StoryArgs> = { ...ThreePanels, args: { ...ThreePanels.args, state: 'answer' } };
+export const TwoPanelsCodeHidden: StoryObj<NativePanelsDemoProps & StoryArgs> = {
+  ...ThreePanels,
+  args: { ...ThreePanels.args, state: 'answer' },
+};
 
 /** The same row at 900px: nothing is cropped. */
 export const ThreePanelsAt900: StoryObj<NativePanelsDemoProps & StoryArgs> = {
@@ -257,7 +278,9 @@ export const TranscriptScrolling: StoryObj<TranscriptDemoProps & StoryArgs> = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const body = canvasElement.querySelector('[data-slot="panel-body"]') as HTMLElement;
-    await waitFor(() => expect(body.scrollHeight - body.scrollTop - body.clientHeight).toBeLessThan(5));
+    await waitFor(() =>
+      expect(body.scrollHeight - body.scrollTop - body.clientHeight).toBeLessThan(5),
+    );
     body.dispatchEvent(new WheelEvent('wheel', { deltaY: -200, bubbles: true }));
     body.scrollTop = 0;
     await waitFor(() => expect(body).toHaveAttribute('data-following', 'false'));
@@ -265,10 +288,16 @@ export const TranscriptScrolling: StoryObj<TranscriptDemoProps & StoryArgs> = {
     const pill = await canvas.findByRole('button', { name: /Jump to latest/ });
     await expect(pill).toHaveTextContent('1 new');
     await userEvent.click(pill);
-    await waitFor(() => expect(canvas.queryByRole('button', { name: /Jump to latest/ })).toBeNull());
-    await waitFor(() => expect(body.scrollHeight - body.scrollTop - body.clientHeight).toBeLessThan(5));
+    await waitFor(() =>
+      expect(canvas.queryByRole('button', { name: /Jump to latest/ })).toBeNull(),
+    );
+    await waitFor(() =>
+      expect(body.scrollHeight - body.scrollTop - body.clientHeight).toBeLessThan(5),
+    );
     await userEvent.click(canvas.getByTestId('add-message'));
-    await waitFor(() => expect(body.scrollHeight - body.scrollTop - body.clientHeight).toBeLessThan(5));
+    await waitFor(() =>
+      expect(body.scrollHeight - body.scrollTop - body.clientHeight).toBeLessThan(5),
+    );
   },
 };
 

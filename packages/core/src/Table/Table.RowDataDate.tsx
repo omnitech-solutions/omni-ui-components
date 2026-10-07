@@ -1,5 +1,5 @@
-import { renderDateField } from './Table.registry';
 import type { RowDataType } from './Table.RowData';
+import { renderDateField } from './Table.registry';
 
 export const RowDataDateType: RowDataType = {
   type: 'date',

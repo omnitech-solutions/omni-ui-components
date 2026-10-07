@@ -1,15 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
+  type ChannelsFormData,
   descriptionsChannelsFixture,
   disabledOptionChannelsFixture,
   inlineChannelsFixture,
   plainChannelsFixture,
   prefilledChannelsFixture,
   validationChannelsFixture,
-  type ChannelsFormData,
 } from 'factories/dynamic-form/widgets/CheckboxesWidget/CheckboxesWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<ChannelsFormData>;
 

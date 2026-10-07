@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import * as React from 'react';
 
 export interface TreeNode {
   key: string;
@@ -18,7 +17,12 @@ function TreeBranch({ node, level = 1 }: { node: TreeNode; level?: number }) {
   const hasChildren = Boolean(node.children?.length);
 
   return (
-    <div role="treeitem" aria-expanded={hasChildren ? open : undefined} aria-level={level} className="space-y-1">
+    <div
+      role="treeitem"
+      aria-expanded={hasChildren ? open : undefined}
+      aria-level={level}
+      className="space-y-1"
+    >
       <button
         type="button"
         onClick={() => {
@@ -37,7 +41,15 @@ function TreeBranch({ node, level = 1 }: { node: TreeNode; level?: number }) {
           )}
           aria-hidden="true"
         >
-          {hasChildren ? open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" /> : <span className="h-1.5 w-1.5 rounded-full bg-[var(--oui-border-field)]" />}
+          {hasChildren ? (
+            open ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )
+          ) : (
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--oui-border-field)]" />
+          )}
         </span>
         <span className="truncate">{node.title}</span>
       </button>
@@ -57,7 +69,10 @@ function TreeBranch({ node, level = 1 }: { node: TreeNode; level?: number }) {
 export const Tree = ({ treeData, className, ...props }: TreeProps) => (
   <div
     role="tree"
-    className={cn('space-y-1 rounded-xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-2 shadow-xs', className)}
+    className={cn(
+      'space-y-1 rounded-xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-2 shadow-xs',
+      className,
+    )}
     {...props}
   >
     {treeData.map((node) => (

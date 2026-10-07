@@ -1,7 +1,6 @@
+import { FloatButton } from '@oc-tech/omni-ui-components/FloatButton';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Plus } from 'lucide-react';
-
-import { FloatButton } from '@oc-tech/omni-ui-components/FloatButton';
 
 const meta: Meta<typeof FloatButton> = {
   title: 'omni-ui-components/FloatButton',
@@ -31,7 +30,11 @@ export const Default: Story = {
 export const TextButton: Story = {
   render: (args) => (
     <div className="relative h-64 rounded border">
-      <FloatButton {...args} style={{ position: 'absolute', bottom: 16, right: 16 }} icon={undefined}>
+      <FloatButton
+        {...args}
+        style={{ position: 'absolute', bottom: 16, right: 16 }}
+        icon={undefined}
+      >
         New
       </FloatButton>
     </div>

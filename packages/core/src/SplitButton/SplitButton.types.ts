@@ -1,8 +1,8 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import type { ActionMenuProps } from '../ActionMenu';
-import type { ControlTone } from '../internal/support/controlTone';
 import type { IconButtonBadge } from '../IconButton';
+import type { ControlTone } from '../internal/support/controlTone';
 import type { ToolbarSize } from '../Toolbar';
 
 /** The primary action half of a SplitButton. */
@@ -71,7 +71,10 @@ export interface SplitButtonCaret {
 }
 
 /** The ActionMenu spec (everything except what the SplitButton wires itself: trigger and open state). */
-export type SplitButtonMenu = Omit<ActionMenuProps, 'trigger' | 'open' | 'defaultOpen' | 'onOpenChange'>;
+export type SplitButtonMenu = Omit<
+  ActionMenuProps,
+  'trigger' | 'open' | 'defaultOpen' | 'onOpenChange'
+>;
 
 export interface SplitButtonProps {
   main: SplitButtonMain;

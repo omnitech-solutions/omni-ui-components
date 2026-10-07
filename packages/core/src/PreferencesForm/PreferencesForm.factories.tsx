@@ -1,8 +1,7 @@
-import * as React from 'react';
-import { Trash2 } from 'lucide-react';
-
-import { PreferencesForm } from '@oc-tech/omni-ui-components/PreferencesForm';
 import type { MemoryItem, PreferencesFormProps } from '@oc-tech/omni-ui-components/PreferencesForm';
+import { PreferencesForm } from '@oc-tech/omni-ui-components/PreferencesForm';
+import { Trash2 } from 'lucide-react';
+import * as React from 'react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const sampleMemories = (): MemoryItem[] => [
@@ -11,7 +10,9 @@ export const sampleMemories = (): MemoryItem[] => [
 ];
 
 /** Build `<PreferencesForm>` props for standalone stories and tests. */
-export const preferencesFormPropsFactory = (overrides: Partial<PreferencesFormProps> = {}): PreferencesFormProps => ({
+export const preferencesFormPropsFactory = (
+  overrides: Partial<PreferencesFormProps> = {},
+): PreferencesFormProps => ({
   instructions: 'Answer in short bullet points. Say the complexity out loud.',
   memories: sampleMemories(),
   memoryEnabled: true,
@@ -29,7 +30,9 @@ export const preferencesFormVariants: Variant<PreferencesFormProps>[] = [
 ];
 
 /** A working form: the memory switch and Forget change local state; `onChange` reports every keystroke. */
-export const PreferencesFormDemo: React.FC<{ onAction?: (name: string, ...args: unknown[]) => void }> = ({ onAction }) => {
+export const PreferencesFormDemo: React.FC<{
+  onAction?: (name: string, ...args: unknown[]) => void;
+}> = ({ onAction }) => {
   const [enabled, setEnabled] = React.useState(true);
   const [memories, setMemories] = React.useState(sampleMemories());
   return (

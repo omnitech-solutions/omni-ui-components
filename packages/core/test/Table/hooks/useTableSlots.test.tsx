@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import * as React from 'react';
+import type * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { BodyCell } from '../../../src/Table/components/BodyCell';
 import { BulkActionsBar } from '../../../src/Table/components/BulkActionsBar';
@@ -11,9 +11,9 @@ import { RowDragCell, RowDragHeader } from '../../../src/Table/components/RowDra
 import { SelectionCell } from '../../../src/Table/components/SelectionCell';
 import { SelectionHeader } from '../../../src/Table/components/SelectionHeader';
 import { TableStructure } from '../../../src/Table/components/TableStructure';
-import { useTableSlots, type UseTableSlotsInput } from '../../../src/Table/hooks/useTableSlots';
+import { type UseTableSlotsInput, useTableSlots } from '../../../src/Table/hooks/useTableSlots';
 import type { TableProps } from '../../../src/Table/Table.types';
-import { byKey, column, people, resolve, type Person } from './support';
+import { byKey, column, type Person, people, resolve } from './support';
 
 type Input = UseTableSlotsInput<Person, unknown>;
 type Selection = NonNullable<TableProps<Person>['rowSelection']>;

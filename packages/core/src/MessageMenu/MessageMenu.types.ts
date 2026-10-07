@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import type { ExportLabels, ExportMessage } from 'lib/chat';
+import type * as React from 'react';
 import type { ActionMenuProps } from '../ActionMenu/ActionMenu.types';
 
 /** The message the menu acts on. Extend it with your own fields; the same object comes back in every callback. */

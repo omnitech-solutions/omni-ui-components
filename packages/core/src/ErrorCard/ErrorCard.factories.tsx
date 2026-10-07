@@ -1,8 +1,6 @@
-import * as React from 'react';
-import { CircleAlert, CircleStop, RefreshCw } from 'lucide-react';
-
 import { Button } from '@oc-tech/omni-ui-components/Button';
 import type { ErrorCardProps } from '@oc-tech/omni-ui-components/ErrorCard';
+import { CircleAlert, CircleStop, RefreshCw } from 'lucide-react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Titles per error code, the way the original app maps them (kept here as an example: the app owns the mapping). */

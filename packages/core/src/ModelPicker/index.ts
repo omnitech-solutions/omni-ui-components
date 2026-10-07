@@ -1,5 +1,4 @@
 export { DEFAULT_MODEL_PICKER_LABELS, ModelMenu, ModelPicker } from './ModelPicker';
-export { capabilitiesOf, formatWindow, groupModels, modelLabel, shortName } from './ModelPicker.utils';
 export type {
   ModelCapabilityLabels,
   ModelEffortOption,
@@ -13,3 +12,10 @@ export type {
   ModelProvider,
   ReasoningEffort,
 } from './ModelPicker.types';
+export {
+  capabilitiesOf,
+  formatWindow,
+  groupModels,
+  modelLabel,
+  shortName,
+} from './ModelPicker.utils';

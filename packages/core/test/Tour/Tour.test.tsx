@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { Tour } from '@oc-tech/omni-ui-components/Tour';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 describe('omni-ui-components/Tour', () => {
   it('renders current step when open', () => {

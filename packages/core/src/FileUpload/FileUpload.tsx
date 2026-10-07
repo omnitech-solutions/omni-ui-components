@@ -1,9 +1,8 @@
 import * as React from 'react';
-
-import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { FileUploadPrimitive } from './FileUploadPrimitive';
 import type { FieldLayoutProps } from '../Input/Input.variants';
 import type { RootProps } from '../lib';
+import { FieldShell, useFieldChrome } from '../lib/FieldShell';
+import { FileUploadPrimitive } from './FileUploadPrimitive';
 
 export interface FileUploadProps extends RootProps, FieldLayoutProps {
   id?: string;
@@ -32,7 +31,19 @@ export interface FileUploadProps extends RootProps, FieldLayoutProps {
 export const FileUpload = React.memo(
   React.forwardRef<HTMLInputElement, FileUploadProps>(
     (
-      { id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps },
+      {
+        id: idProp,
+        wrapperClassName,
+        labelClassName,
+        layout = 'vertical',
+        label,
+        description,
+        error,
+        required,
+        invalid,
+        className,
+        ...primitiveProps
+      },
       ref,
     ) => {
       const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({

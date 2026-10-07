@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Transfer } from '@oc-tech/omni-ui-components/Transfer';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const meta: Meta<typeof Transfer> = {
   title: 'omni-ui-components/Transfer',

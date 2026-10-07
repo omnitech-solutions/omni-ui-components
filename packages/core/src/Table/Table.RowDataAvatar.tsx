@@ -1,5 +1,5 @@
-import { renderAvatarField } from './Table.registry';
 import type { RowDataType } from './Table.RowData';
+import { renderAvatarField } from './Table.registry';
 
 export const RowDataAvatarType: RowDataType = {
   type: 'avatar',

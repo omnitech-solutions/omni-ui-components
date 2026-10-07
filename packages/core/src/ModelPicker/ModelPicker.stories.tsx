@@ -1,20 +1,26 @@
-import * as React from 'react';
+import {
+  ModelMenu,
+  ModelPicker,
+  type ModelPickerProps,
+} from '@oc-tech/omni-ui-components/ModelPicker';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
-
-import { ModelMenu, ModelPicker, type ModelPickerProps } from '@oc-tech/omni-ui-components/ModelPicker';
 import {
   ComposerToolbarDemo,
   GEMMA,
-  modelPickerPropsFactory,
   ModelPickerDemo,
+  modelPickerPropsFactory,
   QWEN,
   SONNET,
 } from 'factories/omni-ui-components/ModelPicker/ModelPicker.factories';
+import type * as React from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 type StoryArgs = ModelPickerProps & { onAction?: (name: string, detail?: unknown) => void };
 
-const Stage: React.FC<React.PropsWithChildren<{ minHeight?: number }>> = ({ minHeight = 560, children }) => (
+const Stage: React.FC<React.PropsWithChildren<{ minHeight?: number }>> = ({
+  minHeight = 560,
+  children,
+}) => (
   <div className="flex items-end p-6" style={{ minHeight }}>
     {children}
   </div>
@@ -35,24 +41,40 @@ const meta: Meta<StoryArgs> = {
   },
   args: { ...modelPickerPropsFactory() },
   argTypes: {
-    models: { control: 'object', description: 'Listing order matters: consecutive models of one provider form a group.' },
-    provider: { control: 'object', description: 'Provider of every model without its own: `{ name, endpoint?, local? }`.' },
+    models: {
+      control: 'object',
+      description: 'Listing order matters: consecutive models of one provider form a group.',
+    },
+    provider: {
+      control: 'object',
+      description: 'Provider of every model without its own: `{ name, endpoint?, local? }`.',
+    },
     selectedId: { control: 'text' },
     effort: { control: 'select', options: ['off', 'low', 'medium', 'high'] },
-    efforts: { control: 'object', description: 'Custom scale `[{ value, label }]`; default Off / Low / Medium / High.' },
+    efforts: {
+      control: 'object',
+      description: 'Custom scale `[{ value, label }]`; default Off / Low / Medium / High.',
+    },
     showEffort: { control: 'boolean', description: 'Show the effort control. Default true.' },
     open: { control: 'boolean', description: 'Controlled open state.' },
     defaultOpen: { control: 'boolean' },
     disabled: { control: 'boolean' },
     align: { control: 'inline-radio', options: ['start', 'center', 'end'] },
     side: { control: 'inline-radio', options: ['top', 'bottom'] },
-    labels: { control: 'object', description: 'Every string (partial): dialog, noModel, local, capabilities, goodFor, effort texts, efforts, addProvider.' },
+    labels: {
+      control: 'object',
+      description:
+        'Every string (partial): dialog, noModel, local, capabilities, goodFor, effort texts, efforts, addProvider.',
+    },
     icons: { control: false, description: 'Caller-supplied nodes: check, add, expand.' },
     onPick: { action: 'pick' },
     onEffortChange: { action: 'effort' },
     onAddProvider: { action: 'add provider' },
     onOpenChange: { action: 'open change' },
-    onAction: { action: 'demo', description: 'Story-only: the demo reports pick, effort, add-provider.' },
+    onAction: {
+      action: 'demo',
+      description: 'Story-only: the demo reports pick, effort, add-provider.',
+    },
   },
   render: (args) => {
     const { onAction, ...props } = args;
@@ -75,14 +97,18 @@ export const Default: Story = {
     await expect(chip).toHaveTextContent('Qwen3 Coder · Medium');
     await userEvent.click(chip);
     const dialog = await within(document.body).findByRole('dialog', { name: 'Model' });
-    await expect(within(dialog).getByRole('region', { name: 'LM Studio' })).toHaveTextContent('Local · LM Studio');
+    await expect(within(dialog).getByRole('region', { name: 'LM Studio' })).toHaveTextContent(
+      'Local · LM Studio',
+    );
     await userEvent.click(within(dialog).getByRole('button', { name: /Gemma 3 12B/ }));
     await expect(chip).toHaveFocus();
     await waitFor(() => expect(within(document.body).queryByRole('dialog')).toBeNull());
     await expect(chip).toHaveTextContent('Gemma 3 12B');
     await expect(chip).toHaveFocus();
     await userEvent.click(chip);
-    await userEvent.click(await within(document.body).findByRole('button', { name: /Qwen3 Coder 30B/ }));
+    await userEvent.click(
+      await within(document.body).findByRole('button', { name: /Qwen3 Coder 30B/ }),
+    );
     await userEvent.click(chip);
     const reopened = await within(document.body).findByRole('dialog');
     await userEvent.click(within(reopened).getByRole('radio', { name: 'High' }));
@@ -100,10 +126,14 @@ export const OpenMenu: Story = { args: { defaultOpen: true } };
 export const NonReasoningModel: Story = { args: { selectedId: GEMMA.id, defaultOpen: true } };
 
 /** A hosted model with a 1M window and no local provider header. */
-export const HostedModel: Story = { args: { selectedId: SONNET.id, effort: 'high', defaultOpen: true } };
+export const HostedModel: Story = {
+  args: { selectedId: SONNET.id, effort: 'high', defaultOpen: true },
+};
 
 /** Only local models and no cloud-provider action. */
-export const LocalOnly: Story = { args: { models: [QWEN, GEMMA], onAddProvider: undefined, defaultOpen: true } };
+export const LocalOnly: Story = {
+  args: { models: [QWEN, GEMMA], onAddProvider: undefined, defaultOpen: true },
+};
 
 /** Effort control off: the menu is just the grouped list. */
 export const WithoutEffort: Story = { args: { showEffort: false, defaultOpen: true } };
@@ -115,7 +145,17 @@ export const NothingSelected: Story = { args: { selectedId: undefined } };
 export const MenuOnly: Story = {
   render: (args) => {
     // The menu takes the picker's props minus the popover and chip ones.
-    const { open: _open, defaultOpen: _defaultOpen, onOpenChange: _onOpenChange, disabled: _disabled, align: _align, side: _side, menuClassName: _menuClassName, onAction: _onAction, ...menu } = args;
+    const {
+      open: _open,
+      defaultOpen: _defaultOpen,
+      onOpenChange: _onOpenChange,
+      disabled: _disabled,
+      align: _align,
+      side: _side,
+      menuClassName: _menuClassName,
+      onAction: _onAction,
+      ...menu
+    } = args;
     return (
       <div className="w-[340px] p-6">
         <div className="rounded-md border bg-popover p-1.5 text-popover-foreground shadow-md">
@@ -134,7 +174,12 @@ export const TranslatedLabels: Story = {
       dialog: 'Modelo',
       noModel: 'Elegir modelo',
       local: 'Local · ',
-      capabilities: { context: '{n} de contexto', tools: 'herramientas', vision: 'visión', reasoning: 'razonamiento' },
+      capabilities: {
+        context: '{n} de contexto',
+        tools: 'herramientas',
+        vision: 'visión',
+        reasoning: 'razonamiento',
+      },
       goodFor: 'Bueno para {strengths}',
       effortTitle: 'Esfuerzo de razonamiento',
       effortNote: 'Más esfuerzo es más lento pero más cuidadoso.',
@@ -145,10 +190,17 @@ export const TranslatedLabels: Story = {
 };
 
 /** Composer toolbar: the model chip and the context meter in the `actions` slot of the library Input, next to Send. */
-export const ComposerToolbar: StoryObj<{ used: number; window: number; onAction?: (name: string, detail?: unknown) => void }> = {
+export const ComposerToolbar: StoryObj<{
+  used: number;
+  window: number;
+  onAction?: (name: string, detail?: unknown) => void;
+}> = {
   args: { used: 183400, window: 262000 },
   argTypes: {
-    used: { control: { type: 'number', min: 0, max: 400000, step: 1000 }, description: 'Tokens in context: the ring turns amber above 60% and red above 80%.' },
+    used: {
+      control: { type: 'number', min: 0, max: 400000, step: 1000 },
+      description: 'Tokens in context: the ring turns amber above 60% and red above 80%.',
+    },
     window: { control: 'number' },
     onAction: { action: 'composer' },
   },

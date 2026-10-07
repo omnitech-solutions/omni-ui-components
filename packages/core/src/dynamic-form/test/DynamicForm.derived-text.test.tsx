@@ -1,11 +1,14 @@
-import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import { z } from 'zod';
 import type { RJSFSchema, UiSchema } from '@rjsf/utils';
-
+import { render, screen } from '@testing-library/react';
 import { DynamicForm } from 'dynamic-form';
 import { buildFormContext } from 'dynamic-form/lib/formContext';
-import { deriveExpenseCanary, expenseCanaryFixture, type ExpenseCanaryFormData } from 'factories/dynamic-form/DynamicForm/expense.factories';
+import {
+  deriveExpenseCanary,
+  type ExpenseCanaryFormData,
+  expenseCanaryFixture,
+} from 'factories/dynamic-form/DynamicForm/expense.factories';
+import * as React from 'react';
+import { z } from 'zod';
 
 /**
  * The DerivedTextWidget reads from `formContext.derived[derivedKey]`.
@@ -16,7 +19,13 @@ import { deriveExpenseCanary, expenseCanaryFixture, type ExpenseCanaryFormData }
 describe('DynamicForm — DerivedTextWidget + derive', () => {
   describe('deriveExpenseCanary (pure function)', () => {
     it('formats Sales Price and Excluding Tax with the chosen currency', () => {
-      const out = deriveExpenseCanary({ amount: 100, currency: 'GBP', taxRateId: 'state_5', markupPercent: 19, billable: true });
+      const out = deriveExpenseCanary({
+        amount: 100,
+        currency: 'GBP',
+        taxRateId: 'state_5',
+        markupPercent: 19,
+        billable: true,
+      });
       expect(out.excludingTaxLabel).toContain('£');
       expect(out.excludingTaxLabel).toContain('Excluding Tax');
       expect(out.salesPriceLabel).toContain('£');
@@ -30,13 +39,31 @@ describe('DynamicForm — DerivedTextWidget + derive', () => {
     });
 
     it('honors markup % so salesPrice > excludingTax * (1 + tax)', () => {
-      const zero = deriveExpenseCanary({ amount: 100, currency: 'GBP', taxRateId: 'none', markupPercent: 0, billable: true });
-      const marked = deriveExpenseCanary({ amount: 100, currency: 'GBP', taxRateId: 'none', markupPercent: 19, billable: true });
+      const zero = deriveExpenseCanary({
+        amount: 100,
+        currency: 'GBP',
+        taxRateId: 'none',
+        markupPercent: 0,
+        billable: true,
+      });
+      const marked = deriveExpenseCanary({
+        amount: 100,
+        currency: 'GBP',
+        taxRateId: 'none',
+        markupPercent: 19,
+        billable: true,
+      });
       expect(zero.salesPriceLabel).not.toEqual(marked.salesPriceLabel);
     });
 
     it('switches locale + symbol when currency is ETB', () => {
-      const out = deriveExpenseCanary({ amount: 4999, currency: 'ETB', taxRateId: 'state_5', markupPercent: 19, billable: true });
+      const out = deriveExpenseCanary({
+        amount: 4999,
+        currency: 'ETB',
+        taxRateId: 'state_5',
+        markupPercent: 19,
+        billable: true,
+      });
       expect(out.salesPriceLabel).toMatch(/ETB|Br/);
     });
   });

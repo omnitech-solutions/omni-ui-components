@@ -1,7 +1,6 @@
-import * as React from 'react';
 import { RadioGroup, RadioGroupItem } from 'components/ui/radio-group';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import type { RadioPrimitiveProps } from './Radio.types';
 
 /**
@@ -37,7 +36,10 @@ const RadioPrimitiveInner = React.forwardRef<HTMLDivElement, RadioPrimitiveProps
     ref,
   ) => {
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
 
     return (
       <RadioGroup
@@ -53,7 +55,12 @@ const RadioPrimitiveInner = React.forwardRef<HTMLDivElement, RadioPrimitiveProps
         data-testid={testId}
         data-orientation={orientation}
         orientation={orientation === 'horizontal' ? 'horizontal' : 'vertical'}
-        className={cn(orientation === 'horizontal' ? 'flex flex-row flex-wrap items-center gap-x-6 gap-y-3' : 'flex flex-col gap-4', className)}
+        className={cn(
+          orientation === 'horizontal'
+            ? 'flex flex-row flex-wrap items-center gap-x-6 gap-y-3'
+            : 'flex flex-col gap-4',
+          className,
+        )}
       >
         {options.map((opt, idx) => {
           const itemId = id ? `${id}-${opt.value}` : `oui-radio-${idx}-${opt.value}`;
@@ -65,7 +72,9 @@ const RadioPrimitiveInner = React.forwardRef<HTMLDivElement, RadioPrimitiveProps
               htmlFor={itemId}
               className={cn(
                 'flex items-start gap-3 rounded-md p-2 -m-2',
-                isItemDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-[var(--oui-surface-field-hover,theme(colors.muted/40))]',
+                isItemDisabled
+                  ? 'cursor-not-allowed opacity-50'
+                  : 'cursor-pointer hover:bg-[var(--oui-surface-field-hover,theme(colors.muted/40))]',
               )}
             >
               <RadioGroupItem
@@ -79,9 +88,14 @@ const RadioPrimitiveInner = React.forwardRef<HTMLDivElement, RadioPrimitiveProps
                 className="mt-0.5"
               />
               <div className="flex min-w-0 flex-col gap-0.5">
-                <span className="font-[family-name:var(--oui-font-sans)] text-sm font-semibold leading-tight text-[var(--oui-foreground)]">{opt.label}</span>
+                <span className="font-[family-name:var(--oui-font-sans)] text-sm font-semibold leading-tight text-[var(--oui-foreground)]">
+                  {opt.label}
+                </span>
                 {opt.description ? (
-                  <span id={descriptionId} className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]">
+                  <span
+                    id={descriptionId}
+                    className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]"
+                  >
                     {opt.description}
                   </span>
                 ) : null}

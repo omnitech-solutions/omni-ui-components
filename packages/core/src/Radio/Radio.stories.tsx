@@ -1,11 +1,12 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Radio, type RadioProps } from '@oc-tech/omni-ui-components/Radio';
+import type { Meta, StoryObj } from '@storybook/react';
 import { radioPropsFactory } from 'factories/omni-ui-components/Radio/Radio.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<RadioProps> = (args) => {
-  const [value, setValue] = React.useState<string>(typeof args.value === 'string' ? args.value : '');
+  const [value, setValue] = React.useState<string>(
+    typeof args.value === 'string' ? args.value : '',
+  );
   React.useEffect(() => {
     setValue(typeof args.value === 'string' ? args.value : '');
   }, [args.value]);

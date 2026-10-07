@@ -1,5 +1,5 @@
-import * as React from 'react';
 import classNames from 'classnames';
+import type * as React from 'react';
 import { useTable } from '../hooks/useTable';
 import { bodyCellClass, headerCellClass, SortableRowHandleCell } from '../internal';
 
@@ -26,7 +26,12 @@ export interface RowDragCellProps {
   style?: React.CSSProperties;
 }
 
-export const RowDragCell: React.FC<RowDragCellProps> = ({ rowKey, draggable, className, style }) => {
+export const RowDragCell: React.FC<RowDragCellProps> = ({
+  rowKey,
+  draggable,
+  className,
+  style,
+}) => {
   const { testIdPrefix } = useTable();
   return (
     <td
@@ -35,7 +40,13 @@ export const RowDragCell: React.FC<RowDragCellProps> = ({ rowKey, draggable, cla
       data-bui-utility-cell="true"
       data-testid={`${testIdPrefix}-row-drag-cell-${rowKey}`}
     >
-      {draggable && <SortableRowHandleCell label={`Reorder row ${rowKey}`} testId={`${testIdPrefix}-row-drag-handle-${rowKey}`} rowKey={rowKey} />}
+      {draggable && (
+        <SortableRowHandleCell
+          label={`Reorder row ${rowKey}`}
+          testId={`${testIdPrefix}-row-drag-handle-${rowKey}`}
+          rowKey={rowKey}
+        />
+      )}
     </td>
   );
 };

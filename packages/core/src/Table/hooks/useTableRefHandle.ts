@@ -1,6 +1,6 @@
-import * as React from 'react';
 import type { Row } from '@tanstack/react-table';
 import type { Virtualizer } from '@tanstack/react-virtual';
+import * as React from 'react';
 import type { TableRef, TableResolvedRow } from '../Table.types';
 
 export interface UseTableRefHandleInput<TRecord, TRowData> {
@@ -30,13 +30,20 @@ export function useTableRefHandle<TRecord, TRowData>({
           else if (scrollRef.current) scrollRef.current.scrollTop = top;
           return;
         }
-        const rowIndex = typeof index === 'number' ? index : key == null ? -1 : visibleRows.findIndex((item) => item.original.key === key);
+        const rowIndex =
+          typeof index === 'number'
+            ? index
+            : key == null
+              ? -1
+              : visibleRows.findIndex((item) => item.original.key === key);
         if (rowIndex < 0) return;
         if (enableVirtualRows) {
           rowVirtualizer.scrollToIndex(rowIndex, { align: align === 'nearest' ? 'auto' : align });
           return;
         }
-        const rowEl = rootRef.current?.querySelector<HTMLElement>(`[data-row-key="${String(visibleRows[rowIndex].original.key)}"]`);
+        const rowEl = rootRef.current?.querySelector<HTMLElement>(
+          `[data-row-key="${String(visibleRows[rowIndex].original.key)}"]`,
+        );
         if (rowEl && scrollRef.current) scrollRef.current.scrollTop = rowEl.offsetTop - offset;
       },
     }),

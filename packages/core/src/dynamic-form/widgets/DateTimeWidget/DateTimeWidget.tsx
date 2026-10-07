@@ -1,7 +1,5 @@
-import * as React from 'react';
-import type { WidgetProps } from '@rjsf/utils';
-
 import { DateTimePickerPrimitive } from '@oc-tech/omni-ui-components';
+import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF DateTime widget for `type: 'string', format: 'date-time'`. */

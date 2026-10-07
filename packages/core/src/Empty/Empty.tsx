@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { Inbox } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Inbox } from 'lucide-react';
+import type * as React from 'react';
 import { Button } from '../Button';
 import type { ControlTone } from '../internal/support/controlTone';
 
@@ -30,14 +29,27 @@ export interface EmptyProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   action?: EmptyAction;
 }
 
-export const Empty = ({ variant = 'dashed', image, icon, title, description = 'No data', action, className, children, ...props }: EmptyProps) => {
+export const Empty = ({
+  variant = 'dashed',
+  image,
+  icon,
+  title,
+  description = 'No data',
+  action,
+  className,
+  children,
+  ...props
+}: EmptyProps) => {
   if (variant === 'tile') {
     const glyph = icon ?? image;
     return (
       <div
         data-slot="empty"
         data-variant="tile"
-        className={cn('flex flex-1 flex-col items-center justify-center gap-[10px] p-5 text-center', className)}
+        className={cn(
+          'flex flex-1 flex-col items-center justify-center gap-[10px] p-5 text-center',
+          className,
+        )}
         {...props}
       >
         <span
@@ -52,11 +64,20 @@ export const Empty = ({ variant = 'dashed', image, icon, title, description = 'N
             {title}
           </span>
         ) : null}
-        <span data-slot="empty-description" className="max-w-[340px] text-[13px] leading-normal text-[color:var(--oui-tone-neutral-fg)] opacity-75">
+        <span
+          data-slot="empty-description"
+          className="max-w-[340px] text-[13px] leading-normal text-[color:var(--oui-tone-neutral-fg)] opacity-75"
+        >
           {description}
         </span>
         {action ? (
-          <Button buttonSize="control" tone={action.tone ?? 'accent'} icon={action.icon} shortcut={action.shortcut} onClick={action.onClick}>
+          <Button
+            buttonSize="control"
+            tone={action.tone ?? 'accent'}
+            icon={action.icon}
+            shortcut={action.shortcut}
+            onClick={action.onClick}
+          >
             {action.label}
           </Button>
         ) : null}
@@ -67,7 +88,10 @@ export const Empty = ({ variant = 'dashed', image, icon, title, description = 'N
 
   return (
     <div
-      className={cn('flex min-h-48 flex-col items-center justify-center gap-3 rounded-lg border border-dashed px-6 py-10 text-center', className)}
+      className={cn(
+        'flex min-h-48 flex-col items-center justify-center gap-3 rounded-lg border border-dashed px-6 py-10 text-center',
+        className,
+      )}
       {...props}
     >
       <div className="text-muted-foreground">{image ?? <Inbox className="h-8 w-8" />}</div>

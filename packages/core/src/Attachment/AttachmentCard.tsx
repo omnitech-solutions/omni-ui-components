@@ -1,8 +1,11 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { IconButton } from '../IconButton';
-import { DEFAULT_ATTACHMENT_LABELS, type AttachmentCardProps, type AttachmentItem } from './Attachment.types';
+import {
+  type AttachmentCardProps,
+  type AttachmentItem,
+  DEFAULT_ATTACHMENT_LABELS,
+} from './Attachment.types';
 import {
   attachmentCardVariants,
   attachmentErrorClasses,
@@ -28,112 +31,129 @@ import {
  * <AttachmentCard item={{ id: '1', name: 'notes.pdf', meta: 'File', icon: <FileText /> }} onRemove={(item) => remove(item.id)} removeIcon={<X />} />
  */
 function AttachmentCardInner<T extends AttachmentItem = AttachmentItem>(
-    {
-      item,
-      variant = 'card',
-      onRemove,
-      onClick,
-      removeIcon,
-      kindIcons,
-      readOnly = false,
-      labels: labelsProp,
-      className,
-      ...rest
-    }: AttachmentCardProps<T>,
-    ref: React.ForwardedRef<HTMLDivElement>,
-  ) {
-    const { name, kind = 'file', meta, previewUrl, status = 'ready', progress, error } = item;
-    const icon = item.icon ?? kindIcons?.[kind];
-    const labels = { ...DEFAULT_ATTACHMENT_LABELS, ...labelsProp };
-    const removable = Boolean(onRemove) && !readOnly && variant === 'card';
-    const busy = status === 'uploading';
-    const line =
-      status === 'failed' ? (error ?? labels.failed) : status === 'uploading' ? labels.uploading : status === 'extracting' ? labels.extracting : meta;
-    const pct = typeof progress === 'number' ? Math.max(0, Math.min(100, progress)) : undefined;
+  {
+    item,
+    variant = 'card',
+    onRemove,
+    onClick,
+    removeIcon,
+    kindIcons,
+    readOnly = false,
+    labels: labelsProp,
+    className,
+    ...rest
+  }: AttachmentCardProps<T>,
+  ref: React.ForwardedRef<HTMLDivElement>,
+) {
+  const { name, kind = 'file', meta, previewUrl, status = 'ready', progress, error } = item;
+  const icon = item.icon ?? kindIcons?.[kind];
+  const labels = { ...DEFAULT_ATTACHMENT_LABELS, ...labelsProp };
+  const removable = Boolean(onRemove) && !readOnly && variant === 'card';
+  const busy = status === 'uploading';
+  const line =
+    status === 'failed'
+      ? (error ?? labels.failed)
+      : status === 'uploading'
+        ? labels.uploading
+        : status === 'extracting'
+          ? labels.extracting
+          : meta;
+  const pct = typeof progress === 'number' ? Math.max(0, Math.min(100, progress)) : undefined;
 
-    const content = (
-      <>
-        {variant === 'card' ? (
-          <span data-slot="attachment-thumb" className={attachmentThumbClasses}>
-            {previewUrl ? <img src={previewUrl} alt="" className="size-full object-cover" /> : icon ? <span aria-hidden="true" className="inline-flex">{icon}</span> : null}
-          </span>
-        ) : icon ? (
-          <span aria-hidden="true" className="inline-flex flex-none [&_svg]:size-3.5">
-            {icon}
-          </span>
-        ) : null}
-        <span className={attachmentTextClasses}>
-          <span className={attachmentNameClasses} title={name}>
-            {name}
-          </span>
-          {variant === 'card' && line ? (
-            <span className={status === 'failed' ? attachmentErrorClasses : attachmentMetaClasses} data-slot="attachment-meta">
-              {line}
+  const content = (
+    <>
+      {variant === 'card' ? (
+        <span data-slot="attachment-thumb" className={attachmentThumbClasses}>
+          {previewUrl ? (
+            <img src={previewUrl} alt="" className="size-full object-cover" />
+          ) : icon ? (
+            <span aria-hidden="true" className="inline-flex">
+              {icon}
             </span>
           ) : null}
         </span>
-      </>
-    );
-
-    return (
-      <div
-        ref={ref}
-        role="group"
-        aria-label={name}
-        data-slot="attachment"
-        data-kind={kind}
-        data-status={status}
-        data-variant={variant}
-        aria-busy={busy || status === 'extracting' || undefined}
-        className={cn(attachmentCardVariants({ variant, status }), className)}
-        {...rest}
-      >
-        {onClick ? (
-          <button
-            type="button"
-            data-slot="attachment-open"
-            className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left text-inherit outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-            onClick={() => void onClick(item)}
+      ) : icon ? (
+        <span aria-hidden="true" className="inline-flex flex-none [&_svg]:size-3.5">
+          {icon}
+        </span>
+      ) : null}
+      <span className={attachmentTextClasses}>
+        <span className={attachmentNameClasses} title={name}>
+          {name}
+        </span>
+        {variant === 'card' && line ? (
+          <span
+            className={status === 'failed' ? attachmentErrorClasses : attachmentMetaClasses}
+            data-slot="attachment-meta"
           >
-            {content}
-          </button>
-        ) : (
-          content
-        )}
-        {removable ? (
-          <IconButton
-            variant="ghost"
-            iconSize="sm"
-            icon={removeIcon ?? <span aria-hidden="true">×</span>}
-            label={labels.remove.replace('{name}', name)}
-            disabled={busy}
-            data-slot="attachment-remove"
-            className="size-6 flex-none rounded-md"
-            onClick={() => void onRemove?.(item)}
-          />
-        ) : null}
-        {variant === 'card' && busy ? (
-          <span data-slot="attachment-progress" className={attachmentProgressTrackClasses}>
-            {pct === undefined ? (
-              <span className={attachmentIndeterminateClasses} />
-            ) : (
-              <span
-                role="progressbar"
-                aria-label={labels.uploading}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={pct}
-                className={attachmentProgressBarClasses}
-                style={{ width: `${pct}%` }}
-              />
-            )}
+            {line}
           </span>
         ) : null}
-      </div>
-    );
+      </span>
+    </>
+  );
+
+  return (
+    <div
+      ref={ref}
+      role="group"
+      aria-label={name}
+      data-slot="attachment"
+      data-kind={kind}
+      data-status={status}
+      data-variant={variant}
+      aria-busy={busy || status === 'extracting' || undefined}
+      className={cn(attachmentCardVariants({ variant, status }), className)}
+      {...rest}
+    >
+      {onClick ? (
+        <button
+          type="button"
+          data-slot="attachment-open"
+          className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left text-inherit outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          onClick={() => void onClick(item)}
+        >
+          {content}
+        </button>
+      ) : (
+        content
+      )}
+      {removable ? (
+        <IconButton
+          variant="ghost"
+          iconSize="sm"
+          icon={removeIcon ?? <span aria-hidden="true">×</span>}
+          label={labels.remove.replace('{name}', name)}
+          disabled={busy}
+          data-slot="attachment-remove"
+          className="size-6 flex-none rounded-md"
+          onClick={() => void onRemove?.(item)}
+        />
+      ) : null}
+      {variant === 'card' && busy ? (
+        <span data-slot="attachment-progress" className={attachmentProgressTrackClasses}>
+          {pct === undefined ? (
+            <span className={attachmentIndeterminateClasses} />
+          ) : (
+            <span
+              role="progressbar"
+              aria-label={labels.uploading}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={pct}
+              className={attachmentProgressBarClasses}
+              style={{ width: `${pct}%` }}
+            />
+          )}
+        </span>
+      ) : null}
+    </div>
+  );
 }
 
-export const AttachmentCard = React.forwardRef(AttachmentCardInner) as <T extends AttachmentItem = AttachmentItem>(
+export const AttachmentCard = React.forwardRef(AttachmentCardInner) as <
+  T extends AttachmentItem = AttachmentItem,
+>(
   props: AttachmentCardProps<T> & { ref?: React.Ref<HTMLDivElement> },
 ) => React.ReactElement | null;
 (AttachmentCard as { displayName?: string }).displayName = 'AttachmentCard';

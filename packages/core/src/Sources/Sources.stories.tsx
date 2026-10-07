@@ -1,9 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
-
 import { Sources, type SourcesProps } from '@oc-tech/omni-ui-components/Sources';
+import type { Meta, StoryObj } from '@storybook/react';
 import { sourcesPropsFactory } from 'factories/omni-ui-components/Sources/Sources.factories';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 const meta: Meta<SourcesProps> = {
   title: 'omni-ui-components/Sources',
@@ -59,7 +57,10 @@ export const Default: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: /Two Sum notes/ }));
     await expect(canvas.getByText(/single lookup/)).toBeVisible();
-    await expect(canvas.getByRole('button', { name: /Two Sum notes/ })).toHaveAttribute('aria-pressed', 'true');
+    await expect(canvas.getByRole('button', { name: /Two Sum notes/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     await userEvent.click(canvas.getByRole('button', { name: /Map reference/ }));
     await expect(canvas.queryByText(/single lookup/)).toBeNull();
     await userEvent.click(canvas.getByRole('button', { name: 'Close' }));

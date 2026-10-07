@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { Clock } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Clock } from 'lucide-react';
+import * as React from 'react';
 import { inputVariants } from '../Input/Input.variants';
 import type { RootProps } from '../lib';
 
@@ -49,7 +48,10 @@ const TimePickerPrimitiveInner = React.forwardRef<HTMLInputElement, TimePickerPr
     ref,
   ) => {
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
     return (
       <div className="relative flex w-full items-center" data-slot="time-picker-wrapper">
         <input
@@ -70,13 +72,22 @@ const TimePickerPrimitiveInner = React.forwardRef<HTMLInputElement, TimePickerPr
           aria-describedby={ariaDescribedBy}
           data-slot="time-picker"
           data-testid={testId}
-          className={cn(inputVariants({ variant: 'bordered', inputSize: 'default' }), 'px-3 pr-10 [&::-webkit-calendar-picker-indicator]:opacity-0', className)}
+          className={cn(
+            inputVariants({ variant: 'bordered', inputSize: 'default' }),
+            'px-3 pr-10 [&::-webkit-calendar-picker-indicator]:opacity-0',
+            className,
+          )}
         />
-        <Clock aria-hidden="true" className="pointer-events-none absolute right-3 size-4 shrink-0 text-[var(--oui-foreground-muted)]" />
+        <Clock
+          aria-hidden="true"
+          className="pointer-events-none absolute right-3 size-4 shrink-0 text-[var(--oui-foreground-muted)]"
+        />
       </div>
     );
   },
 );
 TimePickerPrimitiveInner.displayName = 'TimePickerPrimitive';
 
-export const TimePickerPrimitive = React.memo(TimePickerPrimitiveInner) as typeof TimePickerPrimitiveInner;
+export const TimePickerPrimitive = React.memo(
+  TimePickerPrimitiveInner,
+) as typeof TimePickerPrimitiveInner;

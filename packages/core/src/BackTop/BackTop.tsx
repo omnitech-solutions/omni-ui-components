@@ -6,11 +6,22 @@ export interface BackTopProps extends React.ComponentProps<typeof FloatButton> {
   target?: () => HTMLElement | Window | Document;
   duration?: number;
 }
-export const BackTop = ({ visibilityHeight = 400, target, duration = 450, children = '↑', onClick, ...props }: BackTopProps) => {
+export const BackTop = ({
+  visibilityHeight = 400,
+  target,
+  duration = 450,
+  children = '↑',
+  onClick,
+  ...props
+}: BackTopProps) => {
   const [visible, setVisible] = React.useState(false);
   React.useEffect(() => {
     const element = target?.() ?? window;
-    const update = () => setVisible(('scrollY' in element ? element.scrollY : (element as HTMLElement).scrollTop) >= visibilityHeight);
+    const update = () =>
+      setVisible(
+        ('scrollY' in element ? element.scrollY : (element as HTMLElement).scrollTop) >=
+          visibilityHeight,
+      );
     element.addEventListener('scroll', update);
     update();
     return () => element.removeEventListener('scroll', update);

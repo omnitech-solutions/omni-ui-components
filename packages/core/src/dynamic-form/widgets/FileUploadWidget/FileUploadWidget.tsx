@@ -1,7 +1,5 @@
-import * as React from 'react';
-import type { WidgetProps } from '@rjsf/utils';
-
 import { FileUploadPrimitive } from '@oc-tech/omni-ui-components';
+import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /**
@@ -24,7 +22,8 @@ export const FileUploadWidget = (props: WidgetProps) => {
         role="note"
         className="rounded-md border border-dashed border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-3 text-xs text-[var(--oui-foreground-muted)]"
       >
-        FileUpload widget is not wired for upload yet — set <code>ui:options.mode: &apos;name&apos;</code> to acknowledge the placeholder behavior.
+        FileUpload widget is not wired for upload yet — set{' '}
+        <code>ui:options.mode: &apos;name&apos;</code> to acknowledge the placeholder behavior.
       </div>
     );
   }

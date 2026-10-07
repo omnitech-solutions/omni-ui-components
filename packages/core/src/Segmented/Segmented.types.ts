@@ -1,7 +1,6 @@
-import * as React from 'react';
-
-import type { RootProps } from '../lib';
+import type * as React from 'react';
 import type { FieldLayoutProps } from '../Input/Input.variants';
+import type { RootProps } from '../lib';
 
 export interface SegmentedOption {
   value: string;
@@ -66,7 +65,8 @@ export interface SegmentedMultipleProps {
  * <SegmentedPrimitive value={tone} onChange={setTone} options={[…]} />
  * <SegmentedPrimitive mode="multiple" appearance="control" minActive={1} value={panels} onChange={setPanels} options={[…]} />
  */
-export type SegmentedPrimitiveProps = SegmentedPrimitiveBaseProps & (SegmentedSingleProps | SegmentedMultipleProps);
+export type SegmentedPrimitiveProps = SegmentedPrimitiveBaseProps &
+  (SegmentedSingleProps | SegmentedMultipleProps);
 
 /**
  * Chrome-wrapped Omni Segmented props.

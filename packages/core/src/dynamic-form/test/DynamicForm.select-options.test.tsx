@@ -1,22 +1,25 @@
-import * as React from 'react';
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { z } from 'zod';
-import type { RJSFSchema, UiSchema } from '@rjsf/utils';
-
 import { DynamicForm } from 'dynamic-form';
 import { buildFormContext } from 'dynamic-form/lib/formContext';
+import { z } from 'zod';
 
 beforeAll(() => {
   Element.prototype.scrollIntoView = jest.fn();
 });
 
 describe('DynamicForm — SelectWidget / ComboboxWidget option sources', () => {
-  const schema: RJSFSchema = { type: 'object', properties: { project: { type: 'string', title: 'Project' } } };
+  const schema: RJSFSchema = {
+    type: 'object',
+    properties: { project: { type: 'string', title: 'Project' } },
+  };
   const zodSchema = z.object({ project: z.string().optional() }) as never;
 
   it('SelectWidget reads grouped options from formContext.optionSets via ui:options.optionSetKey', async () => {
-    const uiSchema: UiSchema = { project: { 'ui:widget': 'select', 'ui:options': { optionSetKey: 'projects' } } };
+    const uiSchema: UiSchema = {
+      project: { 'ui:widget': 'select', 'ui:options': { optionSetKey: 'projects' } },
+    };
     const formContext = buildFormContext(
       {
         optionSets: {
@@ -41,7 +44,16 @@ describe('DynamicForm — SelectWidget / ComboboxWidget option sources', () => {
               color: null,
               disabled: false,
             },
-            { value: 'p3', label: 'Security Items', group: 'Internal', description: null, avatarUrl: null, initials: null, color: null, disabled: false },
+            {
+              value: 'p3',
+              label: 'Security Items',
+              group: 'Internal',
+              description: null,
+              avatarUrl: null,
+              initials: null,
+              color: null,
+              disabled: false,
+            },
           ],
         },
         actions: {},
@@ -51,7 +63,16 @@ describe('DynamicForm — SelectWidget / ComboboxWidget option sources', () => {
     );
 
     const user = userEvent.setup();
-    render(<DynamicForm schema={schema} uiSchema={uiSchema} zodSchema={zodSchema} formData={{ project: '' }} formContext={formContext} onSubmit={jest.fn()} />);
+    render(
+      <DynamicForm
+        schema={schema}
+        uiSchema={uiSchema}
+        zodSchema={zodSchema}
+        formData={{ project: '' }}
+        formContext={formContext}
+        onSubmit={jest.fn()}
+      />,
+    );
 
     await user.click(screen.getByRole('button', { name: /Project/ }));
     expect(screen.getByTestId('root_project-group-Omni Product Development')).toBeInTheDocument();
@@ -77,16 +98,35 @@ describe('DynamicForm — SelectWidget / ComboboxWidget option sources', () => {
   });
 
   it('SelectWidget renders a footer action when ui:options.footerActionKey resolves in formContext.actions', async () => {
-    const taxSchema: RJSFSchema = { type: 'object', properties: { taxRateId: { type: 'string', title: 'Tax' } } };
-    const uiSchema: UiSchema = { taxRateId: { 'ui:widget': 'select', 'ui:options': { optionSetKey: 'taxRates', footerActionKey: 'manageTaxRates' } } };
+    const taxSchema: RJSFSchema = {
+      type: 'object',
+      properties: { taxRateId: { type: 'string', title: 'Tax' } },
+    };
+    const uiSchema: UiSchema = {
+      taxRateId: {
+        'ui:widget': 'select',
+        'ui:options': { optionSetKey: 'taxRates', footerActionKey: 'manageTaxRates' },
+      },
+    };
     const formContext = buildFormContext(
       {
         optionSets: {
           taxRates: [
-            { value: 'state_5', label: '5% (State Tax)', group: null, description: null, avatarUrl: null, initials: null, color: null, disabled: false },
+            {
+              value: 'state_5',
+              label: '5% (State Tax)',
+              group: null,
+              description: null,
+              avatarUrl: null,
+              initials: null,
+              color: null,
+              disabled: false,
+            },
           ],
         },
-        actions: { manageTaxRates: { label: 'Manage Tax Rates', href: null, actionId: 'manageTaxRates' } },
+        actions: {
+          manageTaxRates: { label: 'Manage Tax Rates', href: null, actionId: 'manageTaxRates' },
+        },
         locale: 'en',
       },
       {},
@@ -105,15 +145,30 @@ describe('DynamicForm — SelectWidget / ComboboxWidget option sources', () => {
     );
 
     await user.click(screen.getByRole('button', { name: /Tax/ }));
-    expect(screen.getByTestId('root_taxRateId-footer-action')).toHaveTextContent('Manage Tax Rates');
+    expect(screen.getByTestId('root_taxRateId-footer-action')).toHaveTextContent(
+      'Manage Tax Rates',
+    );
   });
 
   it('ComboboxWidget reads option sets through formContext too', async () => {
-    const uiSchema: UiSchema = { project: { 'ui:widget': 'combobox', 'ui:options': { optionSetKey: 'projects' } } };
+    const uiSchema: UiSchema = {
+      project: { 'ui:widget': 'combobox', 'ui:options': { optionSetKey: 'projects' } },
+    };
     const formContext = buildFormContext(
       {
         optionSets: {
-          projects: [{ value: 'p1', label: 'Bugs - Week 27', group: 'PD', description: null, avatarUrl: null, initials: null, color: null, disabled: false }],
+          projects: [
+            {
+              value: 'p1',
+              label: 'Bugs - Week 27',
+              group: 'PD',
+              description: null,
+              avatarUrl: null,
+              initials: null,
+              color: null,
+              disabled: false,
+            },
+          ],
         },
         actions: {},
         locale: 'en',
@@ -121,7 +176,16 @@ describe('DynamicForm — SelectWidget / ComboboxWidget option sources', () => {
       {},
     );
     const user = userEvent.setup();
-    render(<DynamicForm schema={schema} uiSchema={uiSchema} zodSchema={zodSchema} formData={{ project: '' }} formContext={formContext} onSubmit={jest.fn()} />);
+    render(
+      <DynamicForm
+        schema={schema}
+        uiSchema={uiSchema}
+        zodSchema={zodSchema}
+        formData={{ project: '' }}
+        formContext={formContext}
+        onSubmit={jest.fn()}
+      />,
+    );
 
     await user.click(screen.getByRole('button', { name: /Project/ }));
     expect(screen.getByTestId('root_project-option-p1')).toBeInTheDocument();

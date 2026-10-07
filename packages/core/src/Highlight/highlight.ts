@@ -1,5 +1,5 @@
-import { common, createLowlight } from 'lowlight';
 import type { Element, ElementContent, Root } from 'hast';
+import { common, createLowlight } from 'lowlight';
 
 import type { CodeToken, HighlightFn, HighlightOptions } from './Highlight.types';
 
@@ -42,7 +42,8 @@ function flatten(nodes: readonly ElementContent[], classes: string[], out: CodeT
 }
 
 /** One plain, unstyled token per line: what unknown languages and failures fall back to. */
-export const plainLines = (code: string): CodeToken[][] => code.split('\n').map((line) => (line ? [{ text: line }] : []));
+export const plainLines = (code: string): CodeToken[][] =>
+  code.split('\n').map((line) => (line ? [{ text: line }] : []));
 
 /**
  * Highlights `code` with highlight.js grammars (via lowlight, the `common` set) and returns one token list per
@@ -53,7 +54,11 @@ export const plainLines = (code: string): CodeToken[][] => code.split('\n').map(
  * @example
  * highlightLines('const a = 1;', 'ts')[0]; // [{ text: 'const', className: 'hljs-keyword' }, { text: ' a = ' }, ...]
  */
-export function highlightLines(code: string, language?: string, options: HighlightOptions = {}): CodeToken[][] {
+export function highlightLines(
+  code: string,
+  language?: string,
+  options: HighlightOptions = {},
+): CodeToken[][] {
   const key = language?.trim().toLowerCase();
   const name = key ? (options.aliases?.[key] ?? DEFAULT_LANGUAGE_ALIASES[key] ?? key) : undefined;
   const engine = lowlight();

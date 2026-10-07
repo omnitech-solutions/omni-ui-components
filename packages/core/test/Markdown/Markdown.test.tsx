@@ -1,11 +1,18 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { expectTypeOf } from 'vitest';
-import userEvent from '@testing-library/user-event';
-import { render, screen, within } from '@testing-library/react';
 
-import { closeOpenMarkdown, Markdown, type CitationSource } from '@oc-tech/omni-ui-components/Markdown';
-import { markdownPropsFactory, MarkdownDemo, SAMPLE_REPLY } from 'factories/omni-ui-components/Markdown/Markdown.factories';
+import {
+  type CitationSource,
+  closeOpenMarkdown,
+  Markdown,
+} from '@oc-tech/omni-ui-components/Markdown';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  MarkdownDemo,
+  markdownPropsFactory,
+  SAMPLE_REPLY,
+} from 'factories/omni-ui-components/Markdown/Markdown.factories';
+import { expectTypeOf } from 'vitest';
 
 const slot = (name: string) => document.querySelector(`[data-slot="${name}"]`) as HTMLElement;
 
@@ -89,7 +96,9 @@ describe('omni-ui-components/Markdown', () => {
 
     it('reports the code and language, and shows Copied for copiedCode', async () => {
       const onCopy = vi.fn();
-      const { rerender } = render(<Markdown {...markdownPropsFactory({ text: '```ts\nlet a;\n```', onCopy })} />);
+      const { rerender } = render(
+        <Markdown {...markdownPropsFactory({ text: '```ts\nlet a;\n```', onCopy })} />,
+      );
       await userEvent.click(screen.getByRole('button', { name: 'Copy' }));
       expect(onCopy).toHaveBeenCalledWith('let a;', 'ts');
       rerender(
@@ -127,7 +136,9 @@ describe('omni-ui-components/Markdown', () => {
     });
 
     it('cursor can be a node or null, and is absent when not streaming', () => {
-      const { rerender } = render(<Markdown text="hi" streaming cursor={<i data-testid="c">|</i>} />);
+      const { rerender } = render(
+        <Markdown text="hi" streaming cursor={<i data-testid="c">|</i>} />,
+      );
       expect(screen.getByTestId('c')).toBeInTheDocument();
       rerender(<Markdown text="hi" streaming cursor={null} />);
       expect(slot('markdown-cursor')).toBeNull();

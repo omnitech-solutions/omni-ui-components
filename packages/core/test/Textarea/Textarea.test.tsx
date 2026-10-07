@@ -1,11 +1,17 @@
 import '@testing-library/jest-dom';
+
+import {
+  Textarea,
+  type TextareaProps,
+  type TextareaSize,
+  type TextareaVariant,
+} from '@oc-tech/omni-ui-components/Textarea';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-import { Textarea, type TextareaProps, type TextareaSize, type TextareaVariant } from '@oc-tech/omni-ui-components/Textarea';
 import { runFieldChromeContract } from '../__support__/runFieldChromeContract';
 
-const renderTextarea = (overrides: Partial<TextareaProps> = {}) => render(<Textarea data-testid="t" {...overrides} />);
+const renderTextarea = (overrides: Partial<TextareaProps> = {}) =>
+  render(<Textarea data-testid="t" {...overrides} />);
 
 runFieldChromeContract<TextareaProps>({
   name: 'Textarea',

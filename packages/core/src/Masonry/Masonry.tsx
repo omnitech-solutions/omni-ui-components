@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 
 export type MasonryColumns = number | Partial<Record<'xs' | 'sm' | 'md', number>>;
 export type MasonryGapValue = number | string;
@@ -19,7 +18,8 @@ export interface MasonryItem<T = unknown> {
   height?: number;
 }
 
-export interface MasonryProps<T = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface MasonryProps<T = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   columns?: MasonryColumns;
   fresh?: boolean;
   gutter?: MasonryGap;
@@ -41,14 +41,17 @@ const resolveColumns = (columns: MasonryColumns, width: number): number => {
 };
 
 const resolveGap = (gutter: MasonryGap, width: number): [MasonryGapValue, MasonryGapValue] => {
-  const responsive = !Array.isArray(gutter) && typeof gutter === 'object'
-    ? (gutter as Partial<Record<'xs' | 'sm' | 'md', MasonryGapValue | [MasonryGapValue, MasonryGapValue]>>)
-    : undefined;
+  const responsive =
+    !Array.isArray(gutter) && typeof gutter === 'object'
+      ? (gutter as Partial<
+          Record<'xs' | 'sm' | 'md', MasonryGapValue | [MasonryGapValue, MasonryGapValue]>
+        >)
+      : undefined;
   const value = responsive
     ? width >= 768
-      ? responsive.md ?? responsive.sm ?? responsive.xs
+      ? (responsive.md ?? responsive.sm ?? responsive.xs)
       : width >= 640
-        ? responsive.sm ?? responsive.xs
+        ? (responsive.sm ?? responsive.xs)
         : responsive.xs
     : (gutter as MasonryGapValue | [MasonryGapValue, MasonryGapValue]);
   if (Array.isArray(value)) return value;
@@ -56,10 +59,15 @@ const resolveGap = (gutter: MasonryGap, width: number): [MasonryGapValue, Masonr
 };
 
 const isMasonryItem = (value: MasonryItem | React.ReactNode): value is MasonryItem =>
-  typeof value === 'object' && value !== null && 'key' in value && ('children' in value || 'data' in value || 'column' in value);
+  typeof value === 'object' &&
+  value !== null &&
+  'key' in value &&
+  ('children' in value || 'data' in value || 'column' in value);
 
 const useViewportWidth = () => {
-  const [width, setWidth] = React.useState(() => (typeof window === 'undefined' ? 1024 : window.innerWidth));
+  const [width, setWidth] = React.useState(() =>
+    typeof window === 'undefined' ? 1024 : window.innerWidth,
+  );
   React.useEffect(() => {
     const update = () => setWidth(window.innerWidth);
     window.addEventListener('resize', update);
@@ -89,14 +97,21 @@ export const Masonry = React.forwardRef<HTMLDivElement, MasonryProps>(function M
 ) {
   const width = useViewportWidth();
   const columnCount = Math.max(1, resolveColumns(columns, width));
-  const source = (items ?? React.Children.toArray(children)) as Array<MasonryItem | React.ReactNode>;
+  const source = (items ?? React.Children.toArray(children)) as Array<
+    MasonryItem | React.ReactNode
+  >;
   const normalized: MasonryItem[] = source.map((item, index) =>
     isMasonryItem(item) ? item : { key: index, children: item },
   );
   const [horizontal, vertical] = resolveGap(gutter, width);
 
   React.useEffect(() => {
-    onLayoutChange?.(normalized.map((item, index) => ({ key: item.key ?? index, column: item.column ?? index % columnCount })));
+    onLayoutChange?.(
+      normalized.map((item, index) => ({
+        key: item.key ?? index,
+        column: item.column ?? index % columnCount,
+      })),
+    );
   }, [columnCount, normalized.length, onLayoutChange]);
 
   return (

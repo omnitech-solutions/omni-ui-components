@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import type * as React from 'react';
 import { SortableHandle } from '../dragHandle';
 
 // Sortable `<th>`: adds grip + transform styling around the header content.
@@ -12,8 +12,23 @@ export interface SortableHeaderCellProps extends React.ThHTMLAttributes<HTMLTabl
   children?: React.ReactNode;
 }
 
-export const SortableHeaderCell: React.FC<SortableHeaderCellProps> = ({ columnKey, testIdPrefix, onKeyboardMove, children, style, ...cellProps }) => {
-  const { attributes, listeners, setActivatorNodeRef, setNodeRef, transform, transition, isDragging } = useSortable({ id: `column:${columnKey}` });
+export const SortableHeaderCell: React.FC<SortableHeaderCellProps> = ({
+  columnKey,
+  testIdPrefix,
+  onKeyboardMove,
+  children,
+  style,
+  ...cellProps
+}) => {
+  const {
+    attributes,
+    listeners,
+    setActivatorNodeRef,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: `column:${columnKey}` });
 
   const mergedStyle: React.CSSProperties = {
     ...style,
@@ -24,7 +39,13 @@ export const SortableHeaderCell: React.FC<SortableHeaderCellProps> = ({ columnKe
   };
 
   return (
-    <th {...cellProps} style={mergedStyle} ref={setNodeRef} scope="col" data-dragging={isDragging ? 'true' : undefined}>
+    <th
+      {...cellProps}
+      style={mergedStyle}
+      ref={setNodeRef}
+      scope="col"
+      data-dragging={isDragging ? 'true' : undefined}
+    >
       <span className="bui-table-header-drag">
         <SortableHandle
           label={`Reorder column ${columnKey}`}

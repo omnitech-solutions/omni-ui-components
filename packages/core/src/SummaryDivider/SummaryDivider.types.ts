@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 export interface SummaryDividerLabels {
   /** The disclosure text. Default `3 earlier messages summarised` (singular for 1). */
@@ -7,7 +7,8 @@ export interface SummaryDividerLabels {
   note: string;
 }
 
-export interface SummaryDividerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface SummaryDividerProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   /** How many earlier messages the summary stands for. */
   count: number;
   /** The summary text shown when opened. */

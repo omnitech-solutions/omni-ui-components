@@ -1,19 +1,18 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
-
 import { SplitButton, type SplitButtonProps } from '@oc-tech/omni-ui-components/SplitButton';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   CaptureSplitButtonDemo,
+  type CaptureState,
   MicSplitButtonDemo,
+  type MicState,
+  type OnAction,
   splitButtonBoardVariants,
   splitButtonCaptureVariants,
   splitButtonMicVariants,
   splitButtonPropsFactory,
-  type CaptureState,
-  type MicState,
-  type OnAction,
 } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
+import * as React from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 /** Story-only extras: demo state, plus top-level actions for the callbacks nested inside `main` and `menu`. */
 type StoryArgs = SplitButtonProps & {
@@ -26,12 +25,27 @@ type StoryArgs = SplitButtonProps & {
 };
 
 /** The toolbar surface the control sits on in the designer boards (story-only chrome). */
-const Surface: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
-  <div className={`inline-block rounded-2xl bg-[color:var(--oui-badge-ring)] p-6 ${className ?? ''}`}>{children}</div>
+const Surface: React.FC<React.PropsWithChildren<{ className?: string }>> = ({
+  children,
+  className,
+}) => (
+  <div
+    className={`inline-block rounded-2xl bg-[color:var(--oui-badge-ring)] p-6 ${className ?? ''}`}
+  >
+    {children}
+  </div>
 );
 
 /** Raw props with working selection: section values are held here, since the SplitButton and ActionMenu keep none. */
-const Playground: React.FC<StoryArgs> = ({ onPress, onSelect, onNoticeAction, capture: _c, mic: _m, onAction: _a, ...props }) => {
+const Playground: React.FC<StoryArgs> = ({
+  onPress,
+  onSelect,
+  onNoticeAction,
+  capture: _c,
+  mic: _m,
+  onAction: _a,
+  ...props
+}) => {
   const [values, setValues] = React.useState<Record<string, string>>({});
   const notice = props.menu.notice;
   return (
@@ -41,14 +55,22 @@ const Playground: React.FC<StoryArgs> = ({ onPress, onSelect, onNoticeAction, ca
         main={{ ...props.main, onPress: onPress ?? props.main.onPress }}
         menu={{
           ...props.menu,
-          sections: props.menu.sections.map((section) => ({ ...section, value: values[section.id] ?? section.value })),
+          sections: props.menu.sections.map((section) => ({
+            ...section,
+            value: values[section.id] ?? section.value,
+          })),
           onSelect: onSelect ?? props.menu.onSelect,
           onValueChange: (sectionId, itemId) => {
             setValues((current) => ({ ...current, [sectionId]: itemId }));
             props.menu.onValueChange?.(sectionId, itemId);
           },
           notice: notice
-            ? { ...notice, action: notice.action ? { ...notice.action, onSelect: onNoticeAction ?? notice.action.onSelect } : undefined }
+            ? {
+                ...notice,
+                action: notice.action
+                  ? { ...notice.action, onSelect: onNoticeAction ?? notice.action.onSelect }
+                  : undefined,
+              }
             : undefined,
         }}
       />
@@ -80,19 +102,42 @@ const meta: Meta<StoryArgs> = {
       options: [undefined, 'control', 'control-labelled'],
       description: 'Default: the enclosing Toolbar size, else control.',
     },
-    status: { control: 'object', description: '{ tone, label?, description? } badge at the top-right of the main icon.' },
-    main: { control: 'object', description: 'icon, label, state, pressed, tooltip, shortcut, disabled, disabledReason, onPress.' },
+    status: {
+      control: 'object',
+      description: '{ tone, label?, description? } badge at the top-right of the main icon.',
+    },
+    main: {
+      control: 'object',
+      description:
+        'icon, label, state, pressed, tooltip, shortcut, disabled, disabledReason, onPress.',
+    },
     caret: { control: 'object', description: 'label, tooltip, disabledReason.' },
-    menu: { control: 'object', description: 'An ActionMenu spec (sections, notice, hint, width, placement, portal, onSelect, onValueChange...).' },
+    menu: {
+      control: 'object',
+      description:
+        'An ActionMenu spec (sections, notice, hint, width, placement, portal, onSelect, onValueChange...).',
+    },
     openMenuOn: { control: 'check', options: ['contextmenu', 'arrowdown'] },
     open: { control: 'boolean' },
-    capture: { control: 'object', description: 'Demo stories: { mode, display, analysing, problem, paused }.' },
+    capture: {
+      control: 'object',
+      description: 'Demo stories: { mode, display, analysing, problem, paused }.',
+    },
     mic: { control: 'object', description: 'Demo stories: { status, device }.' },
     onOpenChange: { action: 'menu open changed' },
-    onAction: { action: 'interaction', description: 'Story-only: demo interactions (press, select, open, fix, retry).' },
+    onAction: {
+      action: 'interaction',
+      description: 'Story-only: demo interactions (press, select, open, fix, retry).',
+    },
     onPress: { action: 'main pressed', description: 'Story-only: main.onPress (Playground).' },
-    onSelect: { action: 'menu row selected', description: 'Story-only: menu.onSelect (Playground).' },
-    onNoticeAction: { action: 'notice action', description: 'Story-only: menu.notice.action.onSelect (Playground).' },
+    onSelect: {
+      action: 'menu row selected',
+      description: 'Story-only: menu.onSelect (Playground).',
+    },
+    onNoticeAction: {
+      action: 'notice action',
+      description: 'Story-only: menu.notice.action.onSelect (Playground).',
+    },
   },
   render: (args) => <Playground {...args} />,
 };
@@ -155,7 +200,10 @@ export const AutoToggleSegment: Story = {
   },
 };
 
-export const Labelled: Story = { ...captureStory({ mode: 'manual' }), args: { capture: { mode: 'manual' }, size: 'control-labelled' } };
+export const Labelled: Story = {
+  ...captureStory({ mode: 'manual' }),
+  args: { capture: { mode: 'manual' }, size: 'control-labelled' },
+};
 
 export const MenuOpen: Story = {
   args: { defaultOpen: true },
@@ -166,7 +214,9 @@ export const MenuOpen: Story = {
   ),
 };
 
-export const OpenFromRightClickAndArrowDown: Story = { args: { openMenuOn: ['contextmenu', 'arrowdown'] } };
+export const OpenFromRightClickAndArrowDown: Story = {
+  args: { openMenuOn: ['contextmenu', 'arrowdown'] },
+};
 
 export const StateMatrix: Story = {
   render: () => (
@@ -174,7 +224,9 @@ export const StateMatrix: Story = {
       <div className="flex flex-wrap items-start gap-x-8 gap-y-5">
         {[...splitButtonCaptureVariants, ...splitButtonMicVariants].map((variant) => (
           <div key={variant.name} className="flex flex-col items-start gap-2">
-            <span className="font-mono text-[11.5px] text-[var(--oui-foreground-muted)]">{variant.name}</span>
+            <span className="font-mono text-[11.5px] text-[var(--oui-foreground-muted)]">
+              {variant.name}
+            </span>
             <SplitButton {...splitButtonPropsFactory(variant.args)} />
           </div>
         ))}
@@ -194,10 +246,18 @@ export const PickAutoWithMouse: Story = {
     await userEvent.click(await body.findByRole('menuitemradio', { name: /^Auto/ }));
     await waitFor(() => expect(root).toHaveAttribute('data-tone', 'accent'));
     await waitFor(() => expect(body.queryByRole('menu')).toBeNull());
-    await expect(canvasElement.ownerDocument.activeElement).not.toBe(within(canvasElement).getByRole('button', { name: 'More options' }));
+    await expect(canvasElement.ownerDocument.activeElement).not.toBe(
+      within(canvasElement).getByRole('button', { name: 'More options' }),
+    );
     await userEvent.click(within(canvasElement).getByRole('button', { name: 'More options' }));
-    await expect(await body.findByRole('menuitemradio', { name: /^Auto/ })).toHaveAttribute('aria-checked', 'true');
-    await expect(body.getByRole('menuitemradio', { name: /^Manual/ })).toHaveAttribute('aria-checked', 'false');
+    await expect(await body.findByRole('menuitemradio', { name: /^Auto/ })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await expect(body.getByRole('menuitemradio', { name: /^Manual/ })).toHaveAttribute(
+      'aria-checked',
+      'false',
+    );
     await userEvent.keyboard('{Escape}');
   },
 };
@@ -212,7 +272,12 @@ export const PickAutoWithKeyboard: Story = {
     await userEvent.keyboard('{Enter}');
     await body.findByRole('menu');
     await userEvent.keyboard('{ArrowDown}{Enter}');
-    await waitFor(() => expect(canvasElement.querySelector('[data-slot="split-button"]')).toHaveAttribute('data-tone', 'accent'));
+    await waitFor(() =>
+      expect(canvasElement.querySelector('[data-slot="split-button"]')).toHaveAttribute(
+        'data-tone',
+        'accent',
+      ),
+    );
     await waitFor(() => expect(canvasElement.ownerDocument.activeElement).toBe(caret));
   },
 };

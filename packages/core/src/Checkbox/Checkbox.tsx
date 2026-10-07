@@ -1,10 +1,9 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { useStableId } from '../lib';
+import * as React from 'react';
 import { fieldGroupVariants } from '../Input/Input.variants';
-import { CheckboxPrimitive } from './CheckboxPrimitive';
+import { useStableId } from '../lib';
 import type { CheckboxProps } from './Checkbox.types';
+import { CheckboxPrimitive } from './CheckboxPrimitive';
 
 /**
  * Chrome-wrapped single Omni Checkbox. Composes {@link CheckboxPrimitive}
@@ -21,7 +20,20 @@ import type { CheckboxProps } from './Checkbox.types';
  */
 const CheckboxInner = React.forwardRef<HTMLButtonElement, CheckboxProps>(
   (
-    { id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, disabled, ...primitiveProps },
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      disabled,
+      ...primitiveProps
+    },
     ref,
   ) => {
     const fallbackId = useStableId('oui-checkbox');
@@ -32,7 +44,11 @@ const CheckboxInner = React.forwardRef<HTMLButtonElement, CheckboxProps>(
     const describedBy = [descriptionId, errorId].filter(Boolean).join(' ') || undefined;
 
     const errorNode = error ? (
-      <p id={errorId} role="alert" className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-border-invalid)]">
+      <p
+        id={errorId}
+        role="alert"
+        className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-border-invalid)]"
+      >
         {error}
       </p>
     ) : null;
@@ -69,7 +85,10 @@ const CheckboxInner = React.forwardRef<HTMLButtonElement, CheckboxProps>(
               </span>
             ) : null}
             {description && !error ? (
-              <span id={descriptionId} className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]">
+              <span
+                id={descriptionId}
+                className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]"
+              >
                 {description}
               </span>
             ) : null}

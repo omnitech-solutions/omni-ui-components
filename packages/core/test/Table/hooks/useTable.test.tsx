@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
-import * as React from 'react';
+import type * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { TableProvider, useTable, type TableContextShape } from '../../../src/Table/hooks/useTable';
+import { type TableContextShape, TableProvider, useTable } from '../../../src/Table/hooks/useTable';
 import { useTableContextValue } from '../../../src/Table/hooks/useTableContextValue';
 
 const shape = (overrides: Partial<TableContextShape> = {}): TableContextShape =>

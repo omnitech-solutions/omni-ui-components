@@ -5,7 +5,9 @@ import type { TableContextShape } from './useTable';
 // don't re-render when TableImpl re-renders for unrelated reasons. Every
 // field flows straight through — this hook exists to keep TableImpl free
 // of a 50-entry useMemo declaration.
-export function useTableContextValue<TRecord, TRowData>(input: TableContextShape<TRecord, TRowData>): TableContextShape<TRecord, TRowData> {
+export function useTableContextValue<TRecord, TRowData>(
+  input: TableContextShape<TRecord, TRowData>,
+): TableContextShape<TRecord, TRowData> {
   const {
     table,
     props,

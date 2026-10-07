@@ -1,31 +1,30 @@
 import type { RegistryWidgetsType } from '@rjsf/utils';
-
-import { TextWidget } from '../widgets/TextWidget';
-import { TextareaWidget } from '../widgets/TextareaWidget';
-import { SelectWidget } from '../widgets/SelectWidget';
-import { RadioWidget } from '../widgets/RadioWidget';
-import { CheckboxWidget } from '../widgets/CheckboxWidget';
 import { CheckboxesWidget } from '../widgets/CheckboxesWidget';
+import { CheckboxWidget } from '../widgets/CheckboxWidget';
+import { ColorWidget } from '../widgets/ColorWidget';
+import { ComboboxWidget } from '../widgets/ComboboxWidget';
+import { CurrencyWidget } from '../widgets/CurrencyWidget';
+import { DateTimeWidget } from '../widgets/DateTimeWidget';
+import { DateWidget } from '../widgets/DateWidget';
+import { DerivedTextWidget } from '../widgets/DerivedTextWidget';
+import { FileUploadWidget } from '../widgets/FileUploadWidget';
+import { HiddenWidget } from '../widgets/HiddenWidget';
 import { IconToolbarWidget } from '../widgets/IconToolbarWidget';
+import { InputOTPWidget } from '../widgets/InputOTPWidget';
+import { MultiSelectWidget } from '../widgets/MultiSelectWidget';
+import { NumberInputWidget } from '../widgets/NumberInputWidget';
+import { PhoneWidget } from '../widgets/PhoneWidget';
+import { RadioWidget } from '../widgets/RadioWidget';
 import { RangeWidget } from '../widgets/RangeWidget';
+import { RichTextWidget } from '../widgets/RichTextWidget';
 import { SegmentedWidget } from '../widgets/SegmentedWidget';
+import { SelectWidget } from '../widgets/SelectWidget';
 import { StepperWidget } from '../widgets/StepperWidget';
 import { SwitchWidget } from '../widgets/SwitchWidget';
-import { DateWidget } from '../widgets/DateWidget';
-import { ComboboxWidget } from '../widgets/ComboboxWidget';
-import { NumberInputWidget } from '../widgets/NumberInputWidget';
-import { CurrencyWidget } from '../widgets/CurrencyWidget';
-import { PhoneWidget } from '../widgets/PhoneWidget';
-import { InputOTPWidget } from '../widgets/InputOTPWidget';
 import { TagInputWidget } from '../widgets/TagInputWidget';
+import { TextareaWidget } from '../widgets/TextareaWidget';
+import { TextWidget } from '../widgets/TextWidget';
 import { TimeWidget } from '../widgets/TimeWidget';
-import { ColorWidget } from '../widgets/ColorWidget';
-import { FileUploadWidget } from '../widgets/FileUploadWidget';
-import { DateTimeWidget } from '../widgets/DateTimeWidget';
-import { MultiSelectWidget } from '../widgets/MultiSelectWidget';
-import { HiddenWidget } from '../widgets/HiddenWidget';
-import { RichTextWidget } from '../widgets/RichTextWidget';
-import { DerivedTextWidget } from '../widgets/DerivedTextWidget';
 
 /**
  * App-level RJSF widget registry. The single `TextWidget` handles every

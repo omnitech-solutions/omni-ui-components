@@ -1,4 +1,4 @@
-export { MultiSelect } from './MultiSelect';
 export type { MultiSelectProps } from './MultiSelect';
-export { MultiSelectPrimitive } from './MultiSelectPrimitive';
+export { MultiSelect } from './MultiSelect';
 export type { MultiSelectPrimitiveProps } from './MultiSelectPrimitive';
+export { MultiSelectPrimitive } from './MultiSelectPrimitive';

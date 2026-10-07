@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Mentions } from '@oc-tech/omni-ui-components/Mentions';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const meta: Meta<typeof Mentions> = {
   title: 'omni-ui-components/Mentions',

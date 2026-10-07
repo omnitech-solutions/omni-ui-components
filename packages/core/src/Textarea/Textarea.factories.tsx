@@ -26,7 +26,10 @@ export const textareaPropsFactory = makeFactory<TextareaProps>({
 export const textareaVariants: Variant<TextareaProps>[] = [
   { name: 'Default', args: { label: 'Default', placeholder: 'Type something…' } },
   { name: 'Required', args: { label: 'Required', required: true } },
-  { name: 'With description', args: { label: 'With description', description: 'Recipients see this in the email body.' } },
+  {
+    name: 'With description',
+    args: { label: 'With description', description: 'Recipients see this in the email body.' },
+  },
   { name: 'Read only', args: { label: 'Read only', readOnly: true, value: 'Locked content.' } },
   { name: 'Disabled', args: { label: 'Disabled', disabled: true, value: 'Greyed out.' } },
   { name: 'Invalid', args: { label: 'Invalid', error: 'This field is required' } },

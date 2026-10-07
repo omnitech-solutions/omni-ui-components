@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** The base item of an error: extend it with your own fields (a run, a code) and they reach `onRetry` and `onDismiss`. */
 export interface ErrorItem {
@@ -8,7 +8,8 @@ export interface ErrorItem {
   note?: React.ReactNode;
 }
 
-export interface ErrorCardProps<T extends ErrorItem = ErrorItem> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+export interface ErrorCardProps<T extends ErrorItem = ErrorItem>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   /** The error to show; `title`, `message` and `note` default to its fields, and the props below override them. Callbacks receive it by reference. */
   error?: T;
   /**

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Descriptions } from '@oc-tech/omni-ui-components/Descriptions';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/Descriptions', () => {
   it('renders labels and values', () => {

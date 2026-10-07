@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Tab, TabPanel, Tabs, TabsBar } from '@oc-tech/omni-ui-components/Tabs';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Tabs> = {
   title: 'omni-ui-components/Tabs',
@@ -32,19 +31,26 @@ export const Default: Story = {
       <TabPanel value="overview">
         <div className="space-y-3">
           <div className="text-sm font-semibold">Workspace summary</div>
-          <div className="text-sm text-[var(--oui-foreground-muted)]">Track rollout health, release timing, and blockers without leaving the current record view.</div>
+          <div className="text-sm text-[var(--oui-foreground-muted)]">
+            Track rollout health, release timing, and blockers without leaving the current record
+            view.
+          </div>
         </div>
       </TabPanel>
       <TabPanel value="activity">
         <div className="space-y-3">
           <div className="text-sm font-semibold">Recent activity</div>
-          <div className="text-sm text-[var(--oui-foreground-muted)]">Review approvals, comment threads, and publishing events in one continuous timeline.</div>
+          <div className="text-sm text-[var(--oui-foreground-muted)]">
+            Review approvals, comment threads, and publishing events in one continuous timeline.
+          </div>
         </div>
       </TabPanel>
       <TabPanel value="settings">
         <div className="space-y-3">
           <div className="text-sm font-semibold">Workspace settings</div>
-          <div className="text-sm text-[var(--oui-foreground-muted)]">Manage notifications, review policy, and ownership defaults for future changes.</div>
+          <div className="text-sm text-[var(--oui-foreground-muted)]">
+            Manage notifications, review policy, and ownership defaults for future changes.
+          </div>
         </div>
       </TabPanel>
     </Tabs>
@@ -62,19 +68,25 @@ export const ThreePanels: Story = {
       <TabPanel value="details">
         <div className="space-y-3">
           <div className="text-sm font-semibold">Account details</div>
-          <div className="text-sm text-[var(--oui-foreground-muted)]">Primary owner, billing plan, and lifecycle status for the selected account.</div>
+          <div className="text-sm text-[var(--oui-foreground-muted)]">
+            Primary owner, billing plan, and lifecycle status for the selected account.
+          </div>
         </div>
       </TabPanel>
       <TabPanel value="activity">
         <div className="space-y-3">
           <div className="text-sm font-semibold">Activity</div>
-          <div className="text-sm text-[var(--oui-foreground-muted)]">See inbound events, workflow transitions, and external sync status.</div>
+          <div className="text-sm text-[var(--oui-foreground-muted)]">
+            See inbound events, workflow transitions, and external sync status.
+          </div>
         </div>
       </TabPanel>
       <TabPanel value="files">
         <div className="space-y-3">
           <div className="text-sm font-semibold">Files</div>
-          <div className="text-sm text-[var(--oui-foreground-muted)]">Store statements of work, attachments, and exported reports alongside the account.</div>
+          <div className="text-sm text-[var(--oui-foreground-muted)]">
+            Store statements of work, attachments, and exported reports alongside the account.
+          </div>
         </div>
       </TabPanel>
     </Tabs>
@@ -90,13 +102,19 @@ export const FullWidthBar: Story = {
         <Tab value="closed">Closed</Tab>
       </TabsBar>
       <TabPanel value="open">
-        <div className="text-sm text-[var(--oui-foreground-muted)]">Open work includes new requests, active coordination, and pending assignments.</div>
+        <div className="text-sm text-[var(--oui-foreground-muted)]">
+          Open work includes new requests, active coordination, and pending assignments.
+        </div>
       </TabPanel>
       <TabPanel value="review">
-        <div className="text-sm text-[var(--oui-foreground-muted)]">Items in review are waiting on approval, QA, or policy validation before release.</div>
+        <div className="text-sm text-[var(--oui-foreground-muted)]">
+          Items in review are waiting on approval, QA, or policy validation before release.
+        </div>
       </TabPanel>
       <TabPanel value="closed">
-        <div className="text-sm text-[var(--oui-foreground-muted)]">Closed work remains available for audit history, export, and retrospective analysis.</div>
+        <div className="text-sm text-[var(--oui-foreground-muted)]">
+          Closed work remains available for audit history, export, and retrospective analysis.
+        </div>
       </TabPanel>
     </Tabs>
   ),

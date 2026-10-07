@@ -1,8 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Checkbox, type CheckboxProps } from '@oc-tech/omni-ui-components/Checkbox';
+import type { Meta, StoryObj } from '@storybook/react';
 import { checkboxPropsFactory } from 'factories/omni-ui-components/Checkbox/Checkbox.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<CheckboxProps> = (args) => {
   const [checked, setChecked] = React.useState<boolean>(Boolean(args.checked));

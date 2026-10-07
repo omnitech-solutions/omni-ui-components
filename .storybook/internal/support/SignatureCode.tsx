@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -19,7 +19,8 @@ export const SignatureCode: React.FC<SignatureCodeProps> = ({ code }) => (
       overflow: 'visible',
       fontSize: '0.66rem',
       lineHeight: 1.4,
-      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace',
+      fontFamily:
+        'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace',
     }}
     codeTagProps={{
       style: { background: 'transparent', padding: 0, whiteSpace: 'pre' },

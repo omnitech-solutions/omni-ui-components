@@ -1,10 +1,9 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { act, render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, vi } from 'vitest';
 
-import { StreamStatus, formatElapsed } from '@oc-tech/omni-ui-components';
+import { formatElapsed, StreamStatus } from '@oc-tech/omni-ui-components';
+import { act, render, screen } from '@testing-library/react';
 import { streamStatusPropsFactory } from 'factories/omni-ui-components/StreamStatus/StreamStatus.factories';
+import { afterEach, beforeEach, vi } from 'vitest';
 
 const timer = () => document.querySelector('[data-slot="stream-status-timer"]');
 
@@ -25,7 +24,9 @@ describe('omni-ui-components/StreamStatus', () => {
   });
 
   it('labels each kind and status', () => {
-    const { rerender } = render(<StreamStatus {...streamStatusPropsFactory({ icon: undefined })} />);
+    const { rerender } = render(
+      <StreamStatus {...streamStatusPropsFactory({ icon: undefined })} />,
+    );
     expect(screen.getByRole('status')).toHaveTextContent('Calling search_docs…');
     rerender(<StreamStatus {...streamStatusPropsFactory({ status: 'completed' })} />);
     expect(screen.getByRole('status')).toHaveTextContent('search_docs completed');

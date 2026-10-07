@@ -1,14 +1,13 @@
-import * as React from 'react';
-import { ChevronDown } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
 import { ActionMenu } from '../ActionMenu';
 import { ControlBadge } from '../internal/support/ControlBadge';
-import { hitAreaEnd, hitAreaStart, hitAreaY } from '../internal/support/hitArea';
 import { toneTintClasses } from '../internal/support/controlTone';
+import { hitAreaEnd, hitAreaStart, hitAreaY } from '../internal/support/hitArea';
 import { Progress } from '../Progress';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../Tooltip';
 import { useToolbarSize } from '../Toolbar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../Tooltip';
 import type { SplitButtonProps } from './SplitButton.types';
 
 const SEGMENT =
@@ -33,7 +32,24 @@ const SEGMENT =
  * />
  */
 export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
-  ({ main, segments, caret, menu, tone, status, size, open, defaultOpen, onOpenChange, openMenuOn = [], className, 'data-testid': testId }, ref) => {
+  (
+    {
+      main,
+      segments,
+      caret,
+      menu,
+      tone,
+      status,
+      size,
+      open,
+      defaultOpen,
+      onOpenChange,
+      openMenuOn = [],
+      className,
+      'data-testid': testId,
+    },
+    ref,
+  ) => {
     const toolbarSize = useToolbarSize();
     const resolvedSize = size ?? toolbarSize ?? 'control';
     const labelled = resolvedSize === 'control-labelled';
@@ -53,7 +69,8 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
     const mainReasoned = Boolean(main.disabledReason);
     const caretReasoned = Boolean(caret?.disabledReason);
     const mainTip = mainReasoned ? main.disabledReason : main.tooltip;
-    const hasMainTip = mainTip !== undefined && mainTip !== null && mainTip !== false && mainTip !== '';
+    const hasMainTip =
+      mainTip !== undefined && mainTip !== null && mainTip !== false && mainTip !== '';
 
     const handleMainClick = (event: React.MouseEvent<HTMLButtonElement>) => {
       // aria-disabled keeps the button hoverable for the tooltip, so the click is swallowed here.
@@ -111,7 +128,11 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
         }
       >
         <span data-slot="split-button-icon" className="inline-flex">
-          {analysing ? <Progress shape="ring" tone="accent" size={20} aria-hidden="true" /> : main.icon}
+          {analysing ? (
+            <Progress shape="ring" tone="accent" size={20} aria-hidden="true" />
+          ) : (
+            main.icon
+          )}
         </span>
         {/* Same size and height as the IconButton badge (--oui-badge-size / --oui-badge-offset), anchored to the main segment's top-right corner but inset on the right so it never crosses into the caret half. */}
         {status ? (
@@ -140,7 +161,9 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
     const mainTipContent = hasMainTip ? (
       <>
         {mainTip}
-        {!mainReasoned && main.shortcut?.length ? <span className="ml-1.5 font-mono text-xs opacity-70">{main.shortcut.join('')}</span> : null}
+        {!mainReasoned && main.shortcut?.length ? (
+          <span className="ml-1.5 font-mono text-xs opacity-70">{main.shortcut.join('')}</span>
+        ) : null}
       </>
     ) : null;
 
@@ -185,7 +208,11 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
             <TooltipTrigger asChild>{button}</TooltipTrigger>
             <TooltipContent container={menu.container}>
               {segment.tooltip}
-              {segment.shortcut?.length ? <span className="ml-1.5 font-mono text-xs opacity-70">{segment.shortcut.join('')}</span> : null}
+              {segment.shortcut?.length ? (
+                <span className="ml-1.5 font-mono text-xs opacity-70">
+                  {segment.shortcut.join('')}
+                </span>
+              ) : null}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -226,13 +253,20 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
       caretNode = (
         <TooltipProvider>
           <Tooltip>
-            <ActionMenu {...menu} open={isOpen} onOpenChange={setOpen} trigger={<TooltipTrigger asChild>{caretButton}</TooltipTrigger>} />
+            <ActionMenu
+              {...menu}
+              open={isOpen}
+              onOpenChange={setOpen}
+              trigger={<TooltipTrigger asChild>{caretButton}</TooltipTrigger>}
+            />
             <TooltipContent container={menu.container}>{caret.tooltip}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       );
     } else {
-      caretNode = <ActionMenu {...menu} open={isOpen} onOpenChange={setOpen} trigger={caretButton} />;
+      caretNode = (
+        <ActionMenu {...menu} open={isOpen} onOpenChange={setOpen} trigger={caretButton} />
+      );
     }
 
     return (

@@ -1,10 +1,18 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { fireEvent, render, screen } from '@testing-library/react';
 
-import { Composer, ComposerNotice, PlusMenu, sendStateOf } from '@oc-tech/omni-ui-components/Composer';
-import { ComposerDemo, composerPropsFactory } from 'factories/omni-ui-components/Composer/Composer.factories';
+import {
+  Composer,
+  ComposerNotice,
+  PlusMenu,
+  sendStateOf,
+} from '@oc-tech/omni-ui-components/Composer';
+import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  ComposerDemo,
+  composerPropsFactory,
+} from 'factories/omni-ui-components/Composer/Composer.factories';
+import * as React from 'react';
 
 const Controlled: React.FC<Partial<React.ComponentProps<typeof Composer>>> = (props) => {
   const [value, setValue] = React.useState(props.value ?? '');
@@ -33,7 +41,9 @@ describe('omni-ui-components/Composer', () => {
   });
 
   it('absent callbacks render no control: no onSubmit means no send button, no onStop means no Stop, and Enter does nothing', async () => {
-    const { rerender } = render(<Composer {...composerPropsFactory({ onSubmit: undefined, value: 'x' })} />);
+    const { rerender } = render(
+      <Composer {...composerPropsFactory({ onSubmit: undefined, value: 'x' })} />,
+    );
     expect(screen.queryByRole('button', { name: 'Send (Enter)' })).toBeNull();
     await userEvent.type(screen.getByRole('textbox'), '{Enter}');
     rerender(<Composer {...composerPropsFactory({ streaming: true, onStop: undefined })} />);
@@ -66,7 +76,9 @@ describe('omni-ui-components/Composer', () => {
 
   describe('history recall (the edge rule)', () => {
     const past = ['first', 'second', 'third'];
-    const History: React.FC<Partial<React.ComponentProps<typeof Composer>> & { start?: string }> = ({ start = '', ...props }) => {
+    const History: React.FC<
+      Partial<React.ComponentProps<typeof Composer>> & { start?: string }
+    > = ({ start = '', ...props }) => {
       const at = React.useRef<number | null>(null);
       return (
         <Controlled
@@ -190,8 +202,13 @@ describe('omni-ui-components/Composer', () => {
   it('idle send is disabled until text; attachments alone make it ready', () => {
     const { rerender } = render(<Composer {...composerPropsFactory()} />);
     expect(screen.getByRole('button', { name: 'Send (Enter)' })).toBeDisabled();
-    rerender(<Composer {...composerPropsFactory({ attachmentItems: [{ id: 'a', name: 'a.md' }] })} />);
-    expect(document.querySelector('[data-slot="send-button"]')).toHaveAttribute('data-state', 'ready');
+    rerender(
+      <Composer {...composerPropsFactory({ attachmentItems: [{ id: 'a', name: 'a.md' }] })} />,
+    );
+    expect(document.querySelector('[data-slot="send-button"]')).toHaveAttribute(
+      'data-state',
+      'ready',
+    );
   });
 
   it('lets a popover take the key first through onBeforeKeyDown', async () => {
@@ -212,16 +229,29 @@ describe('omni-ui-components/Composer', () => {
 
   it('renders slots: above, attachments, popover, hint, leading, toolbar, trailing; stacked vs pill', () => {
     const { rerender } = render(
-      <Composer {...composerPropsFactory({ above: <i>above</i>, attachments: <i>atts</i>, popover: <i>pop</i>, hint: 'hint', leading: <i>lead</i>, toolbar: <i>tool</i>, trailing: <i>trail</i> })} />,
+      <Composer
+        {...composerPropsFactory({
+          above: <i>above</i>,
+          attachments: <i>atts</i>,
+          popover: <i>pop</i>,
+          hint: 'hint',
+          leading: <i>lead</i>,
+          toolbar: <i>tool</i>,
+          trailing: <i>trail</i>,
+        })}
+      />,
     );
-    for (const text of ['above', 'atts', 'pop', 'hint', 'lead', 'tool', 'trail']) expect(screen.getByText(text)).toBeInTheDocument();
+    for (const text of ['above', 'atts', 'pop', 'hint', 'lead', 'tool', 'trail'])
+      expect(screen.getByText(text)).toBeInTheDocument();
     expect(document.querySelector('[data-slot="composer-toolbar"]')).not.toBeNull();
     rerender(<Composer {...composerPropsFactory({ variant: 'pill' })} />);
     expect(document.querySelector('[data-slot="composer-toolbar"]')).toBeNull();
   });
 
   it('dictation replaces the field and the actions', () => {
-    render(<Composer {...composerPropsFactory({ dictation: <div>bar</div>, trailing: <i>trail</i> })} />);
+    render(
+      <Composer {...composerPropsFactory({ dictation: <div>bar</div>, trailing: <i>trail</i> })} />,
+    );
     expect(screen.getByText('bar')).toBeInTheDocument();
     expect(screen.queryByRole('textbox')).toBeNull();
     expect(screen.queryByText('trail')).toBeNull();
@@ -229,7 +259,9 @@ describe('omni-ui-components/Composer', () => {
   });
 
   it('strings come from labels', () => {
-    render(<Composer {...composerPropsFactory({ labels: { message: 'Mensaje', send: 'Enviar' } })} />);
+    render(
+      <Composer {...composerPropsFactory({ labels: { message: 'Mensaje', send: 'Enviar' } })} />,
+    );
     expect(screen.getByRole('textbox', { name: 'Mensaje' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Enviar' })).toBeInTheDocument();
   });
@@ -260,7 +292,9 @@ describe('omni-ui-components/Composer', () => {
   describe('ComposerNotice', () => {
     it('is an output with the message and an action', async () => {
       const onClick = vi.fn();
-      render(<ComposerNotice message="Haiku can’t see images." action={{ label: 'Switch', onClick }} />);
+      render(
+        <ComposerNotice message="Haiku can’t see images." action={{ label: 'Switch', onClick }} />,
+      );
       expect(screen.getByRole('status')).toHaveTextContent('Haiku can’t see images.');
       await userEvent.click(screen.getByRole('button', { name: 'Switch' }));
       expect(onClick).toHaveBeenCalled();

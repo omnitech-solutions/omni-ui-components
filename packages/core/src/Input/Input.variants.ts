@@ -67,7 +67,8 @@ export const inputVariants = cva(
 );
 
 /** Extra classes of the multiline `<textarea>`: height is set inline (auto-grow), so the size row's fixed height is dropped. */
-export const multilineClasses = 'h-auto min-h-[var(--oui-field-height-md)] resize-none leading-[1.5]';
+export const multilineClasses =
+  'h-auto min-h-[var(--oui-field-height-md)] resize-none leading-[1.5]';
 
 export type InputVariantProps = VariantProps<typeof inputVariants>;
 export type InputVariant = NonNullable<InputVariantProps['variant']>;
@@ -91,15 +92,19 @@ export const fieldGroupVariants = cva('font-[family-name:var(--oui-font-sans)] f
   defaultVariants: { layout: 'vertical' },
 });
 
-export const fieldLabelVariants = cva('font-[family-name:var(--oui-font-sans)] text-sm text-[var(--oui-foreground)]', {
-  variants: {
-    layout: {
-      vertical: 'font-semibold',
-      horizontal: 'shrink-0 w-[var(--oui-label-width,7.5rem)] font-normal text-[var(--oui-foreground-muted)]',
+export const fieldLabelVariants = cva(
+  'font-[family-name:var(--oui-font-sans)] text-sm text-[var(--oui-foreground)]',
+  {
+    variants: {
+      layout: {
+        vertical: 'font-semibold',
+        horizontal:
+          'shrink-0 w-[var(--oui-label-width,7.5rem)] font-normal text-[var(--oui-foreground-muted)]',
+      },
     },
+    defaultVariants: { layout: 'vertical' },
   },
-  defaultVariants: { layout: 'vertical' },
-});
+);
 
 export type FieldLayoutProps = VariantProps<typeof fieldGroupVariants>;
 export type FieldLayout = NonNullable<FieldLayoutProps['layout']>;

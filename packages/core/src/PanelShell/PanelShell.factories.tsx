@@ -1,15 +1,18 @@
-import * as React from 'react';
-
-import { PanelShell } from '@oc-tech/omni-ui-components/PanelShell';
-import type { PanelShellProps } from '@oc-tech/omni-ui-components/PanelShell';
 import { Button } from '@oc-tech/omni-ui-components/Button';
 import { ConversationHeader } from '@oc-tech/omni-ui-components/ConversationHeader';
 import { ConversationList } from '@oc-tech/omni-ui-components/ConversationList';
 import { EmptyStarters } from '@oc-tech/omni-ui-components/EmptyStarters';
+import { groupByRecency } from '@oc-tech/omni-ui-components/lib/chat';
+import type { PanelShellProps } from '@oc-tech/omni-ui-components/PanelShell';
+import { PanelShell } from '@oc-tech/omni-ui-components/PanelShell';
 import { SettingsDialog } from '@oc-tech/omni-ui-components/SettingsDialog';
-import { Toast, useToast, type ToastItem } from '@oc-tech/omni-ui-components/Toast';
+import { Toast, type ToastItem, useToast } from '@oc-tech/omni-ui-components/Toast';
 import { Transcript } from '@oc-tech/omni-ui-components/Transcript';
-import { conversationHeaderPropsFactory, conversationMenuItems, headerActions } from 'factories/omni-ui-components/ConversationHeader/ConversationHeader.factories';
+import {
+  conversationHeaderPropsFactory,
+  conversationMenuItems,
+  headerActions,
+} from 'factories/omni-ui-components/ConversationHeader/ConversationHeader.factories';
 import {
   archivedRowActions,
   conversationListPropsFactory,
@@ -20,13 +23,22 @@ import {
 } from 'factories/omni-ui-components/ConversationList/ConversationList.factories';
 import { sampleStarters } from 'factories/omni-ui-components/EmptyStarters/EmptyStarters.factories';
 import { ModelPickerDemo } from 'factories/omni-ui-components/ModelPicker/ModelPicker.factories';
-import { sampleSettingsTabs, settingsDialogPropsFactory } from 'factories/omni-ui-components/SettingsDialog/SettingsDialog.factories';
-import { answeredEntries, ComposerExample, transcriptPropsFactory } from 'factories/omni-ui-components/Transcript/Transcript.factories';
-import { groupByRecency } from '@oc-tech/omni-ui-components/lib/chat';
+import {
+  sampleSettingsTabs,
+  settingsDialogPropsFactory,
+} from 'factories/omni-ui-components/SettingsDialog/SettingsDialog.factories';
+import {
+  answeredEntries,
+  ComposerExample,
+  transcriptPropsFactory,
+} from 'factories/omni-ui-components/Transcript/Transcript.factories';
+import * as React from 'react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Build `<PanelShell>` props for standalone stories and tests. */
-export const panelShellPropsFactory = (overrides: Partial<PanelShellProps> = {}): PanelShellProps => ({
+export const panelShellPropsFactory = (
+  overrides: Partial<PanelShellProps> = {},
+): PanelShellProps => ({
   mode: 'panel',
   open: true,
   ...overrides,
@@ -44,15 +56,47 @@ interface ShellToast extends ToastItem {
 }
 
 export const panelShellVariants: Variant<PanelShellProps>[] = [
-  { name: 'Side panel (440px) beside the host', args: { host: <HostPage />, children: <EmptyStarters title="What are we working on?" starters={sampleStarters()} onStart={() => undefined} columns={1} /> } },
-  { name: 'Full page (host hidden)', args: { mode: 'full', host: <HostPage />, children: <EmptyStarters title="What are we working on?" starters={sampleStarters()} onStart={() => undefined} /> } },
+  {
+    name: 'Side panel (440px) beside the host',
+    args: {
+      host: <HostPage />,
+      children: (
+        <EmptyStarters
+          title="What are we working on?"
+          starters={sampleStarters()}
+          onStart={() => undefined}
+          columns={1}
+        />
+      ),
+    },
+  },
+  {
+    name: 'Full page (host hidden)',
+    args: {
+      mode: 'full',
+      host: <HostPage />,
+      children: (
+        <EmptyStarters
+          title="What are we working on?"
+          starters={sampleStarters()}
+          onStart={() => undefined}
+        />
+      ),
+    },
+  },
   { name: 'Closed (host only)', args: { open: false, host: <HostPage /> } },
   {
     name: 'Narrow panel (300px)',
     args: {
       width: 300,
       host: <HostPage />,
-      header: <ConversationHeader {...conversationHeaderPropsFactory({ modelControl: <ModelPickerDemo side="bottom" align="end" /> })} />,
+      header: (
+        <ConversationHeader
+          {...conversationHeaderPropsFactory({
+            modelControl: <ModelPickerDemo side="bottom" align="end" />,
+          })}
+        />
+      ),
       children: <EmptyStarters title="Ask anything" onStart={() => undefined} columns={1} />,
     },
   },
@@ -63,11 +107,11 @@ export const panelShellVariants: Variant<PanelShellProps>[] = [
  * the model picker, a Transcript or the EmptyStarters, the composer, a SettingsDialog and a Toast with Undo.
  * Everything is composed from the library parts; all state is here.
  */
-export const ChatShellDemo: React.FC<{ mode?: 'panel' | 'full'; empty?: boolean; onAction?: (name: string, ...args: unknown[]) => void }> = ({
-  mode: initialMode = 'panel',
-  empty: initialEmpty = false,
-  onAction,
-}) => {
+export const ChatShellDemo: React.FC<{
+  mode?: 'panel' | 'full';
+  empty?: boolean;
+  onAction?: (name: string, ...args: unknown[]) => void;
+}> = ({ mode: initialMode = 'panel', empty: initialEmpty = false, onAction }) => {
   const [mode, setMode] = React.useState(initialMode);
   const [open, setOpen] = React.useState(true);
   const [history, setHistory] = React.useState(false);
@@ -76,11 +120,15 @@ export const ChatShellDemo: React.FC<{ mode?: 'panel' | 'full'; empty?: boolean;
   const [archived, setArchived] = React.useState<typeof items>([]);
   const [showArchived, setShowArchived] = React.useState(false);
   const [query, setQuery] = React.useState('');
-  const [activeId, setActiveId] = React.useState<string | undefined>(initialEmpty ? undefined : 'c1');
+  const [activeId, setActiveId] = React.useState<string | undefined>(
+    initialEmpty ? undefined : 'c1',
+  );
   const [titles, setTitles] = React.useState<Record<string, string>>({});
   const toast = useToast<ShellToast>({ position: 'absolute' });
 
-  const list = (showArchived ? archived : items).filter((item) => item.title.toLowerCase().includes(query.trim().toLowerCase()));
+  const list = (showArchived ? archived : items).filter((item) =>
+    item.title.toLowerCase().includes(query.trim().toLowerCase()),
+  );
   const active = [...items, ...archived].find((item) => item.id === activeId);
   const full = mode === 'full';
 
@@ -88,13 +136,20 @@ export const ChatShellDemo: React.FC<{ mode?: 'panel' | 'full'; empty?: boolean;
     const gone = items.find((item) => item.id === id);
     setItems((current) => current.filter((item) => item.id !== id));
     if (activeId === id) setActiveId(undefined);
-    if (gone) toast.notify({ text: 'Conversation deleted', actionLabel: 'Undo', undo: () => setItems((current) => [gone, ...current]) });
+    if (gone)
+      toast.notify({
+        text: 'Conversation deleted',
+        actionLabel: 'Undo',
+        undo: () => setItems((current) => [gone, ...current]),
+      });
   };
 
   const sidebar = (
     <ConversationList
       {...conversationListPropsFactory({
-        groups: groupByRecency(list, SAMPLE_NOW, { pinned: showArchived ? undefined : (item) => Boolean(item.pinned) }),
+        groups: groupByRecency(list, SAMPLE_NOW, {
+          pinned: showArchived ? undefined : (item) => Boolean(item.pinned),
+        }),
         activeId,
         docked: full,
         onClose: () => setHistory(false),
@@ -121,7 +176,12 @@ export const ChatShellDemo: React.FC<{ mode?: 'panel' | 'full'; empty?: boolean;
               },
             })
           : conversationRowActions({
-              onPin: (item) => setItems((current) => current.map((entry) => (entry.id === item.id ? { ...entry, pinned: !entry.pinned } : entry))),
+              onPin: (item) =>
+                setItems((current) =>
+                  current.map((entry) =>
+                    entry.id === item.id ? { ...entry, pinned: !entry.pinned } : entry,
+                  ),
+                ),
               onDelete: (item) => remove(item.id),
             }),
         footer: sampleFooter(() => setSettings(true)),
@@ -141,7 +201,11 @@ export const ChatShellDemo: React.FC<{ mode?: 'panel' | 'full'; empty?: boolean;
                 setItems((current) => current.filter((item) => item.id !== active.id));
                 setArchived((current) => [active, ...current]);
                 setActiveId(undefined);
-                toast.notify({ text: 'Conversation archived', actionLabel: 'Undo', undo: () => undefined });
+                toast.notify({
+                  text: 'Conversation archived',
+                  actionLabel: 'Undo',
+                  undo: () => undefined,
+                });
               }
             })
           : [],
@@ -153,8 +217,16 @@ export const ChatShellDemo: React.FC<{ mode?: 'panel' | 'full'; empty?: boolean;
           if (key === 'close') setOpen(false);
           if (key === 'new') setActiveId(undefined);
         })
-          .filter((action) => !(full && (action.key === 'close' || action.key === 'new' || action.key === 'settings')))
-          .map((action) => (action.key === 'expand' && full ? { ...action, label: 'Back to side panel' } : action)),
+          .filter(
+            (action) =>
+              !(
+                full &&
+                (action.key === 'close' || action.key === 'new' || action.key === 'settings')
+              ),
+          )
+          .map((action) =>
+            action.key === 'expand' && full ? { ...action, label: 'Back to side panel' } : action,
+          ),
       })}
     />
   );
@@ -190,10 +262,22 @@ export const ChatShellDemo: React.FC<{ mode?: 'panel' | 'full'; empty?: boolean;
             <Transcript {...transcriptPropsFactory({ entries: answeredEntries() })} />
           </div>
         ) : (
-          <EmptyStarters title="What are we working on?" description="Ask anything, or pick a starter." starters={sampleStarters()} columns={full ? 2 : 1} onStart={(prompt) => onAction?.('start', prompt)} />
+          <EmptyStarters
+            title="What are we working on?"
+            description="Ask anything, or pick a starter."
+            starters={sampleStarters()}
+            columns={full ? 2 : 1}
+            onStart={(prompt) => onAction?.('start', prompt)}
+          />
         )}
       </PanelShell>
-      <SettingsDialog {...settingsDialogPropsFactory({ open: settings, onClose: () => setSettings(false), tabs: sampleSettingsTabs(onAction) })} />
+      <SettingsDialog
+        {...settingsDialogPropsFactory({
+          open: settings,
+          onClose: () => setSettings(false),
+          tabs: sampleSettingsTabs(onAction),
+        })}
+      />
     </div>
   );
 };

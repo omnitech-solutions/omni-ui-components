@@ -1,10 +1,11 @@
 import '@testing-library/jest-dom';
+
+import { Switch, type SwitchProps } from '@oc-tech/omni-ui-components/Switch';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Switch, type SwitchProps } from '@oc-tech/omni-ui-components/Switch';
-
-const renderSwitch = (overrides: Partial<SwitchProps> = {}) => render(<Switch data-testid="sw" label="Notify" {...overrides} />);
+const renderSwitch = (overrides: Partial<SwitchProps> = {}) =>
+  render(<Switch data-testid="sw" label="Notify" {...overrides} />);
 
 describe('omni-ui-components/Switch', () => {
   it('renders the switch + label', () => {

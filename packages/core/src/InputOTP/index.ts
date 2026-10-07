@@ -1,4 +1,4 @@
-export { InputOTP } from './InputOTP';
 export type { InputOTPProps } from './InputOTP';
-export { InputOTPPrimitive } from './InputOTPPrimitive';
+export { InputOTP } from './InputOTP';
 export type { InputOTPPrimitiveProps } from './InputOTPPrimitive';
+export { InputOTPPrimitive } from './InputOTPPrimitive';

@@ -1,12 +1,23 @@
-import { z } from 'zod';
-
 import { validators } from '@oc-tech/omni-ui-components';
 import type { FormFixture } from '@oc-tech/omni-ui-components/Form/Form.types';
-import { COUNTRY_OPTIONS } from '../Select/countries';
-import { SHOWCASE_EXPENSE_CATEGORIES, SHOWCASE_MEMBERS, SHOWCASE_PROJECTS, SHOWCASE_TAX_RATES } from '../../showcase/entities';
+import { z } from 'zod';
 import { project } from '../../helpers/optionMappers';
+import {
+  SHOWCASE_EXPENSE_CATEGORIES,
+  SHOWCASE_MEMBERS,
+  SHOWCASE_PROJECTS,
+  SHOWCASE_TAX_RATES,
+} from '../../showcase/entities';
+import { COUNTRY_OPTIONS } from '../Select/countries';
 
-export type { FieldDef, FieldType, FormFixture, FormRow, FormRowDef, FormSectionHeading } from '@oc-tech/omni-ui-components/Form/Form.types';
+export type {
+  FieldDef,
+  FieldType,
+  FormFixture,
+  FormRow,
+  FormRowDef,
+  FormSectionHeading,
+} from '@oc-tech/omni-ui-components/Form/Form.types';
 
 /* -------------------------------------------------------------------------- */
 /* Address fixture                                                             */
@@ -23,7 +34,9 @@ export interface AddressFormData {
   region: string;
 }
 
-export const addressFormFactory = (overrides: Partial<AddressFormData> = {}): FormFixture<AddressFormData> => ({
+export const addressFormFactory = (
+  overrides: Partial<AddressFormData> = {},
+): FormFixture<AddressFormData> => ({
   title: 'Add Address',
   maxWidth: 'max-w-2xl',
   schema: z.object({
@@ -116,17 +129,31 @@ const NOTIFICATION_OPTIONS = [
 ];
 
 /* Grouped + decorated option lists for the Platform Enhancements section. */
-const KS_CATEGORY_OPTIONS = project(SHOWCASE_EXPENSE_CATEGORIES, { value: 'id' as const, label: 'label' as const, group: 'group' as const });
-const KS_TAX_OPTIONS = project(SHOWCASE_TAX_RATES, { value: 'id' as const, label: 'label' as const });
+const KS_CATEGORY_OPTIONS = project(SHOWCASE_EXPENSE_CATEGORIES, {
+  value: 'id' as const,
+  label: 'label' as const,
+  group: 'group' as const,
+});
+const KS_TAX_OPTIONS = project(SHOWCASE_TAX_RATES, {
+  value: 'id' as const,
+  label: 'label' as const,
+});
 const KS_PROJECT_OPTIONS = project(SHOWCASE_PROJECTS, {
   value: 'id' as const,
   label: (p) => `${p.icon} ${p.name}`,
   description: 'organization' as const,
   color: 'color' as const,
 });
-const KS_MEMBER_OPTIONS = project(SHOWCASE_MEMBERS, { value: 'id' as const, label: 'name' as const, group: 'group' as const, initials: 'initials' as const });
+const KS_MEMBER_OPTIONS = project(SHOWCASE_MEMBERS, {
+  value: 'id' as const,
+  label: 'name' as const,
+  group: 'group' as const,
+  initials: 'initials' as const,
+});
 
-export const kitchenSinkFormFactory = (overrides: Partial<KitchenSinkFormData> = {}): FormFixture<KitchenSinkFormData> => ({
+export const kitchenSinkFormFactory = (
+  overrides: Partial<KitchenSinkFormData> = {},
+): FormFixture<KitchenSinkFormData> => ({
   title: 'Account & address',
   maxWidth: 'max-w-2xl',
   schema: z.object({
@@ -137,9 +164,13 @@ export const kitchenSinkFormFactory = (overrides: Partial<KitchenSinkFormData> =
     plan: z.enum(['free', 'pro', 'team'], { errorMap: () => ({ message: 'Pick a billing plan' }) }),
     monthly_budget: z.coerce.number().nonnegative('Budget must be ≥ 0'),
     notifications: z.array(z.string()).min(1, 'Pick at least one notification channel'),
-    tos: z.literal(true, { errorMap: () => ({ message: 'You must agree to the Terms of Service' }) }),
+    tos: z.literal(true, {
+      errorMap: () => ({ message: 'You must agree to the Terms of Service' }),
+    }),
     volume: z.number().int().min(0).max(100),
-    tone: z.enum(['casual', 'friendly', 'professional'], { errorMap: () => ({ message: 'Pick a tone' }) }),
+    tone: z.enum(['casual', 'friendly', 'professional'], {
+      errorMap: () => ({ message: 'Pick a tone' }),
+    }),
     pages: z.number().int().min(1).max(50),
     due_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Pick a due date'),
     verification_code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code'),
@@ -200,25 +231,109 @@ export const kitchenSinkFormFactory = (overrides: Partial<KitchenSinkFormData> =
     },
     [
       { name: 'full_name', label: 'Full name', placeholder: 'Ada Lovelace', required: true },
-      { name: 'email', label: 'Email', type: 'email', placeholder: 'ada@example.com', required: true },
+      {
+        name: 'email',
+        label: 'Email',
+        type: 'email',
+        placeholder: 'ada@example.com',
+        required: true,
+      },
     ],
     [
-      { name: 'password', label: 'Password', type: 'password', placeholder: 'At least 8 chars, 1 uppercase, 1 number', required: true },
-      { name: 'phone', label: 'Phone', type: 'phone', placeholder: '(555) 555-0100', required: true },
+      {
+        name: 'password',
+        label: 'Password',
+        type: 'password',
+        placeholder: 'At least 8 chars, 1 uppercase, 1 number',
+        required: true,
+      },
+      {
+        name: 'phone',
+        label: 'Phone',
+        type: 'phone',
+        placeholder: '(555) 555-0100',
+        required: true,
+      },
     ],
     { kind: 'heading', title: 'Billing plan', description: 'Pick the plan that fits your team.' },
     [{ name: 'plan', label: 'Billing plan', type: 'radio', required: true, options: PLAN_OPTIONS }],
-    [{ name: 'monthly_budget', label: 'Monthly budget', type: 'currency', placeholder: '0.00', required: true }],
+    [
+      {
+        name: 'monthly_budget',
+        label: 'Monthly budget',
+        type: 'currency',
+        placeholder: '0.00',
+        required: true,
+      },
+    ],
     { kind: 'heading', title: 'Notifications', description: 'How should we reach you?' },
-    [{ name: 'notifications', label: 'Channels', type: 'checkboxes', required: true, options: NOTIFICATION_OPTIONS }],
-    [{ name: 'tos', label: 'I agree to the Terms of Service', description: 'Required to create an account.', type: 'checkbox', required: true }],
-    { kind: 'heading', title: 'Preferences', description: 'A couple of knobs to tune your account.' },
-    [{ name: 'volume', label: 'Notification volume', type: 'range', min: 0, max: 100, step: 5, valueSuffix: '%', required: true }],
-    [{ name: 'pages', label: 'Number of pages', type: 'stepper', min: 1, max: 50, step: 1, valueSuffix: 'page', required: true }],
-    [{ name: 'due_date', label: 'Due date', type: 'date', placeholder: 'Pick a due date', required: true }],
+    [
+      {
+        name: 'notifications',
+        label: 'Channels',
+        type: 'checkboxes',
+        required: true,
+        options: NOTIFICATION_OPTIONS,
+      },
+    ],
+    [
+      {
+        name: 'tos',
+        label: 'I agree to the Terms of Service',
+        description: 'Required to create an account.',
+        type: 'checkbox',
+        required: true,
+      },
+    ],
+    {
+      kind: 'heading',
+      title: 'Preferences',
+      description: 'A couple of knobs to tune your account.',
+    },
+    [
+      {
+        name: 'volume',
+        label: 'Notification volume',
+        type: 'range',
+        min: 0,
+        max: 100,
+        step: 5,
+        valueSuffix: '%',
+        required: true,
+      },
+    ],
+    [
+      {
+        name: 'pages',
+        label: 'Number of pages',
+        type: 'stepper',
+        min: 1,
+        max: 50,
+        step: 1,
+        valueSuffix: 'page',
+        required: true,
+      },
+    ],
+    [
+      {
+        name: 'due_date',
+        label: 'Due date',
+        type: 'date',
+        placeholder: 'Pick a due date',
+        required: true,
+      },
+    ],
     { kind: 'heading', title: 'Extras', description: 'A few more bits to round out the form.' },
     [{ name: 'verification_code', label: 'Verification code', type: 'otp', required: true }],
-    [{ name: 'skill_tags', label: 'Skill tags', type: 'tags', required: true, placeholder: 'Type and press Enter or Space' }],
+    [
+      {
+        name: 'skill_tags',
+        label: 'Skill tags',
+        type: 'tags',
+        required: true,
+        placeholder: 'Type and press Enter or Space',
+      },
+    ],
     [
       { name: 'daily_start', label: 'Daily start', type: 'time', required: true },
       { name: 'brand_color', label: 'Brand color', type: 'color', required: true },
@@ -239,15 +354,40 @@ export const kitchenSinkFormFactory = (overrides: Partial<KitchenSinkFormData> =
     {
       kind: 'heading',
       title: 'Platform enhancements',
-      description: 'Grouped Select sections, footer action, Combobox with color + description, decorated member options.',
+      description:
+        'Grouped Select sections, footer action, Combobox with color + description, decorated member options.',
     },
     [
-      { name: 'category', label: 'Category', type: 'select', placeholder: 'Select…', options: KS_CATEGORY_OPTIONS },
-      { name: 'tax_rate_id', label: 'Tax', type: 'select', placeholder: 'Select…', options: KS_TAX_OPTIONS },
+      {
+        name: 'category',
+        label: 'Category',
+        type: 'select',
+        placeholder: 'Select…',
+        options: KS_CATEGORY_OPTIONS,
+      },
+      {
+        name: 'tax_rate_id',
+        label: 'Tax',
+        type: 'select',
+        placeholder: 'Select…',
+        options: KS_TAX_OPTIONS,
+      },
     ],
     [
-      { name: 'project_id', label: 'Project', type: 'select', placeholder: 'Select project…', options: KS_PROJECT_OPTIONS },
-      { name: 'member_id', label: 'Member', type: 'select', placeholder: 'Select member…', options: KS_MEMBER_OPTIONS },
+      {
+        name: 'project_id',
+        label: 'Project',
+        type: 'select',
+        placeholder: 'Select project…',
+        options: KS_PROJECT_OPTIONS,
+      },
+      {
+        name: 'member_id',
+        label: 'Member',
+        type: 'select',
+        placeholder: 'Select member…',
+        options: KS_MEMBER_OPTIONS,
+      },
     ],
     { kind: 'heading', title: 'Address', description: 'Where this location lives.' },
     [{ name: 'label', label: 'Label', placeholder: 'Main Office', required: true }],
@@ -257,7 +397,13 @@ export const kitchenSinkFormFactory = (overrides: Partial<KitchenSinkFormData> =
     ],
     [
       { name: 'city', label: 'City', placeholder: 'San Francisco', required: true },
-      { name: 'postal_code', label: 'Postal Code', type: 'number', placeholder: '94105', required: true },
+      {
+        name: 'postal_code',
+        label: 'Postal Code',
+        type: 'number',
+        placeholder: '94105',
+        required: true,
+      },
     ],
     [
       {
@@ -270,8 +416,26 @@ export const kitchenSinkFormFactory = (overrides: Partial<KitchenSinkFormData> =
       },
       { name: 'region', label: 'Region / State', placeholder: 'Region', required: true },
     ],
-    [{ name: 'website', label: 'Website', type: 'url', placeholder: 'https://example.com', required: true, layout: 'horizontal' }],
-    [{ name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Anything we should know?', required: true, rows: 6 }],
+    [
+      {
+        name: 'website',
+        label: 'Website',
+        type: 'url',
+        placeholder: 'https://example.com',
+        required: true,
+        layout: 'horizontal',
+      },
+    ],
+    [
+      {
+        name: 'notes',
+        label: 'Notes',
+        type: 'textarea',
+        placeholder: 'Anything we should know?',
+        required: true,
+        rows: 6,
+      },
+    ],
     {
       kind: 'toolbar',
       label: 'Quick actions',
@@ -297,7 +461,9 @@ export interface ContactFormData {
   email: string;
 }
 
-export const contactFormFactory = (overrides: Partial<ContactFormData> = {}): FormFixture<ContactFormData> => ({
+export const contactFormFactory = (
+  overrides: Partial<ContactFormData> = {},
+): FormFixture<ContactFormData> => ({
   title: 'Contact',
   maxWidth: 'max-w-md',
   schema: z.object({
@@ -307,7 +473,15 @@ export const contactFormFactory = (overrides: Partial<ContactFormData> = {}): Fo
   initial: { name: '', email: '', ...overrides },
   rows: [
     [{ name: 'name', label: 'Name', required: true, placeholder: 'Ada Lovelace' }],
-    [{ name: 'email', label: 'Email', required: true, type: 'email', placeholder: 'ada@example.com' }],
+    [
+      {
+        name: 'email',
+        label: 'Email',
+        required: true,
+        type: 'email',
+        placeholder: 'ada@example.com',
+      },
+    ],
   ],
   submitLabel: 'Send',
 });
@@ -326,7 +500,9 @@ export interface SignupFormData {
   phone: string;
 }
 
-export const signupFormFactory = (overrides: Partial<SignupFormData> = {}): FormFixture<SignupFormData> => ({
+export const signupFormFactory = (
+  overrides: Partial<SignupFormData> = {},
+): FormFixture<SignupFormData> => ({
   title: 'Create Account',
   maxWidth: 'max-w-2xl',
   schema: z.object({
@@ -357,9 +533,23 @@ export const signupFormFactory = (overrides: Partial<SignupFormData> = {}): Form
   rows: [
     [
       { name: 'name', label: 'Name', required: true, placeholder: 'Ada Lovelace' },
-      { name: 'email', label: 'Email', required: true, type: 'email', placeholder: 'ada@example.com' },
+      {
+        name: 'email',
+        label: 'Email',
+        required: true,
+        type: 'email',
+        placeholder: 'ada@example.com',
+      },
     ],
-    [{ name: 'password', label: 'Password', required: true, type: 'password', placeholder: 'At least 8 chars, 1 uppercase, 1 number' }],
+    [
+      {
+        name: 'password',
+        label: 'Password',
+        required: true,
+        type: 'password',
+        placeholder: 'At least 8 chars, 1 uppercase, 1 number',
+      },
+    ],
     [
       { name: 'age', label: 'Age', required: true, type: 'number', placeholder: '30' },
       { name: 'phone', label: 'Phone', required: true, type: 'tel', placeholder: '+1 555 0100' },

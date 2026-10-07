@@ -15,7 +15,10 @@ export interface RovingTabindexOptions {
   preferred?: (items: HTMLElement[]) => HTMLElement | undefined;
 }
 
-const isSelected = (el: HTMLElement) => el.getAttribute('aria-pressed') === 'true' || el.getAttribute('aria-current') === 'true' || el.getAttribute('aria-checked') === 'true';
+const isSelected = (el: HTMLElement) =>
+  el.getAttribute('aria-pressed') === 'true' ||
+  el.getAttribute('aria-current') === 'true' ||
+  el.getAttribute('aria-checked') === 'true';
 
 /**
  * Roving tabindex for a group: exactly one item has `tabindex="0"` (Tab enters and leaves the group there), the
@@ -26,7 +29,10 @@ const isSelected = (el: HTMLElement) => el.getAttribute('aria-pressed') === 'tru
  * @example
  * const { onKeyDown, onFocus } = useRovingTabindex(ref, { getItems: (root) => [...root.querySelectorAll('button:not(:disabled)')] });
  */
-export function useRovingTabindex(root: React.RefObject<HTMLElement | null>, options: RovingTabindexOptions) {
+export function useRovingTabindex(
+  root: React.RefObject<HTMLElement | null>,
+  options: RovingTabindexOptions,
+) {
   const opts = React.useRef(options);
   opts.current = options;
   const current = React.useRef<HTMLElement | null>(null);
@@ -37,7 +43,8 @@ export function useRovingTabindex(root: React.RefObject<HTMLElement | null>, opt
     const items = opts.current.getItems(el);
     if (items.length === 0) return;
     if (!current.current || !items.includes(current.current)) {
-      current.current = opts.current.preferred?.(items) ?? items.find(isSelected) ?? items[0] ?? null;
+      current.current =
+        opts.current.preferred?.(items) ?? items.find(isSelected) ?? items[0] ?? null;
     }
     for (const item of items) item.setAttribute('tabindex', item === current.current ? '0' : '-1');
   }, [root]);
@@ -70,11 +77,14 @@ export function useRovingTabindex(root: React.RefObject<HTMLElement | null>, opt
       if (navigate) {
         next = navigate(event.key, items, at);
       } else {
-        const [back, forward] = orientation === 'horizontal' ? ['ArrowLeft', 'ArrowRight'] : ['ArrowUp', 'ArrowDown'];
+        const [back, forward] =
+          orientation === 'horizontal' ? ['ArrowLeft', 'ArrowRight'] : ['ArrowUp', 'ArrowDown'];
         if (event.key === 'Home') next = items[0];
         else if (event.key === 'End') next = items[items.length - 1];
-        else if (event.key === forward) next = items[loop ? (at + 1) % items.length : Math.min(at + 1, items.length - 1)];
-        else if (event.key === back) next = items[loop ? (at - 1 + items.length) % items.length : Math.max(at - 1, 0)];
+        else if (event.key === forward)
+          next = items[loop ? (at + 1) % items.length : Math.min(at + 1, items.length - 1)];
+        else if (event.key === back)
+          next = items[loop ? (at - 1 + items.length) % items.length : Math.max(at - 1, 0)];
       }
       if (!next) return;
       event.preventDefault();

@@ -1,9 +1,14 @@
-import * as React from 'react';
-import { Eye, Mic, MicOff, Monitor, MonitorOff } from 'lucide-react';
-
 import { SplitButton, type SplitButtonProps } from '@oc-tech/omni-ui-components/SplitButton';
-import { captureMenuSpec, micLostNotice, micMenuSpec, screenPermissionNotice, type CaptureMode } from '../ActionMenu/ActionMenu.factories';
+import { Eye, Mic, MicOff, Monitor, MonitorOff } from 'lucide-react';
+import * as React from 'react';
 import type { Variant } from '../../internal/support/makeFactory';
+import {
+  type CaptureMode,
+  captureMenuSpec,
+  micLostNotice,
+  micMenuSpec,
+  screenPermissionNotice,
+} from '../ActionMenu/ActionMenu.factories';
 
 /** What the capture control reflects: mode (tint), display, a running analysis, a screen problem, paused. */
 export interface CaptureState {
@@ -19,11 +24,22 @@ export interface CaptureState {
  * Map the capture state to SplitButton props (the adapter an app would write): paused dims and blocks the main
  * action, a problem turns the control amber with a badge and a fix action, analysing shows the ring, Auto tints blue.
  */
-export const captureSplitButtonProps = (state: CaptureState, handlers: { onFix?: () => void } = {}): SplitButtonProps => {
+export const captureSplitButtonProps = (
+  state: CaptureState,
+  handlers: { onFix?: () => void } = {},
+): SplitButtonProps => {
   const { mode, display = 'follow', analysing, problem, paused } = state;
-  const menu = captureMenuSpec(mode, display, problem ? screenPermissionNotice(handlers.onFix) : undefined);
+  const menu = captureMenuSpec(
+    mode,
+    display,
+    problem ? screenPermissionNotice(handlers.onFix) : undefined,
+  );
   if (paused) {
-    return { tone: 'dim', main: { label: 'Capture', icon: <MonitorOff />, disabledReason: 'Resume to capture' }, menu };
+    return {
+      tone: 'dim',
+      main: { label: 'Capture', icon: <MonitorOff />, disabledReason: 'Resume to capture' },
+      menu,
+    };
   }
   if (problem) {
     return {
@@ -47,8 +63,25 @@ export const captureSplitButtonProps = (state: CaptureState, handlers: { onFix?:
     };
   }
   return mode === 'auto'
-    ? { tone: 'accent', main: { label: 'Capture', icon: <Monitor />, tooltip: 'Auto · re-analyses when the screen changes', caption: 'Auto' }, menu }
-    : { main: { label: 'Capture', icon: <Monitor />, tooltip: 'Manual · click to analyse', shortcut: ['⌘', '⇧', 'S'] }, menu };
+    ? {
+        tone: 'accent',
+        main: {
+          label: 'Capture',
+          icon: <Monitor />,
+          tooltip: 'Auto · re-analyses when the screen changes',
+          caption: 'Auto',
+        },
+        menu,
+      }
+    : {
+        main: {
+          label: 'Capture',
+          icon: <Monitor />,
+          tooltip: 'Manual · click to analyse',
+          shortcut: ['⌘', '⇧', 'S'],
+        },
+        menu,
+      };
 };
 
 export type MicStatus = 'listening' | 'muted' | 'lost' | 'paused';
@@ -59,12 +92,19 @@ export interface MicState {
 }
 
 /** Zoom semantics: neutral listening, red slash muted, amber outline + badge lost, dim paused. */
-export const micSplitButtonProps = (state: MicState, handlers: { onRetry?: () => void } = {}): SplitButtonProps => {
+export const micSplitButtonProps = (
+  state: MicState,
+  handlers: { onRetry?: () => void } = {},
+): SplitButtonProps => {
   const { status, device = 'macbook' } = state;
   const menu = micMenuSpec(device, status === 'lost' ? micLostNotice(handlers.onRetry) : undefined);
   switch (status) {
     case 'paused':
-      return { tone: 'dim', main: { label: 'Mic', icon: <MicOff />, disabledReason: 'Resume to listen' }, menu };
+      return {
+        tone: 'dim',
+        main: { label: 'Mic', icon: <MicOff />, disabledReason: 'Resume to listen' },
+        menu,
+      };
     case 'lost':
       return {
         tone: 'warning',
@@ -73,9 +113,21 @@ export const micSplitButtonProps = (state: MicState, handlers: { onRetry?: () =>
         menu,
       };
     case 'muted':
-      return { tone: 'danger', main: { label: 'Unmute', icon: <MicOff />, tooltip: 'Muted · ⌥R to listen', shortcut: ['⌥', 'R'] }, menu };
+      return {
+        tone: 'danger',
+        main: {
+          label: 'Unmute',
+          icon: <MicOff />,
+          tooltip: 'Muted · ⌥R to listen',
+          shortcut: ['⌥', 'R'],
+        },
+        menu,
+      };
     default:
-      return { main: { label: 'Mic', icon: <Mic />, tooltip: 'Listening', shortcut: ['⌥', 'R'] }, menu };
+      return {
+        main: { label: 'Mic', icon: <Mic />, tooltip: 'Listening', shortcut: ['⌥', 'R'] },
+        menu,
+      };
   }
 };
 
@@ -93,9 +145,16 @@ export interface CaptureSplitButtonDemoProps {
  * its tooltip changes) and display, and the notice's fix action clears a screen problem. Controlled state lives here;
  * the SplitButton and ActionMenu themselves keep none.
  */
-export const CaptureSplitButtonDemo: React.FC<CaptureSplitButtonDemoProps> = ({ initial = { mode: 'manual' }, size, onAction }) => {
+export const CaptureSplitButtonDemo: React.FC<CaptureSplitButtonDemoProps> = ({
+  initial = { mode: 'manual' },
+  size,
+  onAction,
+}) => {
   const [state, setState] = React.useState<CaptureState>(initial);
-  React.useEffect(() => setState(initial), [initial.mode, initial.display, initial.analysing, initial.problem, initial.paused]);
+  React.useEffect(
+    () => setState(initial),
+    [initial.mode, initial.display, initial.analysing, initial.problem, initial.paused],
+  );
   const props = captureSplitButtonProps(state, {
     onFix: () => {
       onAction?.('capture:fix');
@@ -133,7 +192,11 @@ export interface MicSplitButtonDemoProps {
 }
 
 /** A working microphone control: press mutes / unmutes, the menu picks the device, "Retry now" recovers a lost mic. */
-export const MicSplitButtonDemo: React.FC<MicSplitButtonDemoProps> = ({ initial = { status: 'listening' }, size, onAction }) => {
+export const MicSplitButtonDemo: React.FC<MicSplitButtonDemoProps> = ({
+  initial = { status: 'listening' },
+  size,
+  onAction,
+}) => {
   const [state, setState] = React.useState<MicState>(initial);
   React.useEffect(() => setState(initial), [initial.status, initial.device]);
   const props = micSplitButtonProps(state, {
@@ -150,7 +213,11 @@ export const MicSplitButtonDemo: React.FC<MicSplitButtonDemoProps> = ({ initial 
         ...props.main,
         onPress: () => {
           onAction?.('mic:press');
-          setState((s) => ({ ...s, status: s.status === 'listening' ? 'muted' : s.status === 'muted' ? 'listening' : s.status }));
+          setState((s) => ({
+            ...s,
+            status:
+              s.status === 'listening' ? 'muted' : s.status === 'muted' ? 'listening' : s.status,
+          }));
         },
       }}
       menu={{
@@ -164,7 +231,9 @@ export const MicSplitButtonDemo: React.FC<MicSplitButtonDemoProps> = ({ initial 
 };
 
 /** Build `<SplitButton>` props for standalone stories and tests (default: the capture button in Manual mode). */
-export const splitButtonPropsFactory = (overrides: Partial<SplitButtonProps> = {}): SplitButtonProps => ({
+export const splitButtonPropsFactory = (
+  overrides: Partial<SplitButtonProps> = {},
+): SplitButtonProps => ({
   ...captureSplitButtonProps({ mode: 'manual' }),
   ...overrides,
 });
@@ -173,8 +242,14 @@ export const splitButtonPropsFactory = (overrides: Partial<SplitButtonProps> = {
 export const splitButtonCaptureVariants: Variant<SplitButtonProps>[] = [
   { name: 'Capture · manual', args: captureSplitButtonProps({ mode: 'manual' }) },
   { name: 'Capture · auto (blue tint)', args: captureSplitButtonProps({ mode: 'auto' }) },
-  { name: 'Capture · analysing (ring)', args: captureSplitButtonProps({ mode: 'manual', analysing: true }) },
-  { name: 'Capture · screen permission lost', args: captureSplitButtonProps({ mode: 'manual', problem: true }) },
+  {
+    name: 'Capture · analysing (ring)',
+    args: captureSplitButtonProps({ mode: 'manual', analysing: true }),
+  },
+  {
+    name: 'Capture · screen permission lost',
+    args: captureSplitButtonProps({ mode: 'manual', problem: true }),
+  },
   { name: 'Capture · paused', args: captureSplitButtonProps({ mode: 'manual', paused: true }) },
 ];
 
@@ -191,7 +266,13 @@ export const splitButtonBoardVariants: Variant<SplitButtonProps>[] = [
   {
     name: 'C2 · mode word on the button',
     args: {
-      main: { label: 'Capture, Manual', caption: 'Manual', labelInline: true, icon: <Monitor />, tooltip: 'Manual · click to analyse' },
+      main: {
+        label: 'Capture, Manual',
+        caption: 'Manual',
+        labelInline: true,
+        icon: <Monitor />,
+        tooltip: 'Manual · click to analyse',
+      },
       menu: captureMenuSpec('manual'),
     },
   },
@@ -199,10 +280,23 @@ export const splitButtonBoardVariants: Variant<SplitButtonProps>[] = [
     name: 'C3 · capture + auto toggle (eye)',
     args: {
       main: { label: 'Capture', icon: <Monitor />, tooltip: 'Analyse now' },
-      segments: [{ id: 'auto', label: 'Auto', icon: <Eye />, pressed: true, tooltip: 'Auto · re-analyses when the screen changes', shortcut: ['⌥', '⇧', 'U'] }],
+      segments: [
+        {
+          id: 'auto',
+          label: 'Auto',
+          icon: <Eye />,
+          pressed: true,
+          tooltip: 'Auto · re-analyses when the screen changes',
+          shortcut: ['⌥', '⇧', 'U'],
+        },
+      ],
       menu: captureMenuSpec('auto'),
     },
   },
 ];
 
-export const splitButtonVariants: Variant<SplitButtonProps>[] = [...splitButtonCaptureVariants, ...splitButtonMicVariants, ...splitButtonBoardVariants];
+export const splitButtonVariants: Variant<SplitButtonProps>[] = [
+  ...splitButtonCaptureVariants,
+  ...splitButtonMicVariants,
+  ...splitButtonBoardVariants,
+];

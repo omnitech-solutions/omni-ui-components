@@ -1,12 +1,17 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
 import { StepTimeline } from '@oc-tech/omni-ui-components/StepTimeline';
-import { doneSteps, failedSteps, runningSteps, stepTimelinePropsFactory } from 'factories/omni-ui-components/StepTimeline/StepTimeline.factories';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  doneSteps,
+  failedSteps,
+  runningSteps,
+  stepTimelinePropsFactory,
+} from 'factories/omni-ui-components/StepTimeline/StepTimeline.factories';
 
-const rows = () => Array.from(document.querySelectorAll('[data-slot="step-timeline-row"]')) as HTMLElement[];
+const rows = () =>
+  Array.from(document.querySelectorAll('[data-slot="step-timeline-row"]')) as HTMLElement[];
 
 describe('omni-ui-components/StepTimeline', () => {
   describe('summary variant', () => {
@@ -42,7 +47,9 @@ describe('omni-ui-components/StepTimeline', () => {
 
     it('running: spinner, the active label, "{first} + N more…" and "…" detail while active', async () => {
       render(<StepTimeline {...stepTimelinePropsFactory({ steps: runningSteps() })} />);
-      expect(screen.getByRole('button', { name: 'Drafting a change + 1 more…' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Drafting a change + 1 more…' }),
+      ).toBeInTheDocument();
       expect(document.querySelector('[data-slot="step-timeline-spinner"]')).not.toBeNull();
       await userEvent.click(screen.getByRole('button'));
       expect(rows()[1]).toHaveTextContent('Drafting a change…');
@@ -73,7 +80,9 @@ describe('omni-ui-components/StepTimeline', () => {
         />,
       );
       expect(screen.getByRole('button', { name: 'Stopped while working' })).toBeInTheDocument();
-      rerender(<StepTimeline {...stepTimelinePropsFactory({ steps: [{ ...runningSteps()[2]! }] })} />);
+      rerender(
+        <StepTimeline {...stepTimelinePropsFactory({ steps: [{ ...runningSteps()[2]! }] })} />,
+      );
       expect(screen.getByRole('button', { name: 'Stopped while working' })).toBeInTheDocument();
     });
 
@@ -86,7 +95,10 @@ describe('omni-ui-components/StepTimeline', () => {
           })}
         />,
       );
-      expect(screen.getByRole('button', { name: 'Fertig' })).toHaveAttribute('aria-expanded', 'true');
+      expect(screen.getByRole('button', { name: 'Fertig' })).toHaveAttribute(
+        'aria-expanded',
+        'true',
+      );
       expect(rows()[0]).toHaveTextContent('parallel!');
     });
 
@@ -142,7 +154,9 @@ describe('omni-ui-components/StepTimeline', () => {
 
   it('onOpenChange fires in controlled and uncontrolled mode', async () => {
     const onOpenChange = vi.fn();
-    const { unmount } = render(<StepTimeline {...stepTimelinePropsFactory({ open: false, onOpenChange })} />);
+    const { unmount } = render(
+      <StepTimeline {...stepTimelinePropsFactory({ open: false, onOpenChange })} />,
+    );
     await userEvent.click(screen.getByRole('button', { name: /Used 3 tools/ }));
     expect(onOpenChange).toHaveBeenCalledWith(true);
     unmount();

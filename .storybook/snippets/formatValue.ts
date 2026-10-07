@@ -7,7 +7,11 @@ export const formatValue = (value: unknown, depth = 0, indent = 2): string => {
   if (Array.isArray(value)) {
     if (value.every(isShallow)) return `[${value.map((v) => JSON.stringify(v)).join(', ')}]`;
     if (value.every((v) => Array.isArray(v) && (v as unknown[]).every(isShallow))) {
-      const inner = value.map((v) => `${pad(depth + 1)}[${(v as unknown[]).map((x) => JSON.stringify(x)).join(', ')}]`).join(',\n');
+      const inner = value
+        .map(
+          (v) => `${pad(depth + 1)}[${(v as unknown[]).map((x) => JSON.stringify(x)).join(', ')}]`,
+        )
+        .join(',\n');
       return `[\n${inner}\n${pad(depth)}]`;
     }
     const lines = value.map((v) => `${pad(depth + 1)}${formatValue(v, depth + 1, indent)}`);
@@ -18,6 +22,8 @@ export const formatValue = (value: unknown, depth = 0, indent = 2): string => {
   if (shallow && depth > 0) {
     return `{ ${entries.map(([k, v]) => `${JSON.stringify(k)}: ${JSON.stringify(v)}`).join(', ')} }`;
   }
-  const lines = entries.map(([k, v]) => `${pad(depth + 1)}${JSON.stringify(k)}: ${formatValue(v, depth + 1, indent)}`);
+  const lines = entries.map(
+    ([k, v]) => `${pad(depth + 1)}${JSON.stringify(k)}: ${formatValue(v, depth + 1, indent)}`,
+  );
   return `{\n${lines.join(',\n')}\n${pad(depth)}}`;
 };

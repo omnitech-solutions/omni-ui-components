@@ -9,7 +9,10 @@ export default defineConfig({
   logLevel: 'warn',
   resolve: {
     alias: [
-      { find: '@oc-tech/omni-ui-components/styles.css', replacement: resolve(core, 'dist/styles.css') },
+      {
+        find: '@oc-tech/omni-ui-components/styles.css',
+        replacement: resolve(core, 'dist/styles.css'),
+      },
       { find: '@oc-tech/omni-ui-components', replacement: resolve(core, 'dist/index.js') },
     ],
   },
@@ -17,6 +20,12 @@ export default defineConfig({
   build: {
     outDir: resolve(core, 'tmp/host-app'),
     emptyOutDir: true,
-    rollupOptions: { input: { b: resolve(__dirname, 'b.html'), c: resolve(__dirname, 'c.html'), d: resolve(__dirname, 'd.html') } },
+    rollupOptions: {
+      input: {
+        b: resolve(__dirname, 'b.html'),
+        c: resolve(__dirname, 'c.html'),
+        d: resolve(__dirname, 'd.html'),
+      },
+    },
   },
 });

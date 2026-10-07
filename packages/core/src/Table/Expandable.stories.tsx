@@ -1,8 +1,9 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
 import { Table } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 import { ComponentWrapper } from './storySupport';
-import { defaultColumns, projects, treeProjects, type ProjectRecord } from './Table.story.fixtures';
+import { defaultColumns, type ProjectRecord, projects, treeProjects } from './Table.story.fixtures';
+
 const meta: Meta = {
   title: 'omni-ui-components/Table/Expandable',
   tags: ['autodocs'],
@@ -32,7 +33,9 @@ export const ExpandedRowRender: Story = {
         rowKey="id"
         expandable={{
           defaultExpandedRowKeys: ['p-1'],
-          expandedRowRender: (record) => <div className="text-sm text-[var(--color-muted-foreground)]">{record.description}</div>,
+          expandedRowRender: (record) => (
+            <div className="text-sm text-[var(--color-muted-foreground)]">{record.description}</div>
+          ),
         }}
         testIdPrefix="expandable-render"
       />
@@ -94,7 +97,11 @@ export const CustomExpandIcon: Story = {
         expandable={{
           expandedRowRender: (record) => <div>{record.description}</div>,
           expandIcon: ({ expanded, record, onExpand }) => (
-            <button type="button" className="pb-nav-btn" onClick={(event) => onExpand(record, event)}>
+            <button
+              type="button"
+              className="pb-nav-btn"
+              onClick={(event) => onExpand(record, event)}
+            >
               {expanded ? 'Close' : 'Open'}
             </button>
           ),

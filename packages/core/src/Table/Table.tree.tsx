@@ -14,8 +14,8 @@
  * expand column). Indent width comes from `expandable.indentSize`.
  */
 
-import * as React from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import type * as React from 'react';
 
 import type { TableExpandable } from './Table.types';
 
@@ -28,7 +28,9 @@ export const detectTreeMode = <TRecord,>(
 ): boolean => {
   if (expandable?.expandedRowRender) return false;
   if (expandable?.showExpandColumn === true) return false;
-  return (dataSource ?? []).some((record) => Array.isArray((record as Record<string, unknown>)[childrenColumnName]));
+  return (dataSource ?? []).some((record) =>
+    Array.isArray((record as Record<string, unknown>)[childrenColumnName]),
+  );
 };
 
 interface TreeExpandToggleProps {
@@ -42,7 +44,11 @@ interface TreeExpandToggleProps {
   /** Optional caller-supplied icon renderer. Receives `{ expanded, onToggle }`
    * and returns any ReactNode (icon, glyph, custom button). When omitted the
    * default lucide chevron button is used. */
-  renderIcon?: (ctx: { expanded: boolean; canExpand: boolean; onToggle: (event: React.MouseEvent) => void }) => React.ReactNode;
+  renderIcon?: (ctx: {
+    expanded: boolean;
+    canExpand: boolean;
+    onToggle: (event: React.MouseEvent) => void;
+  }) => React.ReactNode;
 }
 
 export const TreeExpandToggle: React.FC<TreeExpandToggleProps> = ({
@@ -55,7 +61,9 @@ export const TreeExpandToggle: React.FC<TreeExpandToggleProps> = ({
   testId,
   renderIcon,
 }) => {
-  const spacer = <span aria-hidden="true" style={{ display: 'inline-block', width: 20, height: 20 }} />;
+  const spacer = (
+    <span aria-hidden="true" style={{ display: 'inline-block', width: 20, height: 20 }} />
+  );
   const handleToggle = (event: React.MouseEvent) => {
     event.stopPropagation();
     onToggle();
@@ -96,9 +104,17 @@ export const TreeExpandToggle: React.FC<TreeExpandToggleProps> = ({
           }}
         >
           {isExpanded ? (
-            <ChevronDown className="bui-table-expand-toggle__icon" aria-hidden="true" style={{ width: 14, height: 14 }} />
+            <ChevronDown
+              className="bui-table-expand-toggle__icon"
+              aria-hidden="true"
+              style={{ width: 14, height: 14 }}
+            />
           ) : (
-            <ChevronRight className="bui-table-expand-toggle__icon" aria-hidden="true" style={{ width: 14, height: 14 }} />
+            <ChevronRight
+              className="bui-table-expand-toggle__icon"
+              aria-hidden="true"
+              style={{ width: 14, height: 14 }}
+            />
           )}
         </button>
       )}

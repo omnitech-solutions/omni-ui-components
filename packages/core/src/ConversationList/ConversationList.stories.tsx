@@ -1,18 +1,23 @@
-import * as React from 'react';
+import {
+  ConversationList,
+  type ConversationListProps,
+} from '@oc-tech/omni-ui-components/ConversationList';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
-
-import { ConversationList, type ConversationListProps } from '@oc-tech/omni-ui-components/ConversationList';
 import {
   ConversationListDemo,
   conversationListPropsFactory,
   conversationListVariants,
   type SampleConversation,
 } from 'factories/omni-ui-components/ConversationList/ConversationList.factories';
+import type * as React from 'react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 type Args = ConversationListProps<SampleConversation>;
 
-const Frame: React.FC<React.PropsWithChildren<{ height?: number }>> = ({ height = 520, children }) => (
+const Frame: React.FC<React.PropsWithChildren<{ height?: number }>> = ({
+  height = 520,
+  children,
+}) => (
   <div className="p-6">
     <div className="w-[280px]" style={{ height }}>
       {children}
@@ -33,17 +38,46 @@ const meta: Meta<Args> = {
       },
     },
   },
-  args: { ...conversationListPropsFactory(), onOpen: fn(), onSearchChange: fn(), onNewChat: fn(), onShowArchived: fn() },
+  args: {
+    ...conversationListPropsFactory(),
+    onOpen: fn(),
+    onSearchChange: fn(),
+    onNewChat: fn(),
+    onShowArchived: fn(),
+  },
   argTypes: {
-    groups: { control: 'object', description: 'Headed groups `{ key, label, items }`, in display order. Empty groups are skipped.' },
-    activeId: { control: 'text', description: 'The open conversation: its row gets `aria-current`.' },
-    docked: { control: 'boolean', description: '`true` sits beside the conversation; `false` floats over it (side-panel mode).' },
-    archived: { control: 'boolean', description: 'Archived view: heading says Archived, Back replaces New chat, search and the archived button hide.' },
-    archivedCount: { control: 'number', description: 'Count on the `Archived · N` button (shown when `onShowArchived` is set).' },
-    query: { control: 'text', description: 'Search value (controlled). Omit for an uncontrolled field.' },
+    groups: {
+      control: 'object',
+      description:
+        'Headed groups `{ key, label, items }`, in display order. Empty groups are skipped.',
+    },
+    activeId: {
+      control: 'text',
+      description: 'The open conversation: its row gets `aria-current`.',
+    },
+    docked: {
+      control: 'boolean',
+      description: '`true` sits beside the conversation; `false` floats over it (side-panel mode).',
+    },
+    archived: {
+      control: 'boolean',
+      description:
+        'Archived view: heading says Archived, Back replaces New chat, search and the archived button hide.',
+    },
+    archivedCount: {
+      control: 'number',
+      description: 'Count on the `Archived · N` button (shown when `onShowArchived` is set).',
+    },
+    query: {
+      control: 'text',
+      description: 'Search value (controlled). Omit for an uncontrolled field.',
+    },
     searchShortcut: { control: 'text', description: 'Key hint at the right of the search field.' },
     newChatShortcut: { control: 'text', description: 'Shortcut in the New chat tooltip.' },
-    labels: { control: 'object', description: 'Every string; `noMatch` and `archivedButton` are functions.' },
+    labels: {
+      control: 'object',
+      description: 'Every string; `noMatch` and `archivedButton` are functions.',
+    },
     onOpen: { action: 'open', description: 'A row was chosen.' },
     onSearchChange: { action: 'search', description: 'Every keystroke: the caller debounces.' },
     onNewChat: { action: 'new chat' },
@@ -67,7 +101,9 @@ export const Default: Story = {
     expect(canvas.getByRole('navigation', { name: 'Conversations' })).toBeInTheDocument();
     expect(canvas.getByText('Pinned')).toBeInTheDocument();
     expect(canvas.getByText('Previous 30 days')).toBeInTheDocument();
-    const row = canvas.getByText('Two Sum with a hash map').closest('[data-slot="conversation-row"]');
+    const row = canvas
+      .getByText('Two Sum with a hash map')
+      .closest('[data-slot="conversation-row"]');
     expect(row).toHaveAttribute('aria-current', 'true');
   },
 };

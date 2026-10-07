@@ -1,10 +1,13 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { SettingRow, SettingsDialog } from '@oc-tech/omni-ui-components/SettingsDialog';
-import { SettingsDialogDemo, settingsDialogPropsFactory, settingsDialogVariants } from 'factories/omni-ui-components/SettingsDialog/SettingsDialog.factories';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  SettingsDialogDemo,
+  settingsDialogPropsFactory,
+  settingsDialogVariants,
+} from 'factories/omni-ui-components/SettingsDialog/SettingsDialog.factories';
 
 describe('omni-ui-components/SettingsDialog', () => {
   it('renders a named modal dialog with a vertical tablist and a tabpanel for the active tab', () => {
@@ -13,7 +16,13 @@ describe('omni-ui-components/SettingsDialog', () => {
     const list = within(dialog).getByRole('tablist');
     expect(list).toHaveAttribute('aria-orientation', 'vertical');
     const tabs = within(list).getAllByRole('tab');
-    expect(tabs.map((t) => t.textContent)).toEqual(['General', 'Personalisation', 'Data & privacy', 'Connectors', 'Shortcuts']);
+    expect(tabs.map((t) => t.textContent)).toEqual([
+      'General',
+      'Personalisation',
+      'Data & privacy',
+      'Connectors',
+      'Shortcuts',
+    ]);
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
     expect(tabs[0]).toHaveAttribute('tabindex', '0');
     expect(tabs[1]).toHaveAttribute('tabindex', '-1');
@@ -24,7 +33,9 @@ describe('omni-ui-components/SettingsDialog', () => {
 
   it('renders nothing when closed and calls render only for the active tab', () => {
     const renderOther = jest.fn(() => <span>other</span>);
-    const { rerender } = render(<SettingsDialog {...settingsDialogPropsFactory({ open: false })} />);
+    const { rerender } = render(
+      <SettingsDialog {...settingsDialogPropsFactory({ open: false })} />,
+    );
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     rerender(
       <SettingsDialog
@@ -45,13 +56,20 @@ describe('omni-ui-components/SettingsDialog', () => {
     render(<SettingsDialog {...settingsDialogPropsFactory({ onTabChange: onTab })} />);
     await userEvent.click(screen.getByRole('tab', { name: /Data & privacy/ }));
     expect(onTab).toHaveBeenCalledWith(expect.objectContaining({ id: 'data' }));
-    expect(screen.getByRole('tab', { name: /Data & privacy/ })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('tab', { name: /Data & privacy/ })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
     expect(screen.getByRole('tabpanel')).toHaveTextContent('Export all data');
   });
 
   it('is controlled by activeTab', async () => {
     const onTab = jest.fn();
-    render(<SettingsDialog {...settingsDialogPropsFactory({ activeTab: 'general', onTabChange: onTab })} />);
+    render(
+      <SettingsDialog
+        {...settingsDialogPropsFactory({ activeTab: 'general', onTabChange: onTab })}
+      />,
+    );
     await userEvent.click(screen.getByRole('tab', { name: /Connectors/ }));
     expect(onTab).toHaveBeenCalledWith(expect.objectContaining({ id: 'connectors' }));
     expect(screen.getByRole('tab', { name: /General/ })).toHaveAttribute('aria-selected', 'true');
@@ -63,7 +81,10 @@ describe('omni-ui-components/SettingsDialog', () => {
     screen.getByRole('tab', { name: /General/ }).focus();
     await userEvent.keyboard('{ArrowDown}');
     expect(screen.getByRole('tab', { name: /Personalisation/ })).toHaveFocus();
-    expect(screen.getByRole('tab', { name: /Personalisation/ })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('tab', { name: /Personalisation/ })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
     expect(screen.getByRole('tab', { name: /General/ })).toHaveAttribute('tabindex', '-1');
     await userEvent.keyboard('{End}');
     expect(screen.getByRole('tab', { name: /Shortcuts/ })).toHaveFocus();
@@ -102,7 +123,11 @@ describe('omni-ui-components/SettingsDialog', () => {
   });
 
   it('translates the title and close name', () => {
-    render(<SettingsDialog {...settingsDialogPropsFactory({ labels: { title: 'Ajustes', close: 'Cerrar' } })} />);
+    render(
+      <SettingsDialog
+        {...settingsDialogPropsFactory({ labels: { title: 'Ajustes', close: 'Cerrar' } })}
+      />,
+    );
     expect(screen.getByRole('dialog', { name: 'Ajustes' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Cerrar' })).toBeInTheDocument();
   });
@@ -150,13 +175,22 @@ describe('omni-ui-components/GeneralSettings', () => {
     const { GeneralSettings } = await import('@oc-tech/omni-ui-components/SettingsDialog');
     const onThemeChange = jest.fn();
     const onSendOnEnterChange = jest.fn();
-    const { rerender } = render(<GeneralSettings onThemeChange={onThemeChange} onSendOnEnterChange={onSendOnEnterChange} />);
+    const { rerender } = render(
+      <GeneralSettings onThemeChange={onThemeChange} onSendOnEnterChange={onSendOnEnterChange} />,
+    );
     await userEvent.click(screen.getByRole('radio', { name: 'Dark' }));
     expect(onThemeChange).toHaveBeenCalledWith('dark');
     expect(screen.getByRole('radio', { name: 'Dark' })).toBeChecked();
     await userEvent.click(screen.getByRole('switch', { name: 'Send with Enter' }));
     expect(onSendOnEnterChange).toHaveBeenCalledWith(false);
-    rerender(<GeneralSettings theme="light" onThemeChange={onThemeChange} sendOnEnter onSendOnEnterChange={onSendOnEnterChange} />);
+    rerender(
+      <GeneralSettings
+        theme="light"
+        onThemeChange={onThemeChange}
+        sendOnEnter
+        onSendOnEnterChange={onSendOnEnterChange}
+      />,
+    );
     await userEvent.click(screen.getByRole('radio', { name: 'Dark' }));
     expect(onThemeChange).toHaveBeenLastCalledWith('dark');
     expect(screen.getByRole('radio', { name: 'Light' })).toBeChecked();

@@ -1,10 +1,10 @@
-export * from './types';
-export { useStableId } from './use-stable-id';
 export * from './FieldShell';
-export { useFollowLatest, isAtEnd, AT_END_PX } from './use-follow-latest';
-export type { ScrollBoxMetrics } from './use-follow-latest';
-export { useHoldToTalk, describeHoldKey } from './use-hold-to-talk';
-export type { HoldToTalkOptions } from './use-hold-to-talk';
+export * from './types';
 export { useControllableState } from './use-controllable-state';
-export { useRovingTabindex } from './use-roving-tabindex';
+export type { ScrollBoxMetrics } from './use-follow-latest';
+export { AT_END_PX, isAtEnd, useFollowLatest } from './use-follow-latest';
+export type { HoldToTalkOptions } from './use-hold-to-talk';
+export { describeHoldKey, useHoldToTalk } from './use-hold-to-talk';
 export type { RovingOrientation, RovingTabindexOptions } from './use-roving-tabindex';
+export { useRovingTabindex } from './use-roving-tabindex';
+export { useStableId } from './use-stable-id';

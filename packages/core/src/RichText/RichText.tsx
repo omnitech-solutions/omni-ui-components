@@ -1,9 +1,8 @@
 import * as React from 'react';
-
-import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { RichTextPrimitive } from './RichTextPrimitive';
 import type { FieldLayoutProps } from '../Input/Input.variants';
 import type { RootProps } from '../lib';
+import { FieldShell, useFieldChrome } from '../lib/FieldShell';
+import { RichTextPrimitive } from './RichTextPrimitive';
 
 export interface RichTextProps extends RootProps, FieldLayoutProps {
   id?: string;
@@ -29,7 +28,19 @@ export interface RichTextProps extends RootProps, FieldLayoutProps {
 export const RichText = React.memo(
   React.forwardRef<HTMLDivElement, RichTextProps>(
     (
-      { id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps },
+      {
+        id: idProp,
+        wrapperClassName,
+        labelClassName,
+        layout = 'vertical',
+        label,
+        description,
+        error,
+        required,
+        invalid,
+        className,
+        ...primitiveProps
+      },
       ref,
     ) => {
       const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({

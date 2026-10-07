@@ -1,4 +1,4 @@
-import { z, type ZodTypeAny } from 'zod';
+import { type ZodTypeAny, z } from 'zod';
 
 import type { FieldDef, FieldType } from './Form.types';
 
@@ -19,8 +19,10 @@ import type { FieldDef, FieldType } from './Form.types';
 export const validators = {
   text: (opts: { min?: number; max?: number; label?: string } = {}) => {
     let v = z.string();
-    if (opts.min != null) v = v.min(opts.min, `${opts.label ?? 'Value'} must be at least ${opts.min} characters`);
-    if (opts.max != null) v = v.max(opts.max, `${opts.label ?? 'Value'} must be at most ${opts.max} characters`);
+    if (opts.min != null)
+      v = v.min(opts.min, `${opts.label ?? 'Value'} must be at least ${opts.min} characters`);
+    if (opts.max != null)
+      v = v.max(opts.max, `${opts.label ?? 'Value'} must be at most ${opts.max} characters`);
     return v;
   },
   email: (message = 'Enter a valid email') => z.string().email(message),
@@ -31,7 +33,8 @@ export const validators = {
       .regex(/[A-Z]/, 'Password must contain an uppercase letter')
       .regex(/\d/, 'Password must contain a number'),
   url: (message = 'Enter a valid URL') => z.string().url(message),
-  tel: (message = 'Enter a valid phone (10+ digits)') => z.string().regex(/^[+\d\s()-]{10,}$/, message),
+  tel: (message = 'Enter a valid phone (10+ digits)') =>
+    z.string().regex(/^[+\d\s()-]{10,}$/, message),
   number: (opts: { min?: number; max?: number; int?: boolean } = {}) => {
     let v: ZodTypeAny = z.coerce.number({ error: 'Must be a number' });
     if (opts.int !== false) v = (v as z.ZodNumber).int('Must be a whole number');
@@ -49,7 +52,9 @@ export const validators = {
           : country === 'UK'
             ? /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i
             : /^[A-Za-z0-9 -]{3,10}$/;
-    return z.string().regex(pattern, `Enter a valid ${country === 'INTL' ? '' : `${country} `}postal code`);
+    return z
+      .string()
+      .regex(pattern, `Enter a valid ${country === 'INTL' ? '' : `${country} `}postal code`);
   },
   /** Permissive credit-card check: digits + Luhn checksum. */
   creditCard: () =>
@@ -130,10 +135,13 @@ const requiredOf = (validator: ZodTypeAny, label: string, override?: string): Zo
  *   { name: 'age', label: 'Age', type: 'number', validate: z.coerce.number().min(18, 'Must be 18+') },
  * ]);
  */
-export function buildZodSchema<TName extends string>(fields: ZodFieldDef<TName>[]): z.ZodObject<any> {
+export function buildZodSchema<TName extends string>(
+  fields: ZodFieldDef<TName>[],
+): z.ZodObject<any> {
   const shape: Record<string, ZodTypeAny> = {};
   for (const field of fields) {
-    let validator = field.validate ?? (TYPE_VALIDATORS[field.type ?? 'text'] ?? TYPE_VALIDATORS.text)();
+    let validator =
+      field.validate ?? (TYPE_VALIDATORS[field.type ?? 'text'] ?? TYPE_VALIDATORS.text)();
     if (field.required) {
       validator = requiredOf(validator, field.label, field.requiredMessage);
     } else {

@@ -1,9 +1,14 @@
 import type { TemplatesType } from '@rjsf/utils';
-
+import {
+  CopyButton,
+  MoveDownButton,
+  MoveUpButton,
+  RemoveButton,
+  SubmitButton,
+} from '../templates/ButtonTemplates';
 import { FieldTemplate } from '../templates/FieldTemplate';
 import { ObjectFieldTemplate } from '../templates/ObjectFieldTemplate';
 import { WrapIfAdditionalTemplate } from '../templates/WrapIfAdditionalTemplate';
-import { CopyButton, MoveDownButton, MoveUpButton, RemoveButton, SubmitButton } from '../templates/ButtonTemplates';
 
 /**
  * Omni overrides layered on top of `@rjsf/shadcn`'s template registry.

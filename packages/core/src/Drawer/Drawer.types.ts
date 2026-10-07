@@ -1,12 +1,13 @@
-import * as React from 'react';
 import type * as DialogPrimitive from '@radix-ui/react-dialog';
+import type * as React from 'react';
 
 export type DrawerProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>;
 export type DrawerTriggerProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Trigger>;
 export type DrawerPortalProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Portal>;
 export type DrawerCloseProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close>;
 export type DrawerOverlayProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>;
-export interface DrawerContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+export interface DrawerContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   side?: 'top' | 'bottom' | 'left' | 'right';
   /** Render the modal backdrop. Disable for persistent, non-modal docked panels. */
   overlay?: boolean;
@@ -14,4 +15,6 @@ export interface DrawerContentProps extends React.ComponentPropsWithoutRef<typeo
 export interface DrawerHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 export interface DrawerFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 export type DrawerTitleProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>;
-export type DrawerDescriptionProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>;
+export type DrawerDescriptionProps = React.ComponentPropsWithoutRef<
+  typeof DialogPrimitive.Description
+>;

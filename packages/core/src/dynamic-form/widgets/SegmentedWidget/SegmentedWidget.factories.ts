@@ -1,5 +1,5 @@
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { z } from 'zod';
-import type { UiSchema, RJSFSchema } from '@rjsf/utils';
 
 import type { FormFixture } from '../../DynamicForm/DynamicForm.factories';
 
@@ -28,14 +28,18 @@ const TONE_ZOD_REQUIRED = z.object({
   tone: z.string().min(1, 'Pick a tone'),
 }) as unknown as z.ZodType<ToneFormData>;
 
-const fixtureFor = (uiSchema: UiSchema, opts: { initial?: string; required?: boolean } = {}): FormFixture<ToneFormData> => ({
+const fixtureFor = (
+  uiSchema: UiSchema,
+  opts: { initial?: string; required?: boolean } = {},
+): FormFixture<ToneFormData> => ({
   schema: TONE_SCHEMA,
   uiSchema,
   zodSchema: opts.required ? TONE_ZOD_REQUIRED : TONE_ZOD,
   defaults: { tone: opts.initial ?? 'friendly' },
 });
 
-export const plainToneFixture = (): FormFixture<ToneFormData> => fixtureFor({ tone: { 'ui:widget': 'segmented' } });
+export const plainToneFixture = (): FormFixture<ToneFormData> =>
+  fixtureFor({ tone: { 'ui:widget': 'segmented' } });
 
 export const twoOptionToneFixture = (): FormFixture<ToneFormData> => ({
   schema: {
@@ -56,4 +60,5 @@ export const twoOptionToneFixture = (): FormFixture<ToneFormData> => ({
   defaults: { tone: 'yes' },
 });
 
-export const validationToneFixture = (): FormFixture<ToneFormData> => fixtureFor({ tone: { 'ui:widget': 'segmented' } }, { required: true, initial: '' });
+export const validationToneFixture = (): FormFixture<ToneFormData> =>
+  fixtureFor({ tone: { 'ui:widget': 'segmented' } }, { required: true, initial: '' });

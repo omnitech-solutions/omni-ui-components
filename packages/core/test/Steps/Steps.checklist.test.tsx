@@ -1,8 +1,11 @@
 import '@testing-library/jest-dom';
-import { render, screen, within } from '@testing-library/react';
 
 import { Steps } from '@oc-tech/omni-ui-components/Steps';
-import { stepsChecklistItems, stepsVariants } from 'factories/omni-ui-components/Steps/Steps.factories';
+import { render, screen, within } from '@testing-library/react';
+import {
+  stepsChecklistItems,
+  stepsVariants,
+} from 'factories/omni-ui-components/Steps/Steps.factories';
 
 describe('omni-ui-components/Steps checklist', () => {
   it('is a list with one item per step, read only (no buttons)', () => {
@@ -19,7 +22,10 @@ describe('omni-ui-components/Steps checklist', () => {
     expect(done.querySelector('svg')).not.toBeNull();
     expect(done.querySelector('[data-slot="progress-ring"]')).toBeNull();
     expect(current).toHaveAttribute('data-state', 'current');
-    expect(current.querySelector('[data-slot="progress-ring"]')).toHaveAttribute('data-indeterminate', 'true');
+    expect(current.querySelector('[data-slot="progress-ring"]')).toHaveAttribute(
+      'data-indeterminate',
+      'true',
+    );
     expect(pending).toHaveAttribute('data-state', 'pending');
     expect(pending.querySelector('svg')).toBeNull();
     expect(pending.querySelector('[data-slot="progress-ring"]')).toBeNull();
@@ -41,7 +47,12 @@ describe('omni-ui-components/Steps checklist', () => {
   });
 
   it('reads label, falls back to title, and treats a missing state as pending', () => {
-    render(<Steps variant="checklist" items={[{ title: 'From title' }, { label: 'From label', state: 'done' }]} />);
+    render(
+      <Steps
+        variant="checklist"
+        items={[{ title: 'From title' }, { label: 'From label', state: 'done' }]}
+      />,
+    );
     expect(screen.getByText('From title').closest('li')).toHaveAttribute('data-state', 'pending');
     expect(screen.getByText('From label')).toBeInTheDocument();
   });

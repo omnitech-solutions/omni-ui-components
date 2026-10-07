@@ -1,9 +1,8 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { CurrencyInputPrimitive } from './CurrencyInputPrimitive';
 import type { NumberInputProps } from '../NumberInput';
+import { CurrencyInputPrimitive } from './CurrencyInputPrimitive';
 
 export interface CurrencyInputProps extends Omit<NumberInputProps, 'prefix' | 'thousandSeparator'> {
   /** ISO 4217 code (e.g. `USD`, `EUR`). Default `USD`. */
@@ -21,7 +20,22 @@ export interface CurrencyInputProps extends Omit<NumberInputProps, 'prefix' | 't
  * <CurrencyInput label="Amount" currency="USD" value={amount} onChange={setAmount} />
  */
 const CurrencyInputInner = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

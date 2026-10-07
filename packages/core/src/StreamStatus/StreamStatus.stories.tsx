@@ -1,9 +1,10 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within } from 'storybook/test';
-
 import { StreamStatus, type StreamStatusProps } from '@oc-tech/omni-ui-components/StreamStatus';
-import { streamStatusPropsFactory, streamStatusVariants } from 'factories/omni-ui-components/StreamStatus/StreamStatus.factories';
+import type { Meta, StoryObj } from '@storybook/react';
+import {
+  streamStatusPropsFactory,
+  streamStatusVariants,
+} from 'factories/omni-ui-components/StreamStatus/StreamStatus.factories';
+import { expect, within } from 'storybook/test';
 
 const meta: Meta<StreamStatusProps> = {
   title: 'omni-ui-components/StreamStatus',
@@ -23,9 +24,16 @@ const meta: Meta<StreamStatusProps> = {
     toolName: { control: 'text' },
     status: { control: 'inline-radio', options: ['running', 'completed', 'failed'] },
     message: { control: 'text', description: 'Replaces the generated text.' },
-    startedAt: { control: 'number', description: 'Epoch ms the activity began. Default: mount time.' },
+    startedAt: {
+      control: 'number',
+      description: 'Epoch ms the activity began. Default: mount time.',
+    },
     hideTimer: { control: 'boolean' },
-    labels: { control: 'object', description: 'Every string (partial): calling, completed, failed, unnamedTool, reasoning, stall.' },
+    labels: {
+      control: 'object',
+      description:
+        'Every string (partial): calling, completed, failed, unnamedTool, reasoning, stall.',
+    },
   },
   render: (args) => (
     <div className="p-6">

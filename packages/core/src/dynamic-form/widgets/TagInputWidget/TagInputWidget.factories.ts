@@ -1,5 +1,5 @@
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { z } from 'zod';
-import type { UiSchema, RJSFSchema } from '@rjsf/utils';
 
 import type { FormFixture } from '../../DynamicForm/DynamicForm.factories';
 
@@ -22,6 +22,9 @@ const fixtureFor = (uiSchema: UiSchema, initial: string[] = []): FormFixture<Tag
   defaults: { tags: initial },
 });
 
-export const plainTagsFixture = (): FormFixture<TagsFormData> => fixtureFor({ tags: { 'ui:widget': 'tags' } });
-export const prefilledTagsFixture = (): FormFixture<TagsFormData> => fixtureFor({ tags: { 'ui:widget': 'tags' } }, ['react', 'typescript', 'tailwind']);
-export const maxTagsFixture = (): FormFixture<TagsFormData> => fixtureFor({ tags: { 'ui:widget': 'tags', 'ui:options': { maxItems: 3 } } });
+export const plainTagsFixture = (): FormFixture<TagsFormData> =>
+  fixtureFor({ tags: { 'ui:widget': 'tags' } });
+export const prefilledTagsFixture = (): FormFixture<TagsFormData> =>
+  fixtureFor({ tags: { 'ui:widget': 'tags' } }, ['react', 'typescript', 'tailwind']);
+export const maxTagsFixture = (): FormFixture<TagsFormData> =>
+  fixtureFor({ tags: { 'ui:widget': 'tags', 'ui:options': { maxItems: 3 } } });

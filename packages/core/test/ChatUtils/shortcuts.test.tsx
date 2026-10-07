@@ -1,8 +1,20 @@
+import {
+  describeShortcut,
+  describeShortcutKeys,
+  matchesShortcut,
+  useHotkeys,
+} from '@oc-tech/omni-ui-components/lib/chat';
 import { fireEvent, render } from '@testing-library/react';
 
-import { describeShortcut, describeShortcutKeys, matchesShortcut, useHotkeys } from '@oc-tech/omni-ui-components/lib/chat';
-
-const key = (init: Partial<KeyboardEvent>) => ({ key: '', code: '', metaKey: false, ctrlKey: false, shiftKey: false, altKey: false, ...init });
+const key = (init: Partial<KeyboardEvent>) => ({
+  key: '',
+  code: '',
+  metaKey: false,
+  ctrlKey: false,
+  shiftKey: false,
+  altKey: false,
+  ...init,
+});
 
 describe('shortcuts', () => {
   it('describes mod, shift and alt for Mac and other platforms', () => {
@@ -18,12 +30,21 @@ describe('shortcuts', () => {
     expect(matchesShortcut(key({ key: 'K', ctrlKey: true }), 'mod+k')).toBe(true);
     expect(matchesShortcut(key({ key: 'k' }), 'mod+k')).toBe(false);
     expect(matchesShortcut(key({ key: 'k', metaKey: true, shiftKey: true }), 'mod+k')).toBe(false);
-    expect(matchesShortcut(key({ key: 'o', metaKey: true, shiftKey: true }), 'mod+shift+o')).toBe(true);
-    expect(matchesShortcut(key({ key: 'o', metaKey: true, shiftKey: true, altKey: true }), 'mod+shift+o')).toBe(false);
+    expect(matchesShortcut(key({ key: 'o', metaKey: true, shiftKey: true }), 'mod+shift+o')).toBe(
+      true,
+    );
+    expect(
+      matchesShortcut(
+        key({ key: 'o', metaKey: true, shiftKey: true, altKey: true }),
+        'mod+shift+o',
+      ),
+    ).toBe(false);
   });
 
   it('matches the physical key when alt changes `event.key` (Option on a Mac)', () => {
-    expect(matchesShortcut(key({ key: 'ø', code: 'KeyO', metaKey: true, altKey: true }), 'mod+alt+o')).toBe(true);
+    expect(
+      matchesShortcut(key({ key: 'ø', code: 'KeyO', metaKey: true, altKey: true }), 'mod+alt+o'),
+    ).toBe(true);
   });
 
   it('useHotkeys runs the first matching handler, prevents default, and can be disabled', () => {

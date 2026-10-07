@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { TimePicker, type TimePickerProps } from '@oc-tech/omni-ui-components/TimePicker';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const Renderer: React.FC<TimePickerProps> = (args) => {
   const [value, setValue] = React.useState<string>(args.value ?? '');

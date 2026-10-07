@@ -1,10 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
+import type { ModelInfo } from '@oc-tech/omni-ui-components/ModelPicker';
+import { ModelsSettings } from '@oc-tech/omni-ui-components/ModelsSettings';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-import { ModelsSettings } from '@oc-tech/omni-ui-components/ModelsSettings';
-import type { ModelInfo } from '@oc-tech/omni-ui-components/ModelPicker';
 import {
   ModelsSettingsDialogDemo,
   modelsSettingsPropsFactory,
@@ -18,7 +16,9 @@ describe('omni-ui-components/ModelsSettings', () => {
     expect(endpoint).toHaveValue('http://localhost:1234/v1');
     expect(endpoint).toHaveAttribute('readonly');
     expect(screen.getByRole('status')).toHaveTextContent('Connected · 3 models');
-    expect(within(screen.getByRole('list', { name: 'Available models' })).getAllByRole('listitem')).toHaveLength(3);
+    expect(
+      within(screen.getByRole('list', { name: 'Available models' })).getAllByRole('listitem'),
+    ).toHaveLength(3);
   });
 
   it('onAddProvider fires from the Add provider button', async () => {
@@ -48,7 +48,9 @@ describe('omni-ui-components/ModelsSettings', () => {
     rerender(<ModelsSettings {...modelsSettingsPropsFactory(modelsSettingsVariants[2].args)} />);
     expect(screen.getByRole('status')).toHaveTextContent('Not connected');
     expect(screen.getByText('No models found.')).toBeInTheDocument();
-    rerender(<ModelsSettings {...modelsSettingsPropsFactory({ models: [{ id: 'a', name: 'A' }] })} />);
+    rerender(
+      <ModelsSettings {...modelsSettingsPropsFactory({ models: [{ id: 'a', name: 'A' }] })} />,
+    );
     expect(screen.getByRole('status')).toHaveTextContent('Connected · 1 model');
   });
 

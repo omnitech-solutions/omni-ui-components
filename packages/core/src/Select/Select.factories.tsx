@@ -61,12 +61,25 @@ export const selectVariants: Variant<SelectProps>[] = [
       label: 'Description + color',
       placeholder: 'Pick a project…',
       options: [
-        { value: 'bugs-w27', label: '🐛 Bugs - Week 27', description: 'Omni Product Development', color: '#e07a5f' },
-        { value: 'security', label: '🔒 Security Items', description: 'Omni Product Development', color: '#808080' },
+        {
+          value: 'bugs-w27',
+          label: '🐛 Bugs - Week 27',
+          description: 'Omni Product Development',
+          color: '#e07a5f',
+        },
+        {
+          value: 'security',
+          label: '🔒 Security Items',
+          description: 'Omni Product Development',
+          color: '#808080',
+        },
       ],
     },
   },
   { name: 'Required', args: { label: 'Required', required: true, value: '' } },
   { name: 'Disabled', args: { label: 'Disabled', disabled: true, value: 'US' } },
-  { name: 'Invalid', args: { label: 'Invalid', error: 'Please pick a country', required: true, value: '' } },
+  {
+    name: 'Invalid',
+    args: { label: 'Invalid', error: 'Please pick a country', required: true, value: '' },
+  },
 ];

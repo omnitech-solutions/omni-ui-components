@@ -1,10 +1,9 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { TimePickerPrimitive } from './TimePickerPrimitive';
+import * as React from 'react';
 import type { FieldLayoutProps } from '../Input/Input.variants';
 import type { RootProps } from '../lib';
+import { FieldShell, useFieldChrome } from '../lib/FieldShell';
+import { TimePickerPrimitive } from './TimePickerPrimitive';
 
 export interface TimePickerProps extends RootProps, FieldLayoutProps {
   id?: string;
@@ -36,7 +35,22 @@ export interface TimePickerProps extends RootProps, FieldLayoutProps {
  * <TimePicker label="Start time" value={start} onChange={setStart} />
  */
 const TimePickerInner = React.forwardRef<HTMLInputElement, TimePickerProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

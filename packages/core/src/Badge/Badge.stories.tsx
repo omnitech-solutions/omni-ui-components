@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Badge } from '@oc-tech/omni-ui-components/Badge';
+import type { Meta, StoryObj } from '@storybook/react';
 import { badgePropsFactory } from 'factories/omni-ui-components/Badge/Badge.factories';
 
 const meta: Meta<typeof Badge> = {
@@ -10,13 +9,17 @@ const meta: Meta<typeof Badge> = {
   parameters: {
     docs: {
       description: {
-        component: 'Small <primary>pill-style metadata marker</primary> for <primary>statuses, labels, and categorical states</primary>.',
+        component:
+          'Small <primary>pill-style metadata marker</primary> for <primary>statuses, labels, and categorical states</primary>.',
       },
     },
   },
   args: badgePropsFactory(),
   argTypes: {
-    variant: { control: 'inline-radio', options: ['default', 'secondary', 'destructive', 'outline'] },
+    variant: {
+      control: 'inline-radio',
+      options: ['default', 'secondary', 'destructive', 'outline'],
+    },
   },
 };
 

@@ -25,7 +25,20 @@ export const richTextVariants: Variant<RichTextProps>[] = [
         '<blockquote>Boring tech wins.</blockquote>',
     },
   },
-  { name: 'Read only', args: { label: 'Read only', readOnly: true, value: '<p>Locked content — toolbar visible, editor disabled.</p>' } },
-  { name: 'Disabled', args: { label: 'Disabled', disabled: true, value: '<p>Greyed out and inert.</p>' } },
-  { name: 'Invalid', args: { label: 'Invalid', error: 'Description is required', required: true, value: '' } },
+  {
+    name: 'Read only',
+    args: {
+      label: 'Read only',
+      readOnly: true,
+      value: '<p>Locked content — toolbar visible, editor disabled.</p>',
+    },
+  },
+  {
+    name: 'Disabled',
+    args: { label: 'Disabled', disabled: true, value: '<p>Greyed out and inert.</p>' },
+  },
+  {
+    name: 'Invalid',
+    args: { label: 'Invalid', error: 'Description is required', required: true, value: '' },
+  },
 ];

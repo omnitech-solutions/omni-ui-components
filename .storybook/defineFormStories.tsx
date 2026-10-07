@@ -1,9 +1,8 @@
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-
+import type { FormFixture } from 'factories/omni-ui-components/Form/Form.factories';
+import * as React from 'react';
 import { FormStoryShell } from './FormStoryShell';
 import { buildFormSnippet } from './snippets/formSnippet';
-import type { FormFixture } from 'factories/omni-ui-components/Form/Form.factories';
 
 /* -------------------------------------------------------------------------- */
 /* Config shapes                                                               */
@@ -71,13 +70,26 @@ const buildOnSubmit = (mode: SubmitMode | undefined) => {
 /* Renderer                                                                    */
 /* -------------------------------------------------------------------------- */
 
-function FormStoryRenderer<TFormData>(props: { fixtures: DefineFormStoriesConfig<TFormData>['fixtures']; args: FormStoryArgs<TFormData> }) {
+function FormStoryRenderer<TFormData>(props: {
+  fixtures: DefineFormStoriesConfig<TFormData>['fixtures'];
+  args: FormStoryArgs<TFormData>;
+}) {
   const { fixtures, args } = props;
   const fixture = React.useMemo(() => fixtures[args.fixture](), [fixtures, args.fixture]);
   const onSubmit = React.useMemo(() => buildOnSubmit(args.onSubmitMode), [args.onSubmitMode]);
-  const formData = args.prefilled || args.formData ? ({ ...fixture.initial, ...args.formData } as TFormData) : undefined;
+  const formData =
+    args.prefilled || args.formData
+      ? ({ ...fixture.initial, ...args.formData } as TFormData)
+      : undefined;
   return (
-    <FormStoryShell fixture={fixture} formData={formData} onSubmit={onSubmit} disabled={args.disabled} readOnly={args.readOnly} autoSubmit={args.autoSubmit} />
+    <FormStoryShell
+      fixture={fixture}
+      formData={formData}
+      onSubmit={onSubmit}
+      disabled={args.disabled}
+      readOnly={args.readOnly}
+      autoSubmit={args.autoSubmit}
+    />
   );
 }
 
@@ -102,7 +114,9 @@ function FormStoryRenderer<TFormData>(props: { fixtures: DefineFormStoriesConfig
  * export const AddAddress: StoryObj = { args: config.stories.AddAddress };
  * export const ValidationErrors: StoryObj = { args: config.stories.ValidationErrors, play: config.play.ValidationErrors };
  */
-export function defineFormStories<TFormData>(config: DefineFormStoriesConfig<TFormData>): DefineFormStoriesResult<TFormData> {
+export function defineFormStories<TFormData>(
+  config: DefineFormStoriesConfig<TFormData>,
+): DefineFormStoriesResult<TFormData> {
   const fixtureKeys = Object.keys(config.fixtures);
 
   const parameters: Meta<FormStoryArgs<TFormData>>['parameters'] = {
@@ -110,7 +124,12 @@ export function defineFormStories<TFormData>(config: DefineFormStoriesConfig<TFo
     docs: {
       description: config.docs
         ? {
-            component: [config.docs.whenToUse, config.docs.accessibility ? `\n### Accessibility\n${config.docs.accessibility}` : ''].filter(Boolean).join('\n'),
+            component: [
+              config.docs.whenToUse,
+              config.docs.accessibility ? `\n### Accessibility\n${config.docs.accessibility}` : '',
+            ]
+              .filter(Boolean)
+              .join('\n'),
           }
         : undefined,
       source: {
@@ -132,7 +151,10 @@ export function defineFormStories<TFormData>(config: DefineFormStoriesConfig<TFo
       options: fixtureKeys,
       description: 'Which fixture to render — switch schema + rows live.',
     },
-    prefilled: { control: 'boolean', description: 'Seed the form with fixture defaults (merged with `formData`).' },
+    prefilled: {
+      control: 'boolean',
+      description: 'Seed the form with fixture defaults (merged with `formData`).',
+    },
     formData: { control: 'object', description: 'Custom prefilled overrides.' },
     disabled: { control: 'boolean' },
     readOnly: { control: 'boolean' },
@@ -155,7 +177,9 @@ export function defineFormStories<TFormData>(config: DefineFormStoriesConfig<TFo
     ...config.defaultArgs,
   } as FormStoryArgs<TFormData>;
 
-  const render = (args: FormStoryArgs<TFormData>) => <FormStoryRenderer fixtures={config.fixtures} args={args} />;
+  const render = (args: FormStoryArgs<TFormData>) => (
+    <FormStoryRenderer fixtures={config.fixtures} args={args} />
+  );
 
   /* `autoSubmit` is handled inside `FormStoryShell` via a `useEffect` — no
    * dependency on the Storybook play addon. `play` is exposed as a no-op map

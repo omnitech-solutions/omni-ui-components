@@ -1,14 +1,13 @@
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
 import {
   ChatReplyShowcase,
-  MarkdownDemo,
-  SAMPLE_REPLY,
   type ChatReplyShowcaseProps,
+  MarkdownDemo,
   type MarkdownDemoProps,
+  SAMPLE_REPLY,
 } from 'factories/omni-ui-components/Markdown/Markdown.factories';
+import type * as React from 'react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 type StoryArgs = MarkdownDemoProps;
 
@@ -84,7 +83,8 @@ export const Streaming: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Half-streamed text: the open fence is closed for display, so the code stays one block, and the cursor follows.',
+        story:
+          'Half-streamed text: the open fence is closed for display, so the code stays one block, and the cursor follows.',
       },
     },
   },
@@ -133,7 +133,8 @@ export const ChatReplyStreaming: StoryObj<ChatReplyShowcaseProps> = {
   parameters: {
     docs: {
       description: {
-        story: 'Streaming: the rail timeline, the Thinking spinner and a cursor after the half-written code.',
+        story:
+          'Streaming: the rail timeline, the Thinking spinner and a cursor after the half-written code.',
       },
     },
   },

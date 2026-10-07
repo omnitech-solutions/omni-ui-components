@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Rate } from '@oc-tech/omni-ui-components/Rate';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const meta: Meta<typeof Rate> = {
   title: 'omni-ui-components/Rate',

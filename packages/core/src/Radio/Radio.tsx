@@ -1,10 +1,9 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { useStableId } from '../lib';
+import * as React from 'react';
 import { fieldGroupVariants, fieldLabelVariants } from '../Input/Input.variants';
-import { RadioPrimitive } from './RadioPrimitive';
+import { useStableId } from '../lib';
 import type { RadioProps } from './Radio.types';
+import { RadioPrimitive } from './RadioPrimitive';
 
 /**
  * Chrome-wrapped Omni Radio group. Composes {@link RadioPrimitive} with
@@ -23,7 +22,22 @@ import type { RadioProps } from './Radio.types';
  * />
  */
 const RadioInner = React.forwardRef<HTMLDivElement, RadioProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const fallbackId = useStableId('oui-radio');
     const id = idProp ?? fallbackId;
     const isInvalid = Boolean(error) || Boolean(invalid);
@@ -56,12 +70,19 @@ const RadioInner = React.forwardRef<HTMLDivElement, RadioProps>(
 
     const helpers =
       description && !error ? (
-        <p id={descriptionId} className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]">
+        <p
+          id={descriptionId}
+          className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]"
+        >
           {description}
         </p>
       ) : null;
     const errorNode = error ? (
-      <p id={errorId} role="alert" className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-border-invalid)]">
+      <p
+        id={errorId}
+        role="alert"
+        className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-border-invalid)]"
+      >
         {error}
       </p>
     ) : null;

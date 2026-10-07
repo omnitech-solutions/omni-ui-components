@@ -1,16 +1,15 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Mic } from 'lucide-react';
 
 import { IconButton, type IconButtonProps } from '@oc-tech/omni-ui-components/IconButton';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   iconButtonPropsFactory,
   iconButtonSizeVariants,
   iconButtonStateVariants,
   iconButtonToneVariants,
 } from 'factories/omni-ui-components/IconButton/IconButton.factories';
+import { Mic } from 'lucide-react';
 
 const TONES = ['neutral', 'accent', 'success', 'warning', 'danger', 'dim'] as const;
 
@@ -43,9 +42,17 @@ describe('omni-ui-components/IconButton variations', () => {
     });
 
     it('does not leak tone / badge / tooltip / pressed props as DOM attributes', () => {
-      renderIcon({ tone: 'accent', badge: { tone: 'warning', label: '!' }, tooltip: 'Tip', pressed: true, disabledReason: undefined });
+      renderIcon({
+        tone: 'accent',
+        badge: { tone: 'warning', label: '!' },
+        tooltip: 'Tip',
+        pressed: true,
+        disabledReason: undefined,
+      });
       const btn = screen.getByRole('button');
-      ['tone', 'badge', 'tooltip', 'pressed', 'disabledreason', 'disabledReason'].forEach((a) => expect(btn).not.toHaveAttribute(a));
+      ['tone', 'badge', 'tooltip', 'pressed', 'disabledreason', 'disabledReason'].forEach((a) =>
+        expect(btn).not.toHaveAttribute(a),
+      );
     });
   });
 
@@ -92,7 +99,9 @@ describe('omni-ui-components/IconButton variations', () => {
 
     it('renders a plain dot when there is no label', () => {
       renderIcon({ badge: { tone: 'danger' } });
-      expect(screen.getByRole('button').querySelector('[data-slot="icon-button-badge"]')).toBeEmptyDOMElement();
+      expect(
+        screen.getByRole('button').querySelector('[data-slot="icon-button-badge"]'),
+      ).toBeEmptyDOMElement();
     });
 
     it('describes the badge to assistive tech via aria-describedby', () => {
@@ -103,7 +112,9 @@ describe('omni-ui-components/IconButton variations', () => {
 
     it('has no badge element and is not positioned without one', () => {
       renderIcon();
-      expect(screen.getByRole('button').querySelector('[data-slot="icon-button-badge"]')).toBeNull();
+      expect(
+        screen.getByRole('button').querySelector('[data-slot="icon-button-badge"]'),
+      ).toBeNull();
       expect(screen.getByRole('button')).not.toHaveClass('relative');
     });
   });
@@ -193,7 +204,9 @@ describe('omni-ui-components/IconButton variations', () => {
   describe('factories', () => {
     it('every tone has a matrix entry and the size matrix has both control sizes', () => {
       expect(iconButtonToneVariants.map((v) => v.args.tone)).toEqual([...TONES]);
-      expect(iconButtonSizeVariants.map((v) => v.args.iconSize)).toEqual(expect.arrayContaining(['control', 'control-labelled']));
+      expect(iconButtonSizeVariants.map((v) => v.args.iconSize)).toEqual(
+        expect.arrayContaining(['control', 'control-labelled']),
+      );
     });
 
     [...iconButtonToneVariants, ...iconButtonStateVariants].forEach((variant) => {

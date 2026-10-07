@@ -1,9 +1,12 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
 import { Toast, type ToastProps } from '@oc-tech/omni-ui-components/Toast';
-import { ToastDemo, toastPropsFactory, toastVariants } from 'factories/omni-ui-components/Toast/Toast.factories';
+import type { Meta, StoryObj } from '@storybook/react';
+import {
+  ToastDemo,
+  toastPropsFactory,
+  toastVariants,
+} from 'factories/omni-ui-components/Toast/Toast.factories';
+import type * as React from 'react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta<ToastProps> = {
   title: 'omni-ui-components/Toast',
@@ -18,15 +21,41 @@ const meta: Meta<ToastProps> = {
       },
     },
   },
-  args: { ...toastPropsFactory(), onOpenChange: fn(), onAction: fn(), onDismiss: fn(), onTimeout: fn() },
+  args: {
+    ...toastPropsFactory(),
+    onOpenChange: fn(),
+    onAction: fn(),
+    onDismiss: fn(),
+    onTimeout: fn(),
+  },
   argTypes: {
     open: { control: 'boolean' },
-    toast: { control: 'object', description: 'The toast item `{ text, actionLabel?, duration?, icon?, ...yours }`; callbacks get it back.' },
-    onAction: { action: 'action', description: '(toast): the action button (Undo); not rendered without it.' },
+    toast: {
+      control: 'object',
+      description:
+        'The toast item `{ text, actionLabel?, duration?, icon?, ...yours }`; callbacks get it back.',
+    },
+    onAction: {
+      action: 'action',
+      description: '(toast): the action button (Undo); not rendered without it.',
+    },
     onDismiss: { action: 'dismiss', description: '(toast): closed with Escape.' },
     onTimeout: { action: 'timeout', description: '(toast): closed itself after `duration`.' },
-    duration: { control: 'number', description: 'Milliseconds before it dismisses itself; 0 keeps it. Default 3800.' },
-    placement: { control: 'select', options: ['bottom-center', 'bottom-left', 'bottom-right', 'top-center', 'top-left', 'top-right'] },
+    duration: {
+      control: 'number',
+      description: 'Milliseconds before it dismisses itself; 0 keeps it. Default 3800.',
+    },
+    placement: {
+      control: 'select',
+      options: [
+        'bottom-center',
+        'bottom-left',
+        'bottom-right',
+        'top-center',
+        'top-left',
+        'top-right',
+      ],
+    },
     position: { control: 'inline-radio', options: ['fixed', 'absolute'] },
     onOpenChange: { action: 'open change', description: 'Asks to close: timer, action or Escape.' },
   },
@@ -49,7 +78,9 @@ export const Default: Story = {
     const canvas = within(canvasElement);
     expect(canvas.getByRole('status')).toHaveTextContent('Conversation archived');
     await userEvent.click(canvas.getByRole('button', { name: 'Undo' }));
-    expect(args.onAction).toHaveBeenCalledWith(expect.objectContaining({ text: 'Conversation archived' }));
+    expect(args.onAction).toHaveBeenCalledWith(
+      expect.objectContaining({ text: 'Conversation archived' }),
+    );
     expect(args.onOpenChange).toHaveBeenCalledWith(false);
   },
 };
@@ -65,6 +96,8 @@ export const Interactive: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: /Archive/ }));
     expect(canvas.getByRole('status')).toHaveTextContent('Conversation archived');
-    await waitFor(() => expect(canvas.queryByRole('status')).not.toBeInTheDocument(), { timeout: 4000 });
+    await waitFor(() => expect(canvas.queryByRole('status')).not.toBeInTheDocument(), {
+      timeout: 4000,
+    });
   },
 };

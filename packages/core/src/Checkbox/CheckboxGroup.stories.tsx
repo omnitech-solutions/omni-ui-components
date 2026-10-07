@@ -1,8 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { CheckboxGroup, type CheckboxGroupProps } from '@oc-tech/omni-ui-components/Checkbox';
+import type { Meta, StoryObj } from '@storybook/react';
 import { checkboxGroupPropsFactory } from 'factories/omni-ui-components/Checkbox/Checkbox.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<CheckboxGroupProps> = (args) => {
   const [value, setValue] = React.useState<string[]>(args.value ?? []);
@@ -43,7 +42,9 @@ export const Required: Story = { args: { required: true } };
 
 export const Inline: Story = { args: { orientation: 'horizontal' } };
 
-export const WithDescription: Story = { args: { description: 'Used by reminders and onboarding.' } };
+export const WithDescription: Story = {
+  args: { description: 'Used by reminders and onboarding.' },
+};
 
 export const WithError: Story = {
   args: { error: 'Pick at least one channel', value: [] },

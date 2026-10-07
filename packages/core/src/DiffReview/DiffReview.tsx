@@ -1,9 +1,16 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { useControllableState } from '../lib/use-controllable-state';
+import * as React from 'react';
 import { Button } from '../Button';
 import { TokenLines } from '../Highlight';
+import { useControllableState } from '../lib/use-controllable-state';
+import type {
+  DiffChange,
+  DiffReviewAction,
+  DiffReviewActionContext,
+  DiffReviewLabels,
+  DiffReviewProps,
+  DiffReviewVariant,
+} from './DiffReview.types';
 import { diffRows, diffStats, sumStats } from './DiffReview.utils';
 import {
   diffAddClasses,
@@ -15,7 +22,6 @@ import {
   diffSignVariants,
   diffTabClasses,
 } from './DiffReview.variants';
-import type { DiffChange, DiffReviewAction, DiffReviewActionContext, DiffReviewLabels, DiffReviewProps, DiffReviewVariant } from './DiffReview.types';
 
 const plural = (count: number, one: string, many: string) => (count === 1 ? one : many);
 
@@ -24,7 +30,8 @@ export const DEFAULT_DIFF_REVIEW_LABELS: DiffReviewLabels = {
   region: 'Proposed change',
   title: 'Proposed change',
   checklistTitle: (count) => `${count} proposed changes`,
-  summary: (count, added, removed) => `${count} ${plural(count, 'surface', 'surfaces')} · +${added} −${removed}`,
+  summary: (count, added, removed) =>
+    `${count} ${plural(count, 'surface', 'surfaces')} · +${added} −${removed}`,
   emptySummary: 'Review before applying',
   checklistHint: 'Pick what to apply. You can undo afterwards.',
   statuses: {
@@ -111,17 +118,30 @@ const DiffReviewInner = React.forwardRef<HTMLElement, DiffReviewProps>(
   ) => {
     const labels = React.useMemo(() => mergeLabels(labelsProp), [labelsProp]);
     const baseId = React.useId();
-    const effectiveVariant: DiffReviewVariant = variant === 'checklist' && changes.length > 1 ? 'checklist' : 'diff';
+    const effectiveVariant: DiffReviewVariant =
+      variant === 'checklist' && changes.length > 1 ? 'checklist' : 'diff';
     const checklist = effectiveVariant === 'checklist';
 
-    const [activeId, setActiveId] = useControllableState<string | undefined>(activeIdProp, defaultActiveId ?? changes[0]?.id);
+    const [activeId, setActiveId] = useControllableState<string | undefined>(
+      activeIdProp,
+      defaultActiveId ?? changes[0]?.id,
+    );
     // What the person unticked; everything else is selected, including changes that arrive after the card first showed.
     const [unticked, setUnticked] = React.useState<ReadonlySet<string>>(() => new Set());
-    const selectedIds = selectedProp ?? changes.map((change) => change.id).filter((id) => !unticked.has(id));
-    const current: DiffChange | undefined = changes.find((change) => change.id === activeId) ?? changes[0];
+    const selectedIds =
+      selectedProp ?? changes.map((change) => change.id).filter((id) => !unticked.has(id));
+    const current: DiffChange | undefined =
+      changes.find((change) => change.id === activeId) ?? changes[0];
 
     const rows = React.useMemo(
-      () => (current ? diffRows(current.before, current.after, { highlight, language: current.language, contextLines }) : []),
+      () =>
+        current
+          ? diffRows(current.before, current.after, {
+              highlight,
+              language: current.language,
+              contextLines,
+            })
+          : [],
       [current, highlight, contextLines],
     );
     const totals = React.useMemo(() => sumStats(changes), [changes]);
@@ -135,7 +155,12 @@ const DiffReviewInner = React.forwardRef<HTMLElement, DiffReviewProps>(
     };
     const onTabKeyDown = (event: React.KeyboardEvent) => {
       const index = changes.findIndex((change) => change.id === current?.id);
-      const move = { ArrowRight: index + 1, ArrowLeft: index - 1, Home: 0, End: changes.length - 1 }[event.key];
+      const move = {
+        ArrowRight: index + 1,
+        ArrowLeft: index - 1,
+        Home: 0,
+        End: changes.length - 1,
+      }[event.key];
       if (move === undefined) return;
       event.preventDefault();
       const target = changes[(move + changes.length) % changes.length];
@@ -143,15 +168,27 @@ const DiffReviewInner = React.forwardRef<HTMLElement, DiffReviewProps>(
     };
 
     const toggle = (id: string) => {
-      const ticked = selectedIds.includes(id) ? selectedIds.filter((each) => each !== id) : [...selectedIds, id];
-      if (selectedProp === undefined) setUnticked(new Set(changes.map((change) => change.id).filter((each) => !ticked.includes(each))));
+      const ticked = selectedIds.includes(id)
+        ? selectedIds.filter((each) => each !== id)
+        : [...selectedIds, id];
+      if (selectedProp === undefined)
+        setUnticked(
+          new Set(changes.map((change) => change.id).filter((each) => !ticked.includes(each))),
+        );
       onSelectionChange?.(changes.filter((change) => ticked.includes(change.id)));
     };
 
     const selected = changes.filter((change) => selectedIds.includes(change.id));
-    const context: DiffReviewActionContext = { changes, selected, variant: effectiveVariant, status };
-    const resolveLabel = (action: DiffReviewAction) => (typeof action.label === 'function' ? action.label(context) : action.label);
-    const resolveDisabled = (action: DiffReviewAction) => (typeof action.disabled === 'function' ? action.disabled(context) : Boolean(action.disabled));
+    const context: DiffReviewActionContext = {
+      changes,
+      selected,
+      variant: effectiveVariant,
+      status,
+    };
+    const resolveLabel = (action: DiffReviewAction) =>
+      typeof action.label === 'function' ? action.label(context) : action.label;
+    const resolveDisabled = (action: DiffReviewAction) =>
+      typeof action.disabled === 'function' ? action.disabled(context) : Boolean(action.disabled);
 
     const noteText = labels.notes[status].replace('{product}', product || 'the app');
     const badge = checklist ? icons?.checklistBadge : icons?.badge;
@@ -166,7 +203,10 @@ const DiffReviewInner = React.forwardRef<HTMLElement, DiffReviewProps>(
         className={cn(diffReviewClasses, className)}
         {...rest}
       >
-        <div data-slot="diff-review-header" className="flex items-center gap-2.5 border-b border-solid border-[color:var(--oui-panel-divider)] px-3.5 py-2.5">
+        <div
+          data-slot="diff-review-header"
+          className="flex items-center gap-2.5 border-b border-solid border-[color:var(--oui-panel-divider)] px-3.5 py-2.5"
+        >
           {badge ? (
             <span
               data-slot="diff-review-badge"
@@ -177,12 +217,22 @@ const DiffReviewInner = React.forwardRef<HTMLElement, DiffReviewProps>(
             </span>
           ) : null}
           <div data-slot="diff-review-title" className="min-w-0">
-            <div className="font-medium">{checklist ? labels.checklistTitle(changes.length) : labels.title}</div>
+            <div className="font-medium">
+              {checklist ? labels.checklistTitle(changes.length) : labels.title}
+            </div>
             <div className="text-xs text-[color:var(--oui-panel-meta-fg)]">
-              {checklist ? labels.checklistHint : changes.length ? labels.summary(changes.length, totals.added, totals.removed) : labels.emptySummary}
+              {checklist
+                ? labels.checklistHint
+                : changes.length
+                  ? labels.summary(changes.length, totals.added, totals.removed)
+                  : labels.emptySummary}
             </div>
           </div>
-          <span data-slot="diff-review-status" data-status={status} className={diffReviewPillVariants({ status })}>
+          <span
+            data-slot="diff-review-status"
+            data-status={status}
+            className={diffReviewPillVariants({ status })}
+          >
             {labels.statuses[status]}
           </span>
         </div>
@@ -240,11 +290,23 @@ const DiffReviewInner = React.forwardRef<HTMLElement, DiffReviewProps>(
                     ⋯
                   </div>
                 ) : (
-                  <div key={index} data-slot="diff-review-row" data-kind={row.kind} className={diffRowVariants({ kind: row.kind })}>
-                    <span aria-hidden="true" data-slot="diff-review-sign" className={diffSignVariants({ kind: row.kind })}>
+                  <div
+                    key={index}
+                    data-slot="diff-review-row"
+                    data-kind={row.kind}
+                    className={diffRowVariants({ kind: row.kind })}
+                  >
+                    <span
+                      aria-hidden="true"
+                      data-slot="diff-review-sign"
+                      className={diffSignVariants({ kind: row.kind })}
+                    >
                       {row.kind === 'add' ? '+' : row.kind === 'remove' ? '−' : ''}
                     </span>
-                    <TokenLines lines={[row.tokens]} className="min-w-0 flex-1 pr-3 break-words whitespace-pre-wrap" />
+                    <TokenLines
+                      lines={[row.tokens]}
+                      className="min-w-0 flex-1 pr-3 break-words whitespace-pre-wrap"
+                    />
                   </div>
                 ),
               )}
@@ -253,7 +315,10 @@ const DiffReviewInner = React.forwardRef<HTMLElement, DiffReviewProps>(
         ) : null}
 
         {!changes.length && fallback !== undefined ? (
-          <div data-slot="diff-review-fallback" className="max-h-60 overflow-auto bg-[color:var(--oui-panel-dock-bg)] px-3.5 py-2 font-mono text-xs whitespace-pre-wrap">
+          <div
+            data-slot="diff-review-fallback"
+            className="max-h-60 overflow-auto bg-[color:var(--oui-panel-dock-bg)] px-3.5 py-2 font-mono text-xs whitespace-pre-wrap"
+          >
             {fallback}
           </div>
         ) : null}
@@ -279,13 +344,20 @@ const DiffReviewInner = React.forwardRef<HTMLElement, DiffReviewProps>(
                     onClick={() => toggle(change.id)}
                   />
                   {icon ? (
-                    <span aria-hidden="true" className="inline-flex shrink-0 text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-4">
+                    <span
+                      aria-hidden="true"
+                      className="inline-flex shrink-0 text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-4"
+                    >
                       {icon}
                     </span>
                   ) : null}
                   <div className="min-w-0 flex-1">
                     <div>{change.label}</div>
-                    {change.description ? <div className="text-xs text-[color:var(--oui-panel-meta-fg)]">{change.description}</div> : null}
+                    {change.description ? (
+                      <div className="text-xs text-[color:var(--oui-panel-meta-fg)]">
+                        {change.description}
+                      </div>
+                    ) : null}
                   </div>
                   <Counts before={change.before} after={change.after} />
                 </li>
@@ -298,27 +370,30 @@ const DiffReviewInner = React.forwardRef<HTMLElement, DiffReviewProps>(
           data-slot="diff-review-footer"
           className="flex flex-wrap items-center justify-end gap-2 border-t border-solid border-[color:var(--oui-panel-divider)] px-3.5 py-2.5"
         >
-          <span data-slot="diff-review-note" className="mr-auto inline-flex min-w-0 items-center gap-1.5 text-xs text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-3.5 [&_svg]:shrink-0">
+          <span
+            data-slot="diff-review-note"
+            className="mr-auto inline-flex min-w-0 items-center gap-1.5 text-xs text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-3.5 [&_svg]:shrink-0"
+          >
             {icons?.notes?.[status] ? <span aria-hidden="true">{icons.notes[status]}</span> : null}
             {note ?? noteText}
           </span>
           {actions
             .filter((action) => action.onClick)
             .map((action) => (
-            <Button
-              key={action.key}
-              type="button"
-              buttonSize="sm"
-              variant={action.primary ? 'default' : 'outline'}
-              icon={action.icon}
-              disabled={resolveDisabled(action)}
-              data-slot="diff-review-action"
-              data-action={action.key}
-              onClick={() => void action.onClick(context)}
-            >
-              {resolveLabel(action)}
-            </Button>
-          ))}
+              <Button
+                key={action.key}
+                type="button"
+                buttonSize="sm"
+                variant={action.primary ? 'default' : 'outline'}
+                icon={action.icon}
+                disabled={resolveDisabled(action)}
+                data-slot="diff-review-action"
+                data-action={action.key}
+                onClick={() => void action.onClick(context)}
+              >
+                {resolveLabel(action)}
+              </Button>
+            ))}
         </div>
       </section>
     );
@@ -327,4 +402,6 @@ const DiffReviewInner = React.forwardRef<HTMLElement, DiffReviewProps>(
 DiffReviewInner.displayName = 'DiffReview';
 
 /** Generic over the change type: extra fields on your changes reach every callback by reference. */
-export const DiffReview = DiffReviewInner as <C extends DiffChange = DiffChange>(props: DiffReviewProps<C> & React.RefAttributes<HTMLElement>) => React.ReactElement | null;
+export const DiffReview = DiffReviewInner as <C extends DiffChange = DiffChange>(
+  props: DiffReviewProps<C> & React.RefAttributes<HTMLElement>,
+) => React.ReactElement | null;

@@ -9,5 +9,13 @@ import type { WidgetProps } from '@rjsf/utils';
  */
 export const HiddenWidget = (props: WidgetProps) => {
   const { id, value } = props;
-  return <input id={id} type="hidden" value={(value as string | number | undefined) ?? ''} data-slot="hidden-widget" readOnly />;
+  return (
+    <input
+      id={id}
+      type="hidden"
+      value={(value as string | number | undefined) ?? ''}
+      data-slot="hidden-widget"
+      readOnly
+    />
+  );
 };

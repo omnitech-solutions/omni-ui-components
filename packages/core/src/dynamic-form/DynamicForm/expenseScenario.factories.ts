@@ -1,19 +1,23 @@
 import { z } from 'zod';
-
-import type { DynamicFormFixture } from './DynamicForm.factories';
-import { SHOWCASE_EXPENSE_CATEGORIES, SHOWCASE_MEMBERS, SHOWCASE_PROJECTS, SHOWCASE_TAX_RATES } from '../../../showcase/entities';
 import { selectOptions } from '../../../helpers/optionMappers';
 import {
+  SHOWCASE_EXPENSE_CATEGORIES,
+  SHOWCASE_MEMBERS,
+  SHOWCASE_PROJECTS,
+  SHOWCASE_TAX_RATES,
+} from '../../../showcase/entities';
+import {
   deriveExpense,
-  expenseScenarioInitial,
   type ExpenseCurrency,
   type ExpenseDerived,
-  type ExpenseScenarioFormData as FlatExpenseFormData,
   type ExpenseTaxRateId,
+  expenseScenarioInitial,
+  type ExpenseScenarioFormData as FlatExpenseFormData,
 } from '../../Form/expenseScenario.factories';
+import type { DynamicFormFixture } from './DynamicForm.factories';
 
 export type ExpenseCanaryDerived = ExpenseDerived;
-export type { ExpenseTaxRateId, ExpenseCurrency };
+export type { ExpenseCurrency, ExpenseTaxRateId };
 
 /**
  * RJSF nests project/member/notes under `additionalFields` to
@@ -77,7 +81,11 @@ const nestedInitial: ExpenseScenarioFormData = {
   expenseDate: expenseScenarioInitial.expenseDate,
   recurring: expenseScenarioInitial.recurring,
   expenseReceiptBlobId: expenseScenarioInitial.expenseReceiptBlobId,
-  additionalFields: { projectId: expenseScenarioInitial.projectId, memberId: expenseScenarioInitial.memberId, notes: expenseScenarioInitial.notes },
+  additionalFields: {
+    projectId: expenseScenarioInitial.projectId,
+    memberId: expenseScenarioInitial.memberId,
+    notes: expenseScenarioInitial.notes,
+  },
   deductibleStatus: expenseScenarioInitial.deductibleStatus,
   deductiblePercentage: expenseScenarioInitial.deductiblePercentage,
   deductionQuestionable: expenseScenarioInitial.deductionQuestionable,
@@ -86,24 +94,43 @@ const nestedInitial: ExpenseScenarioFormData = {
   invoiceId: expenseScenarioInitial.invoiceId,
 };
 
-const flattenForDerive = (data: Readonly<Partial<ExpenseScenarioFormData>>): Partial<FlatExpenseFormData> => ({
+const flattenForDerive = (
+  data: Readonly<Partial<ExpenseScenarioFormData>>,
+): Partial<FlatExpenseFormData> => ({
   amount: data.amount,
   currency: data.currency,
   taxRateId: data.taxRateId,
   markupPercentage: data.markupPercentage,
 });
 
-const CATEGORY_OPTIONS = selectOptions(SHOWCASE_EXPENSE_CATEGORIES, { value: 'id', label: 'label', group: 'group' });
-const TAX_OPTIONS = selectOptions(SHOWCASE_TAX_RATES, { value: 'id', label: 'label', group: () => 'SET TAX' });
+const CATEGORY_OPTIONS = selectOptions(SHOWCASE_EXPENSE_CATEGORIES, {
+  value: 'id',
+  label: 'label',
+  group: 'group',
+});
+const TAX_OPTIONS = selectOptions(SHOWCASE_TAX_RATES, {
+  value: 'id',
+  label: 'label',
+  group: () => 'SET TAX',
+});
 const PROJECT_OPTIONS = selectOptions(SHOWCASE_PROJECTS, {
   value: 'id',
   label: (p) => `${p.icon} ${p.name}`,
   description: 'organization',
   color: 'color',
 });
-const MEMBER_OPTIONS = selectOptions(SHOWCASE_MEMBERS, { value: 'id', label: 'name', group: 'group', color: 'color', initials: 'initials' });
+const MEMBER_OPTIONS = selectOptions(SHOWCASE_MEMBERS, {
+  value: 'id',
+  label: 'name',
+  group: 'group',
+  color: 'color',
+  initials: 'initials',
+});
 
-export const expenseScenarioFixture = (): DynamicFormFixture<ExpenseScenarioFormData, ExpenseDerived> => ({
+export const expenseScenarioFixture = (): DynamicFormFixture<
+  ExpenseScenarioFormData,
+  ExpenseDerived
+> => ({
   schema: {
     type: 'object',
     required: ['name', 'amount', 'currency', 'expenseDate'],
@@ -149,22 +176,40 @@ export const expenseScenarioFixture = (): DynamicFormFixture<ExpenseScenarioForm
       [{ value: 'additionalFields', span: 2 }],
     ],
     name: { 'ui:widget': 'text', 'ui:placeholder': 'Travel expenses' },
-    companyTagId: { 'ui:widget': 'select', 'ui:options': { optionSetKey: 'categories', searchable: true } },
+    companyTagId: {
+      'ui:widget': 'select',
+      'ui:options': { optionSetKey: 'categories', searchable: true },
+    },
     amount: { 'ui:widget': 'currency' },
     currency: { 'ui:widget': 'hidden' },
-    taxRateId: { 'ui:widget': 'select', 'ui:options': { optionSetKey: 'taxRates', footerActionKey: 'manageTaxRates' } },
+    taxRateId: {
+      'ui:widget': 'select',
+      'ui:options': { optionSetKey: 'taxRates', footerActionKey: 'manageTaxRates' },
+    },
     markupPercentage: { 'ui:widget': 'numberInput', 'ui:options': { suffix: '%' } },
     billable: { 'ui:widget': 'switch' },
     expenseDate: { 'ui:widget': 'date' },
     recurring: { 'ui:widget': 'switch' },
     expenseReceiptBlobId: { 'ui:widget': 'hidden' },
-    excludingTaxLabel: { 'ui:widget': 'derivedText', 'ui:options': { derivedKey: 'excludingTaxLabel', tone: 'muted' } },
-    salesPriceLabel: { 'ui:widget': 'derivedText', 'ui:options': { derivedKey: 'salesPriceLabel', tone: 'default' } },
+    excludingTaxLabel: {
+      'ui:widget': 'derivedText',
+      'ui:options': { derivedKey: 'excludingTaxLabel', tone: 'muted' },
+    },
+    salesPriceLabel: {
+      'ui:widget': 'derivedText',
+      'ui:options': { derivedKey: 'salesPriceLabel', tone: 'default' },
+    },
     additionalFields: {
       'ui:options': { collapsible: { title: 'Additional Fields', defaultOpen: false } },
       'ui:rows': [['projectId', 'memberId'], [{ value: 'notes', span: 2 }]],
-      projectId: { 'ui:widget': 'combobox', 'ui:options': { optionSetKey: 'projects', placeholder: 'Select project…' } },
-      memberId: { 'ui:widget': 'combobox', 'ui:options': { optionSetKey: 'members', placeholder: 'Select member…' } },
+      projectId: {
+        'ui:widget': 'combobox',
+        'ui:options': { optionSetKey: 'projects', placeholder: 'Select project…' },
+      },
+      memberId: {
+        'ui:widget': 'combobox',
+        'ui:options': { optionSetKey: 'members', placeholder: 'Select member…' },
+      },
       notes: { 'ui:widget': 'textarea', 'ui:placeholder': 'Add a note…' },
     },
     /* Hidden API parity */
@@ -179,8 +224,19 @@ export const expenseScenarioFixture = (): DynamicFormFixture<ExpenseScenarioForm
   defaults: nestedInitial,
   derive: (formData) => deriveExpense(flattenForDerive(formData)),
   formContext: {
-    optionSets: { categories: CATEGORY_OPTIONS, taxRates: TAX_OPTIONS, projects: PROJECT_OPTIONS, members: MEMBER_OPTIONS },
-    actions: { manageTaxRates: { label: 'Manage Tax Rates', href: '/settings/tax_rates', actionId: 'manageTaxRates' } },
+    optionSets: {
+      categories: CATEGORY_OPTIONS,
+      taxRates: TAX_OPTIONS,
+      projects: PROJECT_OPTIONS,
+      members: MEMBER_OPTIONS,
+    },
+    actions: {
+      manageTaxRates: {
+        label: 'Manage Tax Rates',
+        href: '/settings/tax_rates',
+        actionId: 'manageTaxRates',
+      },
+    },
     locale: 'en-GB',
   },
 });

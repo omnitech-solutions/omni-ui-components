@@ -1,10 +1,12 @@
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { DynamicForm } from 'dynamic-form';
 import { buildFormContext } from 'dynamic-form/lib/formContext';
-import { timesheetScenarioFixture, type TimesheetScenarioFormData } from 'factories/dynamic-form/DynamicForm/timesheetScenario.factories';
+import {
+  type TimesheetScenarioFormData,
+  timesheetScenarioFixture,
+} from 'factories/dynamic-form/DynamicForm/timesheetScenario.factories';
+import * as React from 'react';
 
 beforeAll(() => {
   Element.prototype.scrollIntoView = jest.fn();
@@ -34,7 +36,9 @@ describe('NewTimesheet scenario', () => {
   it('renders the timer header through StaticPanelField (no input)', () => {
     render(<Harness />);
     expect(screen.getByTestId('root_header-panel-durationLabel')).toHaveTextContent('00h 00m 00s');
-    expect(screen.getByTestId('root_header-panel-dateLabel')).toHaveTextContent('Mon, Jun 29, 2026');
+    expect(screen.getByTestId('root_header-panel-dateLabel')).toHaveTextContent(
+      'Mon, Jun 29, 2026',
+    );
     expect(screen.getByTestId('root_header-panel-statusLabel')).toHaveTextContent('Unbilled');
   });
 

@@ -1,8 +1,7 @@
-import * as React from 'react';
-import { type DateRange } from 'react-day-picker';
-
-import type { RootProps } from '../lib';
+import type * as React from 'react';
+import type { DateRange } from 'react-day-picker';
 import type { FieldLayoutProps } from '../Input/Input.variants';
+import type { RootProps } from '../lib';
 
 export type DatePickerMode = 'single' | 'range';
 

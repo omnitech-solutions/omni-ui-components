@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** One line of the breakdown; extend it with your own fields and the extended type reaches `onSummarise`. (`Instructions & memory`, `Workspace`, `Conversation`). */
 export interface ContextSection {
@@ -32,7 +32,8 @@ export interface ContextMeterLabels {
   summarise: string;
 }
 
-export interface ContextMeterProps<S extends ContextSection = ContextSection> extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'children' | 'title'> {
+export interface ContextMeterProps<S extends ContextSection = ContextSection>
+  extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'children' | 'title'> {
   /** Estimated tokens in context. */
   used: number;
   /** The model's window in tokens. Without it the ring is empty and no percent is shown. */

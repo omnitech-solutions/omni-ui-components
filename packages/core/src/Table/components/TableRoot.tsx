@@ -1,12 +1,12 @@
-import * as React from 'react';
 import classNames from 'classnames';
+import type * as React from 'react';
 import { useTable } from '../hooks/useTable';
+import { defaultRootClass } from '../internal';
 import { AppendControlButton } from '../Table.append';
 import type { TableLoadingVariant } from '../Table.Loading';
-import { defaultRootClass } from '../internal';
-import { Title } from './Title';
-import { Footer } from './Footer';
 import type { TableDataRow, TableLoadingProps, TableProps } from '../Table.types';
+import { Footer } from './Footer';
+import { Title } from './Title';
 
 export interface TableRootProps<TRecord, TRowData> {
   rootRef: React.RefObject<HTMLDivElement | null>;
@@ -15,7 +15,11 @@ export interface TableRootProps<TRecord, TRowData> {
   style: React.CSSProperties | undefined;
   rootStyle: React.CSSProperties;
   appearance: NonNullable<TableProps<TRecord, TRowData>['appearance']>;
-  borders: TableProps<TRecord, TRowData>['appearance'] extends infer A ? (A extends { borders?: infer B } ? B : never) : never;
+  borders: TableProps<TRecord, TRowData>['appearance'] extends infer A
+    ? A extends { borders?: infer B }
+      ? B
+      : never
+    : never;
   showHeader: boolean;
   size: TableProps<TRecord, TRowData>['size'];
   rowHoverable: boolean;
@@ -81,7 +85,8 @@ export function TableRoot<TRecord, TRowData>({
   currentData,
   currentRows,
 }: TableRootProps<TRecord, TRowData>) {
-  const { table, props, registry, testIdPrefix, classMap, styleMap, renderedLeafColumns } = useTable<TRecord, TRowData>();
+  const { table, props, registry, testIdPrefix, classMap, styleMap, renderedLeafColumns } =
+    useTable<TRecord, TRowData>();
   const { Root, Content, Section, Loading } = registry.components;
 
   return (
@@ -107,10 +112,25 @@ export function TableRoot<TRecord, TRowData>({
       ref={rootRef as React.Ref<HTMLDivElement>}
       data-testid={`${testIdPrefix}-root`}
     >
-      {title ? <Title render={title} data={currentData} rows={currentRows} className={classMap.title} style={styleMap.title} /> : null}
+      {title ? (
+        <Title
+          render={title}
+          data={currentData}
+          rows={currentRows}
+          className={classMap.title}
+          style={styleMap.title}
+        />
+      ) : null}
       {bulkActionsBar}
       {topPagination}
-      <Content table={table} props={props} registry={registry} className={classMap.content} style={styleMap.content} data-testid={`${testIdPrefix}-content`}>
+      <Content
+        table={table}
+        props={props}
+        registry={registry}
+        className={classMap.content}
+        style={styleMap.content}
+        data-testid={`${testIdPrefix}-content`}
+      >
         <Section
           table={table}
           props={props}
@@ -123,10 +143,15 @@ export function TableRoot<TRecord, TRowData>({
             ref={scrollRef as React.Ref<HTMLDivElement>}
             className="bui-table-scroll-body"
             onScroll={onScroll}
-            style={{ height: scroll?.y, maxHeight: scroll?.y, overflow: scroll?.y || scroll?.x ? 'auto' : undefined }}
+            style={{
+              height: scroll?.y,
+              maxHeight: scroll?.y,
+              overflow: scroll?.y || scroll?.x ? 'auto' : undefined,
+            }}
             data-testid={`${testIdPrefix}-scroll-body`}
           >
-            {resolvedExtendable.controls && (resolvedExtendable.rows || resolvedExtendable.columns) ? (
+            {resolvedExtendable.controls &&
+            (resolvedExtendable.rows || resolvedExtendable.columns) ? (
               <div className="bui-table-extend-wrapper">
                 {tableContent}
                 {Boolean(resolvedExtendable.rows) && (
@@ -172,14 +197,25 @@ export function TableRoot<TRecord, TRowData>({
             >
               <div
                 className="h-full"
-                style={{ background: 'var(--bui-table-sticky-scrollbar-bg)', borderRadius: 'var(--bui-table-sticky-scrollbar-radius)' }}
+                style={{
+                  background: 'var(--bui-table-sticky-scrollbar-bg)',
+                  borderRadius: 'var(--bui-table-sticky-scrollbar-radius)',
+                }}
                 data-testid={`${testIdPrefix}-sticky-scrollbar-thumb`}
               />
             </div>
           )}
         </Section>
       </Content>
-      {footer ? <Footer render={footer} data={currentData} rows={currentRows} className={classMap.footer} style={styleMap.footer} /> : null}
+      {footer ? (
+        <Footer
+          render={footer}
+          data={currentData}
+          rows={currentRows}
+          className={classMap.footer}
+          style={styleMap.footer}
+        />
+      ) : null}
       {bottomPagination}
     </Root>
   );

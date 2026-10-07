@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { AutoComplete } from '@oc-tech/omni-ui-components/AutoComplete';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const meta: Meta<typeof AutoComplete> = {
   title: 'omni-ui-components/AutoComplete',
@@ -27,11 +26,7 @@ export const Default: Story = {
         label="Assignee"
         value={value}
         onChange={setValue}
-        options={[
-          { value: 'alex.morgan' },
-          { value: 'jamie.chen' },
-          { value: 'samir.patel' },
-        ]}
+        options={[{ value: 'alex.morgan' }, { value: 'jamie.chen' }, { value: 'samir.patel' }]}
       />
     );
   },

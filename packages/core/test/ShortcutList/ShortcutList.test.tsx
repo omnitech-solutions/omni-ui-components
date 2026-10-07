@@ -1,20 +1,40 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen, within } from '@testing-library/react';
 
 import { ShortcutList } from '@oc-tech/omni-ui-components/ShortcutList';
-import { shortcutListPropsFactory, shortcutListVariants } from 'factories/omni-ui-components/ShortcutList/ShortcutList.factories';
+import { render, screen, within } from '@testing-library/react';
+import {
+  shortcutListPropsFactory,
+  shortcutListVariants,
+} from 'factories/omni-ui-components/ShortcutList/ShortcutList.factories';
 
 describe('omni-ui-components/ShortcutList', () => {
   it('lists each label with its keys, one kbd per key', () => {
-    render(<ShortcutList {...shortcutListPropsFactory({ describe: (s) => (s === 'mod+shift+o' ? ['⌘', '⇧', 'O'] : ['⌘', 'K']) })} />);
+    render(
+      <ShortcutList
+        {...shortcutListPropsFactory({
+          describe: (s) => (s === 'mod+shift+o' ? ['⌘', '⇧', 'O'] : ['⌘', 'K']),
+        })}
+      />,
+    );
     const newChat = screen.getByText('New chat');
     const keys = newChat.nextElementSibling as HTMLElement;
-    expect(within(keys).getAllByText(/./).map((k) => k.textContent)).toEqual(['⌘', '⇧', 'O']);
+    expect(
+      within(keys)
+        .getAllByText(/./)
+        .map((k) => k.textContent),
+    ).toEqual(['⌘', '⇧', 'O']);
   });
 
   it('shows ready glyphs as given and describes shortcut strings with `describe`', () => {
-    render(<ShortcutList items={[{ label: 'Stop reply', keys: ['Esc'] }, { label: 'Search', keys: 'mod+k' }]} describe={(s) => s.toUpperCase().split('+')} />);
+    render(
+      <ShortcutList
+        items={[
+          { label: 'Stop reply', keys: ['Esc'] },
+          { label: 'Search', keys: 'mod+k' },
+        ]}
+        describe={(s) => s.toUpperCase().split('+')}
+      />,
+    );
     expect(screen.getByText('Stop reply').nextElementSibling).toHaveTextContent('Esc');
     expect(screen.getByText('Search').nextElementSibling).toHaveTextContent('MODK');
   });

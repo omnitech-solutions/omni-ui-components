@@ -1,9 +1,14 @@
-import * as React from 'react';
+import {
+  MessageActions,
+  type MessageActionsProps,
+} from '@oc-tech/omni-ui-components/MessageActions';
 import type { Meta, StoryObj } from '@storybook/react';
+import {
+  MessageActionsDemo,
+  messageActionsPropsFactory,
+  sampleActions,
+} from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
 import { expect, userEvent, within } from 'storybook/test';
-
-import { MessageActions, type MessageActionsProps } from '@oc-tech/omni-ui-components/MessageActions';
-import { MessageActionsDemo, messageActionsPropsFactory, sampleActions } from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
 
 const meta: Meta<MessageActionsProps> = {
   title: 'omni-ui-components/MessageActions',
@@ -49,9 +54,15 @@ export const Working: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Good reply' }));
-    await expect(canvas.getByRole('button', { name: 'Good reply' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(canvas.getByRole('button', { name: 'Good reply' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     await userEvent.click(canvas.getByRole('button', { name: 'Bad reply' }));
-    await expect(canvas.getByRole('button', { name: 'Good reply' })).toHaveAttribute('aria-pressed', 'false');
+    await expect(canvas.getByRole('button', { name: 'Good reply' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
     canvas.getByRole('button', { name: 'Copy' }).focus();
     await userEvent.keyboard('{ArrowRight}');
     await expect(canvas.getByRole('button', { name: 'Regenerate' })).toHaveFocus();

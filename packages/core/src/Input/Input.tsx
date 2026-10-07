@@ -1,9 +1,8 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { InputPrimitive } from './InputPrimitive';
 import type { InputProps } from './Input.types';
+import { InputPrimitive } from './InputPrimitive';
 
 /**
  * Chrome-wrapped Omni Input. Composes {@link InputPrimitive} with a
@@ -16,7 +15,23 @@ import type { InputProps } from './Input.types';
  * <Input variant="panel" aria-label="Message" value={text} onChange={setText} actions={<IconButton label="Send" icon={<ArrowUp />} />} />
  */
 const InputInner = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', actions, label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      actions,
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

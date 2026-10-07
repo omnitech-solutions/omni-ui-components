@@ -1,10 +1,13 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { PreferencesForm } from '@oc-tech/omni-ui-components/PreferencesForm';
-import { preferencesFormPropsFactory, preferencesFormVariants, sampleMemories } from 'factories/omni-ui-components/PreferencesForm/PreferencesForm.factories';
+import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  preferencesFormPropsFactory,
+  preferencesFormVariants,
+  sampleMemories,
+} from 'factories/omni-ui-components/PreferencesForm/PreferencesForm.factories';
 
 describe('omni-ui-components/PreferencesForm', () => {
   it('shows the instructions in a labelled textarea capped at 4000', () => {
@@ -26,7 +29,9 @@ describe('omni-ui-components/PreferencesForm', () => {
   });
 
   it('replaces the field when the instructions change from outside', () => {
-    const { rerender } = render(<PreferencesForm {...preferencesFormPropsFactory({ instructions: 'one' })} />);
+    const { rerender } = render(
+      <PreferencesForm {...preferencesFormPropsFactory({ instructions: 'one' })} />,
+    );
     rerender(<PreferencesForm {...preferencesFormPropsFactory({ instructions: 'two' })} />);
     expect(screen.getByLabelText('Custom instructions')).toHaveValue('two');
   });
@@ -44,14 +49,20 @@ describe('omni-ui-components/PreferencesForm', () => {
     const onForget = jest.fn();
     const memories = sampleMemories();
     render(<PreferencesForm {...preferencesFormPropsFactory({ memories, onForget })} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Forget: Prefers TypeScript over JavaScript' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Forget: Prefers TypeScript over JavaScript' }),
+    );
     expect(onForget).toHaveBeenCalledTimes(1);
     expect(onForget.mock.calls[0][0]).toBe(memories[0]);
   });
 
   it('the empty list says so; no memories prop hides the section; loading shows only Loading…', () => {
-    const { rerender } = render(<PreferencesForm {...preferencesFormPropsFactory({ memories: [] })} />);
-    expect(screen.getByText('No memories yet. Say “remember that…” in any chat.')).toBeInTheDocument();
+    const { rerender } = render(
+      <PreferencesForm {...preferencesFormPropsFactory({ memories: [] })} />,
+    );
+    expect(
+      screen.getByText('No memories yet. Say “remember that…” in any chat.'),
+    ).toBeInTheDocument();
     rerender(<PreferencesForm {...preferencesFormPropsFactory(preferencesFormVariants[1].args)} />);
     expect(screen.queryByRole('switch')).not.toBeInTheDocument();
     rerender(<PreferencesForm {...preferencesFormPropsFactory(preferencesFormVariants[3].args)} />);
@@ -60,7 +71,13 @@ describe('omni-ui-components/PreferencesForm', () => {
   });
 
   it('translates labels', () => {
-    render(<PreferencesForm {...preferencesFormPropsFactory({ labels: { instructionsTitle: 'Instrucciones', memorySwitch: 'Memoria' } })} />);
+    render(
+      <PreferencesForm
+        {...preferencesFormPropsFactory({
+          labels: { instructionsTitle: 'Instrucciones', memorySwitch: 'Memoria' },
+        })}
+      />,
+    );
     expect(screen.getByLabelText('Instrucciones')).toBeInTheDocument();
     expect(screen.getByRole('switch', { name: 'Memoria' })).toBeInTheDocument();
   });

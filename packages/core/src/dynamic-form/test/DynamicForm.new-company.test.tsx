@@ -1,16 +1,25 @@
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { DynamicForm } from 'dynamic-form';
 import { buildFormContext } from 'dynamic-form/lib/formContext';
-import { companyScenarioFixture, NEW_CONTACT_OPTION, type CompanyScenarioFormData } from 'factories/dynamic-form/DynamicForm/companyScenario.factories';
+import {
+  type CompanyScenarioFormData,
+  companyScenarioFixture,
+  NEW_CONTACT_OPTION,
+} from 'factories/dynamic-form/DynamicForm/companyScenario.factories';
+import * as React from 'react';
 
 beforeAll(() => {
   Element.prototype.scrollIntoView = jest.fn();
 });
 
-function Harness({ onSubmit, onError }: { onSubmit: (data: CompanyScenarioFormData) => void; onError?: (errs: unknown) => void }) {
+function Harness({
+  onSubmit,
+  onError,
+}: {
+  onSubmit: (data: CompanyScenarioFormData) => void;
+  onError?: (errs: unknown) => void;
+}) {
   const fixture = companyScenarioFixture();
   const [formData, setFormData] = React.useState<CompanyScenarioFormData>(fixture.defaults);
   return (
@@ -43,7 +52,9 @@ describe('NewCompany scenario', () => {
     const user = userEvent.setup();
     render(<Harness onSubmit={jest.fn()} />);
     await user.click(screen.getByRole('button', { name: /Primary Contact/ }));
-    expect(screen.getByTestId(`root_primaryContactId-option-${NEW_CONTACT_OPTION}`)).toHaveTextContent('+ New Contact');
+    expect(
+      screen.getByTestId(`root_primaryContactId-option-${NEW_CONTACT_OPTION}`),
+    ).toHaveTextContent('+ New Contact');
   });
 
   it('submits when only Company Name is set and primaryContact is left blank', async () => {

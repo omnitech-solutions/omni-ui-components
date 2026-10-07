@@ -1,8 +1,4 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen, within } from '@testing-library/react';
-import { Check, Copy } from 'lucide-react';
 
 import {
   codeBlockId,
@@ -11,10 +7,14 @@ import {
   type TranscriptEntry,
   type TranscriptProps,
 } from '@oc-tech/omni-ui-components/Transcript';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { codeEntries } from 'factories/omni-ui-components/Transcript/Transcript.factories';
+import { Check, Copy } from 'lucide-react';
 
 const slot = (name: string) => document.querySelector(`[data-slot="${name}"]`) as HTMLElement;
-const slots = (name: string) => Array.from(document.querySelectorAll(`[data-slot="${name}"]`)) as HTMLElement[];
+const slots = (name: string) =>
+  Array.from(document.querySelectorAll(`[data-slot="${name}"]`)) as HTMLElement[];
 const base = (overrides: Partial<TranscriptProps> = {}): TranscriptProps => ({
   entries: codeEntries(),
   copyIcon: <Copy />,
@@ -42,7 +42,9 @@ describe('omni-ui-components/Transcript code blocks', () => {
     });
 
     it('leaves an unclosed fence as text, so a half-streamed reply keeps its prose', () => {
-      expect(parseFencedBlocks('Here:\n```ts\nconst a')).toEqual([{ type: 'text', text: 'Here:\n```ts\nconst a' }]);
+      expect(parseFencedBlocks('Here:\n```ts\nconst a')).toEqual([
+        { type: 'text', text: 'Here:\n```ts\nconst a' },
+      ]);
     });
 
     it('returns one text block for plain text, and an empty one for empty text', () => {
@@ -60,7 +62,12 @@ describe('omni-ui-components/Transcript code blocks', () => {
       render(<Transcript {...base()} />);
       const code = slot('transcript-code');
       expect(within(slot('transcript-code-header')).getByText('ts')).toBeInTheDocument();
-      expect(code.querySelector('pre')).toHaveClass('font-mono', 'select-text', 'overflow-x-auto', 'whitespace-pre');
+      expect(code.querySelector('pre')).toHaveClass(
+        'font-mono',
+        'select-text',
+        'overflow-x-auto',
+        'whitespace-pre',
+      );
       expect(code).toHaveTextContent('function twoSum');
       expect(screen.getByText('One pass with a map.')).toBeInTheDocument();
       expect(screen.getByText('O(n) time, O(n) space.')).toBeInTheDocument();
@@ -112,7 +119,13 @@ describe('omni-ui-components/Transcript code blocks', () => {
     });
 
     it('renderCode replaces the plain code text with the host highlighter', () => {
-      render(<Transcript {...base({ renderCode: (block) => <mark data-testid="hl">{block.code.toUpperCase()}</mark> })} />);
+      render(
+        <Transcript
+          {...base({
+            renderCode: (block) => <mark data-testid="hl">{block.code.toUpperCase()}</mark>,
+          })}
+        />,
+      );
       expect(screen.getByTestId('hl')).toHaveTextContent('FUNCTION TWOSUM');
     });
   });
@@ -135,15 +148,28 @@ describe('omni-ui-components/Transcript code blocks', () => {
     });
 
     it('shows Copied on the block whose id is copiedId, and only that block', () => {
-      const entries: TranscriptEntry[] = [{ id: 'e', kind: 'speech', speaker: 'A', time: '1', text: '```a\n1\n```\n```b\n2\n```' }];
-      render(<Transcript entries={entries} fences copyIcon={<Copy />} copiedIcon={<Check />} onCopyCode={() => undefined} copiedId={codeBlockId('e', 1)} />);
+      const entries: TranscriptEntry[] = [
+        { id: 'e', kind: 'speech', speaker: 'A', time: '1', text: '```a\n1\n```\n```b\n2\n```' },
+      ];
+      render(
+        <Transcript
+          entries={entries}
+          fences
+          copyIcon={<Copy />}
+          copiedIcon={<Check />}
+          onCopyCode={() => undefined}
+          copiedId={codeBlockId('e', 1)}
+        />,
+      );
       const buttons = slots('transcript-code-copy');
       expect(buttons[0]).toHaveAccessibleName('Copy code');
       expect(buttons[1]).toHaveAccessibleName('Copied');
     });
 
     it('labels are configurable', () => {
-      render(<Transcript {...base({ onCopyCode: () => undefined, copyCodeLabel: 'Copiar código' })} />);
+      render(
+        <Transcript {...base({ onCopyCode: () => undefined, copyCodeLabel: 'Copiar código' })} />,
+      );
       expect(screen.getByRole('button', { name: 'Copiar código' })).toBeInTheDocument();
     });
 

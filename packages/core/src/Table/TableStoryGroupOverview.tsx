@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 import { InlineCode, SegmentedPill, TableOfContents, type TocItem } from './storySupport';
 
 export interface TableStoryGroupOverviewProps {
@@ -7,7 +7,11 @@ export interface TableStoryGroupOverviewProps {
   sections: Array<{ id: string; title: string; body: React.ReactNode }>;
 }
 
-export const TableStoryGroupOverview = ({ title, summary, sections }: TableStoryGroupOverviewProps) => {
+export const TableStoryGroupOverview = ({
+  title,
+  summary,
+  sections,
+}: TableStoryGroupOverviewProps) => {
   const tocItems: TocItem[] = sections.map((section) => ({ id: section.id, label: section.title }));
 
   return (

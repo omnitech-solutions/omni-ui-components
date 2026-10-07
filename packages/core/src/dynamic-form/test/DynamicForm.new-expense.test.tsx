@@ -1,16 +1,24 @@
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { DynamicForm } from 'dynamic-form';
 import { buildFormContext } from 'dynamic-form/lib/formContext';
-import { expenseScenarioFixture, type ExpenseScenarioFormData } from 'factories/dynamic-form/DynamicForm/expenseScenario.factories';
+import {
+  type ExpenseScenarioFormData,
+  expenseScenarioFixture,
+} from 'factories/dynamic-form/DynamicForm/expenseScenario.factories';
+import * as React from 'react';
 
 beforeAll(() => {
   Element.prototype.scrollIntoView = jest.fn();
 });
 
-function Harness({ onSubmit, initial }: { onSubmit?: (data: ExpenseScenarioFormData) => void; initial?: Partial<ExpenseScenarioFormData> }) {
+function Harness({
+  onSubmit,
+  initial,
+}: {
+  onSubmit?: (data: ExpenseScenarioFormData) => void;
+  initial?: Partial<ExpenseScenarioFormData>;
+}) {
   const fixture = expenseScenarioFixture();
   const start = { ...fixture.defaults, ...initial } as ExpenseScenarioFormData;
   const [formData, setFormData] = React.useState<ExpenseScenarioFormData>(start);
@@ -50,8 +58,14 @@ describe('NewExpense scenario', () => {
   });
 
   it('renders Excluding Tax and Sales Price as derived text (no submit field)', () => {
-    render(<Harness initial={{ amount: 100, currency: 'GBP', taxRateId: 'state_5', markupPercentage: 19 }} />);
-    expect(screen.getByTestId('root_excludingTaxLabel-derived').textContent).toMatch(/Excluding Tax/);
+    render(
+      <Harness
+        initial={{ amount: 100, currency: 'GBP', taxRateId: 'state_5', markupPercentage: 19 }}
+      />,
+    );
+    expect(screen.getByTestId('root_excludingTaxLabel-derived').textContent).toMatch(
+      /Excluding Tax/,
+    );
     expect(screen.getByTestId('root_salesPriceLabel-derived').textContent).toMatch(/Sales Price/);
   });
 
@@ -67,7 +81,9 @@ describe('NewExpense scenario', () => {
     const user = userEvent.setup();
     render(<Harness />);
     await user.click(screen.getByRole('button', { name: /^Tax$/ }));
-    expect(screen.getByTestId('root_taxRateId-footer-action')).toHaveTextContent('Manage Tax Rates');
+    expect(screen.getByTestId('root_taxRateId-footer-action')).toHaveTextContent(
+      'Manage Tax Rates',
+    );
   });
 
   it('renders Additional Fields collapsed by default', () => {
@@ -91,7 +107,14 @@ describe('NewExpense scenario', () => {
     render(
       <Harness
         onSubmit={onSubmit}
-        initial={{ name: 'Travel', amount: 100, currency: 'GBP', taxRateId: 'state_5', markupPercentage: 19, expenseDate: '2026-06-29' }}
+        initial={{
+          name: 'Travel',
+          amount: 100,
+          currency: 'GBP',
+          taxRateId: 'state_5',
+          markupPercentage: 19,
+          expenseDate: '2026-06-29',
+        }}
       />,
     );
     await user.click(screen.getByTestId('submit-btn'));

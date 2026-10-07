@@ -1,15 +1,16 @@
-import * as React from 'react';
 import { Cpu, Plus, SlidersHorizontal, X } from 'lucide-react';
-
-import { SettingsDialog } from '../SettingsDialog';
-import type { SettingsTab } from '../SettingsDialog';
-import { sampleModels } from '../ModelPicker/ModelPicker.factories';
+import type * as React from 'react';
 import type { Variant } from '../internal/support/makeFactory';
+import { sampleModels } from '../ModelPicker/ModelPicker.factories';
+import type { SettingsTab } from '../SettingsDialog';
+import { SettingsDialog } from '../SettingsDialog';
 import { ModelsSettings } from './ModelsSettings';
 import type { ModelsSettingsProps } from './ModelsSettings.types';
 
 /** Build `<ModelsSettings>` props for standalone stories and tests. */
-export const modelsSettingsPropsFactory = (overrides: Partial<ModelsSettingsProps> = {}): ModelsSettingsProps => ({
+export const modelsSettingsPropsFactory = (
+  overrides: Partial<ModelsSettingsProps> = {},
+): ModelsSettingsProps => ({
   endpoint: 'http://localhost:1234/v1',
   models: sampleModels().slice(0, 3),
   modelIcon: <Cpu />,
@@ -52,5 +53,13 @@ export const ModelsSettingsDialogDemo: React.FC<{
       ),
     },
   ];
-  return <SettingsDialog open defaultTab="models" tabs={tabs} closeIcon={<X />} onClose={() => onAction?.('close')} />;
+  return (
+    <SettingsDialog
+      open
+      defaultTab="models"
+      tabs={tabs}
+      closeIcon={<X />}
+      onClose={() => onAction?.('close')}
+    />
+  );
 };

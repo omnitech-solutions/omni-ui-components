@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { GripVertical } from 'lucide-react';
+import * as React from 'react';
 
 export type SortableHandleBinding = {
   attributes: Record<string, unknown>;
@@ -20,7 +20,16 @@ type SortableHandleProps = {
   onKeyboardMove: (direction: -1 | 1) => void;
 };
 
-export const SortableHandle = ({ label, testId, axis, setActivatorNodeRef, attributes, listeners, isDragging, onKeyboardMove }: SortableHandleProps) => {
+export const SortableHandle = ({
+  label,
+  testId,
+  axis,
+  setActivatorNodeRef,
+  attributes,
+  listeners,
+  isDragging,
+  onKeyboardMove,
+}: SortableHandleProps) => {
   const listenerProps = listeners;
   return (
     <button
@@ -75,7 +84,11 @@ export const SortableRowHandleCell = ({ label, testId, rowKey }: SortableRowHand
   if (!binding) return null;
 
   return (
-    <span className="bui-table-sortable-row-handle" data-row-key={rowKey} data-dragging={binding.isDragging ? 'true' : 'false'}>
+    <span
+      className="bui-table-sortable-row-handle"
+      data-row-key={rowKey}
+      data-dragging={binding.isDragging ? 'true' : 'false'}
+    >
       <SortableHandle
         label={label}
         testId={testId}

@@ -1,9 +1,8 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { Calendar, FileText, Users } from 'lucide-react';
-
 import { Stepper, type StepperProps } from '@oc-tech/omni-ui-components/Stepper';
+import type { Meta, StoryObj } from '@storybook/react';
 import { stepperPropsFactory } from 'factories/omni-ui-components/Stepper/Stepper.factories';
+import { Calendar, FileText, Users } from 'lucide-react';
+import * as React from 'react';
 
 const Renderer: React.FC<StepperProps> = (args) => {
   const [value, setValue] = React.useState<number>(args.value ?? args.min ?? 0);
@@ -40,9 +39,21 @@ export const Default: Story = {};
 
 export const NoIcon: Story = { args: { icon: undefined } };
 
-export const Days: Story = { args: { label: 'Duration', icon: <Calendar />, unit: 'day', value: 14, min: 1, max: 90 } };
+export const Days: Story = {
+  args: { label: 'Duration', icon: <Calendar />, unit: 'day', value: 14, min: 1, max: 90 },
+};
 
-export const People: Story = { args: { label: 'Seats', icon: <Users />, unit: 'person', unitPlural: 'people', value: 1, min: 1, max: 50 } };
+export const People: Story = {
+  args: {
+    label: 'Seats',
+    icon: <Users />,
+    unit: 'person',
+    unitPlural: 'people',
+    value: 1,
+    min: 1,
+    max: 50,
+  },
+};
 
 export const AtMin: Story = { args: { value: 1 } };
 
@@ -58,7 +69,13 @@ export const SizesMatrix: Story = {
   render: (args) => (
     <div className="flex flex-col items-start gap-3">
       {(['sm', 'default', 'lg'] as const).map((s) => (
-        <Renderer key={s} {...(args as StepperProps)} stepperSize={s} label={`size=${s}`} icon={<FileText />} />
+        <Renderer
+          key={s}
+          {...(args as StepperProps)}
+          stepperSize={s}
+          label={`size=${s}`}
+          icon={<FileText />}
+        />
       ))}
     </div>
   ),

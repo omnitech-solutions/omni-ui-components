@@ -1,7 +1,7 @@
-import * as React from 'react';
+import { useControllableState } from 'lib/use-controllable-state';
 
 import { cn } from 'lib/utils';
-import { useControllableState } from 'lib/use-controllable-state';
+import * as React from 'react';
 import type { SummaryDividerLabels, SummaryDividerProps } from './SummaryDivider.types';
 
 /** English strings of {@link SummaryDivider}. */
@@ -20,12 +20,31 @@ export const DEFAULT_SUMMARY_DIVIDER_LABELS: SummaryDividerLabels = {
  * <SummaryDivider count={12} text={summary.text} icon={<ListCollapse />} chevron={<ChevronDown />} />
  */
 export const SummaryDivider = React.forwardRef<HTMLDivElement, SummaryDividerProps>(
-  ({ count, text, open, defaultOpen = false, onOpenChange, icon, chevron, labels: labelOverrides, className, ...rest }, ref) => {
+  (
+    {
+      count,
+      text,
+      open,
+      defaultOpen = false,
+      onOpenChange,
+      icon,
+      chevron,
+      labels: labelOverrides,
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
     const labels = { ...DEFAULT_SUMMARY_DIVIDER_LABELS, ...labelOverrides };
     const [expanded, setExpanded] = useControllableState(open, defaultOpen, onOpenChange);
     const bodyId = React.useId();
     return (
-      <div ref={ref} data-slot="summary-divider" className={cn('flex min-w-0 flex-col gap-2', className)} {...rest}>
+      <div
+        ref={ref}
+        data-slot="summary-divider"
+        className={cn('flex min-w-0 flex-col gap-2', className)}
+        {...rest}
+      >
         <div className="flex items-center gap-2.5">
           <span aria-hidden="true" className="h-px flex-1 bg-[color:var(--oui-panel-divider)]" />
           <button
@@ -43,7 +62,13 @@ export const SummaryDivider = React.forwardRef<HTMLDivElement, SummaryDividerPro
             ) : null}
             {labels.summarised(count)}
             {chevron ? (
-              <span aria-hidden="true" className={cn('inline-flex transition-transform motion-reduce:transition-none', expanded && 'rotate-180')}>
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'inline-flex transition-transform motion-reduce:transition-none',
+                  expanded && 'rotate-180',
+                )}
+              >
                 {chevron}
               </span>
             ) : null}

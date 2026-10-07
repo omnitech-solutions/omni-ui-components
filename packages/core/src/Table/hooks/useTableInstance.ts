@@ -1,23 +1,29 @@
-import * as React from 'react';
 import {
-  getCoreRowModel,
-  getExpandedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
   type ColumnDef,
   type ColumnFiltersState,
   type ColumnOrderState,
   type ColumnPinningState,
   type ColumnSizingState,
   type ExpandedState,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
   type PaginationState,
   type RowSelectionState,
   type SortingState,
+  useReactTable,
   type VisibilityState,
 } from '@tanstack/react-table';
-import { cellValue, compareComponent, filtersRecord, hasControlledSorter, sortOrderFromTanStack } from '../internal';
+import * as React from 'react';
+import {
+  cellValue,
+  compareComponent,
+  filtersRecord,
+  hasControlledSorter,
+  sortOrderFromTanStack,
+} from '../internal';
 import type { TableColumn, TableProps, TableResolvedRow, TableSorterResult } from '../Table.types';
 
 export interface UseTableInstanceInput<TRecord, TRowData> {
@@ -49,7 +55,9 @@ export interface UseTableInstanceInput<TRecord, TRowData> {
   scrollToFirstRow: () => void;
 }
 
-export function useTableInstance<TRecord, TRowData>(input: UseTableInstanceInput<TRecord, TRowData>) {
+export function useTableInstance<TRecord, TRowData>(
+  input: UseTableInstanceInput<TRecord, TRowData>,
+) {
   const {
     rawProps,
     columns,
@@ -95,31 +103,56 @@ export function useTableInstance<TRecord, TRowData>(input: UseTableInstanceInput
         enableSorting: Boolean(col.sorter),
         sortingFn: (() => {
           const sorter = col.sorter;
-          const sortOrder = sortOrderFromTanStack(sorting.find((item) => item.id === col.key)?.desc);
-          if (typeof sorter === 'function') return (a, b) => sorter(a.original.record, b.original.record, sortOrder);
-          if (sorter && typeof sorter === 'object' && sorter.compare) return (a, b) => sorter.compare!(a.original.record, b.original.record, sortOrder);
-          if (sorter) return (a, b) => compareComponent(cellValue(a.original.record, a.original.row, col), cellValue(b.original.record, b.original.row, col));
+          const sortOrder = sortOrderFromTanStack(
+            sorting.find((item) => item.id === col.key)?.desc,
+          );
+          if (typeof sorter === 'function')
+            return (a, b) => sorter(a.original.record, b.original.record, sortOrder);
+          if (sorter && typeof sorter === 'object' && sorter.compare)
+            return (a, b) => sorter.compare!(a.original.record, b.original.record, sortOrder);
+          if (sorter)
+            return (a, b) =>
+              compareComponent(
+                cellValue(a.original.record, a.original.row, col),
+                cellValue(b.original.record, b.original.row, col),
+              );
           return 'auto';
         })(),
       })),
     [mergedLeafColumns, sorting],
   );
 
-  const sortingControlled = Boolean(rawProps.state && Object.prototype.hasOwnProperty.call(rawProps.state, 'sorting')) || hasControlledSorter(columns);
+  const sortingControlled =
+    Boolean(rawProps.state && Object.hasOwn(rawProps.state, 'sorting')) ||
+    hasControlledSorter(columns);
 
-  const sorterResultFor = (item: { id: string; desc: boolean }, orderOverride?: TableSorterResult<TRecord>['order']): TableSorterResult<TRecord> => {
+  const sorterResultFor = (
+    item: { id: string; desc: boolean },
+    orderOverride?: TableSorterResult<TRecord>['order'],
+  ): TableSorterResult<TRecord> => {
     const col = mergedLeafColumns.find((column) => column.key === item.id);
     return {
       columnKey: item.id,
-      field: Array.isArray(col?.dataIndex) ? col?.dataIndex.map(String) : col?.dataIndex ? String(col.dataIndex) : undefined,
+      field: Array.isArray(col?.dataIndex)
+        ? col?.dataIndex.map(String)
+        : col?.dataIndex
+          ? String(col.dataIndex)
+          : undefined,
       order: orderOverride ?? sortOrderFromTanStack(item.desc),
       column: col as TableColumn<TRecord, unknown> | undefined,
     };
   };
 
-  const sorterResultForColumn = (col: TableColumn<TRecord, TRowData>, order: TableSorterResult<TRecord>['order']): TableSorterResult<TRecord> => ({
+  const sorterResultForColumn = (
+    col: TableColumn<TRecord, TRowData>,
+    order: TableSorterResult<TRecord>['order'],
+  ): TableSorterResult<TRecord> => ({
     columnKey: col.key,
-    field: Array.isArray(col.dataIndex) ? col.dataIndex.map(String) : col.dataIndex ? String(col.dataIndex) : undefined,
+    field: Array.isArray(col.dataIndex)
+      ? col.dataIndex.map(String)
+      : col.dataIndex
+        ? String(col.dataIndex)
+        : undefined,
     order,
     column: col as TableColumn<TRecord, unknown>,
   });
@@ -151,7 +184,13 @@ export function useTableInstance<TRecord, TRowData>(input: UseTableInstanceInput
       columnPinning,
     },
     getRowId: (resolved) => String(resolved.key),
-    getSubRows: (resolved) => resolved.row.children?.map((child, index) => ({ key: child.key, record: child.record ?? ({} as TRecord), row: child, index })),
+    getSubRows: (resolved) =>
+      resolved.row.children?.map((child, index) => ({
+        key: child.key,
+        record: child.record ?? ({} as TRecord),
+        row: child,
+        index,
+      })),
     enableRowSelection: Boolean(rowSelection),
     enableColumnResizing: true,
     autoResetPageIndex: false,
@@ -206,16 +245,25 @@ export function useTableInstance<TRecord, TRowData>(input: UseTableInstanceInput
     getExpandedRowModel: getExpandedRowModel(),
   });
 
-  function applySortingChange(next: SortingState, changedColumn?: TableColumn<TRecord, TRowData>, changedOrder?: TableSorterResult<TRecord>['order']) {
+  function applySortingChange(
+    next: SortingState,
+    changedColumn?: TableColumn<TRecord, TRowData>,
+    changedOrder?: TableSorterResult<TRecord>['order'],
+  ) {
     if (!sortingControlled) setSorting(next);
     emitStateChange({ sorting: next });
     scrollToFirstRow();
-    onChange?.(paginationState(), filtersRecord(columnFilters), sorterPayload(next, changedColumn, changedOrder), {
-      currentDataSource: dataSource,
-      currentRows: resolvedRows.map((r) => r.row),
-      action: 'sort',
-      table,
-    });
+    onChange?.(
+      paginationState(),
+      filtersRecord(columnFilters),
+      sorterPayload(next, changedColumn, changedOrder),
+      {
+        currentDataSource: dataSource,
+        currentRows: resolvedRows.map((r) => r.row),
+        action: 'sort',
+        table,
+      },
+    );
   }
 
   return { table, applySortingChange, sortingControlled };

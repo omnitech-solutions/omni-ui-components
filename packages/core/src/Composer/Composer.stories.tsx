@@ -1,11 +1,17 @@
-import * as React from 'react';
+import { Composer, type ComposerProps, SendButton } from '@oc-tech/omni-ui-components/Composer';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
-import { Composer, SendButton, type ComposerProps } from '@oc-tech/omni-ui-components/Composer';
+import {
+  attachmentItem,
+  sampleThumbnail,
+} from 'factories/omni-ui-components/Attachment/Attachment.factories';
+import {
+  ComposerDemo,
+  type ComposerDemoProps,
+  composerPropsFactory,
+} from 'factories/omni-ui-components/Composer/Composer.factories';
 import { ArrowUp, ListPlus, Square } from 'lucide-react';
-import { ComposerDemo, composerPropsFactory, type ComposerDemoProps } from 'factories/omni-ui-components/Composer/Composer.factories';
-import { attachmentItem, sampleThumbnail } from 'factories/omni-ui-components/Attachment/Attachment.factories';
+import * as React from 'react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta<ComposerDemoProps> = {
   title: 'omni-ui-components/Composer',
@@ -19,21 +25,47 @@ const meta: Meta<ComposerDemoProps> = {
       },
     },
   },
-  args: { variant: 'stacked', streaming: false, attachments: true, commands: true, mentions: true, dictation: true, sendOnEnter: true, warning: false, onAction: fn() },
+  args: {
+    variant: 'stacked',
+    streaming: false,
+    attachments: true,
+    commands: true,
+    mentions: true,
+    dictation: true,
+    sendOnEnter: true,
+    warning: false,
+    onAction: fn(),
+  },
   argTypes: {
-    variant: { control: 'inline-radio', options: ['stacked', 'pill'], description: '`stacked` or `pill` (Composer `variant`).' },
-    streaming: { control: 'boolean', description: 'A reply is running: send becomes Stop or Queue.' },
+    variant: {
+      control: 'inline-radio',
+      options: ['stacked', 'pill'],
+      description: '`stacked` or `pill` (Composer `variant`).',
+    },
+    streaming: {
+      control: 'boolean',
+      description: 'A reply is running: send becomes Stop or Queue.',
+    },
     attachments: { control: 'boolean', description: 'Story-only: file picker, paste and drop.' },
     commands: { control: 'boolean', description: 'Story-only: `/` commands.' },
     mentions: { control: 'boolean', description: 'Story-only: `@` mentions (async source).' },
-    dictation: { control: 'boolean', description: 'Story-only: mic, hold-to-talk key (Right ⌥) and the dictation bar.' },
-    sendOnEnter: { control: 'boolean', description: 'Enter sends; Shift+Enter newline. Off: only the button sends.' },
+    dictation: {
+      control: 'boolean',
+      description: 'Story-only: mic, hold-to-talk key (Right ⌥) and the dictation bar.',
+    },
+    sendOnEnter: {
+      control: 'boolean',
+      description: 'Enter sends; Shift+Enter newline. Off: only the button sends.',
+    },
     warning: { control: 'boolean', description: 'Story-only: the vision warning callout.' },
     initialValue: { control: 'text' },
     placeholder: { control: 'text' },
     hint: { control: 'text', description: 'Line under the box.' },
     history: { control: 'object', description: 'Story-only: earlier prompts for ArrowUp recall.' },
-    onAction: { action: 'composer', description: 'Story-only: reports send, queue, stop, files, commands and dictation.' },
+    onAction: {
+      action: 'composer',
+      description: 'Story-only: reports send, queue, stop, files, commands and dictation.',
+    },
   },
   render: (args) => (
     <div className="max-w-md px-6 pt-56 pb-6">
@@ -57,7 +89,10 @@ export const Default: Story = {
     await userEvent.type(box, '{Shift>}{Enter}{/Shift}second line');
     await expect(box).toHaveValue('Walk me through binary search\nsecond line');
     await userEvent.keyboard('{Enter}');
-    await expect(args.onAction).toHaveBeenCalledWith('send', { text: 'Walk me through binary search\nsecond line', files: [] });
+    await expect(args.onAction).toHaveBeenCalledWith('send', {
+      text: 'Walk me through binary search\nsecond line',
+      files: [],
+    });
     await expect(box).toHaveValue('');
     // ArrowUp on the empty box recalls the newest prompt, caret at the end.
     await userEvent.keyboard('{ArrowUp}');
@@ -67,9 +102,14 @@ export const Default: Story = {
 
 /** ArrowUp at the first line recalls, ArrowUp again goes further back, ArrowDown on the last line comes forward and past the newest restores the draft. */
 export const HistoryRecall: Story = {
-  args: { history: ['Explain two sum', 'Explain Big O of the hash map'], initialValue: 'half-typed idea' },
+  args: {
+    history: ['Explain two sum', 'Explain Big O of the hash map'],
+    initialValue: 'half-typed idea',
+  },
   play: async ({ canvasElement }) => {
-    const box = within(canvasElement).getByRole('combobox', { name: 'Message' }) as HTMLTextAreaElement;
+    const box = within(canvasElement).getByRole('combobox', {
+      name: 'Message',
+    }) as HTMLTextAreaElement;
     await userEvent.click(box);
     box.setSelectionRange(box.value.length, box.value.length);
     await userEvent.keyboard('{ArrowUp}');
@@ -89,7 +129,9 @@ export const SavedPrompts: Story = {
     const box = canvas.getByRole('combobox', { name: 'Message' });
     await userEvent.click(box);
     await userEvent.keyboard('{End}');
-    await waitFor(() => expect(document.querySelector('[role="listbox"][aria-label="Saved prompts"]')).not.toBeNull());
+    await waitFor(() =>
+      expect(document.querySelector('[role="listbox"][aria-label="Saved prompts"]')).not.toBeNull(),
+    );
     await userEvent.type(box, 'edge');
     await waitFor(() => expect(document.querySelectorAll('[role="option"]')).toHaveLength(1));
     await userEvent.keyboard('{Enter}');
@@ -118,7 +160,10 @@ export const QueueWhileStreaming: Story = {
   args: { streaming: true, queued: [{ id: 'q0', text: 'And the space trade-off?' }] },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    await userEvent.type(canvas.getByRole('combobox', { name: 'Message' }), 'Then the sorted version');
+    await userEvent.type(
+      canvas.getByRole('combobox', { name: 'Message' }),
+      'Then the sorted version',
+    );
     await expect(canvas.getByRole('button', { name: 'Queue message' })).toBeEnabled();
     await userEvent.keyboard('{Enter}');
     await expect(args.onAction).toHaveBeenCalledWith('queue', 'Then the sorted version');
@@ -141,8 +186,19 @@ export const WithAttachmentStates: Story = {
     initialItems: [
       attachmentItem({ id: '1', name: 'resume.pdf' }),
       attachmentItem({ id: '2', name: 'portfolio.pdf', status: 'uploading', progress: 40 }),
-      attachmentItem({ id: '3', name: 'screenshot.png', kind: 'image', meta: 'Image', previewUrl: sampleThumbnail }),
-      attachmentItem({ id: '4', name: 'scan.pdf', status: 'failed', error: 'Could not read this PDF' }),
+      attachmentItem({
+        id: '3',
+        name: 'screenshot.png',
+        kind: 'image',
+        meta: 'Image',
+        previewUrl: sampleThumbnail,
+      }),
+      attachmentItem({
+        id: '4',
+        name: 'scan.pdf',
+        status: 'failed',
+        error: 'Could not read this PDF',
+      }),
     ],
   },
 };
@@ -157,7 +213,10 @@ export const EnterIsNewline: Story = {
     await expect(box).toHaveValue('line one\nline two');
     await expect(args.onAction).not.toHaveBeenCalledWith('send', expect.anything());
     await userEvent.click(canvas.getByRole('button', { name: 'Send (Enter)' }));
-    await expect(args.onAction).toHaveBeenCalledWith('send', { text: 'line one\nline two', files: [] });
+    await expect(args.onAction).toHaveBeenCalledWith('send', {
+      text: 'line one\nline two',
+      files: [],
+    });
   },
 };
 
@@ -165,7 +224,9 @@ export const EnterIsNewline: Story = {
 export const AutoGrow: Story = {
   args: { initialValue: Array.from({ length: 14 }, (_, i) => `line ${i + 1}`).join('\n') },
   play: async ({ canvasElement }) => {
-    const box = within(canvasElement).getByRole('combobox', { name: 'Message' }) as HTMLTextAreaElement;
+    const box = within(canvasElement).getByRole('combobox', {
+      name: 'Message',
+    }) as HTMLTextAreaElement;
     await waitFor(() => expect(parseInt(box.style.height, 10)).toBeLessThanOrEqual(200));
   },
 };
@@ -174,7 +235,10 @@ export const AutoGrow: Story = {
 export const SeeThrough: Story = {
   render: (args) => (
     <div className="p-6">
-      <div className="box-border flex max-w-md rounded-xl p-3.5 pt-56" style={{ background: '#1a4f96', ['--oui-panel-see-through' as string]: 0.22 }}>
+      <div
+        className="box-border flex max-w-md rounded-xl p-3.5 pt-56"
+        style={{ background: '#1a4f96', ['--oui-panel-see-through' as string]: 0.22 }}
+      >
         <div className="w-full rounded-[14px] border border-solid border-[color:var(--oui-panel-border)] bg-[color:color-mix(in_srgb,var(--oui-panel-bg)_22%,transparent)] px-3 py-2.5">
           <ComposerDemo {...args} />
         </div>
@@ -188,7 +252,13 @@ export const SendButtonStates: StoryObj = {
   render: () => (
     <div className="flex items-center gap-3 p-6">
       {(['idle', 'ready', 'streaming', 'queue'] as const).map((state) => (
-        <SendButton key={state} state={state} sendIcon={<ArrowUp />} stopIcon={<Square />} queueIcon={<ListPlus />} />
+        <SendButton
+          key={state}
+          state={state}
+          sendIcon={<ArrowUp />}
+          stopIcon={<Square />}
+          queueIcon={<ListPlus />}
+        />
       ))}
     </div>
   ),
@@ -207,7 +277,9 @@ export const Bare: StoryObj<ComposerProps> = {
       const [value, setValue] = React.useState('');
       return (
         <div className="max-w-md p-6">
-          <Composer {...composerPropsFactory({ value, onChange: setValue, onSubmit: () => setValue('') })} />
+          <Composer
+            {...composerPropsFactory({ value, onChange: setValue, onSubmit: () => setValue('') })}
+          />
         </div>
       );
     };

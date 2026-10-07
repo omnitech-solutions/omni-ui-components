@@ -1,7 +1,11 @@
 import { cva, type VariantProps } from 'class-variance-authority';
-
+import {
+  CONTROL_TONES,
+  pressedClasses,
+  tonePressedClasses,
+  toneTintClasses,
+} from '../internal/support/controlTone';
 import { hitAreaBoth } from '../internal/support/hitArea';
-import { CONTROL_TONES, pressedClasses, tonePressedClasses, toneTintClasses } from '../internal/support/controlTone';
 
 /**
  * Tailwind class config for IconButton. Sizes track the Omni field
@@ -32,9 +36,12 @@ export const iconButtonVariants = cva(
           'dark:hover:border-red-500/40 dark:hover:bg-red-500/20',
           'dark:focus-visible:border-red-500/40 dark:focus-visible:bg-red-500/20',
         ].join(' '),
-        outline: 'border-[var(--oui-border-field)] text-[var(--oui-foreground)] hover:border-[var(--oui-border-interactive)] hover:bg-muted/40',
-        secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'border-transparent text-[var(--oui-foreground-muted)] hover:bg-muted/40 hover:text-[var(--oui-foreground)]',
+        outline:
+          'border-[var(--oui-border-field)] text-[var(--oui-foreground)] hover:border-[var(--oui-border-interactive)] hover:bg-muted/40',
+        secondary:
+          'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        ghost:
+          'border-transparent text-[var(--oui-foreground-muted)] hover:bg-muted/40 hover:text-[var(--oui-foreground)]',
         link: 'border-transparent text-primary underline-offset-4 hover:underline',
       },
       iconSize: {
@@ -43,8 +50,7 @@ export const iconButtonVariants = cva(
         md: 'h-[var(--oui-field-height-lg)] w-[var(--oui-field-height-lg)] [&_svg]:size-4',
         lg: 'h-[var(--oui-field-height-xl)] w-[var(--oui-field-height-xl)] [&_svg]:size-5',
         /** 36px square control row (Native App toolbar). */
-        control:
-          `${hitAreaBoth} [--oui-hit-border:1px] h-[var(--oui-control-height)] w-[var(--oui-control-height)] rounded-[var(--oui-control-radius)] [&_svg]:size-[var(--oui-control-icon)]`,
+        control: `${hitAreaBoth} [--oui-hit-border:1px] h-[var(--oui-control-height)] w-[var(--oui-control-height)] rounded-[var(--oui-control-radius)] [&_svg]:size-[var(--oui-control-icon)]`,
         /** 52px square labelled control row (icon-only; the caption is rendered by the consumer). */
         'control-labelled':
           'h-[var(--oui-control-height-labelled)] w-[var(--oui-control-height-labelled)] rounded-[var(--oui-control-radius)] [&_svg]:size-[var(--oui-control-icon)]',
@@ -52,7 +58,10 @@ export const iconButtonVariants = cva(
       /** Tinted tone from the `--oui-tone-*` scale; overrides the `variant` colours. */
       tone: { neutral: '', accent: '', success: '', warning: '', danger: '', dim: '' },
     },
-    compoundVariants: CONTROL_TONES.map((tone) => ({ tone, className: `${toneTintClasses[tone]} ${tonePressedClasses[tone]}` })),
+    compoundVariants: CONTROL_TONES.map((tone) => ({
+      tone,
+      className: `${toneTintClasses[tone]} ${tonePressedClasses[tone]}`,
+    })),
     defaultVariants: { variant: 'outline', iconSize: 'default' },
   },
 );

@@ -1,12 +1,12 @@
-import * as React from 'react';
 import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { hitAreaY } from '../internal/support/hitArea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../Tooltip';
 import type { SegmentedOption, SegmentedPrimitiveProps } from './Segmented.types';
 
-const PILL_ROOT = 'inline-flex w-fit gap-1 rounded-full border border-[var(--oui-border-field)] bg-muted/40 p-1';
+const PILL_ROOT =
+  'inline-flex w-fit gap-1 rounded-full border border-[var(--oui-border-field)] bg-muted/40 p-1';
 const PILL_ITEM = cn(
   'h-8 rounded-full px-4 text-sm font-medium cursor-pointer',
   'text-[var(--oui-foreground)] hover:bg-muted/60',
@@ -46,117 +46,128 @@ const CONTROL_ITEM = cn(
  * `disabledReason` (`aria-disabled` + tooltip). Whole control is
  * keyboard-friendly (Left / Right move focus inside the group).
  */
-const SegmentedPrimitiveInner = React.forwardRef<HTMLDivElement, SegmentedPrimitiveProps>((props, ref) => {
-  const {
-    id,
-    name: _name,
-    className,
-    options,
-    disabled,
-    required,
-    invalid,
-    appearance = 'pill',
-    minActive = 0,
-    minActiveReason = 'Keep at least one on',
-    'aria-describedby': ariaDescribedBy,
-    ...rest
-  } = props;
-  const restAny = rest as Record<string, unknown>;
-  const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
-  const control = appearance === 'control';
-  const multiple = props.mode === 'multiple';
+const SegmentedPrimitiveInner = React.forwardRef<HTMLDivElement, SegmentedPrimitiveProps>(
+  (props, ref) => {
+    const {
+      id,
+      name: _name,
+      className,
+      options,
+      disabled,
+      required,
+      invalid,
+      appearance = 'pill',
+      minActive = 0,
+      minActiveReason = 'Keep at least one on',
+      'aria-describedby': ariaDescribedBy,
+      ...rest
+    } = props;
+    const restAny = rest as Record<string, unknown>;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
+    const control = appearance === 'control';
+    const multiple = props.mode === 'multiple';
 
-  // Multiple mode: the on-values, used to tell which options the minActive rule locks.
-  const activeValues = multiple ? (props.value ?? props.defaultValue ?? []) : [];
-  const atMinimum = multiple && activeValues.length <= minActive;
+    // Multiple mode: the on-values, used to tell which options the minActive rule locks.
+    const activeValues = multiple ? (props.value ?? props.defaultValue ?? []) : [];
+    const atMinimum = multiple && activeValues.length <= minActive;
 
-  const renderOption = (opt: SegmentedOption) => {
-    const reasoned = opt.disabledReason !== undefined && opt.disabledReason !== null && opt.disabledReason !== '';
-    const locked = atMinimum && activeValues.includes(opt.value) && !reasoned;
-    const accessibleName = opt.ariaLabel ?? (typeof opt.label === 'string' ? opt.label : undefined);
-    const tip = reasoned ? opt.disabledReason : locked ? minActiveReason : undefined;
+    const renderOption = (opt: SegmentedOption) => {
+      const reasoned =
+        opt.disabledReason !== undefined &&
+        opt.disabledReason !== null &&
+        opt.disabledReason !== '';
+      const locked = atMinimum && activeValues.includes(opt.value) && !reasoned;
+      const accessibleName =
+        opt.ariaLabel ?? (typeof opt.label === 'string' ? opt.label : undefined);
+      const tip = reasoned ? opt.disabledReason : locked ? minActiveReason : undefined;
 
-    const item = (
-      <ToggleGroupItem
-        key={opt.value}
-        value={opt.value}
-        aria-label={accessibleName}
-        // aria-disabled (not native disabled) keeps a reasoned or locked option hoverable for its tooltip.
-        aria-disabled={reasoned || locked ? true : undefined}
-        data-locked={locked ? 'true' : undefined}
-        title={tip === undefined && !opt.label ? accessibleName : undefined}
-        disabled={disabled || opt.disabled}
-        data-testid={testId ? `${testId}-option-${opt.value}` : undefined}
-        // Radix skips its toggle when the click is default-prevented.
-        onClick={(event) => {
-          if (reasoned || locked) event.preventDefault();
-        }}
-        className={control ? CONTROL_ITEM : PILL_ITEM}
-      >
-        {opt.icon}
-        {opt.label}
-      </ToggleGroupItem>
-    );
-    if (tip === undefined) return item;
-    return (
-      <TooltipProvider key={opt.value}>
-        <Tooltip>
-          {/* The trigger sits on a wrapper: a trigger on the item itself would overwrite its data-state (on/off). */}
-          <TooltipTrigger asChild>
-            <span className="inline-flex">{item}</span>
-          </TooltipTrigger>
-          <TooltipContent>{tip}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
-  };
+      const item = (
+        <ToggleGroupItem
+          key={opt.value}
+          value={opt.value}
+          aria-label={accessibleName}
+          // aria-disabled (not native disabled) keeps a reasoned or locked option hoverable for its tooltip.
+          aria-disabled={reasoned || locked ? true : undefined}
+          data-locked={locked ? 'true' : undefined}
+          title={tip === undefined && !opt.label ? accessibleName : undefined}
+          disabled={disabled || opt.disabled}
+          data-testid={testId ? `${testId}-option-${opt.value}` : undefined}
+          // Radix skips its toggle when the click is default-prevented.
+          onClick={(event) => {
+            if (reasoned || locked) event.preventDefault();
+          }}
+          className={control ? CONTROL_ITEM : PILL_ITEM}
+        >
+          {opt.icon}
+          {opt.label}
+        </ToggleGroupItem>
+      );
+      if (tip === undefined) return item;
+      return (
+        <TooltipProvider key={opt.value}>
+          <Tooltip>
+            {/* The trigger sits on a wrapper: a trigger on the item itself would overwrite its data-state (on/off). */}
+            <TooltipTrigger asChild>
+              <span className="inline-flex">{item}</span>
+            </TooltipTrigger>
+            <TooltipContent>{tip}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    };
 
-  const shared = {
-    ref,
-    disabled,
-    'data-testid': testId,
-    'data-slot': 'segmented',
-    'data-appearance': appearance,
-    'aria-invalid': invalid || undefined,
-    'aria-required': required || undefined,
-    'aria-describedby': ariaDescribedBy,
-    className: cn(control ? CONTROL_ROOT : PILL_ROOT, className),
-  } as const;
+    const shared = {
+      ref,
+      disabled,
+      'data-testid': testId,
+      'data-slot': 'segmented',
+      'data-appearance': appearance,
+      'aria-invalid': invalid || undefined,
+      'aria-required': required || undefined,
+      'aria-describedby': ariaDescribedBy,
+      className: cn(control ? CONTROL_ROOT : PILL_ROOT, className),
+    } as const;
 
-  if (props.mode === 'multiple') {
+    if (props.mode === 'multiple') {
+      return (
+        <ToggleGroup
+          type="multiple"
+          value={props.value}
+          defaultValue={props.defaultValue}
+          onValueChange={(next: string[]) => {
+            /* The minActive rule: never report a selection below the floor. */
+            if (next.length >= minActive) props.onChange?.(next);
+          }}
+          {...shared}
+        >
+          {options.map(renderOption)}
+        </ToggleGroup>
+      );
+    }
+
     return (
       <ToggleGroup
-        type="multiple"
-        value={props.value}
+        type="single"
+        value={props.value ?? ''}
         defaultValue={props.defaultValue}
-        onValueChange={(next: string[]) => {
-          /* The minActive rule: never report a selection below the floor. */
-          if (next.length >= minActive) props.onChange?.(next);
+        onValueChange={(v: string) => {
+          /* Radix lets the user "deselect" by clicking the active item.
+           * Omni Segmented is conceptually a required single-select, so
+           * we ignore empty-string transitions. */
+          if (v) props.onChange?.(v);
         }}
         {...shared}
       >
         {options.map(renderOption)}
       </ToggleGroup>
     );
-  }
-
-  return (
-    <ToggleGroup
-      type="single"
-      value={props.value ?? ''}
-      defaultValue={props.defaultValue}
-      onValueChange={(v: string) => {
-        /* Radix lets the user "deselect" by clicking the active item.
-         * Omni Segmented is conceptually a required single-select, so
-         * we ignore empty-string transitions. */
-        if (v) props.onChange?.(v);
-      }}
-      {...shared}
-    >
-      {options.map(renderOption)}
-    </ToggleGroup>
-  );
-});
+  },
+);
 SegmentedPrimitiveInner.displayName = 'SegmentedPrimitive';
 
-export const SegmentedPrimitive = React.memo(SegmentedPrimitiveInner) as typeof SegmentedPrimitiveInner;
+export const SegmentedPrimitive = React.memo(
+  SegmentedPrimitiveInner,
+) as typeof SegmentedPrimitiveInner;

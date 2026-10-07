@@ -1,7 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
-import { plainRichTextFixture, prefilledRichTextFixture, type DescFormData } from 'factories/dynamic-form/widgets/RichTextWidget/RichTextWidget.factories';
+import {
+  type DescFormData,
+  plainRichTextFixture,
+  prefilledRichTextFixture,
+} from 'factories/dynamic-form/widgets/RichTextWidget/RichTextWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<DescFormData>;
 
@@ -10,7 +16,10 @@ const config = defineDynamicFormStories<DescFormData>({
   fixtures: { plain: plainRichTextFixture, prefilled: prefilledRichTextFixture },
   titles: { plain: 'RichTextWidget', prefilled: 'RichTextWidget · prefilled' },
   defaultArgs: { fixture: 'plain' },
-  docs: { name: 'RichTextWidget', whenToUse: 'TipTap 3-powered HTML editor. Submits an HTML string.' },
+  docs: {
+    name: 'RichTextWidget',
+    whenToUse: 'TipTap 3-powered HTML editor. Submits an HTML string.',
+  },
   stories: { Plain: { fixture: 'plain' }, Prefilled: { fixture: 'prefilled' } },
 });
 

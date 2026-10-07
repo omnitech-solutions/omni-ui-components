@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Empty, type EmptyProps } from '@oc-tech/omni-ui-components/Empty';
+import type { Meta, StoryObj } from '@storybook/react';
 import { emptyVariants } from 'factories/omni-ui-components/Empty/Empty.factories';
 
 const meta: Meta<typeof Empty> = {
@@ -19,7 +18,11 @@ const meta: Meta<typeof Empty> = {
   argTypes: {
     variant: { control: 'inline-radio', options: ['dashed', 'tile'] },
     title: { control: 'text', description: 'Tile variant: optional bold title.' },
-    action: { control: 'object', description: 'Tile variant: { label, onClick, tone?, icon?, shortcut? } rendered with the library Button.' },
+    action: {
+      control: 'object',
+      description:
+        'Tile variant: { label, onClick, tone?, icon?, shortcut? } rendered with the library Button.',
+    },
   },
 };
 export default meta;
@@ -44,7 +47,10 @@ export const TileWithTitleAndAction: Story = {
     <div className="flex h-80 w-[420px] flex-col rounded-xl border">
       <Empty
         {...(args as EmptyProps)}
-        action={{ ...(args.action as NonNullable<EmptyProps['action']>), onClick: () => (onClick as (() => void) | undefined)?.() }}
+        action={{
+          ...(args.action as NonNullable<EmptyProps['action']>),
+          onClick: () => (onClick as (() => void) | undefined)?.(),
+        }}
       />
     </div>
   ),

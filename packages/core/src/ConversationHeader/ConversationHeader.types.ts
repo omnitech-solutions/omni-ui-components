@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import type { ConversationItem } from '../ConversationList/ConversationList.types';
 
@@ -46,7 +46,11 @@ export interface ConversationHeaderLabels {
   history: string;
 }
 
-export interface ConversationHeaderProps<C extends ConversationItem = ConversationItem, M extends ConversationMenuItem<M> = ConversationMenuItem, A extends ConversationHeaderAction<A> = ConversationHeaderAction> {
+export interface ConversationHeaderProps<
+  C extends ConversationItem = ConversationItem,
+  M extends ConversationMenuItem<M> = ConversationMenuItem,
+  A extends ConversationHeaderAction<A> = ConversationHeaderAction,
+> {
   /** The open conversation (the full item). Its `title` is shown; without one `labels.untitled` shows and the menu is off. Rename callbacks get this object back. */
   conversation?: C;
   /** Rows of the conversation menu. No rows: the title is plain text, not a menu button. */

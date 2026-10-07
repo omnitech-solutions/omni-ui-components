@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { BUILT_IN_ROW_DATA_TYPES } from '../cellRender';
 import type { RowDataType } from '../../Table.RowData';
+import { BUILT_IN_ROW_DATA_TYPES } from '../cellRender';
 
 // Merges overrides on top of BUILT_IN; identity-stable when overrides empty.
 export function useRowDataTypeMap(overrides?: RowDataType[]): Record<string, RowDataType> {

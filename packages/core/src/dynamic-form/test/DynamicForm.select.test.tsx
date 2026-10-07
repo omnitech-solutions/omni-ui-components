@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
+import type { RJSFSchema } from '@rjsf/utils';
 import { within } from '@testing-library/react';
 import { z } from 'zod';
-import type { RJSFSchema } from '@rjsf/utils';
 
 beforeAll(() => {
   Element.prototype.scrollIntoView = jest.fn();
@@ -77,7 +76,10 @@ describe('DynamicForm — SelectWidget integration', () => {
     it('renders the search input when ui:options.searchable=true', async () => {
       const { user } = renderDynamicForm({
         schema: countrySchema(),
-        uiSchema: buildSingleFieldUiSchema('country', { 'ui:widget': 'select', 'ui:options': { searchable: true } }),
+        uiSchema: buildSingleFieldUiSchema('country', {
+          'ui:widget': 'select',
+          'ui:options': { searchable: true },
+        }),
         zodSchema: z.object({ country: z.string() }),
         formData: { country: '' },
       });
@@ -88,7 +90,10 @@ describe('DynamicForm — SelectWidget integration', () => {
     it('shows the placeholder text on the trigger when value is empty', () => {
       renderDynamicForm({
         schema: countrySchema(),
-        uiSchema: buildSingleFieldUiSchema('country', { 'ui:widget': 'select', 'ui:placeholder': 'Pick a country' }),
+        uiSchema: buildSingleFieldUiSchema('country', {
+          'ui:widget': 'select',
+          'ui:placeholder': 'Pick a country',
+        }),
         zodSchema: z.object({ country: z.string() }),
         formData: { country: '' },
       });
@@ -156,7 +161,11 @@ describe('DynamicForm — SelectWidget integration', () => {
       });
       await submit();
       expect(onSubmit).not.toHaveBeenCalled();
-      expect(onError).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({ path: ['country'], source: 'zod', message: 'pick a country' })]));
+      expect(onError).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({ path: ['country'], source: 'zod', message: 'pick a country' }),
+        ]),
+      );
     });
   });
 

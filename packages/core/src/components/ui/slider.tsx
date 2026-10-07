@@ -1,15 +1,21 @@
 'use client';
 
-import * as React from 'react';
 import { Range, Root, Thumb, Track } from '@radix-ui/react-slider';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 
 /**
  * Shadcn-style Slider primitive. Omni wraps this in
  * `omni-ui-components/Slider` — feature code should import from there.
  */
-function Slider({ className, defaultValue, value, min = 0, max = 100, ...props }: React.ComponentProps<typeof Root>) {
+function Slider({
+  className,
+  defaultValue,
+  value,
+  min = 0,
+  max = 100,
+  ...props
+}: React.ComponentProps<typeof Root>) {
   const thumbCount = React.useMemo(() => {
     if (Array.isArray(value)) return value.length;
     if (Array.isArray(defaultValue)) return defaultValue.length;
@@ -40,7 +46,13 @@ function Slider({ className, defaultValue, value, min = 0, max = 100, ...props }
           'data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5',
         )}
       >
-        <Range data-slot="slider-range" className={cn('absolute bg-primary', 'data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full')} />
+        <Range
+          data-slot="slider-range"
+          className={cn(
+            'absolute bg-primary',
+            'data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full',
+          )}
+        />
       </Track>
       {Array.from({ length: thumbCount }, (_, index) => (
         <Thumb

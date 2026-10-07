@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Badge } from '@oc-tech/omni-ui-components/Badge';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/Badge', () => {
   it('renders content', () => {

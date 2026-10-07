@@ -1,7 +1,6 @@
-import * as React from 'react';
-
-import { Button } from '../Button';
 import { cn } from 'lib/utils';
+import * as React from 'react';
+import { Button } from '../Button';
 
 export interface TransferItem {
   key: string;
@@ -14,7 +13,13 @@ export interface TransferProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   onChange?: (nextTargetKeys: string[]) => void;
 }
 
-export function Transfer({ dataSource, targetKeys = [], onChange, className, ...props }: TransferProps) {
+export function Transfer({
+  dataSource,
+  targetKeys = [],
+  onChange,
+  className,
+  ...props
+}: TransferProps) {
   const source = dataSource.filter((item) => !targetKeys.includes(item.key));
   const target = dataSource.filter((item) => targetKeys.includes(item.key));
   const [selectedSource, setSelectedSource] = React.useState<string[]>([]);
@@ -23,14 +28,27 @@ export function Transfer({ dataSource, targetKeys = [], onChange, className, ...
   const moveRight = () => onChange?.([...targetKeys, ...selectedSource]);
   const moveLeft = () => onChange?.(targetKeys.filter((key) => !selectedTarget.includes(key)));
 
-  const renderList = (items: TransferItem[], selected: string[], setSelected: React.Dispatch<React.SetStateAction<string[]>>) => (
+  const renderList = (
+    items: TransferItem[],
+    selected: string[],
+    setSelected: React.Dispatch<React.SetStateAction<string[]>>,
+  ) => (
     <div className="min-h-64 flex-1 rounded-lg border">
       {items.map((item) => (
-        <label key={item.key} className="flex items-center gap-2 border-b px-3 py-2 text-sm last:border-b-0">
+        <label
+          key={item.key}
+          className="flex items-center gap-2 border-b px-3 py-2 text-sm last:border-b-0"
+        >
           <input
             type="checkbox"
             checked={selected.includes(item.key)}
-            onChange={(event) => setSelected((current) => (event.target.checked ? [...current, item.key] : current.filter((key) => key !== item.key)))}
+            onChange={(event) =>
+              setSelected((current) =>
+                event.target.checked
+                  ? [...current, item.key]
+                  : current.filter((key) => key !== item.key),
+              )
+            }
           />
           <span>{item.title}</span>
         </label>

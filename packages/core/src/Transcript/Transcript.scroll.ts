@@ -1,5 +1,8 @@
 import type { PanelScroll } from '../Panel';
-import { CONVERSATION_STICK_THRESHOLD, type ConversationTurn } from './Transcript.conversation.types';
+import {
+  CONVERSATION_STICK_THRESHOLD,
+  type ConversationTurn,
+} from './Transcript.conversation.types';
 
 /**
  * The Panel `scroll` config for a conversation: stick to the newest turn until the person scrolls away, then show the
@@ -12,7 +15,11 @@ import { CONVERSATION_STICK_THRESHOLD, type ConversationTurn } from './Transcrip
  * @example
  * <Panel scroll={conversationScroll(turns, live?.text)}><Transcript turns={turns} live={live} /></Panel>
  */
-export const conversationScroll = (turns: readonly ConversationTurn[], activity?: unknown, extra: Partial<PanelScroll> = {}): PanelScroll => ({
+export const conversationScroll = (
+  turns: readonly ConversationTurn[],
+  activity?: unknown,
+  extra: Partial<PanelScroll> = {},
+): PanelScroll => ({
   fade: true,
   thinScrollbar: true,
   stickToBottom: true,

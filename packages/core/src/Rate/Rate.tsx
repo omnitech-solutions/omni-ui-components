@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { Star } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Star } from 'lucide-react';
+import * as React from 'react';
 
 export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   count?: number;
@@ -11,7 +10,15 @@ export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'o
   onChange?: (value: number) => void;
 }
 
-export function Rate({ count = 5, value, defaultValue = 0, disabled, onChange, className, ...props }: RateProps) {
+export function Rate({
+  count = 5,
+  value,
+  defaultValue = 0,
+  disabled,
+  onChange,
+  className,
+  ...props
+}: RateProps) {
   const controlled = value !== undefined;
   const [internal, setInternal] = React.useState(defaultValue);
   const current = controlled ? value : internal;
@@ -27,8 +34,19 @@ export function Rate({ count = 5, value, defaultValue = 0, disabled, onChange, c
       {Array.from({ length: count }, (_, index) => {
         const selected = index < current;
         return (
-          <button key={index} type="button" disabled={disabled} onClick={() => select(index + 1)} className="disabled:cursor-not-allowed">
-            <Star className={cn('h-5 w-5', selected ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground')} />
+          <button
+            key={index}
+            type="button"
+            disabled={disabled}
+            onClick={() => select(index + 1)}
+            className="disabled:cursor-not-allowed"
+          >
+            <Star
+              className={cn(
+                'h-5 w-5',
+                selected ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground',
+              )}
+            />
           </button>
         );
       })}

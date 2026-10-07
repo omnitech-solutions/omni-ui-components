@@ -1,8 +1,6 @@
-import * as React from 'react';
+import { CheckboxPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { schemaRequiresTrueValue } from '@rjsf/utils';
-
-import { CheckboxPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Checkbox widget for boolean schemas. */

@@ -1,11 +1,13 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { expectTypeOf } from 'vitest';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
-import { VersionPager, type VersionItem } from '@oc-tech/omni-ui-components/VersionPager';
-import { VersionPagerDemo, versionPagerPropsFactory } from 'factories/omni-ui-components/VersionPager/VersionPager.factories';
+import { type VersionItem, VersionPager } from '@oc-tech/omni-ui-components/VersionPager';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  VersionPagerDemo,
+  versionPagerPropsFactory,
+} from 'factories/omni-ui-components/VersionPager/VersionPager.factories';
+import { expectTypeOf } from 'vitest';
 
 describe('omni-ui-components/VersionPager', () => {
   it('shows "i / n" (1-based) between Previous and Next', () => {
@@ -50,7 +52,9 @@ describe('omni-ui-components/VersionPager', () => {
   });
 
   it('renders nothing without onMove', () => {
-    const { container } = render(<VersionPager {...versionPagerPropsFactory({ onMove: undefined })} />);
+    const { container } = render(
+      <VersionPager {...versionPagerPropsFactory({ onMove: undefined })} />,
+    );
     expect(container).toBeEmptyDOMElement();
   });
 
@@ -67,7 +71,9 @@ describe('omni-ui-components/VersionPager', () => {
     const onSelect = vi.fn((version: Version, _index: number) => {
       expectTypeOf(version.author).toEqualTypeOf<string>();
     });
-    const { rerender } = render(<VersionPager<Version> index={1} versions={versions} onSelect={onSelect} />);
+    const { rerender } = render(
+      <VersionPager<Version> index={1} versions={versions} onSelect={onSelect} />,
+    );
     expect(screen.getByRole('group', { name: 'Versions' })).toHaveTextContent('2 / 3');
     await userEvent.click(screen.getByRole('button', { name: 'Next version' }));
     expect(onSelect.mock.calls[0]![0]).toBe(versions[2]);

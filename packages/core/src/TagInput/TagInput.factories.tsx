@@ -16,8 +16,19 @@ export const tagInputPropsFactory = (overrides: Partial<TagInputProps> = {}): Ta
 export const tagInputVariants: Variant<TagInputProps>[] = [
   { name: 'Default', args: { label: 'Default', value: [] } },
   { name: 'Prefilled', args: { label: 'Prefilled', value: ['ruby', 'rails', 'react'] } },
-  { name: 'Enter only', args: { label: 'Enter only', value: ['enter-to-commit'], commitOnSpace: false, placeholder: 'Press enter to commit…' } },
+  {
+    name: 'Enter only',
+    args: {
+      label: 'Enter only',
+      value: ['enter-to-commit'],
+      commitOnSpace: false,
+      placeholder: 'Press enter to commit…',
+    },
+  },
   { name: 'Max items', args: { label: 'Max items', value: ['one'], maxItems: 3 } },
   { name: 'Disabled', args: { label: 'Disabled', disabled: true, value: ['locked'] } },
-  { name: 'Invalid', args: { label: 'Invalid', error: 'Add at least one tag', required: true, value: [] } },
+  {
+    name: 'Invalid',
+    args: { label: 'Invalid', error: 'Add at least one tag', required: true, value: [] },
+  },
 ];
