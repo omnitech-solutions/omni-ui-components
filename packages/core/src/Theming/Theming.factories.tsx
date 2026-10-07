@@ -41,7 +41,7 @@ export const ThemedSet: React.FC<ThemedSetProps> = ({ title, theme, tokens, chil
     </div>
     <Input placeholder="Input" aria-label={`${title} input`} />
     <Segmented aria-label={`${title} segmented`} options={OPTIONS} defaultValue="a" />
-    <Alert message="Alert" />
+    <Alert title="Alert">Body</Alert>
     <Card>Card body</Card>
     {children}
   </section>

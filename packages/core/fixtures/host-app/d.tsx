@@ -17,7 +17,7 @@ const Set = ({ id, theme, style, children }: { id: string; theme?: 'light' | 'da
     </div>
     <Input placeholder="Input" aria-label={`${id} input`} />
     <div data-probe="segmented" data-fixture><Segmented aria-label={`${id} segmented`} options={options} defaultValue="a" /></div>
-    <div data-probe="alert" data-fixture><Alert message="Alert" /></div>
+    <div data-probe="alert" data-fixture><Alert title="Alert">Body</Alert></div>
     <div data-probe="card" data-fixture><Card>Card body</Card></div>
     {children}
   </section>
