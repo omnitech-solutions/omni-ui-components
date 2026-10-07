@@ -34,3 +34,10 @@ jobs:
       # run every story's `play` in real Chromium (vitest browser mode + @storybook/addon-vitest)
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:storybook
+      # TEMP (U42b): generate the Linux baselines, to be removed once they are committed
+      - run: pnpm test:visual:update
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-linux-baselines
+          path: visual/__screenshots__/*-linux.png
