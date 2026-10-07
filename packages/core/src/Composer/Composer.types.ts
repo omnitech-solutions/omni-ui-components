@@ -83,10 +83,17 @@ export interface ComposerProps<A extends AttachmentItem = AttachmentItem, Q exte
   /** Stop the running reply: the send button while `streaming` with an empty draft, and Escape. Absent: no Stop button. */
   onStop?: () => void | Promise<void>;
   /**
-   * ArrowUp on an empty draft. Return the last prompt to recall it (the composer fires `onChange` with it and puts the caret
-   * at the end), or nothing to leave the key alone. Not set: no recall.
+   * ArrowUp with the caret collapsed on the FIRST line of the draft (or Cmd/Ctrl+ArrowUp anywhere). Return the earlier prompt to recall
+   * it (the composer fires `onChange` with it and puts the caret at the end), or nothing to leave the key alone. Lines are logical
+   * (separated by newlines): a long soft-wrapped first line counts as one. The draft being left is kept, and ArrowDown past the newest
+   * entry restores it. Not set: no recall.
    */
   onRecallPrevious?: () => string | null | undefined;
+  /**
+   * ArrowDown with the caret collapsed on the LAST line (or Cmd/Ctrl+ArrowDown anywhere), after a recall. Return the later prompt, or
+   * nothing when there is none: the draft that was there before the recall comes back. Without it, Down only restores that draft.
+   */
+  onRecallNext?: () => string | null | undefined;
   /** The textarea gained focus. No payload. */
   onFocus?: () => void;
   /** The textarea lost focus. No payload. */
