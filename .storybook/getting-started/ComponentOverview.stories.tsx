@@ -227,6 +227,8 @@ import {
   TranscriptPanel,
 } from 'factories/omni-ui-components/Transcript/Transcript.factories';
 import { ContextMeter } from '@oc-tech/omni-ui-components/ContextMeter';
+import { StreamStatus } from '@oc-tech/omni-ui-components/StreamStatus';
+import { streamStatusPropsFactory, streamStatusVariants } from 'factories/omni-ui-components/StreamStatus/StreamStatus.factories';
 import { contextMeterPropsFactory, contextMeterVariants } from 'factories/omni-ui-components/ContextMeter/ContextMeter.factories';
 import { DiffReview } from '@oc-tech/omni-ui-components/DiffReview';
 import { DiffReviewDemo, diffReviewPropsFactory, diffReviewVariants, sampleChanges } from 'factories/omni-ui-components/DiffReview/DiffReview.factories';
@@ -608,6 +610,16 @@ const ContextMeterPreview: React.FC = () => (
           <ContextMeter {...contextMeterPropsFactory(variant.args)} />
           <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
         </div>
+      ))}
+  </div>
+);
+
+const StreamStatusPreview: React.FC = () => (
+  <div className="flex flex-col gap-2">
+    {streamStatusVariants
+      .filter((variant) => variant.name !== 'No timer')
+      .map((variant) => (
+        <StreamStatus key={variant.name} {...streamStatusPropsFactory(variant.args)} />
       ))}
   </div>
 );
@@ -1393,6 +1405,7 @@ const SECTIONS: OverviewSectionSpec[] = [
       { name: 'DiffReview', preview: DiffReviewPreview, variants: diffReviewVariants as Variant<unknown>[] },
       { name: 'ModelPicker', preview: ModelPickerPreview, variants: modelPickerVariants as Variant<unknown>[] },
       { name: 'ContextMeter', preview: ContextMeterPreview, variants: contextMeterVariants as Variant<unknown>[] },
+      { name: 'StreamStatus', preview: StreamStatusPreview, variants: streamStatusVariants as Variant<unknown>[] },
       { name: 'useFollowLatest', preview: UseFollowLatestPreview, variants: [], source: 'UseFollowLatestPreview' },
       ...['Space', 'Splitter', 'Masonry'].map(libraryRow),
     ],
