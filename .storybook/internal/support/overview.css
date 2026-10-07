@@ -96,6 +96,7 @@
 }
 .pb-showcode-btn {
   display: inline-flex;
+  color: #e4e4e7; /* a11y: buttons do not inherit the dark code frame colour; light theme rendered black on #2a2a2a */
   align-items: center;
   gap: 0.4rem;
   padding: 0.35rem 0.6rem;

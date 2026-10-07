@@ -89,11 +89,11 @@ export const FieldTemplate = (props: FieldTemplateProps) => {
             </label>
             {labelAction ? (
               labelAction.href ? (
-                <a href={labelAction.href} data-testid={`${id}-label-action`} className="text-xs font-medium text-primary hover:underline">
+                <a href={labelAction.href} data-testid={`${id}-label-action`} className="text-xs font-medium text-[var(--oui-primary-text)] hover:underline">
                   {labelAction.label}
                 </a>
               ) : (
-                <span data-testid={`${id}-label-action`} className="text-xs font-medium text-primary">
+                <span data-testid={`${id}-label-action`} className="text-xs font-medium text-[var(--oui-primary-text)]">
                   {labelAction.label}
                 </span>
               )

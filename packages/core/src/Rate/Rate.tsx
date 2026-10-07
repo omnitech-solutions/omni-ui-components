@@ -27,7 +27,7 @@ export function Rate({ count = 5, value, defaultValue = 0, disabled, onChange, c
       {Array.from({ length: count }, (_, index) => {
         const selected = index < current;
         return (
-          <button key={index} type="button" disabled={disabled} onClick={() => select(index + 1)} className="disabled:cursor-not-allowed">
+          <button key={index} type="button" aria-label={`${index + 1} / ${count}`} disabled={disabled} onClick={() => select(index + 1)} className="disabled:cursor-not-allowed">
             <Star className={cn('h-5 w-5', selected ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground')} />
           </button>
         );

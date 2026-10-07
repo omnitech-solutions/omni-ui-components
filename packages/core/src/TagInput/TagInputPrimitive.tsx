@@ -99,7 +99,7 @@ export const TagInputPrimitive = React.forwardRef<HTMLInputElement, TagInputPrim
           <span
             key={chip}
             data-slot="tag-input-chip"
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-medium text-primary"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-medium text-[var(--oui-primary-text)]"
           >
             {chip}
             {!disabled && !readOnly ? (
@@ -110,7 +110,7 @@ export const TagInputPrimitive = React.forwardRef<HTMLInputElement, TagInputPrim
                   e.stopPropagation();
                   removeChip(chip);
                 }}
-                className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-transparent border-0 p-0 text-primary cursor-pointer transition-colors hover:bg-red-500/15 hover:text-red-500"
+                className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-transparent border-0 p-0 text-[var(--oui-primary-text)] cursor-pointer transition-colors hover:bg-red-500/15 hover:text-red-500"
               >
                 <X className="size-3.5" strokeWidth={3} />
               </button>

@@ -22,7 +22,8 @@
     "docker:dev:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:dev:down": "docker compose -f docker-compose.dev.yml down -v",
     "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
-    "test:stories": "vitest run --config vitest.storybook.config.ts"
+    "test:stories": "vitest run --config vitest.storybook.config.ts",
+    "test:a11y": "VITE_OUI_A11Y=1 VITE_OUI_THEME=dark vitest run --config vitest.storybook.config.ts && VITE_OUI_A11Y=1 VITE_OUI_THEME=light vitest run --config vitest.storybook.config.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

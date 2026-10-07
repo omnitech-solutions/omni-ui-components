@@ -80,12 +80,10 @@ export const ShowCodePanel: React.FC<ShowCodePanelProps> = ({ code, dynamic, lan
   return (
     <div className="pb-showcode">
       <div
-        role="button"
-        tabIndex={0}
         className={`pb-showcode-toolbar${open ? ' is-open' : ''}`}
         onClick={() => setOpen((v) => !v)}
-        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), setOpen((v) => !v))}
       >
+        {/* a11y: the toolbar itself is a mouse-only convenience (a role="button" wrapping buttons is nested-interactive); the Show/Hide button inside is the keyboard control. */}
         {/* eslint-disable bonsai-ui-components/prefer-ui-components -- Storybook shell components; app Button drags Redux + TooltipProvider into the docs bundle. */}
         <button
           type="button"

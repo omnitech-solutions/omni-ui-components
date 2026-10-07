@@ -31,7 +31,7 @@ export const buttonVariants = cva(
           'border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] text-[var(--oui-foreground)] shadow-xs hover:border-[var(--oui-border-interactive)] hover:bg-muted/40',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'bg-transparent text-[var(--oui-foreground)] hover:bg-muted/40',
-        link: 'bg-transparent text-primary underline-offset-4 hover:underline',
+        link: 'bg-transparent text-[var(--oui-primary-text)] underline-offset-4 hover:underline',
       },
       buttonSize: {
         sm: 'h-[var(--oui-field-height-sm)] px-3 text-xs',

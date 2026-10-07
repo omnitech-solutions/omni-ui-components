@@ -35,7 +35,7 @@ export const iconButtonVariants = cva(
         outline: 'border-[var(--oui-border-field)] text-[var(--oui-foreground)] hover:border-[var(--oui-border-interactive)] hover:bg-muted/40',
         secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'border-transparent text-[var(--oui-foreground-muted)] hover:bg-muted/40 hover:text-[var(--oui-foreground)]',
-        link: 'border-transparent text-primary underline-offset-4 hover:underline',
+        link: 'border-transparent text-[var(--oui-primary-text)] underline-offset-4 hover:underline',
       },
       iconSize: {
         sm: 'h-[var(--oui-field-height-sm)] w-[var(--oui-field-height-sm)] [&_svg]:size-3.5',

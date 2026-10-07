@@ -64,7 +64,7 @@ export const MultiSelectPrimitive = React.forwardRef<HTMLButtonElement, MultiSel
               {isPlaceholder
                 ? placeholder
                 : selected.map((opt) => (
-                    <span key={opt.value} className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
+                    <span key={opt.value} className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-[var(--oui-primary-text)]">
                       {opt.label}
                       <span
                         role="button"

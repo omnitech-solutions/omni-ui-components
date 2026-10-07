@@ -12,8 +12,10 @@
 
     --oui-foreground:              var(--color-foreground);
     --oui-foreground-muted:        var(--color-muted-foreground);
-    --oui-foreground-placeholder:  color-mix(in srgb, var(--color-foreground) 32%, transparent);
+    --oui-foreground-placeholder:  color-mix(in srgb, var(--color-foreground) 72%, transparent); /* foreground is 0.88 alpha: ~0.63 effective, >=4.5:1 (was 32%) */
     --oui-foreground-required:     var(--color-destructive);
+    /* Brand blue as TEXT: #1677ff is 4.0:1 on white and 3.3:1 on #2f2f2f, so text uses a shade that reaches 4.5:1; fills keep --color-primary. */
+    --oui-primary-text:            color-mix(in srgb, var(--color-primary) 80%, #000);
 
     --oui-radius-field:            var(--radius-md, 6px);
     --oui-field-height-sm:         1.5rem;
@@ -126,6 +128,7 @@
   }
 
   [data-theme="dark"] {
+    --oui-primary-text:            color-mix(in srgb, var(--color-primary) 55%, #fff);
     --oui-segment-active-bg:       rgba(91, 140, 255, 0.24);
     --oui-segment-active-fg:       #c3d3ff;
     --oui-segment-inactive-fg:     #8a8e98;
@@ -165,7 +168,7 @@
     --oui-panel-dock-bg:           #141c2d;
     --oui-panel-border:            #24314a;
     --oui-panel-divider:           #212c42;
-    --oui-panel-meta-fg:           #7d8aa3;
+    --oui-panel-meta-fg:           #a4b0c8; /* >=4.5:1 on panel, hover and tag surfaces (was #7d8aa3, 3.8:1) */
     --oui-tag-filled-bg:           #212c42;
     --oui-tag-filled-fg:           #a9b6cf;
     --oui-clock-live:              #ff8a85; /* board-1e coral */

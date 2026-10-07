@@ -47,7 +47,10 @@ export function SelectionHeader<TRecord, TRowData>({
         aria-label="Select all rows"
         {...titleCheckboxProps}
         checked={allChangeableSelected}
-        aria-checked={someChangeableSelected ? 'mixed' : allChangeableSelected}
+        // a11y: a native checkbox exposes "mixed" through the `indeterminate` property; aria-checked on it is an axe violation (aria-conditional-attr).
+        ref={(node) => {
+          if (node) node.indeterminate = someChangeableSelected && !allChangeableSelected;
+        }}
         disabled={!hasChangeableKeys || titleCheckboxProps.disabled}
         onChange={(event) => {
           titleCheckboxProps.onChange?.(event);

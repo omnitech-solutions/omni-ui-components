@@ -6,5 +6,5 @@ export interface InlineCodeProps {
 }
 
 export const InlineCode: React.FC<InlineCodeProps> = ({ code, className }) => (
-  <code className={['pb-pill-inline-code font-mono', className ?? 'text-xs text-[var(--color-primary)]'].filter(Boolean).join(' ')}>{code}</code>
+  <code className={['pb-pill-inline-code font-mono', className ?? 'text-xs text-[var(--oui-primary-text)]'].filter(Boolean).join(' ')}>{code}</code>
 );

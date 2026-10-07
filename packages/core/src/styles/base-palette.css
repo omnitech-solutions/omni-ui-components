@@ -286,10 +286,10 @@
   /* Text colors */
   --text-default-light: #000000e0;
   --text-default-dark: #ffffffe0;
-  --text-muted-light: #00000073;
-  --text-muted-dark: #ffffff73;
-  --text-muted-alt-light: #00000073;
-  --text-muted-alt-dark: #ffffff73;
+  --text-muted-light: #00000099;
+  --text-muted-dark: #ffffff99;
+  --text-muted-alt-light: #00000099;
+  --text-muted-alt-dark: #ffffff99;
   --text-lighter-light: #00000040;
   --text-lighter-dark: #ffffff40;
   --text-lightest-light: #00000026;
@@ -300,8 +300,8 @@
   --text-inverse-dark: var(--black);
   --text-semi-transparent-light: #000000a6;
   --text-semi-transparent-dark: #ffffffa6;
-  --text-semi-transparent-muted-light: #00000073;
-  --text-semi-transparent-muted-dark: #ffffff73;
+  --text-semi-transparent-muted-light: #00000099;
+  --text-semi-transparent-muted-dark: #ffffff99;
 
   /* Border colors */
   --border-content-light: #f0f0f0;

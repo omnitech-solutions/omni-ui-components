@@ -169,7 +169,7 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
                       value={`__footer__${footerAction.label}`}
                       onSelect={handleFooter}
                       data-testid={`${testId}-footer-action`}
-                      className="cursor-pointer border-t border-border text-primary data-[selected=true]:bg-muted/60"
+                      className="cursor-pointer border-t border-border text-[var(--oui-primary-text)] data-[selected=true]:bg-muted/60"
                     >
                       {footerAction.label}
                     </CommandItem>
