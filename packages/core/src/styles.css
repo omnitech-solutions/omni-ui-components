@@ -1,4 +1,6 @@
+@layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base,
+  omni-ui-components.utilities, omni-ui-components.classes;
 @import './styles/base-palette.css';
-@import './styles/theme-tokens.css';
+@import './styles/theme-tokens.css' layer(omni-ui-components.palette);
 @import './styles/tailwind.css';
 @import './styles/tokens.css';

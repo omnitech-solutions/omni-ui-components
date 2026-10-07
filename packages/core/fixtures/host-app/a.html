@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Host page A (host only)</title>
+    <link rel="icon" href="data:," />
+    <script>
+      // ?lib=none (default)  host only
+      // ?lib=before          library stylesheet first, host.css after it (host wins by order)
+      // ?lib=after           host.css first, library stylesheet after it (library would win by order, were it not layered)
+      // ?lib=layered         the documented setup: `@layer host, omni-ui-components;` with host.css inside layer(host)
+      var variant = new URLSearchParams(location.search).get('lib') || 'none';
+      var lib = '<link rel="stylesheet" href="/dist/styles.css" />';
+      var host = '<link rel="stylesheet" href="./host.css" />';
+      if (variant === 'before') document.write(lib + host);
+      else if (variant === 'after') document.write(host + lib);
+      else if (variant === 'layered') document.write('<style>@layer host, omni-ui-components; @import url("./host.css") layer(host);</style>' + lib);
+      else if (variant === 'layered-none') document.write('<style>@layer host, omni-ui-components; @import url("./host.css") layer(host);</style>');
+      else document.write(host);
+    </script>
+  </head>
+  <body>
+    <div id="host-content">
+      <h1>Host application</h1>
+      <p>Plain host markup styled by <code>host.css</code> only. <a href="#x">A link</a>, a <em>second</em> phrase and a <strong>strong</strong> one.</p>
+      <div class="row">
+        <button type="button">Save</button>
+        <button type="button" class="secondary">Cancel</button>
+        <button type="button" disabled>Disabled</button>
+        <input type="text" value="Text input" aria-label="Text" />
+        <input type="text" placeholder="Placeholder" aria-label="Placeholder" />
+        <select aria-label="Choice"><option>One</option><option>Two</option></select>
+        <input type="checkbox" checked aria-label="Check" />
+        <input type="radio" aria-label="Radio" />
+      </div>
+      <fieldset>
+        <legend>Fieldset</legend>
+        <textarea rows="2" cols="30" aria-label="Notes">Some notes</textarea>
+      </fieldset>
+      <hr />
+      <h2>Table</h2>
+      <table>
+        <thead><tr><th>Name</th><th>Role</th></tr></thead>
+        <tbody><tr><td>Ada</td><td>Engineer</td></tr><tr><td>Grace</td><td>Admiral</td></tr></tbody>
+      </table>
+      <h2>Elements the host never styles</h2>
+      <div class="row">
+        <input type="color" aria-label="Colour" />
+        <input type="file" aria-label="File" />
+        <input type="range" aria-label="Range" />
+        <progress value="30" max="100"></progress>
+        <meter value="0.4"></meter>
+        <iframe title="Empty frame" width="120" height="50" srcdoc=""></iframe>
+        <input type="image" alt="" width="24" height="24" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Crect width='24' height='24' fill='%23333'/%3E%3C/svg%3E" />
+        <details open><summary>Details</summary>Body</details>
+        <dialog open>Native dialog</dialog>
+      </div>
+      <div class="rule-bottom" style="border-bottom-width: 3px; padding: 4px">Host border width without a style or colour</div>
+      <div class="card"><h3>Card</h3><ul><li>First</li><li>Second</li></ul><ol><li>One</li><li>Two</li></ol></div>
+      <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="none" stroke="currentColor" stroke-width="3" /></svg>
+      <img alt="" width="40" height="40" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23b5451b'/%3E%3C/svg%3E" />
+    </div>
+  </body>
+</html>
