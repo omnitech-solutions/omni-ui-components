@@ -1,13 +1,14 @@
 import * as React from 'react';
 
 import { cn } from 'lib/utils';
+import { useRovingTabindex } from '../lib/use-roving-tabindex';
 import { IconButton } from '../IconButton';
 import type { MessageActionButton, MessageActionsProps } from './MessageActions.types';
 
 /**
  * Omni MessageActions: the bar under a finished reply: icon buttons (copy, regenerate, thumbs, read aloud) built
  * from `actions` config, custom nodes (a VersionPager) in the same row, and quiet `meta` text at the end.
- * It is a `toolbar`: Left and Right (and Home / End) move focus between the enabled buttons. Toggles carry
+ * It is a `toolbar` with one tab stop: Left and Right (and Home / End) move focus between the enabled buttons, Tab leaves the bar. Toggles carry
  * `aria-pressed`; icons are nodes you pass in.
  *
  * Slots: `data-slot="message-actions" | "message-action" | "message-actions-meta"`.
@@ -19,34 +20,36 @@ import type { MessageActionButton, MessageActionsProps } from './MessageActions.
  * ]} meta="Claude · 1,284 tokens" />
  */
 const MessageActionsImpl = React.forwardRef<HTMLDivElement, MessageActionsProps>(
-  ({ actions, meta, label = 'Message actions', className, onKeyDown, ...rest }, ref) => {
+  ({ actions, meta, label = 'Message actions', className, onKeyDown, onFocus, ...rest }, ref) => {
+    // One tab stop for the whole bar: Left/Right/Home/End move focus and the stop; Tab leaves the toolbar.
+    const barRef = React.useRef<HTMLDivElement | null>(null);
+    const roving = useRovingTabindex(barRef, {
+      orientation: 'horizontal',
+      getItems: (root) => Array.from(root.querySelectorAll<HTMLElement>('button:not(:disabled)')),
+    });
+    const setRefs = (node: HTMLDivElement | null) => {
+      barRef.current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) ref.current = node;
+    };
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
       onKeyDown?.(event);
-      if (event.defaultPrevented) return;
-      const keys = ['ArrowRight', 'ArrowLeft', 'Home', 'End'];
-      if (!keys.includes(event.key)) return;
-      const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('button:not(:disabled)'));
-      if (buttons.length === 0) return;
-      const at = buttons.indexOf(document.activeElement as HTMLButtonElement);
-      if (at === -1) return;
-      event.preventDefault();
-      const next =
-        event.key === 'Home'
-          ? 0
-          : event.key === 'End'
-            ? buttons.length - 1
-            : (at + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
-      buttons[next]?.focus();
+      roving.onKeyDown(event);
+    };
+    const handleFocus = (event: React.FocusEvent<HTMLDivElement>) => {
+      onFocus?.(event);
+      roving.onFocus(event);
     };
     return (
       <div
-        ref={ref}
+        ref={setRefs}
         role="toolbar"
         aria-label={label}
         data-slot="message-actions"
         className={cn('flex flex-wrap items-center gap-0.5', className)}
-        onKeyDown={handleKeyDown}
         {...rest}
+        onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
       >
         {actions.map((action) =>
           'node' in action ? (

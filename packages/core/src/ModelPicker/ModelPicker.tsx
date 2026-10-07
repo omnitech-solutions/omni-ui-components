@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { cn } from 'lib/utils';
 import { useControllableState } from '../lib/use-controllable-state';
+import { useRovingTabindex } from '../lib/use-roving-tabindex';
 import { Button } from '../Button';
 import { Popover, PopoverContent, PopoverTrigger } from '../Popover';
 import { SegmentedPrimitive } from '../Segmented';
@@ -75,17 +76,44 @@ const ModelRow: React.FC<{ model: ModelInfo; selected: boolean; labels: ModelPic
  */
 const ModelMenuInner = React.forwardRef<HTMLDivElement, ModelMenuProps>(
   (
-    { models, provider, selectedId: selectedProp, defaultSelectedId, effort: effortProp, defaultEffort = 'medium', efforts, showEffort = true, onPick, onEffortChange, onAddProvider, labels: labelsProp, icons, className, ...rest },
+    { models, provider, selectedId: selectedProp, defaultSelectedId, effort: effortProp, defaultEffort = 'medium', efforts, showEffort = true, onPick, onEffortChange, onAddProvider, labels: labelsProp, icons, className, onKeyDown, onFocus, ...rest },
     ref,
   ) => {
     const labels = React.useMemo(() => withLabelDefaults(DEFAULT_MODEL_PICKER_LABELS, labelsProp), [labelsProp]);
+    // The model rows are one tab stop (the selected row, else the first); Up/Down/Home/End move between them across
+    // provider sections. The effort Segmented and the add-provider button stay separate tab stops.
+    const menuRef = React.useRef<HTMLDivElement | null>(null);
+    const roving = useRovingTabindex(menuRef, {
+      orientation: 'vertical',
+      getItems: (root) => Array.from(root.querySelectorAll<HTMLElement>('[data-slot="model-row"]')),
+    });
+    const setRefs = (node: HTMLDivElement | null) => {
+      menuRef.current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) ref.current = node;
+    };
     // Selection and effort work controlled or not; the callbacks fire either way.
     const [selectedId, setSelectedId] = useControllableState<string | undefined>(selectedProp, defaultSelectedId);
     const [effort, setEffort] = useControllableState<string>(effortProp, defaultEffort);
     const selected = models.find((model) => model.id === selectedId);
     const options: ModelEffortOption[] = efforts ?? EFFORT_ORDER.map((value) => ({ value, label: labels.efforts[value] }));
     return (
-      <div ref={ref} role="dialog" aria-label={labels.dialog} data-slot="model-menu" className={cn('flex flex-col', className)} {...rest}>
+      <div
+        ref={setRefs}
+        role="dialog"
+        aria-label={labels.dialog}
+        data-slot="model-menu"
+        className={cn('flex flex-col', className)}
+        {...rest}
+        onKeyDown={(event) => {
+          onKeyDown?.(event);
+          roving.onKeyDown(event);
+        }}
+        onFocus={(event) => {
+          onFocus?.(event);
+          roving.onFocus(event);
+        }}
+      >
         {groupModels(models, provider).map(({ provider: group, models: list }) => (
           <section key={group ? `${group.name}|${group.endpoint ?? ''}` : 'models'} aria-label={group?.name ?? labels.models} data-slot="model-group">
             {group ? (
@@ -147,7 +175,8 @@ export const ModelMenu = ModelMenuInner as <M extends ModelInfo = ModelInfo>(pro
 /**
  * Omni ModelPicker: a chip (`ShortName · Effort` for a reasoning model, the name otherwise) that opens the model
  * menu in a popover. Picking a model closes the menu; changing the effort does not. The popover returns focus to the
- * chip on close and closes on Escape; focus moves into the menu on open.
+ * chip on close and closes on Escape; focus moves into the menu on open, onto the selected row. The model rows are one
+ * tab stop: Up and Down (Home, End) move between them.
  *
  * @example
  * <ModelPicker models={models} selectedId={id} effort={effort} onPick={setId} onEffortChange={setEffort} icons={{ check: <Check />, expand: <ChevronDown /> }} />
