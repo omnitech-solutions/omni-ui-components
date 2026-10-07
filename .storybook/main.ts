@@ -22,7 +22,7 @@ const config: StorybookConfig = {
   viteFinal: async (config) => {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
-      ...(config.resolve.alias || {}),
+      ...config.resolve.alias,
       '@oc-tech/omni-ui-components/dynamic-form/': path.join(coreSrc, 'dynamic-form') + path.sep,
       '@oc-tech/omni-ui-components/dynamic-form': path.join(coreSrc, 'dynamic-form', 'index.ts'),
       '@oc-tech/omni-ui-components/': coreSrc + path.sep,

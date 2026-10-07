@@ -9,3 +9,8 @@ export { canSpeak, speakable, useSpeech } from './speech';
 export { initialsOf } from './initials';
 export { useDebouncedCallback } from './useDebouncedCallback';
 export type { DebouncedCallback } from './useDebouncedCallback';
+
+export { describeFailure } from './failure';
+export type { FailureDescription } from './failure';
+export { defaultWindowStart, offsetFromBottom, restoreFromBottom, scrollParentOf, useHistoryWindow } from './window';
+export type { HistoryWindow, HistoryWindowOptions, ScrollBox } from './window';

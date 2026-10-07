@@ -1,0 +1,3 @@
+/* The documented host setup: host styles inside a lower layer than the library. */
+@layer host, omni-ui-components;
+@import './host.css' layer(host);

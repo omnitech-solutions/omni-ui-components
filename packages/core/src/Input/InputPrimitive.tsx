@@ -3,6 +3,7 @@ import * as React from 'react';
 import { cn } from 'lib/utils';
 import { inputVariants } from './Input.variants';
 import type { InputPrimitiveProps } from './Input.types';
+import { MultilineField } from './MultilineField';
 
 /**
  * Raw Omni input primitive. Renders a styled `<input>` and nothing else.
@@ -27,7 +28,7 @@ import type { InputPrimitiveProps } from './Input.types';
  * />
  */
 const InputPrimitiveInner = React.forwardRef<HTMLInputElement, InputPrimitiveProps>(
-  ({ id, className, variant, inputSize, invalid, commitOnEnter = false, value, onChange, onKeyDown, disabled, readOnly, ...rest }, ref) => {
+  ({ id, className, variant, inputSize, invalid, commitOnEnter = false, value, onChange, onKeyDown, disabled, readOnly, multiline, maxHeight, sendOnEnter, onSubmit, ...rest }, ref) => {
     const isInvalid = Boolean(invalid);
     const state = disabled ? 'disabled' : readOnly ? 'readonly' : isInvalid ? 'invalid' : 'idle';
 
@@ -49,6 +50,28 @@ const InputPrimitiveInner = React.forwardRef<HTMLInputElement, InputPrimitivePro
       },
       [onChange],
     );
+
+    if (multiline) {
+      return (
+        <MultilineField
+          ref={ref as unknown as React.Ref<HTMLTextAreaElement>}
+          id={id}
+          className={className}
+          variant={variant}
+          inputSize={inputSize}
+          invalid={invalid}
+          value={value}
+          onChange={onChange}
+          onKeyDown={onKeyDown}
+          onSubmit={onSubmit}
+          disabled={disabled}
+          readOnly={readOnly}
+          maxHeight={maxHeight}
+          sendOnEnter={sendOnEnter}
+          {...rest}
+        />
+      );
+    }
 
     const restAny = rest as Record<string, unknown>;
     const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;

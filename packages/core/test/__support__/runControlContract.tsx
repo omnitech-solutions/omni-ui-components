@@ -39,7 +39,7 @@ export function runControlContract<P extends AnyProps>({
     readOnly: false,
     ariaInvalid: true,
     idLabelLink: true,
-    ...(supports ?? {}),
+    ...supports,
   };
 
   const renderWith = (extra: Partial<P>) => render(<Component {...(baseProps as P)} {...(extra as P)} />);

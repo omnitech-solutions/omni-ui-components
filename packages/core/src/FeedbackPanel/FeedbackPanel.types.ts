@@ -24,7 +24,7 @@ export interface FeedbackSubmission<T extends FeedbackReason = FeedbackReason> {
 
 export interface FeedbackPanelProps<T extends FeedbackReason = FeedbackReason> extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  'title' | 'onSubmit'
+  'title' | 'onSubmit' | 'autoFocus'
 > {
   /** The reasons offered as toggle chips. */
   reasons: T[];
@@ -45,4 +45,6 @@ export interface FeedbackPanelProps<T extends FeedbackReason = FeedbackReason> e
   /** Disables Send, e.g. while the request is in flight. */
   submitDisabled?: boolean;
   labels?: Partial<FeedbackPanelLabels>;
+  /** Move focus to the first reason chip when the panel mounts (a thumbs-down just opened it). Default false. */
+  autoFocus?: boolean;
 }

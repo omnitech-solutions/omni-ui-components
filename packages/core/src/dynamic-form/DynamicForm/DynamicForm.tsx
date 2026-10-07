@@ -98,7 +98,7 @@ function RjsfBridge({
    * `formData` in the parent or story shell) recomputes correctly and the
    * parent can reset / hydrate `formData` after mount. RJSF onChange still
    * mirrors back into Omni form via `setFieldValue` below. */
-  const mergedUiSchema = React.useMemo<UiSchema>(() => ({ ...(uiSchema ?? {}), ...noopSubmitUiSchema }), [uiSchema]);
+  const mergedUiSchema = React.useMemo<UiSchema>(() => ({ ...uiSchema, ...noopSubmitUiSchema }), [uiSchema]);
   return (
     <RjsfForm
       tagName="div"
@@ -168,9 +168,9 @@ function DynamicFormImpl<TFormData extends Record<string, unknown>, TSubmitData>
     [onChange],
   );
 
-  const mergedFields = React.useMemo(() => ({ ...appFields, ...(fields ?? {}) }), [fields]);
-  const mergedWidgets = React.useMemo(() => ({ ...ShadcnWidgets, ...appWidgets, ...(widgets ?? {}) }), [widgets]);
-  const mergedTemplates = React.useMemo(() => ({ ...ShadcnTemplates, ...appTemplates, ...(templates ?? {}) }), [templates]);
+  const mergedFields = React.useMemo(() => ({ ...appFields, ...fields }), [fields]);
+  const mergedWidgets = React.useMemo(() => ({ ...ShadcnWidgets, ...appWidgets, ...widgets }), [widgets]);
+  const mergedTemplates = React.useMemo(() => ({ ...ShadcnTemplates, ...appTemplates, ...templates }), [templates]);
 
   return (
     <Form zodSchema={zodSchema} formData={formData} onChange={handleChange} onSubmit={onSubmit} onError={handleError} disabled={disabled} readOnly={readOnly}>

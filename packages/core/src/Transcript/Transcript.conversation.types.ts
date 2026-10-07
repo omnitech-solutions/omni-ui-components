@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { AttachmentKind } from '../Attachment';
+import type { AttachmentKind, AttachmentStatus } from '../Attachment';
 
 /** A piece of a source the model cited. Structural, so any `Sources` item type fits. */
 export interface ChatSource {
@@ -19,6 +19,10 @@ export interface ChatAttachmentPart {
   name: string;
   meta?: string;
   previewUrl?: string;
+  /** Where the file is: a sent message can still show `uploading`, `extracting` or `failed` ("Not sent"). Default `ready`. */
+  status?: AttachmentStatus;
+  /** Shown instead of `meta` when `status` is `failed`. */
+  error?: string;
 }
 
 /** One version of a message (an edit of a question, a regeneration of an answer). Extend it with your own fields. */
@@ -153,6 +157,8 @@ export interface TranscriptLabels {
   /** Accessible name of the log in conversation mode. Default `Conversation`. */
   conversation: string;
   loadEarlier: string;
+  /** Hover text of the `Load previous messages` button. Default `Shows older messages from this conversation`. */
+  loadEarlierHint: string;
   /** Shown on a stopped reply. Default `Stopped. Nothing has been applied.` */
   stopped: string;
   /** Name of the edit textarea. Default `Edit message`. */
@@ -175,7 +181,8 @@ export interface TranscriptLabels {
 
 export const DEFAULT_TRANSCRIPT_LABELS: TranscriptLabels = {
   conversation: 'Conversation',
-  loadEarlier: 'Load earlier messages',
+  loadEarlier: 'Load previous messages',
+  loadEarlierHint: 'Shows older messages from this conversation',
   stopped: 'Stopped. Nothing has been applied.',
   editMessage: 'Edit message',
   editHint: 'Sends as a new branch — the original is kept.',
@@ -202,12 +209,20 @@ export interface TranscriptConversationProps<U extends ConversationTurn = Conver
   waiting?: boolean;
   /** Live text and reasoning of the reply being streamed (shown on the newest turn only). */
   live?: { text?: string; reasoning?: string };
-  /** There are older messages to fetch: shows the `Load earlier messages` button. */
+  /** There are older messages to fetch: shows the `Load previous messages` button. */
   hasEarlier?: boolean;
-  /** The `Load earlier messages` button was chosen. Payload: the oldest turn now shown (`turns[0]`, or `undefined`). Absent: no button. */
+  /** The `Load previous messages` button was chosen. Payload: the oldest turn now shown (`turns[0]`, or `undefined`). Absent: no button. */
   onLoadEarlier?: (oldest: U | undefined) => void | Promise<void>;
   /** The earlier page is being fetched: the button is disabled. */
   loadingEarlier?: boolean;
+  /**
+   * Draw only the newest N turns of `turns` (a long history keeps a small DOM). `Load previous messages` then first reveals
+   * `windowStep` more of the turns already in memory, keeping the scroll offset from the bottom so nothing jumps, and calls
+   * `onLoadEarlier` only once every turn is shown and `hasEarlier` says more exist. Absent: every turn is drawn.
+   */
+  windowSize?: number;
+  /** Turns revealed by each `Load previous messages` while some are hidden. Default `windowSize`. */
+  windowStep?: number;
   /** Shown when there are no turns and nothing runs: the empty state, or the "no longer shared" notice. */
   empty?: React.ReactNode;
   /** A shared, read-only transcript: no edit, copy, actions, versions, approvals or follow-ups; reading parts stay. */
@@ -257,6 +272,8 @@ export interface TranscriptConversationProps<U extends ConversationTurn = Conver
   stoppedIcon?: React.ReactNode;
   /** Icon nodes of attachment chips on a question, by kind. */
   attachmentIcons?: Partial<Record<AttachmentKind, React.ReactNode>>;
+  /** How a sent question shows its attachments, always read-only (no remove button): `chip` (default, a compact pill) or `card` (thumbnail, name, meta/status line). Clicking either calls `onAttachmentClick`. */
+  attachmentVariant?: 'chip' | 'card';
   /** Wider turns for a full-page view. Default 760 (px), the original column width. */
   maxWidth?: number | string;
   labels?: Partial<TranscriptLabels>;

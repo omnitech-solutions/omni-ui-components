@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Library regression page (old vs new stylesheet)</title>
+    <link rel="icon" href="data:," />
+    <script>
+      // ?host=none (default): the library alone. ?host=layered: host.css in `@layer host`, the documented setup.
+      if (new URLSearchParams(location.search).get('host') === 'layered') {
+        document.write('<style>@layer host, omni-ui-components; @import url("./host.css") layer(host);</style>');
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Inherited properties (font, colour, line-height) flow from the host body into any element that does not set its own: the wrapper
+         a consuming app puts around the library pins them, here to the same values with and without the host. -->
+    <div id="library-root" data-fixture style="width: 760px; font: 14px/1.5 system-ui, sans-serif; color: #111"></div>
+    <script type="module" src="./c.tsx"></script>
+  </body>
+</html>

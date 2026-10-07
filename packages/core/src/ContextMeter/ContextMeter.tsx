@@ -50,6 +50,7 @@ const ContextMeterInner = React.forwardRef<HTMLButtonElement, ContextMeterProps>
       side = 'top',
       labels: labelsProp,
       menuClassName,
+      container,
       className,
       ...rest
     },
@@ -84,7 +85,7 @@ const ContextMeterInner = React.forwardRef<HTMLButtonElement, ContextMeterProps>
             {...rest}
           />
         </PopoverTrigger>
-        <PopoverContent align={align} side={side} sideOffset={6} aria-label={labels.dialog} className={cn(contextPopoverClasses, menuClassName)} onEscapeKeyDown={() => ringRef.current?.focus()}>
+        <PopoverContent container={container} data-oui-surface="context-meter" align={align} side={side} sideOffset={6} aria-label={labels.dialog} className={cn(contextPopoverClasses, menuClassName)} onEscapeKeyDown={() => ringRef.current?.focus()}>
           <div data-slot="context-popover" className="flex flex-col gap-2.5">
             <div className="flex items-baseline justify-between font-medium">
               <span>{labels.heading}</span>

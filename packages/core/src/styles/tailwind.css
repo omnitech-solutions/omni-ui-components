@@ -1,6 +1,9 @@
-@layer theme, base, utilities;
-@import "tailwindcss/theme" layer(theme);
-@import "tailwindcss/utilities" layer(utilities) source(none);
+/* Every rule the library ships lives in the cascade layer `omni-ui-components` (sublayers below). A host declares
+   `@layer host, omni-ui-components;` and keeps control of precedence. See bionic/research/references/css-delivery.md. */
+@layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base,
+  omni-ui-components.utilities, omni-ui-components.classes;
+@import "tailwindcss/theme" layer(omni-ui-components.theme);
+@import "tailwindcss/utilities" layer(omni-ui-components.utilities) source(none);
 @import "tw-animate-css";
 
 /* Tailwind scans the package and Storybook sources for utility class usage. */
@@ -15,24 +18,68 @@
    Full preflight would also reset margins, padding, headings, links, lists, and
    set img/svg to display:block — all of which would break existing bridge CSS.
    We'll enable full preflight once bridge CSS is fully retired. */
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop {
+/* The preflight subset Tailwind utilities depend on, scoped to library elements only (no `*`, `button` or `html` rule: those would
+   strip the browser's own border from the host's unstyled controls and give the host's buttons a transparent background).
+   A library element is one that carries `data-slot` (or sits inside one), or is a portalled `data-oui-surface`. Utilities sit in a
+   later layer than `base`, so a component class still wins; the host's layer sits below this one, so a host's `button { ... }`
+   cannot restyle a library control. `:where()` keeps specificity at zero. */
+@layer omni-ui-components.base {
+  :where([data-slot], [data-slot] *, [data-oui-surface], [data-oui-surface] *),
+  :where([data-slot], [data-slot] *, [data-oui-surface], [data-oui-surface] *)::after,
+  :where([data-slot], [data-slot] *, [data-oui-surface], [data-oui-surface] *)::before {
     --tw-border-style: solid;
-    border-width: 0;
-    border-style: solid;
     border-color: var(--color-border, currentColor);
   }
 
-  /* Tailwind preflight is intentionally disabled, but component buttons still
-     need its neutral background reset. Without this, buttons that use only
-     hover/active background utilities inherit the browser's native ButtonFace
-     grey, which varies by browser and color scheme. */
-  button {
+  /* The browser's own box model for library elements, whatever the host's `* { box-sizing }` says: the marked components, and the
+     roots that carry Tailwind layout or border classes (`flex`, `grid`, `border`, `rounded-*`) without a marker. */
+  :where([data-slot], [data-slot] *, [data-oui-surface], [data-oui-surface] *, [class~='flex'], [class~='inline-flex'], [class~='grid'], [class~='border'], [class*='rounded-']) {
+    box-sizing: revert;
+  }
+
+  /* A host's `img, svg { vertical-align: middle }` would shift the library's icons. */
+  :where(svg):where([data-slot] *, [data-oui-surface] *, .lucide) {
+    vertical-align: revert;
+  }
+
+  /* Elements that use a border utility (`border`, `border-b`, `hover:border-x`) but sit outside any marked component (Card). Colour
+     only: width and style come from the utility. */
+  :where([class~='border'], [class^='border-'], [class*=' border-'], [class*=':border-']) {
+    border-color: var(--color-border, currentColor);
+  }
+
+  /* The library's table elements: back to the browser's own table (padding, border, spacing ...) so a host's `th, td { border; padding }`
+     does not reach them; `.bui-table` rules, in a later layer, style them. */
+  :where(table, thead, tbody, tfoot, tr, th, td, caption, colgroup, col):where(.bui-table, .bui-table *, [data-slot] *, [data-oui-surface] *) {
+    all: revert;
+  }
+
+  /* `border-solid` (and -dashed, -dotted) sets the style on every side; with `border-b` only one side may have a width, which is what
+     preflight's `border-width: 0` guaranteed. */
+  :where([class~='border-solid'], [class~='border-dashed'], [class~='border-dotted']) {
+    border-width: 0;
+  }
+
+  /* Native controls of the library: a marked component, a portalled surface, or Tailwind layout classes no host without Tailwind uses
+     (`inline-flex`, `flex`, `box-border`). They take back what a host's own element rules (`button { border; background; shadow }`)
+     would paint onto them. A host control carrying one of those class names is the one case that loses its host styling. */
+  :where(button, input, select, textarea):where(
+      [data-slot],
+      [data-slot] *,
+      [data-oui-surface] *,
+      [class~='inline-flex'],
+      [class~='flex'],
+      [class~='box-border']
+    ) {
+    /* Back to the browser's own control (padding, font, colour ...) so a host's `button { padding; font }` does not size library
+       controls; the library's utilities, in later layers, then style it. */
+    all: revert;
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--color-border, currentColor);
     background-color: transparent;
     background-image: none;
+    box-shadow: none;
   }
 }
 
@@ -254,6 +301,98 @@
   --font-signature: var(--font-signature);
 }
 
+/* Theme bridge. Tailwind emits every `@theme` entry once, on `:root`, and `var()` resolves where it is declared: `--color-foreground: var(--text-default)`
+   set on `<html>` would stay light inside a `data-theme="dark"` subtree, and so would every `text-foreground` / `bg-card` utility and every `var(--color-*)`
+   the components read. The entries that point at a theme-switched token are declared again on each theme root, where `--text-default` has the subtree's
+   value. Keep this list equal to those `@theme` entries (test/styles/themeContract.test.ts fails on drift). */
+@layer omni-ui-components.theme {
+  :root,
+  :host,
+  [data-theme] {
+    --color-primary-foreground: var(--color-primary-contrast);
+    --color-destructive-foreground: var(--color-primary-contrast);
+    --color-secondary: var(--bg-grey-f1);
+    --color-secondary-foreground: var(--text-default);
+    --color-accent: var(--bg-hover-subtle);
+    --color-accent-foreground: var(--text-default);
+    --color-muted: var(--bg-grey-f5);
+    --color-popover: var(--bg-panel);
+    --color-popover-foreground: var(--text-default);
+    --color-popover-item-hover: var(--bg-input-hover);
+    --color-popover-item-active: var(--bg-input-hover-active);
+    --color-card-foreground: var(--text-default);
+    --color-background: var(--bg-content);
+    --color-background-alt: var(--bg-content-alt);
+    --color-background-document: var(--bg-content-document);
+    --color-background-empty: var(--bg-content-empty);
+    --color-card: var(--bg-panel);
+    --color-card-translucent: var(--bg-panel-semi-transparent);
+    --color-input: var(--bg-field);
+    --color-input-disabled: var(--bg-field-disabled);
+    --color-input-hover: var(--bg-input-hover);
+    --color-input-hover-subtle: var(--bg-input-hover-subtle);
+    --color-input-hover-active: var(--bg-input-hover-active);
+    --color-brand-muted: var(--bg-brand-muted);
+    --color-brand-dark: var(--bg-brand-dark);
+    --color-shadow: var(--bg-shadow);
+    --color-tooltip: var(--bg-tooltip);
+    --color-inverse: var(--bg-inverse);
+    --color-hover-subtle: var(--bg-hover-subtle);
+    --color-sidebar: var(--bg-sidebar);
+    --color-button: var(--bg-button-default);
+    --color-warning: var(--bg-warning-notice);
+    --color-grey-fd: var(--bg-grey-fd);
+    --color-grey-fc: var(--bg-grey-fc);
+    --color-grey-fa: var(--bg-grey-fa);
+    --color-grey-f8: var(--bg-grey-f8);
+    --color-grey-f5: var(--bg-grey-f5);
+    --color-grey-f1: var(--bg-grey-f1);
+    --color-grey-e: var(--bg-grey-e);
+    --color-grey-c: var(--bg-grey-c);
+    --color-grey-8: var(--bg-grey-8);
+    --color-foreground: var(--text-default);
+    --color-muted-foreground: var(--text-muted);
+    --color-muted-alt-foreground: var(--text-muted-alt);
+    --color-light-foreground: var(--text-lighter);
+    --color-faint-foreground: var(--text-lightest);
+    --color-tooltip-foreground: var(--text-tooltip);
+    --color-inverse-foreground: var(--text-inverse);
+    --color-translucent-foreground: var(--text-semi-transparent);
+    --color-translucent-muted-foreground: var(--text-semi-transparent-muted);
+    --color-border: var(--border-content);
+    --color-border-alt: var(--border-content-alt);
+    --color-border-darker: var(--border-darker);
+    --color-border-input: var(--border-field);
+    --color-border-input-applied: var(--border-field-applied);
+    --color-border-button-hover: var(--border-button-hover);
+    --color-border-translucent: var(--border-semi-transparent);
+    --color-border-translucent-alt: var(--border-semi-transparent-alt);
+    --color-border-translucent-strong: var(--border-semi-transparent-strong);
+    --color-border-translucent-subtle: var(--border-semi-transparent-subtle);
+    --color-switch: var(--bg-switch);
+    --color-switch-indicator: var(--bg-switch-indicator);
+    --color-switch-toggle: var(--bg-switch-toggle);
+    --color-switch-toggle-active: var(--bg-switch-toggle-active);
+    --color-switch-foreground: var(--text-switch);
+    --color-switch-hover-foreground: var(--text-switch-hover);
+    --color-switch-active-foreground: var(--text-switch-active);
+    --color-tag: var(--bg-tag-text);
+    --color-tag-hover: var(--bg-tag-text-hover);
+    --color-inverse-expense: var(--bg-inverse-expense);
+    --color-list-grid-row: var(--bg-list-grid-row);
+    --color-list-grouped-header: var(--bg-list-grouped-header);
+    --color-list-grouped-header-document: var(--bg-list-grouped-header-document);
+    --color-invoice-badge: var(--bg-invoice-badge);
+    --color-invoice-badge-foreground: var(--text-invoice-badge);
+    --color-info: var(--bg-info);
+    --color-info-light: var(--bg-info-light);
+    --color-info-lighter: var(--bg-info-lighter);
+    --color-yellow: var(--bg-yellow);
+    --color-highlight: var(--bg-highlight);
+  }
+}
+
+@layer omni-ui-components.classes {
 /* Transition utilities (cover 80% of transition usage in the codebase) */
 .transition-default {
   transition: all var(--transition-normal) ease;
@@ -726,4 +865,5 @@
 /* Slash command popup container (positioned by JS) */
 .tiptap-slash-menu-container {
   width: 260px;
+}
 }

@@ -1,3 +1,4 @@
+@layer omni-ui-components.classes {
 /*
  * Loading state — skeleton rows replace real rows while `loading` is truthy.
  * Column headers stay unchanged; each cell renders a shimmering placeholder
@@ -32,4 +33,5 @@
 @keyframes bui-table-skeleton-shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
 }

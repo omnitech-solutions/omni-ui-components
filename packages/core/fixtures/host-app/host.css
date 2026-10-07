@@ -1,0 +1,81 @@
+/* A hand-written host stylesheet with NO Tailwind: its own reset, token scope and native-element styling.
+   It imitates the app that will consume @oc-tech/omni-ui-components. Everything here uses `--ui-*` tokens. */
+:root {
+  --ui-font: 'Georgia', 'Times New Roman', serif;
+  --ui-font-mono: 'Courier New', monospace;
+  --ui-bg: #f4efe6;
+  --ui-fg: #2a2118;
+  --ui-muted: #7a6a58;
+  --ui-accent: #b5451b;
+  --ui-accent-fg: #fff8f0;
+  --ui-line: #cdbfa9;
+  --ui-radius: 3px;
+  --ui-gap: 14px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  line-height: 1.45;
+}
+
+body {
+  font-family: var(--ui-font);
+  background: var(--ui-bg);
+  color: var(--ui-fg);
+  padding: 24px;
+}
+
+h1, h2, h3 { font-weight: 700; letter-spacing: 0.01em; margin-bottom: 8px; }
+h1 { font-size: 1.9rem; }
+h2 { font-size: 1.3rem; margin-top: 20px; }
+p { margin-bottom: 10px; max-width: 60ch; }
+a { color: var(--ui-accent); text-decoration: underline dotted; }
+hr { border: 0; border-top: 2px double var(--ui-line); margin: 18px 0; }
+ul, ol { padding-left: 1.4em; margin-bottom: 10px; }
+code { font-family: var(--ui-font-mono); background: #e8dfcf; padding: 0 4px; }
+img, svg { display: inline-block; vertical-align: middle; }
+fieldset { border: 1px solid var(--ui-line); padding: 10px 14px; margin-bottom: var(--ui-gap); }
+legend { padding: 0 6px; color: var(--ui-muted); }
+
+button {
+  font: inherit;
+  cursor: pointer;
+  color: var(--ui-accent-fg);
+  background: var(--ui-accent);
+  border: 1px solid #7e2e0d;
+  border-radius: var(--ui-radius);
+  padding: 6px 14px;
+  box-shadow: 0 2px 0 #7e2e0d;
+}
+button:hover { filter: brightness(1.08); }
+button.secondary { background: transparent; color: var(--ui-fg); border-color: var(--ui-line); box-shadow: none; }
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: var(--ui-fg);
+  background: #fffdf8;
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-radius);
+  padding: 5px 8px;
+}
+input:focus,
+select:focus,
+textarea:focus { outline: 2px solid var(--ui-accent); outline-offset: 1px; }
+input[type='checkbox'],
+input[type='radio'] { accent-color: var(--ui-accent); padding: 0; }
+
+table { border-collapse: collapse; margin-bottom: var(--ui-gap); }
+th, td { border: 1px solid var(--ui-line); padding: 4px 10px; text-align: left; }
+th { background: #e8dfcf; }
+
+.card { border: 1px solid var(--ui-line); background: #fffdf8; padding: var(--ui-gap); margin-bottom: var(--ui-gap); border-radius: var(--ui-radius); }
+.row { display: flex; gap: 10px; align-items: center; margin-bottom: var(--ui-gap); flex-wrap: wrap; }

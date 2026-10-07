@@ -15,7 +15,7 @@ const meta: Meta<ComposerDemoProps> = {
     docs: {
       description: {
         component:
-          'The chat <primary>message box</primary>: an auto-growing `<textarea>` (to `maxHeight`, default 200) in a box that follows <primary>--oui-panel-see-through</primary>. Keys: <primary>Enter</primary> sends (Shift+Enter is a newline, IME composition is never interrupted), <primary>ArrowUp</primary> on an empty draft recalls the last prompt (`onRecallPrevious`), <primary>Esc</primary> stops a running reply. While `streaming` the round send button reads <primary>Stop (Esc)</primary> with an empty draft and <primary>Queue message</primary> with one. Variants: <primary>stacked</primary> (field over a toolbar row) and <primary>pill</primary> (one row). Everything else is a slot: `leading` (the `+` menu = ActionMenu through `PlusMenu`), `toolbar`, `trailing`, `attachments` (AttachmentStrip), `above` (QueuedList, ComposerNotice), `popover` (CommandPopover), `dictation` (DictationBar), `hint`. `Input` is a single-line `<input>` and cannot grow or hold a newline, which is why the composer is its own component; it reuses the panel Input tokens. The stories below are the demo wiring around the real parts. `A` and `Q` are your own attachment and queued item types: callbacks hand back the same objects. The host owns `value`: nothing clears it on submit.\n\n**Callbacks**\n\n| Prop | Fires when | Payload |\n| --- | --- | --- |\n| `onChange` | every edit (type, paste, recall); controlled or not | `(next: string)` |\n| `onSubmit` | Enter or send, with text, not streaming (or streaming without `onQueue`) | `({ value, attachments: A[] })`, the full attachment items |\n| `onQueue` | submit while `streaming`. Without it the send button never reads Queue | `({ value, attachments })` |\n| `onStop` | Stop button or Escape while streaming. Absent: no Stop button | none |\n| `onRecallPrevious` | ArrowUp on an empty draft. Return the text to recall | `() => string | undefined` |\n| `onFocus / onBlur` | the textarea gains or loses focus | none |\n| `onFiles` | a drop, paste or picker passed the checks. Absent: no drop, paste or picker | `(files: File[])` |\n| `onReject` | a batch was refused | `(reason)` |\n| `onRemoveAttachment` | a card’s remove button is chosen | `(attachment: A)` |\n| `onAttachmentClick` | a card body is chosen | `(attachment: A)` |\n| `onRemoveQueued` | a queued row’s remove button is chosen | `(item: Q)` |\n| `onTrigger` | a slash or mention trigger starts, its query changes, or it ends | `({ trigger: string &#124; null, query })` |\n| `onDictationStart` | the mic is chosen or the key starts. Absent: no mic | none |\n| `onDictationFinish` | Done is chosen or the key is released after a hold | `(text: string)` |\n| `onDictationCancel` | Cancel is chosen | none |\n| `PlusMenu item onClick` | a `+` menu row is chosen. A row without it is not drawn | none |\n| `ComposerNotice action.onClick` | the notice button is chosen | none |\n',
+          'The chat <primary>message box</primary>: an auto-growing `<textarea>` (to `maxHeight`, default 200) in a box that follows <primary>--oui-panel-see-through</primary>. Keys: <primary>Enter</primary> sends (Shift+Enter is a newline, IME composition is never interrupted), <primary>ArrowUp</primary> with the caret on the first line recalls an earlier prompt (`onRecallPrevious`), <primary>ArrowDown</primary> on the last line comes forward (`onRecallNext`) and past the newest brings back the draft you left, <primary>Cmd or Ctrl plus Up or Down</primary> recalls from anywhere, typing `/prompts ` searches saved prompts (a `CommandPopover` `source`), <primary>Esc</primary> stops a running reply. While `streaming` the round send button reads <primary>Stop (Esc)</primary> with an empty draft and <primary>Queue message</primary> with one. Variants: <primary>stacked</primary> (field over a toolbar row) and <primary>pill</primary> (one row). Everything else is a slot: `leading` (the `+` menu = ActionMenu through `PlusMenu`), `toolbar`, `trailing`, `attachments` (AttachmentStrip), `above` (QueuedList, ComposerNotice), `popover` (CommandPopover), `dictation` (DictationBar), `hint`. `Input` is a single-line `<input>` and cannot grow or hold a newline, which is why the composer is its own component; it reuses the panel Input tokens. The stories below are the demo wiring around the real parts. `A` and `Q` are your own attachment and queued item types: callbacks hand back the same objects. The host owns `value`: nothing clears it on submit.\n\n**Callbacks**\n\n| Prop | Fires when | Payload |\n| --- | --- | --- |\n| `onChange` | every edit (type, paste, recall); controlled or not | `(next: string)` |\n| `onSubmit` | Enter or send, with text, not streaming (or streaming without `onQueue`) | `({ value, attachments: A[] })`, the full attachment items |\n| `onQueue` | submit while `streaming`. Without it the send button never reads Queue | `({ value, attachments })` |\n| `onStop` | Stop button or Escape while streaming. Absent: no Stop button | none |\n| `onRecallPrevious` | ArrowUp on the first line (or Cmd/Ctrl+Up anywhere). Return the text to recall | `() => string | undefined` |\n| `onRecallNext` | ArrowDown on the last line (or Cmd/Ctrl+Down) after a recall. Nothing returned: the draft comes back | `() => string | undefined` |\n| `onFocus / onBlur` | the textarea gains or loses focus | none |\n| `onFiles` | a drop, paste or picker passed the checks. Absent: no drop, paste or picker | `(files: File[])` |\n| `onReject` | a batch was refused | `(reason)` |\n| `onRemoveAttachment` | a card’s remove button is chosen | `(attachment: A)` |\n| `onAttachmentClick` | a card body is chosen | `(attachment: A)` |\n| `onRemoveQueued` | a queued row’s remove button is chosen | `(item: Q)` |\n| `onTrigger` | a slash or mention trigger starts, its query changes, or it ends | `({ trigger: string &#124; null, query })` |\n| `onDictationStart` | the mic is chosen or the key starts. Absent: no mic | none |\n| `onDictationFinish` | Done is chosen or the key is released after a hold | `(text: string)` |\n| `onDictationCancel` | Cancel is chosen | none |\n| `PlusMenu item onClick` | a `+` menu row is chosen. A row without it is not drawn | none |\n| `ComposerNotice action.onClick` | the notice button is chosen | none |\n',
       },
     },
   },
@@ -62,6 +62,39 @@ export const Default: Story = {
     // ArrowUp on the empty box recalls the newest prompt, caret at the end.
     await userEvent.keyboard('{ArrowUp}');
     await expect(box).toHaveValue('Walk me through binary search\nsecond line');
+  },
+};
+
+/** ArrowUp at the first line recalls, ArrowUp again goes further back, ArrowDown on the last line comes forward and past the newest restores the draft. */
+export const HistoryRecall: Story = {
+  args: { history: ['Explain two sum', 'Explain Big O of the hash map'], initialValue: 'half-typed idea' },
+  play: async ({ canvasElement }) => {
+    const box = within(canvasElement).getByRole('combobox', { name: 'Message' }) as HTMLTextAreaElement;
+    await userEvent.click(box);
+    box.setSelectionRange(box.value.length, box.value.length);
+    await userEvent.keyboard('{ArrowUp}');
+    await expect(box).toHaveValue('Explain Big O of the hash map');
+    await userEvent.keyboard('{ArrowUp}');
+    await expect(box).toHaveValue('Explain two sum');
+    await userEvent.keyboard('{ArrowDown}{ArrowDown}');
+    await expect(box).toHaveValue('half-typed idea');
+  },
+};
+
+/** `/prompts ` (or the `+` menu row Saved prompts) opens the saved prompts; typing narrows them and a pick puts the text in the box. */
+export const SavedPrompts: Story = {
+  args: { initialValue: '/prompts ', history: [] },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const box = canvas.getByRole('combobox', { name: 'Message' });
+    await userEvent.click(box);
+    await userEvent.keyboard('{End}');
+    await waitFor(() => expect(document.querySelector('[role="listbox"][aria-label="Saved prompts"]')).not.toBeNull());
+    await userEvent.type(box, 'edge');
+    await waitFor(() => expect(document.querySelectorAll('[role="option"]')).toHaveLength(1));
+    await userEvent.keyboard('{Enter}');
+    await expect(args.onAction).toHaveBeenCalledWith('saved-prompt', 'edge');
+    await expect(box).toHaveValue('List the edge cases for this problem and a test for each.');
   },
 };
 

@@ -90,12 +90,12 @@ describe('omni-ui-components/Transcript conversation mode', () => {
   it('Load earlier shows with hasEarlier and calls back; disabled while loading', async () => {
     const onLoadEarlier = vi.fn();
     const { rerender } = render(<Transcript {...base({ hasEarlier: true, onLoadEarlier })} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Load earlier messages' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Load previous messages' }));
     expect(onLoadEarlier).toHaveBeenCalled();
     rerender(<Transcript {...base({ hasEarlier: true, onLoadEarlier, loadingEarlier: true })} />);
-    expect(screen.getByRole('button', { name: 'Load earlier messages' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Load previous messages' })).toBeDisabled();
     rerender(<Transcript {...base({ hasEarlier: true })} />);
-    expect(screen.queryByRole('button', { name: 'Load earlier messages' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Load previous messages' })).toBeNull();
   });
   it('shows the empty slot only with no turns and nothing running', () => {
     const { rerender } = render(<Transcript turns={[]} empty={<p>nothing</p>} />);

@@ -65,7 +65,7 @@ describe('omni-ui-components/Transcript callbacks (items by reference)', () => {
     const seen: (string | undefined)[] = [];
     const onLoadEarlier = vi.fn((oldest: MyTurn | undefined): void => void seen.push(oldest?.threadRef));
     render(<Transcript<never, MyTurn> turns={turns} hasEarlier onLoadEarlier={onLoadEarlier} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Load earlier messages' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Load previous messages' }));
     expect(onLoadEarlier.mock.calls[0][0]).toBe(turns[0]);
     expect(seen).toEqual(['t-1']);
   });
@@ -144,6 +144,19 @@ describe('omni-ui-components/Transcript callbacks (items by reference)', () => {
     expect(seen).toEqual(['up-1']);
     rerender(<Transcript<never, MyTurn, ChatVersion, MyAttachment> turns={mk()} />);
     expect(screen.queryByRole('button', { name: 'notes.md' })).toBeNull();
+  });
+
+  it('attachmentVariant="card": sent files are read-only cards (status line, no remove button) that still call onAttachmentClick', async () => {
+    const failed: MyAttachment = { type: 'attachment', kind: 'file', id: 'att-2', name: 'scan.pdf', uploadId: 'up-2', status: 'failed' };
+    const turns = mk();
+    turns[0].user.parts = [attachment, failed, ...turns[0].user.parts.slice(1)];
+    const onAttachmentClick = vi.fn();
+    render(<Transcript<never, MyTurn, ChatVersion, MyAttachment> turns={turns} attachmentVariant="card" onAttachmentClick={onAttachmentClick} />);
+    expect(document.querySelectorAll('[data-slot="attachment"][data-variant="card"]')).toHaveLength(2);
+    expect(screen.queryByRole('button', { name: /^Remove/ })).toBeNull();
+    expect(screen.getByText('Not sent')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: /scan\.pdf/ }));
+    expect(onAttachmentClick.mock.calls[0][0]).toBe(failed);
   });
 
   it('onCopyUser gets the same turn', async () => {

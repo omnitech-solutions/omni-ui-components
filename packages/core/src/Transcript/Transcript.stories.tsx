@@ -6,7 +6,9 @@ import {
   analysingEntries,
   answeredEntries,
   answeredTurns,
+  attachmentTurns,
   ConversationDemo,
+  longHistoryTurns,
   failedTurns,
   stoppedTurns,
   streamingTurns,
@@ -220,7 +222,7 @@ const conversationMeta = {
     docs: {
       description: {
         story:
-          'Set <primary>turns</primary> and the Transcript draws a <primary>conversation</primary> (`role="log"`, `aria-live="polite"`): per turn the question (attachment chips, bubble, hover actions) then the assistant reply. The parts built elsewhere plug into <primary>slots</primary> (`slots.timeline`, `thinking`, `sources`, `actions`, `suggestions`, `approvalsBefore`/`approvalsAfter`, `error`, `versions`, `summaryDivider`) and the text goes through `renderMarkdown`. Scrolling stays with the Panel: pass `scroll={conversationScroll(turns, liveText)}`. `Transcript<T, U, V, A>` is generic over your entry, turn, version and attachment types: every callback and slot gets the same object back, never a copy.\n\n**Callbacks**\n\n| Prop | Fires when | Payload |\n| --- | --- | --- |\n| `onCopy` | a bubble’s copy control (entries mode) | `(entry: T)` |\n| `onCopyCode` | a code block’s copy control | `(block, entry: T, index)` |\n| `onCopyUser` | a question’s copy button (turns mode). Absent: no button | `(turn: U)` |\n| `onLoadEarlier` | `Load earlier messages` is chosen. Absent: no button | `(oldest: U &#124; undefined)` |\n| `onEditStart` | the edit button is chosen (the editor opens itself when uncontrolled) | `(turn: U)` |\n| `onEditChange` | the editor text changes; controlled or not | `(next: string)` |\n| `onEditSubmit` | Send or Enter in the editor | `(turn: U, text: string)` |\n| `onEditCancel` | Cancel or Escape in the editor | `(turn: U)` |\n| `onRetry` | the default error’s Retry, or `context.retry()` from a slot | `(turn: U)` |\n| `onRegenerate` | `context.regenerate()` from a slot | `(turn: U)` |\n| `onSelectVersion` | the question’s pager, or `context.selectVersion(v)` from a slot | `(turn: U, version: V)` |\n| `onAttachmentClick` | an attachment chip on a question is chosen | `(attachment: A)` |\n| `onAtEndChange` | the scrolling ancestor moves to or from the end (within `atEndThreshold`, default 200) | `(atEnd: boolean)` |\n',
+          'Set <primary>turns</primary> and the Transcript draws a <primary>conversation</primary> (`role="log"`, `aria-live="polite"`): per turn the question (attachment chips, bubble, hover actions) then the assistant reply. The parts built elsewhere plug into <primary>slots</primary> (`slots.timeline`, `thinking`, `sources`, `actions`, `suggestions`, `approvalsBefore`/`approvalsAfter`, `error`, `versions`, `summaryDivider`) and the text goes through `renderMarkdown`. Scrolling stays with the Panel: pass `scroll={conversationScroll(turns, liveText)}`. `Transcript<T, U, V, A>` is generic over your entry, turn, version and attachment types: every callback and slot gets the same object back, never a copy.\n\n**Callbacks**\n\n| Prop | Fires when | Payload |\n| --- | --- | --- |\n| `onCopy` | a bubble’s copy control (entries mode) | `(entry: T)` |\n| `onCopyCode` | a code block’s copy control | `(block, entry: T, index)` |\n| `onCopyUser` | a question’s copy button (turns mode). Absent: no button | `(turn: U)` |\n| `onLoadEarlier` | `Load previous messages` is chosen (with `windowSize` set: once every turn in memory is drawn). Absent: no button | `(oldest: U &#124; undefined)` |\n| `onEditStart` | the edit button is chosen (the editor opens itself when uncontrolled) | `(turn: U)` |\n| `onEditChange` | the editor text changes; controlled or not | `(next: string)` |\n| `onEditSubmit` | Send or Enter in the editor | `(turn: U, text: string)` |\n| `onEditCancel` | Cancel or Escape in the editor | `(turn: U)` |\n| `onRetry` | the default error’s Retry, or `context.retry()` from a slot | `(turn: U)` |\n| `onRegenerate` | `context.regenerate()` from a slot | `(turn: U)` |\n| `onSelectVersion` | the question’s pager, or `context.selectVersion(v)` from a slot | `(turn: U, version: V)` |\n| `onAttachmentClick` | an attachment chip on a question is chosen | `(attachment: A)` |\n| `onAtEndChange` | the scrolling ancestor moves to or from the end (within `atEndThreshold`, default 200) | `(atEnd: boolean)` |\n',
       },
     },
   },
@@ -232,11 +234,12 @@ const conversationMeta = {
     liveText: { control: 'text', description: 'Story-only: the text streamed while busy.' },
     composer: { control: 'boolean', description: 'Story-only: show the Composer dock.' },
     readOnly: { control: 'boolean', description: 'A shared transcript: no edit, copy, actions, versions, approvals or follow-ups.' },
-    hasEarlier: { control: 'boolean', description: 'Show the `Load earlier messages` button (`onLoadEarlier`).' },
+    hasEarlier: { control: 'boolean', description: 'Show the `Load previous messages` button (`onLoadEarlier`).' },
     empty: { control: 'boolean', description: 'Story-only: no turns, so the `empty` slot shows.' },
     editingId: { control: 'text', description: '`editingId`: id of the turn whose question is being edited.' },
     approval: { control: 'boolean', description: 'Story-only: a pending approval after the last turn (`slots.approvalsAfter`).' },
     seeThrough: { control: 'inline-radio', options: [1, 0.6, 0.22], description: 'Story-only: `--oui-panel-see-through`.' },
+    attachmentVariant: { control: 'inline-radio', options: ['chip', 'card'], description: '`attachmentVariant`: how a sent question shows its files, read-only. `chip` (default) or `card`.' },
     onAction: { action: 'conversation', description: 'Story-only: reports edit, copy, retry, suggestions, queue and send.' },
   },
   render: (args: ConversationDemoProps) => (
@@ -338,15 +341,38 @@ export const ConversationReadOnly: ConversationStory = {
 };
 
 /** No turns and nothing running: the `empty` slot (an empty state, or a "no longer shared" notice). */
+/** A sent question with its files as read-only cards (`attachmentVariant="card"`): thumbnail, name, status line ("Uploading…", "Not sent"), no remove button; choosing one calls `onAttachmentClick`. */
+export const ConversationAttachmentCards: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, turns: attachmentTurns(), attachmentVariant: 'card', composer: false, onAction: fn() },
+  play: async ({ canvasElement, args }) => {
+    const log = within(canvasElement).getByRole('log', { name: 'Conversation' });
+    await expect(within(log).queryByRole('button', { name: /^Remove/ })).toBeNull();
+    await expect(within(log).getByText('Not sent')).toBeVisible();
+    await userEvent.click(within(log).getByRole('button', { name: /whiteboard\.png/ }));
+    await expect(args.onAction).toHaveBeenCalledWith('attachment', 'att-2');
+  },
+};
+
 export const ConversationEmpty: ConversationStory = { ...conversationMeta, args: { ...conversationMeta.args, empty: true } };
 
-/** Older messages exist: `Load earlier messages` sits at the top and reports `onLoadEarlier`. */
+/** Older messages exist: `Load previous messages` sits at the top and reports `onLoadEarlier`. */
 export const ConversationLoadEarlier: ConversationStory = {
   ...conversationMeta,
   args: { ...conversationMeta.args, hasEarlier: true, onAction: fn() },
   play: async ({ canvasElement, args }) => {
-    await userEvent.click(within(canvasElement).getByRole('button', { name: 'Load earlier messages' }));
+    await userEvent.click(within(canvasElement).getByRole('button', { name: 'Load previous messages' }));
     await expect(args.onAction).toHaveBeenCalledWith('load-earlier', 'u1');
+  },
+};
+
+/** Three thousand turns, only the newest 40 drawn. `Load previous messages` reveals 40 more and the reading position stays put; the jump pill and stick-to-bottom work as usual. */
+export const ConversationLongHistory: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, turns: longHistoryTurns(3000), windowSize: 40, windowStep: 40, composer: false, onAction: fn() },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelectorAll('[data-slot="transcript-turn"]')).toHaveLength(40);
+    await expect(within(canvasElement).getByRole('button', { name: 'Load previous messages' })).toBeEnabled();
   },
 };
 

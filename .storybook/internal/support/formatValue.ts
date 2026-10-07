@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 const isShallow = (v: unknown): boolean => v === null || typeof v !== 'object';
 
 const isReactElement = (v: unknown): boolean => Boolean(v && typeof v === 'object' && '$$typeof' in (v as object));

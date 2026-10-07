@@ -2,19 +2,6 @@
 
 @layer omni-ui-components {
   :root {
-    --oui-surface-field:           var(--color-input);
-    --oui-surface-field-disabled:  var(--color-input-disabled);
-
-    /* The theme defines --border-field (light and dark); --color-border-input is a shadcn alias the theme never sets, which left outlines on currentColor. */
-    --oui-border-field:            var(--color-border-input, var(--border-field));
-    --oui-border-interactive:      var(--color-primary);
-    --oui-border-invalid:          var(--color-destructive);
-
-    --oui-foreground:              var(--color-foreground);
-    --oui-foreground-muted:        var(--color-muted-foreground);
-    --oui-foreground-placeholder:  color-mix(in srgb, var(--color-foreground) 32%, transparent);
-    --oui-foreground-required:     var(--color-destructive);
-
     --oui-radius-field:            var(--radius-md, 6px);
     --oui-field-height-sm:         1.5rem;
     --oui-field-height-md:         2rem;
@@ -34,9 +21,47 @@
     --oui-control-radius:          10px;
     --oui-control-gap:             6px;
     --oui-control-separator:       20px; /* vertical divider height between control groups */
+    --oui-control-hit:             40px; /* minimum pointer target: a ::before grows a 36px control to this without moving layout */
     --oui-control-icon:            20px;
     --oui-control-caret:           20px; /* width of a split button's caret segment */
     --oui-control-label-max:       260px; /* default ellipsis width for a truncating label */
+    --oui-tone-dim-solid-bg:       transparent;
+
+    /* Status badge on a control (the amber "!"). The ring cuts it out of the surface behind. */
+    --oui-badge-size:              16px;
+    --oui-badge-offset:            -6px;
+
+    /* ---- Panel (flex-column shell: 40px header, scrolling body, optional dock) ----
+       Colours are OPAQUE base colours. The Panel mixes them with --oui-panel-see-through (0-1) on the
+       panel, header and dock BACKGROUNDS only, so text, icons and borders stay at full opacity. */
+    --oui-panel-header-height:     40px;
+    --oui-panel-radius:            14px;
+    --oui-panel-pad-x:             14px;
+    --oui-panel-see-through:       1;       /* 1 = opaque surfaces, 0.22 = see-through */
+    --oui-panel-fade:              28px;    /* top fade mask height of a scrolling body */
+    --oui-panel-scrollbar-size:    6px;
+
+    --oui-font-sans:               var(--font-sans, 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  }
+
+  /* Theme-dependent values. Every token that differs between themes, or reads a token that does, is declared on each theme root, because
+     `var()` resolves on the element that declares it: a value set once on `:root` stays light inside a `data-theme="dark"` subtree.
+     Fixed values above stay on `:root` only, so a host overrides them on any ancestor. A host overrides a themed token on the element that
+     carries `data-theme` (or on a descendant), or with `:root, [data-theme] { ... }`. See bionic/research/references/theme-contract.md. */
+  :root,
+  [data-theme] {
+    --oui-surface-field:           var(--color-input);
+    --oui-surface-field-disabled:  var(--color-input-disabled);
+
+    /* The theme defines --border-field (light and dark); --color-border-input is a shadcn alias the theme never sets, which left outlines on currentColor. */
+    --oui-border-field:            var(--color-border-input, var(--border-field));
+    --oui-border-interactive:      var(--color-primary);
+    --oui-border-invalid:          var(--color-destructive);
+
+    --oui-foreground:              var(--color-foreground);
+    --oui-foreground-muted:        var(--color-muted-foreground);
+    --oui-foreground-placeholder:  color-mix(in srgb, var(--color-foreground) 32%, transparent);
+    --oui-foreground-required:     var(--color-destructive);
 
     /* ---- Tone scale (fg / bg / border = soft tint; solid-bg / solid-fg = filled) ----
        neutral reuses the theme tokens (raw --text-default / --bg-grey-f5 / --border-field, which always resolve); the rest are explicit light + dark values
@@ -46,7 +71,12 @@
     --oui-tone-neutral-border:     var(--border-field);
     --oui-tone-neutral-solid-bg:   var(--bg-grey-f5);
     --oui-tone-neutral-solid-fg:   var(--text-default);
+    --oui-badge-ring:              var(--bg-content);
+  }
 
+  /* Light values: `:root` (no theme attribute) and any light subtree, also inside a dark one. */
+  :root,
+  [data-theme='light'] {
     --oui-tone-accent-fg:          #2447b8;
     --oui-tone-accent-bg:          rgba(91, 140, 255, 0.14);
     --oui-tone-accent-border:      #9db8f5;
@@ -74,31 +104,24 @@
     --oui-tone-dim-fg:             #8b909a;
     --oui-tone-dim-bg:             transparent;
     --oui-tone-dim-border:         #d9dce2;
-    --oui-tone-dim-solid-bg:       transparent;
     --oui-tone-dim-solid-fg:       #8b909a;
-
-    /* Status badge on a control (the amber "!"). The ring cuts it out of the surface behind. */
-    --oui-badge-size:              16px;
-    --oui-badge-offset:            -6px;
-    --oui-badge-ring:              var(--bg-content);
 
     /* ---- Segmented control (active / inactive segment) ---- */
     --oui-segment-active-bg:       rgba(59, 111, 224, 0.16);
     --oui-segment-active-fg:       #2447b8;
     --oui-segment-inactive-fg:     #6b7280;
-
-    /* ---- Panel (flex-column shell: 40px header, scrolling body, optional dock) ----
-       Colours are OPAQUE base colours. The Panel mixes them with --oui-panel-see-through (0-1) on the
-       panel, header and dock BACKGROUNDS only, so text, icons and borders stay at full opacity. */
-    --oui-panel-header-height:     40px;
-    --oui-panel-radius:            14px;
-    --oui-panel-pad-x:             14px;
     --oui-panel-bg:                #ffffff;
     --oui-panel-header-bg:         transparent;
     --oui-panel-dock-bg:           #f6f7f9;
     --oui-panel-border:            #e3e6ec;
     --oui-panel-divider:           #e8ebf0; /* 1px separators under the header and over the dock */
     --oui-panel-meta-fg:           #6b7280;
+    --oui-tag-filled-bg:           #eef0f4;
+    --oui-tag-filled-fg:           #374151;
+    --oui-clock-live:              #b42318; /* StatusClock record icon and timer while live */
+    --oui-clock-paused:            #8a5a00; /* StatusClock timer and Paused label */
+    --oui-clock-paused-icon:       #f0b429; /* StatusClock pause disc */
+    --oui-session-pause-border:    var(--oui-tone-neutral-border); /* SessionBar Pause outline */
 
     /* Code colours (highlight.js classes are painted from these; derived from the assistant prototype palette). */
     --oui-code-plain:              oklch(0.28 0.02 260);
@@ -110,12 +133,7 @@
     --oui-code-function:           oklch(0.48 0.13 250);
     --oui-code-gutter:             oklch(0.62 0.02 260);
     --oui-code-mark-bg:            rgba(59, 111, 224, 0.1);
-    --oui-panel-see-through:       1;       /* 1 = opaque surfaces, 0.22 = see-through */
-    --oui-panel-fade:              28px;    /* top fade mask height of a scrolling body */
-    --oui-panel-scrollbar-size:    6px;
     --oui-panel-scrollbar-thumb:   rgba(17, 24, 39, 0.28);
-
-    --oui-font-sans:               var(--font-sans, 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
   }
 
   [data-theme="dark"] {
@@ -159,6 +177,12 @@
     --oui-panel-border:            #24314a;
     --oui-panel-divider:           #212c42;
     --oui-panel-meta-fg:           #7d8aa3;
+    --oui-tag-filled-bg:           #212c42;
+    --oui-tag-filled-fg:           #a9b6cf;
+    --oui-clock-live:              #ff8a85; /* board-1e coral */
+    --oui-clock-paused:            #f5c86b; /* board-1e gold */
+    --oui-clock-paused-icon:       #f0b429;
+    --oui-session-pause-border:    #33425f; /* board-1e Pause outline */
 
     --oui-code-plain:              oklch(0.9 0.008 260);
     --oui-code-keyword:            oklch(0.76 0.14 300);
@@ -247,5 +271,31 @@
     :root {
       --oui-transition-duration: 0ms;
     }
+  }
+
+  /* 40px hit area: see internal/support/hitArea.ts. --oui-hit-base is the owner's own height, --oui-hit-border its border width. */
+  .oui-hit {
+    position: relative;
+    --oui-hit-grow: calc(min(0px, (var(--oui-hit-base, var(--oui-control-height)) - var(--oui-control-hit)) / 2) - var(--oui-hit-border, 0px));
+  }
+  .oui-hit::before {
+    content: '';
+    position: absolute;
+    inset: var(--oui-hit-grow);
+  }
+  .oui-hit-y::before {
+    inset-inline: calc(-1 * var(--oui-hit-border, 0px));
+  }
+  .oui-hit-start::before {
+    right: 0;
+  }
+  .oui-hit-end::before {
+    left: var(--oui-hit-left, 0px);
+  }
+
+  /* Storybook "Hit area" toolbar toggle: outline each control's expanded 40px pointer target. */
+  html[data-oui-hit-outline] .oui-hit::before {
+    outline: 1px dashed #e11d90;
+    background: rgba(225, 29, 144, 0.12);
   }
 }

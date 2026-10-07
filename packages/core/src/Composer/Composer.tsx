@@ -1,7 +1,6 @@
-// Why this is not an `Input` variation: `Input` / `InputPrimitive` render a single-line `<input>`. A composer needs a
-// `<textarea>` that auto-grows to a max height, keeps newlines (Shift+Enter) and pairs Enter with send while staying IME
-// safe, plus ArrowUp recall on an empty draft. An `<input>` cannot express any of these, and `Input`'s `actions` slot only
-// sits beside the field. The composer reuses the panel Input's background/see-through tokens instead of forking its look.
+// Composer is a preset over `Input`: its message field IS `<Input multiline variant="panel">` (auto-grow to `maxHeight`, Enter
+// to send with Shift+Enter newline and IME safety, the see-through panel look). Composer adds what a single field cannot
+// express: the box around field AND toolbar, send/stop/queue states, attachments, triggers, dictation and ArrowUp recall.
 import * as React from 'react';
 
 import { cn } from 'lib/utils';
@@ -10,12 +9,20 @@ import { attachmentDropOverlayClasses } from '../Attachment/Attachment.variants'
 import { DEFAULT_ATTACHMENT_LABELS } from '../Attachment/Attachment.types';
 import { DictationBar } from '../DictationBar';
 import { IconButton } from '../IconButton';
+import { InputPrimitive } from '../Input/InputPrimitive';
 import { useHoldToTalk } from '../lib';
 import { useControllableState } from '../lib/use-controllable-state';
 import { QueuedList, type QueuedItem } from '../QueuedList';
 import { DEFAULT_COMPOSER_LABELS, sendStateOf, type ComposerApi, type ComposerProps } from './Composer.types';
 import { composerBoxVariants, composerHintClasses, composerRoundClasses, composerTextareaClasses } from './Composer.variants';
 import { SendButton } from './SendButton';
+
+/** The caret is collapsed and no line break lies before it: Up has nowhere to go inside the text. */
+const isOnFirstLine = (element: HTMLTextAreaElement) =>
+  element.selectionStart === element.selectionEnd && !element.value.slice(0, element.selectionStart).includes('\n');
+/** The caret is collapsed and no line break lies after it: Down has nowhere to go inside the text. */
+const isOnLastLine = (element: HTMLTextAreaElement) =>
+  element.selectionStart === element.selectionEnd && !element.value.slice(element.selectionEnd).includes('\n');
 
 /** Assigns a value to a ref of either kind. */
 const setRef = <T,>(ref: React.Ref<T> | undefined, value: T | null) => {
@@ -28,7 +35,7 @@ const setRef = <T,>(ref: React.Ref<T> | undefined, value: T | null) => {
  * follows `--oui-panel-see-through`, with slots and optional built-in parts around it.
  *
  * Keys (ported from the original): Enter sends when `sendOnEnter` (Shift+Enter is a newline, and IME composition is
- * never interrupted); ArrowUp on an empty draft recalls the last prompt through `onRecallPrevious`; Escape stops a
+ * never interrupted); ArrowUp with the caret on the first line (ArrowDown on the last, Cmd/Ctrl+Arrow anywhere) recalls through `onRecallPrevious` / `onRecallNext`; Escape stops a
  * running reply. A popover (see `useCommandTrigger`) is given first refusal through `onBeforeKeyDown`.
  *
  * The host owns the draft: `onSubmit(value, attachments)` is only called, so saving host state first (the original's
@@ -56,6 +63,7 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
       onQueue,
       onStop,
       onRecallPrevious,
+      onRecallNext,
       onFocus,
       onBlur,
       streaming = false,
@@ -118,6 +126,8 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
     const area = React.useRef<HTMLTextAreaElement | null>(null);
     const [rootEl, setRootEl] = React.useState<HTMLDivElement | null>(null);
     const caretToEnd = React.useRef(false);
+    // The draft typed before a recall began (null: not recalling). Cleared by typing.
+    const stash = React.useRef<string | null>(null);
     const items: A[] = attachmentItems ?? [];
     const hasText = value.trim().length > 0;
     const hasDraft = hasText || items.length > 0;
@@ -129,19 +139,14 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
     const api: ComposerApi = { openPicker: drop.openPicker, focus: () => area.current?.focus() };
     const slot = (node: React.ReactNode | ((api: ComposerApi) => React.ReactNode)) => (typeof node === 'function' ? node(api) : node);
 
-    // [STATE] Grow with the content up to maxHeight, then scroll inside; shrink again when text is deleted.
+    // [STATE] A recalled prompt puts the caret at the end, as the original focusInput does. (Growth is the Input's job.)
     React.useLayoutEffect(() => {
       const element = area.current;
-      if (!element) return;
-      element.style.height = 'auto';
-      element.style.height = `${Math.min(element.scrollHeight, maxHeight)}px`;
-      element.style.overflowY = element.scrollHeight > maxHeight ? 'auto' : 'hidden';
-      // A recalled prompt puts the caret at the end, as the original focusInput does.
-      if (caretToEnd.current) {
+      if (element && caretToEnd.current) {
         caretToEnd.current = false;
         element.setSelectionRange(value.length, value.length);
       }
-    }, [value, maxHeight]);
+    }, [value]);
 
     // [STATE] Triggers: tell the host when one starts, changes or ends (so it can open its own popover).
     const lastTrigger = React.useRef<string>('');
@@ -162,6 +167,7 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
     }, [value, triggers, onTrigger]);
 
     const submit = () => {
+      stash.current = null;
       // [GUARD] A running reply with nothing typed: the button is Stop (absent without onStop).
       if (streaming && !hasText) {
         void onStop?.();
@@ -193,21 +199,36 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       // [GUARD] An open popover owns the arrows, Enter, Tab and Escape.
-      if (onBeforeKeyDown?.(event) === true) return;
-      if (event.key === 'Enter' && !event.shiftKey && sendOnEnter && !event.nativeEvent.isComposing) {
+      if (onBeforeKeyDown?.(event) === true) {
+        // The Input sends on Enter unless the key was taken: a popover that handled it owns it.
         event.preventDefault();
-        submit();
         return;
       }
-      // Up on an empty box brings back the last thing you sent.
-      if (event.key === 'ArrowUp' && value === '' && onRecallPrevious) {
-        const last = onRecallPrevious();
-        if (last) {
-          event.preventDefault();
-          caretToEnd.current = true;
-          setValue(last);
+      // [GUARD] History recall: the arrow only recalls at the edge of the text (first line for Up, last for Down) with no
+      // selection; Cmd/Ctrl+Arrow recalls from anywhere. Shift/Alt keep their native meaning; IME composition is never touched.
+      if ((event.key === 'ArrowUp' || event.key === 'ArrowDown') && !event.shiftKey && !event.altKey && !event.nativeEvent.isComposing) {
+        const goesUp = event.key === 'ArrowUp';
+        if (goesUp ? onRecallPrevious : onRecallNext || stash.current !== null) {
+          const target = event.currentTarget;
+          const edge = goesUp ? isOnFirstLine(target) : isOnLastLine(target);
+          if (edge || event.metaKey || event.ctrlKey) {
+            const next = goesUp ? onRecallPrevious?.() : onRecallNext?.();
+            if (next) {
+              // Remember the draft being left so Down past the newest entry brings it back.
+              if (stash.current === null) stash.current = value;
+              event.preventDefault();
+              caretToEnd.current = true;
+              setValue(next);
+            } else if (!goesUp && stash.current !== null) {
+              const back = stash.current;
+              stash.current = null;
+              event.preventDefault();
+              caretToEnd.current = true;
+              setValue(back);
+            }
+            return;
+          }
         }
-        return;
       }
       if (event.key === 'Escape' && stopOnEscape && streaming && onStop) {
         event.preventDefault();
@@ -227,27 +248,37 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
     ) : null);
 
     const field = bar ?? (
-      <textarea
+      <InputPrimitive
+        multiline
+        variant="ghost"
         ref={(node) => {
-          area.current = node;
-          setRef(inputRef, node);
+          area.current = node as unknown as HTMLTextAreaElement | null;
+          setRef(inputRef, node as unknown as HTMLTextAreaElement | null);
         }}
         data-slot="composer-input"
         aria-label={labels.message}
-        rows={1}
         value={value}
         placeholder={placeholder}
         disabled={disabled}
+        maxHeight={maxHeight}
+        sendOnEnter={sendOnEnter}
+        onSubmit={submit}
         className={composerTextareaClasses}
-        onChange={(event) => setValue(event.target.value)}
-        onKeyDown={onKeyDown}
+        onChange={(next) => {
+          // Typing turns a recalled prompt into a new draft: nothing to restore any more.
+          stash.current = null;
+          setValue(next);
+        }}
+        onKeyDown={onKeyDown as unknown as React.KeyboardEventHandler<HTMLInputElement>}
         onFocus={() => onFocus?.()}
         onBlur={() => onBlur?.()}
-        onPaste={(event) => {
-          if (onFiles) drop.onPaste(event);
-          if (!event.defaultPrevented) onPaste?.(event);
-        }}
-        {...textareaProps}
+        onPaste={
+          ((event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+            if (onFiles) drop.onPaste(event);
+            if (!event.defaultPrevented) onPaste?.(event);
+          }) as unknown as React.ClipboardEventHandler<HTMLInputElement>
+        }
+        {...(textareaProps as Record<string, unknown>)}
       />
     );
 

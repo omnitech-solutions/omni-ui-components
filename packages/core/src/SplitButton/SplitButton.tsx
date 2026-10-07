@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from 'lib/utils';
 import { ActionMenu } from '../ActionMenu';
 import { ControlBadge } from '../internal/support/ControlBadge';
+import { hitAreaEnd, hitAreaStart, hitAreaY } from '../internal/support/hitArea';
 import { toneTintClasses } from '../internal/support/controlTone';
 import { Progress } from '../Progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../Tooltip';
@@ -32,10 +33,11 @@ const SEGMENT =
  * />
  */
 export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
-  ({ main, caret, menu, tone, status, size, open, defaultOpen, onOpenChange, openMenuOn = [], className, 'data-testid': testId }, ref) => {
+  ({ main, segments, caret, menu, tone, status, size, open, defaultOpen, onOpenChange, openMenuOn = [], className, 'data-testid': testId }, ref) => {
     const toolbarSize = useToolbarSize();
     const resolvedSize = size ?? toolbarSize ?? 'control';
     const labelled = resolvedSize === 'control-labelled';
+    const inlineLabel = Boolean(main.labelInline) && !labelled;
     const analysing = main.state === 'analysing';
     const resolvedTone = tone ?? (analysing ? 'accent' : 'neutral');
 
@@ -79,7 +81,12 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
         className={cn(
           SEGMENT,
           'relative rounded-l-[calc(var(--oui-control-radius)-1px)]',
-          labelled ? 'min-w-[58px] flex-col gap-[3px] px-1' : 'min-w-[var(--oui-control-height)]',
+          !labelled && `${hitAreaStart} [--oui-hit-base:34px]`,
+          labelled
+            ? 'min-w-[58px] flex-col gap-[3px] px-1'
+            : inlineLabel
+              ? 'min-w-[var(--oui-control-height)] gap-2 px-3 text-[15px]'
+              : 'min-w-[var(--oui-control-height)]',
           '[&_svg]:size-[var(--oui-control-icon)]',
           'aria-pressed:bg-[color:var(--oui-tone-accent-bg)] aria-pressed:text-[color:var(--oui-tone-accent-fg)]',
         )}
@@ -117,6 +124,11 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
             descriptionId={badgeDescriptionId}
           />
         ) : null}
+        {inlineLabel ? (
+          <span data-slot="split-button-inline-label" className="leading-none">
+            {main.caption ?? main.label}
+          </span>
+        ) : null}
         {labelled ? (
           <span data-slot="split-button-caption" className="text-[10.5px] leading-none">
             {main.caption ?? main.label}
@@ -136,15 +148,53 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>{mainButton}</TooltipTrigger>
-          <TooltipContent>{mainTipContent}</TooltipContent>
+          <TooltipContent container={menu.container}>{mainTipContent}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     ) : (
       mainButton
     );
 
+    const segmentNodes = (segments ?? []).map((segment) => {
+      const button = (
+        <button
+          key={segment.id}
+          type="button"
+          data-slot="split-button-segment"
+          data-segment={segment.id}
+          data-testid={segment['data-testid']}
+          aria-label={segment.label}
+          aria-pressed={segment.pressed}
+          disabled={segment.disabled}
+          title={segment.tooltip ? undefined : segment.label}
+          className={cn(
+            SEGMENT,
+            'relative w-[var(--oui-control-height)] border-l border-inherit [&_svg]:size-[var(--oui-control-icon)]',
+            !labelled && `${hitAreaY} [--oui-hit-base:34px]`,
+            'aria-pressed:bg-[color:var(--oui-tone-accent-bg)] aria-pressed:text-[color:var(--oui-tone-accent-fg)]',
+          )}
+          onClick={(event) => segment.onPress?.(segment, event)}
+        >
+          {segment.icon}
+        </button>
+      );
+      if (!segment.tooltip) return button;
+      return (
+        <TooltipProvider key={segment.id}>
+          <Tooltip>
+            <TooltipTrigger asChild>{button}</TooltipTrigger>
+            <TooltipContent container={menu.container}>
+              {segment.tooltip}
+              {segment.shortcut?.length ? <span className="ml-1.5 font-mono text-xs opacity-70">{segment.shortcut.join('')}</span> : null}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    });
+
     const caretClass = cn(
       SEGMENT,
+      !labelled && `${hitAreaEnd} [--oui-hit-base:34px] [--oui-hit-left:-1px]`,
       'w-[var(--oui-control-caret)] rounded-r-[calc(var(--oui-control-radius)-1px)] border-l border-inherit text-[color:var(--oui-foreground-muted)] [&_svg]:size-4',
     );
     const caretLabel = caret?.label ?? 'More options';
@@ -168,7 +218,7 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>{caretButton}</TooltipTrigger>
-            <TooltipContent>{caret?.disabledReason}</TooltipContent>
+            <TooltipContent container={menu.container}>{caret?.disabledReason}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       );
@@ -177,7 +227,7 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
         <TooltipProvider>
           <Tooltip>
             <ActionMenu {...menu} open={isOpen} onOpenChange={setOpen} trigger={<TooltipTrigger asChild>{caretButton}</TooltipTrigger>} />
-            <TooltipContent>{caret.tooltip}</TooltipContent>
+            <TooltipContent container={menu.container}>{caret.tooltip}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       );
@@ -203,6 +253,7 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
         )}
       >
         {mainNode}
+        {segmentNodes}
         {caretNode}
       </div>
     );

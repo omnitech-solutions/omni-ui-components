@@ -1,6 +1,6 @@
 {
   "name": "@oc-tech/omni-ui-components",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Reusable React UI components from Omni Technology Solutions.",
   "license": "UNLICENSED",
   "repository": {
@@ -32,6 +32,21 @@
       "types": "./dist-types/dynamic-form/index.d.ts",
       "import": "./dist/dynamic-form/index.js",
       "require": "./dist/dynamic-form/index.cjs"
+    },
+    "./native": {
+      "types": "./dist-types/entries/native.d.ts",
+      "import": "./dist/native.js",
+      "require": "./dist/native.cjs"
+    },
+    "./chat": {
+      "types": "./dist-types/entries/chat.d.ts",
+      "import": "./dist/chat.js",
+      "require": "./dist/chat.cjs"
+    },
+    "./highlight": {
+      "types": "./dist-types/entries/highlight.d.ts",
+      "import": "./dist/highlight.js",
+      "require": "./dist/highlight.cjs"
     }
   },
   "publishConfig": {
@@ -40,6 +55,8 @@
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test:attachments-drop": "node test/Attachment/browser/drop.playwright.mjs",
+    "test:isolation": "pnpm run build && node fixtures/host-app/isolation.mjs",
     "test": "vitest run --config ../../vitest.config.ts",
     "prepublishOnly": "pnpm run typecheck && pnpm run build"
   },

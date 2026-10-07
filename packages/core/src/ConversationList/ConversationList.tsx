@@ -2,9 +2,44 @@ import * as React from 'react';
 
 import { cn } from 'lib/utils';
 import { useControllableState } from '../lib/use-controllable-state';
+import { useRovingTabindex } from '../lib/use-roving-tabindex';
 import { IconAction } from '../internal/support/IconAction';
 import { conversationListVariants, conversationRowVariants, ROW_ACTIONS_CLASS } from './ConversationList.variants';
 import type { ConversationItem, ConversationListLabels, ConversationListProps, ConversationRowAction, PerItem } from './ConversationList.types';
+
+const ROW_SELECTOR = '[data-slot="conversation-row"]';
+const ROW_STOPS = 'button:not(:disabled)';
+
+/** Every focusable stop inside the rows (the title button, then the row's actions), in DOM order. */
+const rowStops = (root: HTMLElement) => Array.from(root.querySelectorAll<HTMLElement>(ROW_SELECTOR)).flatMap((row) => Array.from(row.querySelectorAll<HTMLElement>(ROW_STOPS)));
+
+/** With no stop yet, the tab stop is the open row's title; else the first row's. */
+const preferActiveRow = (items: HTMLElement[]) => items.find((item) => item.closest(`${ROW_SELECTOR}[aria-current="true"]`));
+
+/**
+ * Rows are a small grid with one tab stop: Up and Down move between rows (keeping the column: title, then each
+ * action), Left and Right move along a row, Home and End go to the first and last row.
+ */
+const navigateRows = (key: string, items: HTMLElement[], at: number): HTMLElement | undefined => {
+  const from = items[at];
+  const row = from?.closest(ROW_SELECTOR);
+  if (!from || !row) return undefined;
+  const inRow = items.filter((item) => item.closest(ROW_SELECTOR) === row);
+  const column = inRow.indexOf(from);
+  const rows = Array.from(new Set(items.map((item) => item.closest(ROW_SELECTOR))));
+  const rowAt = rows.indexOf(row);
+  const pick = (target: Element | null | undefined, col: number) => {
+    const stops = items.filter((item) => item.closest(ROW_SELECTOR) === target);
+    return stops[Math.min(col, stops.length - 1)];
+  };
+  if (key === 'ArrowDown') return pick(rows[rowAt + 1], column);
+  if (key === 'ArrowUp') return pick(rows[rowAt - 1], column);
+  if (key === 'ArrowRight') return inRow[column + 1];
+  if (key === 'ArrowLeft') return inRow[column - 1];
+  if (key === 'Home') return pick(rows[0], 0);
+  if (key === 'End') return pick(rows[rows.length - 1], 0);
+  return undefined;
+};
 
 /** English defaults of every string. Pass `labels` to translate any of them. */
 export const DEFAULT_CONVERSATION_LIST_LABELS: ConversationListLabels = {
@@ -44,6 +79,9 @@ const RowAction = <T extends ConversationItem>({ action, item }: { action: Conve
  * footer slot. Everything is a prop: the open row is `activeId` (it gets `aria-current`), rows report `onOpen(item)`,
  * every string is in `labels`, every icon is a caller node. The caller debounces `onSearchChange`.
  *
+ * The rows are one tab stop: Up and Down move between rows, Left and Right between a row's title and its actions, Home and
+ * End to the first and last row; Tab leaves the list.
+ *
  * Slots for host styling: `data-slot="conversation-list" | "conversation-list-head" | "conversation-list-search" |
  * "conversation-list-body" | "conversation-group" | "conversation-row" | "conversation-list-empty" | "conversation-list-archived"`.
  *
@@ -81,12 +119,17 @@ export function ConversationList<T extends ConversationItem = ConversationItem>(
   const headingId = React.useId();
   const [value, setValue] = useControllableState(queryProp, defaultQuery, onSearchChange);
   const visibleGroups = groups.filter((group) => group.items.length > 0);
+  const navRef = React.useRef<HTMLElement | null>(null);
+  const roving = useRovingTabindex(navRef, { getItems: rowStops, navigate: navigateRows, preferred: preferActiveRow });
   const showSearch = Boolean(onSearchChange) && !archived;
 
   const emptyMessage = archived ? labels.noneArchived : value.trim() ? labels.noMatch(value.trim()) : labels.none;
 
   return (
     <nav
+      ref={navRef}
+      onKeyDown={roving.onKeyDown}
+      onFocus={roving.onFocus}
       aria-label={labels.title}
       data-slot="conversation-list"
       data-docked={docked ? 'true' : 'false'}

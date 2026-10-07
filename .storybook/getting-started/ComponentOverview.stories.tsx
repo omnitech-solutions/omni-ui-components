@@ -172,6 +172,7 @@ import { QueuedList } from '@oc-tech/omni-ui-components/QueuedList';
 import { queuedListPropsFactory, queuedListVariants } from 'factories/omni-ui-components/QueuedList/QueuedList.factories';
 import { ConversationDemo } from 'factories/omni-ui-components/Transcript/Transcript.factories';
 import { MarkdownDemo, markdownVariants, ChatReplyShowcase } from 'factories/omni-ui-components/Markdown/Markdown.factories';
+import { ConversationTranscriptDemo } from 'factories/omni-ui-components/ConversationTranscript/ConversationTranscript.factories';
 import { Sources } from '@oc-tech/omni-ui-components/Sources';
 import { sourcesPropsFactory, sourcesVariants } from 'factories/omni-ui-components/Sources/Sources.factories';
 import { Suggestions } from '@oc-tech/omni-ui-components/Suggestions';
@@ -189,6 +190,8 @@ import { feedbackPanelPropsFactory, feedbackPanelVariants } from 'factories/omni
 import { VersionPager } from '@oc-tech/omni-ui-components/VersionPager';
 import { versionPagerPropsFactory, versionPagerVariants } from 'factories/omni-ui-components/VersionPager/VersionPager.factories';
 import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
+import { MessageMenu } from '@oc-tech/omni-ui-components/MessageMenu';
+import { messageMenuPropsFactory, messageMenuVariants } from 'factories/omni-ui-components/MessageMenu/MessageMenu.factories';
 import { messageActionsPropsFactory, messageActionsVariants } from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
 import { SummaryDivider } from '@oc-tech/omni-ui-components/SummaryDivider';
 import { summaryDividerPropsFactory, summaryDividerVariants } from 'factories/omni-ui-components/SummaryDivider/SummaryDivider.factories';
@@ -209,6 +212,8 @@ import { DataPrivacyPanel } from '@oc-tech/omni-ui-components/DataPrivacyPanel';
 import { DataPrivacyPanelDemo, dataPrivacyPanelPropsFactory, dataPrivacyPanelVariants } from 'factories/omni-ui-components/DataPrivacyPanel/DataPrivacyPanel.factories';
 import { IntegrationList } from '@oc-tech/omni-ui-components/IntegrationList';
 import { IntegrationListDemo, integrationListPropsFactory, integrationListVariants } from 'factories/omni-ui-components/IntegrationList/IntegrationList.factories';
+import { ModelsSettings } from '@oc-tech/omni-ui-components/ModelsSettings';
+import { modelsSettingsPropsFactory, modelsSettingsVariants } from 'factories/omni-ui-components/ModelsSettings/ModelsSettings.factories';
 import { ShortcutList } from '@oc-tech/omni-ui-components/ShortcutList';
 import { shortcutListPropsFactory, shortcutListVariants } from 'factories/omni-ui-components/ShortcutList/ShortcutList.factories';
 import { StatusClock } from '@oc-tech/omni-ui-components/StatusClock';
@@ -223,6 +228,8 @@ import {
   TranscriptPanel,
 } from 'factories/omni-ui-components/Transcript/Transcript.factories';
 import { ContextMeter } from '@oc-tech/omni-ui-components/ContextMeter';
+import { StreamStatus } from '@oc-tech/omni-ui-components/StreamStatus';
+import { streamStatusPropsFactory, streamStatusVariants } from 'factories/omni-ui-components/StreamStatus/StreamStatus.factories';
 import { contextMeterPropsFactory, contextMeterVariants } from 'factories/omni-ui-components/ContextMeter/ContextMeter.factories';
 import { DiffReview } from '@oc-tech/omni-ui-components/DiffReview';
 import { DiffReviewDemo, diffReviewPropsFactory, diffReviewVariants, sampleChanges } from 'factories/omni-ui-components/DiffReview/DiffReview.factories';
@@ -475,8 +482,10 @@ const MessageBoxPreview: React.FC = () => (
 const ConversationPreview: React.FC = () => <ConversationDemo height={560} />;
 const VersionPagerPreview = MessagePartsPreview(versionPagerVariants as Variant<never>[], (args) => <VersionPager {...versionPagerPropsFactory(args as object)} />);
 const MessageActionsPreview = MessagePartsPreview(messageActionsVariants as Variant<never>[], (args) => <MessageActions {...messageActionsPropsFactory(args as object)} />);
-const SummaryDividerPreview = MessagePartsPreview(summaryDividerVariants as Variant<never>[], (args) => <SummaryDivider {...summaryDividerPropsFactory(args as object)} />);
+const MessageMenuPreview = MessagePartsPreview(messageMenuVariants as Variant<never>[], (args) => <MessageMenu {...messageMenuPropsFactory(args as object)} />);
+const SummaryDividerPreview =MessagePartsPreview(summaryDividerVariants as Variant<never>[], (args) => <SummaryDivider {...summaryDividerPropsFactory(args as object)} />);
 const ChatReplyPreview: React.FC = () => <ChatReplyShowcase />;
+const ConversationTranscriptPreview: React.FC = () => <ConversationTranscriptDemo />;
 
 const StatusClockPreview: React.FC = () => (
   <div className="flex flex-wrap gap-4">
@@ -603,6 +612,16 @@ const ContextMeterPreview: React.FC = () => (
           <ContextMeter {...contextMeterPropsFactory(variant.args)} />
           <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
         </div>
+      ))}
+  </div>
+);
+
+const StreamStatusPreview: React.FC = () => (
+  <div className="flex flex-col gap-2">
+    {streamStatusVariants
+      .filter((variant) => variant.name !== 'No timer')
+      .map((variant) => (
+        <StreamStatus key={variant.name} {...streamStatusPropsFactory(variant.args)} />
       ))}
   </div>
 );
@@ -751,6 +770,17 @@ const IntegrationListPreview: React.FC = () => (
       <div key={variant.name} className="flex w-[420px] flex-col gap-1">
         <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
         <IntegrationList {...integrationListPropsFactory(variant.args)} />
+      </div>
+    ))}
+  </div>
+);
+
+const ModelsSettingsPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-6">
+    {modelsSettingsVariants.map((variant) => (
+      <div key={variant.name} className="flex w-[420px] flex-col gap-1">
+        <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+        <ModelsSettings {...modelsSettingsPropsFactory(variant.args)} />
       </div>
     ))}
   </div>
@@ -1377,6 +1407,7 @@ const SECTIONS: OverviewSectionSpec[] = [
       { name: 'DiffReview', preview: DiffReviewPreview, variants: diffReviewVariants as Variant<unknown>[] },
       { name: 'ModelPicker', preview: ModelPickerPreview, variants: modelPickerVariants as Variant<unknown>[] },
       { name: 'ContextMeter', preview: ContextMeterPreview, variants: contextMeterVariants as Variant<unknown>[] },
+      { name: 'StreamStatus', preview: StreamStatusPreview, variants: streamStatusVariants as Variant<unknown>[] },
       { name: 'useFollowLatest', preview: UseFollowLatestPreview, variants: [], source: 'UseFollowLatestPreview' },
       ...['Space', 'Splitter', 'Masonry'].map(libraryRow),
     ],
@@ -1440,12 +1471,19 @@ const SECTIONS: OverviewSectionSpec[] = [
       { name: 'FeedbackPanel', preview: FeedbackPanelPreview, variants: feedbackPanelVariants as Variant<unknown>[] },
       { name: 'VersionPager', preview: VersionPagerPreview, variants: versionPagerVariants as Variant<unknown>[] },
       { name: 'MessageActions', preview: MessageActionsPreview, variants: messageActionsVariants as Variant<unknown>[] },
+      { name: 'MessageMenu', preview: MessageMenuPreview, variants: messageMenuVariants as Variant<unknown>[] },
       { name: 'SummaryDivider', preview: SummaryDividerPreview, variants: summaryDividerVariants as Variant<unknown>[] },
       {
         name: 'Chat reply (message parts together)',
         preview: ChatReplyPreview,
         variants: [{ name: 'Finished reply, summary steps', args: {} }] as Variant<unknown>[],
         source: 'ChatReplyPreview',
+      },
+      {
+        name: 'ConversationTranscript',
+        preview: ConversationTranscriptPreview,
+        variants: [{ name: 'The chat reply, composed from props only', args: {} }] as Variant<unknown>[],
+        source: 'ConversationTranscriptPreview',
       },
     ],
   },
@@ -1647,6 +1685,7 @@ const SECTIONS: OverviewSectionSpec[] = [
       { name: 'PreferencesForm', preview: PreferencesFormPreview, variants: preferencesFormVariants as Variant<unknown>[] },
       { name: 'DataPrivacyPanel', preview: DataPrivacyPanelPreview, variants: dataPrivacyPanelVariants as Variant<unknown>[] },
       { name: 'IntegrationList', preview: IntegrationListPreview, variants: integrationListVariants as Variant<unknown>[] },
+      { name: 'ModelsSettings', preview: ModelsSettingsPreview, variants: modelsSettingsVariants as Variant<unknown>[] },
       { name: 'ShortcutList', preview: ShortcutListPreview, variants: shortcutListVariants as Variant<unknown>[] },
     ],
   },

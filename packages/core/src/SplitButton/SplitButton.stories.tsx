@@ -6,6 +6,7 @@ import { SplitButton, type SplitButtonProps } from '@oc-tech/omni-ui-components/
 import {
   CaptureSplitButtonDemo,
   MicSplitButtonDemo,
+  splitButtonBoardVariants,
   splitButtonCaptureVariants,
   splitButtonMicVariants,
   splitButtonPropsFactory,
@@ -127,6 +128,32 @@ export const MicListening: Story = micStory({ status: 'listening' });
 export const MicMuted: Story = micStory({ status: 'muted' });
 export const MicLostRetrying: Story = micStory({ status: 'lost' });
 export const PausedMic: Story = micStory({ status: 'paused' });
+
+/** Board 1c, C2: the mode word sits on the main button (`main.labelInline` with `main.caption`). */
+export const ModeWordOnButton: Story = { args: splitButtonBoardVariants[0].args };
+
+/** Board 1c, C3: a third segment toggles Auto (`segments`, `pressed`); its `onPress` receives the segment, then the event. */
+export const AutoToggleSegment: Story = {
+  args: splitButtonBoardVariants[1].args,
+  render: (args) => {
+    const [auto, setAuto] = React.useState(true);
+    return (
+      <Surface>
+        <SplitButton
+          {...args}
+          segments={args.segments?.map((segment) => ({
+            ...segment,
+            pressed: auto,
+            onPress: () => {
+              setAuto((value) => !value);
+              args.onAction?.('capture:auto', !auto);
+            },
+          }))}
+        />
+      </Surface>
+    );
+  },
+};
 
 export const Labelled: Story = { ...captureStory({ mode: 'manual' }), args: { capture: { mode: 'manual' }, size: 'control-labelled' } };
 

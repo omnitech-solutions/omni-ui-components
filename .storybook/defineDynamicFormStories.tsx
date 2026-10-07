@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta } from '@storybook/react';
 
 import { DynamicFormStoryShell } from './DynamicFormStoryShell';
 import { buildDynamicFormSnippet } from './snippets/dynamicFormSnippet';
@@ -71,7 +71,7 @@ function DynamicFormStoryRenderer<TFormData>(props: {
   const { fixtures, titles, submitLabels, args } = props;
   const fixture = React.useMemo(() => fixtures[args.fixture](), [fixtures, args.fixture]);
   const onSubmit = React.useMemo(() => buildOnSubmit(args.onSubmitMode), [args.onSubmitMode]);
-  const formData = args.prefilled || args.formData ? ({ ...fixture.defaults, ...(args.formData ?? {}) } as TFormData) : undefined;
+  const formData = args.prefilled || args.formData ? ({ ...fixture.defaults, ...args.formData } as TFormData) : undefined;
   const title = args.title ?? titles?.[args.fixture] ?? args.fixture;
   const submitLabel = args.submitLabel ?? submitLabels?.[args.fixture];
   return (

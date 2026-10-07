@@ -91,6 +91,8 @@ function TranscriptInner<
       hasEarlier,
       onLoadEarlier,
       loadingEarlier,
+      windowSize,
+      windowStep,
       empty,
       readOnly,
       renderTurn,
@@ -115,6 +117,7 @@ function TranscriptInner<
       editIcon,
       stoppedIcon,
       attachmentIcons,
+      attachmentVariant,
       maxWidth = 760,
       style,
       labels,
@@ -307,6 +310,8 @@ function TranscriptInner<
             hasEarlier={hasEarlier}
             onLoadEarlier={onLoadEarlier}
             loadingEarlier={loadingEarlier}
+            windowSize={windowSize}
+            windowStep={windowStep}
             empty={empty}
             readOnly={readOnly}
             renderTurn={renderTurn}
@@ -329,6 +334,7 @@ function TranscriptInner<
             editIcon={editIcon}
             stoppedIcon={stoppedIcon}
             attachmentIcons={attachmentIcons}
+            attachmentVariant={attachmentVariant}
             copyIcon={copyIcon}
             copyLabel={copyLabel === 'Copy' ? undefined : copyLabel}
             labels={labels}

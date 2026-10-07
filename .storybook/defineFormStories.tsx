@@ -75,7 +75,7 @@ function FormStoryRenderer<TFormData>(props: { fixtures: DefineFormStoriesConfig
   const { fixtures, args } = props;
   const fixture = React.useMemo(() => fixtures[args.fixture](), [fixtures, args.fixture]);
   const onSubmit = React.useMemo(() => buildOnSubmit(args.onSubmitMode), [args.onSubmitMode]);
-  const formData = args.prefilled || args.formData ? ({ ...fixture.initial, ...(args.formData ?? {}) } as TFormData) : undefined;
+  const formData = args.prefilled || args.formData ? ({ ...fixture.initial, ...args.formData } as TFormData) : undefined;
   return (
     <FormStoryShell fixture={fixture} formData={formData} onSubmit={onSubmit} disabled={args.disabled} readOnly={args.readOnly} autoSubmit={args.autoSubmit} />
   );

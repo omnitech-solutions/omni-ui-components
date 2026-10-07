@@ -39,7 +39,7 @@ export interface ApprovalItem {
   tool?: string;
 }
 
-export interface ApprovalCardProps<T extends ApprovalItem = ApprovalItem> extends Omit<React.HTMLAttributes<HTMLElement>, 'title'> {
+export interface ApprovalCardProps<T extends ApprovalItem = ApprovalItem> extends Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'autoFocus'> {
   /** The request to show; `title`, `description`, `tags` and `tool` default to its fields, and the props override them. Callbacks receive it by reference. */
   approval?: T;
   title?: React.ReactNode;
@@ -56,4 +56,6 @@ export interface ApprovalCardProps<T extends ApprovalItem = ApprovalItem> extend
   busy?: boolean;
   icons?: ApprovalIcons;
   labels?: Partial<ApprovalLabels>;
+  /** Move focus to Deny, the safe choice, when a pending card with `onDecide` mounts. Default false. */
+  autoFocus?: boolean;
 }

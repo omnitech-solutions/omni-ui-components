@@ -37,6 +37,7 @@ const FeedbackPanelImpl = React.forwardRef<HTMLDivElement, FeedbackPanelProps>(
       onCancel,
       submitDisabled,
       labels: labelOverrides,
+      autoFocus = false,
       className,
       ...rest
     },
@@ -47,6 +48,12 @@ const FeedbackPanelImpl = React.forwardRef<HTMLDivElement, FeedbackPanelProps>(
     // Items in the order chosen, by reference.
     const chosen = chosenIds.map((id) => reasons.find((reason) => reason.id === id)).filter((reason) => reason !== undefined);
     const titleId = React.useId();
+    const firstChip = React.useRef<HTMLButtonElement | null>(null);
+    // [SAFETY] Focus moves only on mount and only when asked: a panel that re-renders never steals focus again.
+    React.useEffect(() => {
+      if (autoFocus) firstChip.current?.focus();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const [note, setNote] = React.useState('');
     const toggle = (reason: FeedbackReason) => {
       const on = !chosenIds.includes(reason.id);
@@ -61,9 +68,10 @@ const FeedbackPanelImpl = React.forwardRef<HTMLDivElement, FeedbackPanelProps>(
           {labels.title}
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {reasons.map((reason) => (
+          {reasons.map((reason, index) => (
             <button
               key={reason.id}
+              ref={index === 0 ? firstChip : undefined}
               type="button"
               data-slot="feedback-chip"
               aria-pressed={chosenIds.includes(reason.id)}

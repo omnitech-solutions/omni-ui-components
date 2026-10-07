@@ -139,7 +139,7 @@ export function BodyCell<TRecord, TRowData>({
   const rawValue = internalOverride !== undefined ? internalOverride : rawCellValue(resolved.record, resolved.row, col);
   const value = internalOverride !== undefined ? internalOverride : cellValue(resolved.record, resolved.row, col);
   const ctx: TableCellRenderContext<TRecord, TRowData> = { record: resolved.record, row: resolved.row, column: col, rowIndex, columnIndex, registry };
-  const cellProps = { ...(resolved.row.onCell?.(col, columnIndex) ?? {}), ...(col.onCell?.(resolved.record, rowIndex, resolved.row) ?? {}) };
+  const cellProps = { ...resolved.row.onCell?.(col, columnIndex), ...col.onCell?.(resolved.record, rowIndex, resolved.row) };
   const {
     className: cellClassName,
     style: cellStyle,

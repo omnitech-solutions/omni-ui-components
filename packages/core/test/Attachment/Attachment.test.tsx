@@ -10,11 +10,13 @@ import {
   AttachmentStrip,
   DEFAULT_ATTACHMENT_TYPES,
   type AttachmentItem,
+  useAttachmentDrop,
   useAttachmentList,
   useFilePreviews,
   validateFiles,
 } from '@oc-tech/omni-ui-components/Attachment';
-import { manyItems, readyItems, statusItems } from 'factories/omni-ui-components/Attachment/Attachment.factories';
+import { Composer } from '@oc-tech/omni-ui-components/Composer';
+import { manyItems, planForFile, readyItems, statusItems, useAttachmentUploads } from 'factories/omni-ui-components/Attachment/Attachment.factories';
 
 const file = (name: string, type = 'text/plain', size = 10) => {
   const f = new File(['x'], name, { type });
@@ -224,6 +226,83 @@ describe('omni-ui-components/Attachment', () => {
       act(() => rerender({ files: [] }));
       expect(revoke).toHaveBeenCalledWith('blob:1');
       unmount();
+    });
+  });
+  describe('one allowlist for the picker, drop, paste and validation', () => {
+    const allowed = ['text/plain', 'application/pdf', 'image/png'];
+    const picked = (accept: string | null) => (accept ?? '').split(',');
+
+    it('the default picker accept attribute is exactly the default validation list', () => {
+      expect(picked(acceptAttribute())).toEqual([...DEFAULT_ATTACHMENT_TYPES]);
+      for (const type of DEFAULT_ATTACHMENT_TYPES) expect(validateFiles([file('f', type)])).toBeNull();
+      expect(validateFiles([file('f.zip', 'application/zip')])?.code).toBe('type');
+    });
+
+    it('useAttachmentDrop: inputProps.accept, a dropped file and a pasted file all follow the same custom list', () => {
+      const onFiles = vi.fn();
+      const onReject = vi.fn();
+      const { result } = renderHook(() => useAttachmentDrop({ accept: allowed, onFiles, onReject }));
+      expect(picked(result.current.inputProps.accept)).toEqual(allowed);
+      // Every type the picker offers is accepted when added by any route.
+      for (const type of allowed) result.current.addFiles([file('ok', type)]);
+      expect(onFiles).toHaveBeenCalledTimes(allowed.length);
+      expect(onReject).not.toHaveBeenCalled();
+      // A type the picker hides is refused when dropped and ignored when pasted.
+      result.current.addFiles([file('x.md', 'text/markdown')]);
+      expect(onReject).toHaveBeenCalledWith(expect.objectContaining({ code: 'type' }));
+      const preventDefault = vi.fn();
+      result.current.onPaste({ clipboardData: { files: [file('x.md', 'text/markdown')] }, preventDefault } as never);
+      expect(preventDefault).not.toHaveBeenCalled();
+      expect(onFiles).toHaveBeenCalledTimes(allowed.length);
+    });
+
+    it('Composer: its hidden picker input carries the same accept as validation', () => {
+      const { container, rerender } = render(<Composer value="" onChange={() => {}} onFiles={() => {}} />);
+      const input = () => container.querySelector('input[type="file"]') as HTMLInputElement;
+      expect(picked(input().getAttribute('accept'))).toEqual([...DEFAULT_ATTACHMENT_TYPES]);
+      rerender(<Composer value="" onChange={() => {}} onFiles={() => {}} fileLimits={{ accept: allowed }} />);
+      expect(picked(input().getAttribute('accept'))).toEqual(allowed);
+    });
+  });
+
+  describe('useAttachmentUploads (example host state)', () => {
+    afterEach(() => vi.useRealTimers());
+
+    it('goes uploading (progress) -> extracting -> ready for a PDF', () => {
+      vi.useFakeTimers();
+      const { result } = renderHook(() => useAttachmentUploads());
+      act(() => result.current.add([file('cv.pdf', 'application/pdf')]));
+      expect(result.current.items[0]).toMatchObject({ name: 'cv.pdf', status: 'uploading', progress: 0 });
+      act(() => void vi.advanceTimersByTime(600));
+      expect(result.current.items[0].progress).toBe(50);
+      act(() => void vi.advanceTimersByTime(600));
+      expect(result.current.items[0].status).toBe('extracting');
+      act(() => void vi.advanceTimersByTime(700));
+      expect(result.current.items[0].status).toBe('ready');
+    });
+
+    it('a text file skips extracting; a failing upload ends failed ("Not sent" in the card) and retry restarts it', () => {
+      vi.useFakeTimers();
+      const { result } = renderHook(() => useAttachmentUploads());
+      act(() => result.current.add([file('a.txt'), file('fail-upload.txt')]));
+      act(() => void vi.advanceTimersByTime(1200));
+      expect(result.current.items.map((item) => item.status)).toEqual(['ready', 'failed']);
+      render(<AttachmentCard item={result.current.items[1]} />);
+      expect(screen.getByText('Not sent')).toBeInTheDocument();
+      act(() => result.current.retry(result.current.items[1]));
+      expect(result.current.items[1].status).toBe('uploading');
+    });
+
+    it('an extraction failure carries its error text; remove is refused while uploading but works once failed', () => {
+      vi.useFakeTimers();
+      const { result } = renderHook(() => useAttachmentUploads({ plan: (f) => (f.name === 'x.pdf' ? { failAt: 'extract' } : planForFile(f)) }));
+      act(() => result.current.add([file('x.pdf', 'application/pdf')]));
+      act(() => result.current.remove(result.current.items[0]));
+      expect(result.current.items).toHaveLength(1);
+      act(() => void vi.advanceTimersByTime(1900));
+      expect(result.current.items[0]).toMatchObject({ status: 'failed', error: 'Could not read this file' });
+      act(() => result.current.remove(result.current.items[0]));
+      expect(result.current.items).toHaveLength(0);
     });
   });
 });

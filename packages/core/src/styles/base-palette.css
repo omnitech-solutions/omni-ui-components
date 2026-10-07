@@ -1,13 +1,19 @@
 /* Base Palette — immutable across themes
  * Moved from app/assets/stylesheets/base/_base_variables.scss
  */
-:root {
-  color-scheme: light;
+@layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base,
+  omni-ui-components.utilities, omni-ui-components.classes;
 
+/* `color-scheme` is not set on :root: a host that sets its own (or none) keeps it. Library themes set it on [data-theme]. */
+@layer omni-ui-components.palette {
+[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root {
   /* -------------------------------------------
     Base palette (unchanged across themes)
   -------------------------------------------- */
-
   /* Greyscale */
   --black: #000000;
   --grey-1: #141414;
@@ -37,38 +43,19 @@
   /* Ant Design-style theme seeds.
      Minimal customization:
        :root { --oui-primary: #1677ff; --oui-background: #fafafa; }
-
      Optional:
        :root { --oui-background-dark: #1d1d1d; }
-       :root { --oui-primary-1: ...; ... --oui-primary-10: ...; }
-
+       :root, [data-theme] { --oui-primary-1: ...; ... --oui-primary-10: ...; }   (stops are derived, so a host sets them on both)
      If palette stops are not provided, they are derived from the primary
      and current background with color-mix so one seed color is enough. */
   --oui-primary: #1677ff;
   --oui-background: #fafafa;
   --oui-background-dark: #1d1d1d;
-  --oui-background-current: var(--oui-background);
-
-  --oui-primary-1: color-mix(in srgb, var(--oui-primary) 9%, var(--oui-background-current));
-  --oui-primary-2: color-mix(in srgb, var(--oui-primary) 18%, var(--oui-background-current));
-  --oui-primary-3: color-mix(in srgb, var(--oui-primary) 32%, var(--oui-background-current));
-  --oui-primary-4: color-mix(in srgb, var(--oui-primary) 46%, var(--oui-background-current));
-  --oui-primary-5: color-mix(in srgb, var(--oui-primary) 72%, var(--oui-background-current));
-  --oui-primary-6: var(--oui-primary);
-  --oui-primary-7: color-mix(in srgb, var(--oui-primary) 85%, var(--black));
-  --oui-primary-8: color-mix(in srgb, var(--oui-primary) 68%, var(--black));
-  --oui-primary-9: color-mix(in srgb, var(--oui-primary) 52%, var(--black));
-  --oui-primary-10: color-mix(in srgb, var(--oui-primary) 36%, var(--black));
 
   /* Brand colors (unchanged across themes) */
-  --color-primary: var(--oui-primary-6);
   --color-danger: #ff4d4f;
-  --color-info: var(--color-primary);
-  --color-primary-dark-alt: color-mix(in srgb, var(--oui-primary) 14%, var(--oui-background-dark));
-  --color-zoom: var(--oui-primary-6);
 
   /* Accent colors (unchanged across themes) */
-  --color-accent-blue: var(--oui-primary-4);
   --color-accent-yellow: #faad14;
   --color-accent-yellow-dark: #d48806;
   --color-accent-brown: #8c6d1f;
@@ -150,84 +137,30 @@
   /* -------------------------------------------
     Light + dark values for theme variables file
   -------------------------------------------- */
-
   /* Brand variants */
-  --color-primary-contrast-light: var(--white);
   --color-primary-contrast-dark: #ffffffe0;
-  --color-primary-dark-light: var(--oui-primary-7);
-  --color-primary-dark-dark: var(--oui-primary-4);
   --color-danger-dark-light: #cf1322;
   --color-danger-dark-dark: #ff7875;
   --color-danger-light-light: #fff2f0;
   --color-danger-light-dark: #2a1215;
 
   /* Background components */
-  --bg-content-light: var(--oui-background);
-  --bg-content-dark: var(--oui-background-dark);
-  --bg-content-alt-light: color-mix(in srgb, var(--black) 4%, var(--oui-background));
-  --bg-content-alt-dark: color-mix(in srgb, var(--white) 8%, var(--oui-background-dark));
-  --bg-content-document-light: var(--oui-primary-1);
-  --bg-content-document-dark: color-mix(in srgb, var(--oui-primary) 12%, var(--oui-background-dark));
-  --bg-content-empty-light: color-mix(in srgb, var(--black) 2%, var(--oui-background));
-  --bg-content-empty-dark: color-mix(in srgb, var(--white) 8%, var(--oui-background-dark));
-  --bg-panel-light: var(--oui-background);
-  --bg-panel-dark: color-mix(in srgb, var(--white) 8%, var(--oui-background-dark));
-  --bg-input-hover-light: var(--oui-primary-1);
-  --bg-input-hover-dark: color-mix(in srgb, var(--oui-primary) 18%, transparent);
-  --bg-input-hover-subtle-light: color-mix(in srgb, var(--oui-primary) 7%, var(--oui-background));
-  --bg-input-hover-subtle-dark: color-mix(in srgb, var(--oui-primary) 10%, transparent);
-  --bg-input-hover-active-light: var(--oui-primary-2);
-  --bg-input-hover-active-dark: color-mix(in srgb, var(--oui-primary) 24%, transparent);
-  --bg-brand-muted-light: var(--oui-primary-1);
-  --bg-brand-muted-dark: var(--color-primary-dark-alt);
-  --bg-brand-dark-light: var(--oui-primary-7);
-  --bg-brand-dark-dark: var(--color-primary-dark-alt);
-  --bg-field-light: var(--oui-background);
-  --bg-field-dark: var(--oui-background-dark);
   --bg-field-disabled-light: #f5f5f5;
   --bg-field-disabled-dark: #1f1f1f;
-  --bg-shadow-light: var(--black);
   --bg-shadow-dark: rgba(0, 0, 0, 0.1);
   --bg-tooltip-light: #000000d9;
   --bg-tooltip-dark: #f5f5f5;
   --bg-inverse-light: #141414;
   --bg-inverse-dark: #ffffff;
 
-  /* Background greyscale */
-  --bg-grey-fd-light: var(--grey-fd);
-  --bg-grey-fd-dark: var(--grey-1);
-  --bg-grey-fc-light: var(--grey-fc);
-  --bg-grey-fc-dark: var(--grey-1);
-  --bg-grey-fa-light: var(--grey-fa);
-  --bg-grey-fa-dark: var(--grey-2);
-  --bg-grey-f8-light: var(--grey-f8);
-  --bg-grey-f8-dark: var(--grey-2);
-  --bg-grey-f5-light: var(--grey-f5);
-  --bg-grey-f5-dark: var(--grey-2);
-  --bg-grey-f1-light: var(--grey-f1);
-  --bg-grey-f1-dark: var(--grey-2);
-  --bg-grey-e-light: var(--grey-e);
-  --bg-grey-e-dark: var(--grey-3);
-  --bg-grey-c-light: var(--grey-c);
-  --bg-grey-c-dark: var(--grey-c);
-  --bg-grey-8-light: var(--grey-8);
-  --bg-grey-8-dark: var(--grey-2);
-
   /* Inverted backgrounds */
-  --bg-inverse-expense-light: var(--grey-3);
-  --bg-inverse-expense-dark: var(--grey-e);
   --bg-panel-semi-transparent-light: rgba(255, 255, 255, 0.95);
-  --bg-panel-semi-transparent-dark: color-mix(in srgb, var(--grey-1) 90%, transparent);
 
   /* Switch/Toggle components */
   --bg-switch-light: #00000040;
   --bg-switch-dark: #ffffff40;
-  --bg-switch-indicator-light: var(--white);
-  --bg-switch-indicator-dark: var(--grey-2);
   --bg-switch-toggle-light: #f5f5f5;
   --bg-switch-toggle-dark: #141414;
-  --bg-switch-toggle-active-light: var(--white);
-  --bg-switch-toggle-active-dark: var(--grey-3);
   --text-switch-light: #00000073;
   --text-switch-dark: #ffffff73;
   --text-switch-hover-light: #000000d9;
@@ -238,46 +171,12 @@
   /* Button specific */
   --bg-button-default-light: #ffffff;
   --bg-button-default-dark: #141414;
-  --border-button-hover-light: var(--color-primary);
   --border-button-hover-dark: #69b1ff;
 
   /* Component-specific semantic colors */
-  --bg-tag-text-light: color-mix(in srgb, var(--black) 70%, transparent);
-  --bg-tag-text-dark: var(--white);
-  --bg-tag-text-hover-light: color-mix(in srgb, var(--black) 80%, transparent);
-  --bg-tag-text-hover-dark: var(--white);
-  --border-chart-light: var(--grey-e);
-  --border-chart-dark: var(--grey-4);
-  --border-chart-row-light: var(--grey-e);
-  --border-chart-row-dark: var(--grey-4);
-  --stroke-calendar-light: var(--grey-e);
   --stroke-calendar-dark: #141414;
-  --border-calendar-hover-light: color-mix(in srgb, var(--black) 20%, transparent);
-  --border-calendar-hover-dark: color-mix(in srgb, var(--white) 20%, transparent);
-  --shadow-drawer-light: 10px 0 22px color-mix(in srgb, var(--black) 5%, transparent);
   --shadow-drawer-dark: none;
-  --shadow-gantt-light: color-mix(in srgb, var(--black) 10%, transparent);
-  --shadow-gantt-dark: color-mix(in srgb, var(--white) 30%, transparent);
-  --shadow-gantt-hover-light: color-mix(in srgb, var(--black) 15%, transparent);
-  --shadow-gantt-hover-dark: color-mix(in srgb, var(--white) 30%, transparent);
-  --bg-timetracker-row-light: var(--grey-fc);
-  --bg-timetracker-row-dark: var(--grey-1);
-  --shadow-timetracker-light: color-mix(in srgb, var(--black) 10%, transparent);
-  --shadow-timetracker-dark: color-mix(in srgb, var(--white) 12%, transparent);
-  --bg-invoice-badge-light: var(--grey-3);
-  --bg-invoice-badge-dark: var(--grey-2);
-  --text-invoice-badge-light: var(--white);
-  --text-invoice-badge-dark: var(--grey-9);
-  --bg-wysiwyg-placeholder-light: var(--grey-f5);
-  --bg-wysiwyg-placeholder-dark: var(--grey-2);
-  --bg-list-grid-row-light: var(--grey-fc);
   --bg-list-grid-row-dark: #141414;
-  --border-react-select-menu-light: 1px solid var(--grey-e);
-  --border-react-select-menu-dark: 1px solid var(--grey-3);
-  --bg-client-portal-item-light: color-mix(in srgb, var(--black) 2%, transparent);
-  --bg-client-portal-item-dark: color-mix(in srgb, var(--white) 5%, transparent);
-  --bg-timeline-striped-light: color-mix(in srgb, var(--black) 3%, transparent);
-  --bg-timeline-striped-dark: color-mix(in srgb, var(--white) 5%, transparent);
   --bg-warning-notice-light: #fffbe6;
   --bg-warning-notice-dark: #2b2111;
   --bg-sidebar-light: #f5f5f5;
@@ -294,10 +193,6 @@
   --text-lighter-dark: #ffffff40;
   --text-lightest-light: #00000026;
   --text-lightest-dark: #ffffff26;
-  --text-tooltip-light: var(--white);
-  --text-tooltip-dark: var(--grey-e);
-  --text-inverse-light: var(--white);
-  --text-inverse-dark: var(--black);
   --text-semi-transparent-light: #000000a6;
   --text-semi-transparent-dark: #ffffffa6;
   --text-semi-transparent-muted-light: #00000073;
@@ -324,9 +219,155 @@
   --border-field-applied-dark: #1668dc;
 
   /* List items */
+  --bg-list-grouped-header-light: #f5f5f5;
+
+  /* Deprecated branding colors */
+  --text-info-dark: #69b1ff;
+  --bg-yellow-light: #fffbe6;
+  --bg-yellow-dark: #2b2111;
+}
+
+/* Derived values: every declaration that reads another custom property (a colour-mix of the seed and the current background, a
+   `-light`/`-dark` pair, a brand alias) is declared on `:root` AND on every theme root, because `var()` resolves on the element that
+   declares it: a value derived once on `:root` stays light inside a `data-theme="dark"` subtree. Seeds (`--oui-primary`,
+   `--oui-background`, `--oui-background-dark`) and fixed values stay on `:root` only, so a host overrides them on any ancestor.
+   To re-brand a subtree, put `data-theme` on it and the seeds on the same element. See bionic/research/references/theme-contract.md. */
+:root,
+[data-theme] {
+
+  /* Palette stops, derived from the seeds and the current background (so a dark subtree gets dark-mixed stops). */
+  --oui-background-current: var(--oui-background);
+  --oui-primary-1: color-mix(in srgb, var(--oui-primary) 9%, var(--oui-background-current));
+  --oui-primary-2: color-mix(in srgb, var(--oui-primary) 18%, var(--oui-background-current));
+  --oui-primary-3: color-mix(in srgb, var(--oui-primary) 32%, var(--oui-background-current));
+  --oui-primary-4: color-mix(in srgb, var(--oui-primary) 46%, var(--oui-background-current));
+  --oui-primary-5: color-mix(in srgb, var(--oui-primary) 72%, var(--oui-background-current));
+  --oui-primary-6: var(--oui-primary);
+  --oui-primary-7: color-mix(in srgb, var(--oui-primary) 85%, var(--black));
+  --oui-primary-8: color-mix(in srgb, var(--oui-primary) 68%, var(--black));
+  --oui-primary-9: color-mix(in srgb, var(--oui-primary) 52%, var(--black));
+  --oui-primary-10: color-mix(in srgb, var(--oui-primary) 36%, var(--black));
+
+  /* Brand colors (unchanged across themes) */
+  --color-primary: var(--oui-primary-6);
+  --color-info: var(--color-primary);
+  --color-primary-dark-alt: color-mix(in srgb, var(--oui-primary) 14%, var(--oui-background-dark));
+  --color-zoom: var(--oui-primary-6);
+
+  /* Accent colors (unchanged across themes) */
+  --color-accent-blue: var(--oui-primary-4);
+
+  /* -------------------------------------------
+    Light + dark values for theme variables file
+  -------------------------------------------- */
+  /* Brand variants */
+  --color-primary-contrast-light: var(--white);
+  --color-primary-dark-light: var(--oui-primary-7);
+  --color-primary-dark-dark: var(--oui-primary-4);
+
+  /* Background components */
+  --bg-content-light: var(--oui-background);
+  --bg-content-dark: var(--oui-background-dark);
+  --bg-content-alt-light: color-mix(in srgb, var(--black) 4%, var(--oui-background));
+  --bg-content-alt-dark: color-mix(in srgb, var(--white) 8%, var(--oui-background-dark));
+  --bg-content-document-light: var(--oui-primary-1);
+  --bg-content-document-dark: color-mix(in srgb, var(--oui-primary) 12%, var(--oui-background-dark));
+  --bg-content-empty-light: color-mix(in srgb, var(--black) 2%, var(--oui-background));
+  --bg-content-empty-dark: color-mix(in srgb, var(--white) 8%, var(--oui-background-dark));
+  --bg-panel-light: var(--oui-background);
+  --bg-panel-dark: color-mix(in srgb, var(--white) 8%, var(--oui-background-dark));
+  --bg-input-hover-light: var(--oui-primary-1);
+  --bg-input-hover-dark: color-mix(in srgb, var(--oui-primary) 18%, transparent);
+  --bg-input-hover-subtle-light: color-mix(in srgb, var(--oui-primary) 7%, var(--oui-background));
+  --bg-input-hover-subtle-dark: color-mix(in srgb, var(--oui-primary) 10%, transparent);
+  --bg-input-hover-active-light: var(--oui-primary-2);
+  --bg-input-hover-active-dark: color-mix(in srgb, var(--oui-primary) 24%, transparent);
+  --bg-brand-muted-light: var(--oui-primary-1);
+  --bg-brand-muted-dark: var(--color-primary-dark-alt);
+  --bg-brand-dark-light: var(--oui-primary-7);
+  --bg-brand-dark-dark: var(--color-primary-dark-alt);
+  --bg-field-light: var(--oui-background);
+  --bg-field-dark: var(--oui-background-dark);
+  --bg-shadow-light: var(--black);
+
+  /* Background greyscale */
+  --bg-grey-fd-light: var(--grey-fd);
+  --bg-grey-fd-dark: var(--grey-1);
+  --bg-grey-fc-light: var(--grey-fc);
+  --bg-grey-fc-dark: var(--grey-1);
+  --bg-grey-fa-light: var(--grey-fa);
+  --bg-grey-fa-dark: var(--grey-2);
+  --bg-grey-f8-light: var(--grey-f8);
+  --bg-grey-f8-dark: var(--grey-2);
+  --bg-grey-f5-light: var(--grey-f5);
+  --bg-grey-f5-dark: var(--grey-2);
+  --bg-grey-f1-light: var(--grey-f1);
+  --bg-grey-f1-dark: var(--grey-2);
+  --bg-grey-e-light: var(--grey-e);
+  --bg-grey-e-dark: var(--grey-3);
+  --bg-grey-c-light: var(--grey-c);
+  --bg-grey-c-dark: var(--grey-c);
+  --bg-grey-8-light: var(--grey-8);
+  --bg-grey-8-dark: var(--grey-2);
+
+  /* Inverted backgrounds */
+  --bg-inverse-expense-light: var(--grey-3);
+  --bg-inverse-expense-dark: var(--grey-e);
+  --bg-panel-semi-transparent-dark: color-mix(in srgb, var(--grey-1) 90%, transparent);
+
+  /* Switch/Toggle components */
+  --bg-switch-indicator-light: var(--white);
+  --bg-switch-indicator-dark: var(--grey-2);
+  --bg-switch-toggle-active-light: var(--white);
+  --bg-switch-toggle-active-dark: var(--grey-3);
+
+  /* Button specific */
+  --border-button-hover-light: var(--color-primary);
+
+  /* Component-specific semantic colors */
+  --bg-tag-text-light: color-mix(in srgb, var(--black) 70%, transparent);
+  --bg-tag-text-dark: var(--white);
+  --bg-tag-text-hover-light: color-mix(in srgb, var(--black) 80%, transparent);
+  --bg-tag-text-hover-dark: var(--white);
+  --border-chart-light: var(--grey-e);
+  --border-chart-dark: var(--grey-4);
+  --border-chart-row-light: var(--grey-e);
+  --border-chart-row-dark: var(--grey-4);
+  --stroke-calendar-light: var(--grey-e);
+  --border-calendar-hover-light: color-mix(in srgb, var(--black) 20%, transparent);
+  --border-calendar-hover-dark: color-mix(in srgb, var(--white) 20%, transparent);
+  --shadow-drawer-light: 10px 0 22px color-mix(in srgb, var(--black) 5%, transparent);
+  --shadow-gantt-light: color-mix(in srgb, var(--black) 10%, transparent);
+  --shadow-gantt-dark: color-mix(in srgb, var(--white) 30%, transparent);
+  --shadow-gantt-hover-light: color-mix(in srgb, var(--black) 15%, transparent);
+  --shadow-gantt-hover-dark: color-mix(in srgb, var(--white) 30%, transparent);
+  --bg-timetracker-row-light: var(--grey-fc);
+  --bg-timetracker-row-dark: var(--grey-1);
+  --shadow-timetracker-light: color-mix(in srgb, var(--black) 10%, transparent);
+  --shadow-timetracker-dark: color-mix(in srgb, var(--white) 12%, transparent);
+  --bg-invoice-badge-light: var(--grey-3);
+  --bg-invoice-badge-dark: var(--grey-2);
+  --text-invoice-badge-light: var(--white);
+  --text-invoice-badge-dark: var(--grey-9);
+  --bg-wysiwyg-placeholder-light: var(--grey-f5);
+  --bg-wysiwyg-placeholder-dark: var(--grey-2);
+  --bg-list-grid-row-light: var(--grey-fc);
+  --border-react-select-menu-light: 1px solid var(--grey-e);
+  --border-react-select-menu-dark: 1px solid var(--grey-3);
+  --bg-client-portal-item-light: color-mix(in srgb, var(--black) 2%, transparent);
+  --bg-client-portal-item-dark: color-mix(in srgb, var(--white) 5%, transparent);
+  --bg-timeline-striped-light: color-mix(in srgb, var(--black) 3%, transparent);
+  --bg-timeline-striped-dark: color-mix(in srgb, var(--white) 5%, transparent);
+
+  /* Text colors */
+  --text-tooltip-light: var(--white);
+  --text-tooltip-dark: var(--grey-e);
+  --text-inverse-light: var(--white);
+  --text-inverse-dark: var(--black);
+
+  /* List items */
   --bg-hover-subtle-light: var(--oui-primary-1);
   --bg-hover-subtle-dark: color-mix(in srgb, var(--oui-primary) 12%, var(--oui-background-dark));
-  --bg-list-grouped-header-light: #f5f5f5;
   --bg-list-grouped-header-dark: var(--grey-2);
   --bg-list-grouped-header-document-light: var(--grey-f5);
   --bg-list-grouped-header-document-dark: var(--grey-1);
@@ -340,15 +381,13 @@
   --chart-tooltip-bg-dark: var(--grey-2);
 
   /* Deprecated branding colors */
-  --text-info-dark: #69b1ff;
   --bg-info-light-val: var(--oui-primary-1);
   --bg-info-dark-val: color-mix(in srgb, var(--oui-primary) 12%, var(--oui-background-dark));
   --bg-info-light-light: var(--oui-primary-2);
   --bg-info-light-dark: color-mix(in srgb, var(--oui-primary) 25%, var(--oui-background-dark));
   --bg-info-lighter-light: color-mix(in srgb, var(--oui-primary) 6%, var(--oui-background));
   --bg-info-lighter-dark: color-mix(in srgb, var(--oui-primary) 12%, var(--oui-background-dark));
-  --bg-yellow-light: #fffbe6;
-  --bg-yellow-dark: #2b2111;
   --bg-highlight-light: var(--oui-primary-1);
   --bg-highlight-dark: color-mix(in srgb, var(--oui-primary) 12%, var(--oui-background-dark));
+}
 }

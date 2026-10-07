@@ -24,7 +24,7 @@ export const composerBoxVariants = cva(
 
 /** The textarea: borderless, transparent, grows with its content (height is set inline up to `maxHeight`). */
 export const composerTextareaClasses = [
-  'block min-h-[24px] w-full min-w-0 flex-1 resize-none border-0 bg-transparent p-0 px-1 font-[family-name:var(--oui-font-sans)] text-[13.5px] leading-[1.5]',
+  'block min-h-[24px] w-full min-w-0 flex-auto resize-none border-0 bg-transparent p-0 px-1 font-[family-name:var(--oui-font-sans)] text-[13.5px] leading-[1.5]',
   'text-[color:var(--oui-foreground)] outline-none placeholder:text-[color:var(--oui-panel-meta-fg)] disabled:cursor-not-allowed',
 ].join(' ');
 

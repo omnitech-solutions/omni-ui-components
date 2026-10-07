@@ -1,0 +1,36 @@
+name: Verify
+
+on:
+  pull_request:
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # lint, typecheck, test, build (the local gate)
+      - run: pnpm verify
+
+      - run: pnpm storybook:build
+
+      # run every story's `play` in real Chromium (vitest browser mode + @storybook/addon-vitest)
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:storybook

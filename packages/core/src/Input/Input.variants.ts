@@ -43,7 +43,7 @@ export const inputVariants = cva(
          * Set the token on any ancestor; the unset default is opaque.
          */
         panel: [
-          'rounded-[9px] border-transparent text-[13px]',
+          'rounded-[9px] border-transparent text-[13px] text-ellipsis',
           'bg-[color:color-mix(in_srgb,var(--oui-panel-dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)]',
           'placeholder:text-[color:var(--oui-panel-meta-fg)]',
           'hover:border-transparent focus-visible:border-[var(--oui-border-interactive)]',
@@ -65,6 +65,9 @@ export const inputVariants = cva(
     defaultVariants: { variant: 'bordered', inputSize: 'default' },
   },
 );
+
+/** Extra classes of the multiline `<textarea>`: height is set inline (auto-grow), so the size row's fixed height is dropped. */
+export const multilineClasses = 'h-auto min-h-[var(--oui-field-height-md)] resize-none leading-[1.5]';
 
 export type InputVariantProps = VariantProps<typeof inputVariants>;
 export type InputVariant = NonNullable<InputVariantProps['variant']>;

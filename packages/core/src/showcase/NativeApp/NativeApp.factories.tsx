@@ -148,7 +148,7 @@ export const StateLabel: React.FC<React.PropsWithChildren> = ({ children }) => (
 /**
  * The whole Native App window: toolbar, panels and footer, in one blue backdrop `width` wide. State lives here
  * (analysing, paused, visible panels) so the controls drive the real library parts the way the app does:
- * pressing capture or Stop toggles a run, Pause and Resume flip the session, hiding Code reflows to two panels.
+ * pressing capture or Stop toggles a run, Pause and Resume flip the session, hiding any panel reflows the rest (the last one stays).
  */
 export const NativeAppWindow: React.FC<NativeAppArgs> = ({
   seeThrough,
@@ -175,12 +175,12 @@ export const NativeAppWindow: React.FC<NativeAppArgs> = ({
     if (name === "panels:change") setPanels(detail as string[]);
   };
 
-  const codeHidden = !panels.includes("code");
-  const panelState: NativePanelsState = codeHidden
-    ? "answer"
-    : analysing
-      ? "analysing"
-      : "ready";
+  const visible = {
+    chat: panels.includes("chat"),
+    answer: panels.includes("answer"),
+    code: panels.includes("code"),
+  };
+  const panelState: NativePanelsState = analysing ? "analysing" : "ready";
 
   if (width <= 400) {
     return (
@@ -213,6 +213,7 @@ export const NativeAppWindow: React.FC<NativeAppArgs> = ({
       </div>
       <NativePanelsDemo
         state={panelState}
+        visible={visible}
         seeThrough={seeThrough}
         width={width}
         onAction={report}
@@ -267,12 +268,10 @@ export const captureOptions = (): Array<{
         {
           main: {
             label: "Capture, Manual",
-            icon: (
-              <span className="inline-flex items-center gap-2 text-[15px]">
-                <Monitor className="!size-5" />
-                Manual
-              </span>
-            ),
+            caption: "Manual",
+            labelInline: true,
+            icon: <Monitor />,
+            tooltip: "Manual · click to analyse",
           },
           menu,
         },
@@ -285,16 +284,18 @@ export const captureOptions = (): Array<{
         "Auto is one click away, like ⌥⇧U. It's explicit, but it adds a third segment that people may confuse with see-through.",
       controls: [
         {
-          main: {
-            label: "Capture and auto toggle",
-            icon: (
-              <span className="inline-flex items-center gap-3">
-                <Monitor className="!size-5" />
-                <Eye className="!size-5 text-[color:var(--oui-tone-accent-fg)]" />
-              </span>
-            ),
-          },
-          menu,
+          main: { ...main, tooltip: "Analyse now" },
+          segments: [
+            {
+              id: "auto",
+              label: "Auto",
+              icon: <Eye />,
+              pressed: true,
+              tooltip: "Auto · re-analyses when the screen changes",
+              shortcut: ["⌥", "⇧", "U"],
+            },
+          ],
+          menu: captureMenuSpec("auto"),
         },
       ],
     },

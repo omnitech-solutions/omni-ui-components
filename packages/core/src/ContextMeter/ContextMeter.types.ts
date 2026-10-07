@@ -55,5 +55,7 @@ export interface ContextMeterProps<S extends ContextSection = ContextSection> ex
   labels?: Partial<ContextMeterLabels>;
   /** Classes of the popover. */
   menuClassName?: string;
+  /** Portal target for the popover; default `document.body`. Lets a native host render it inside its own root. */
+  container?: HTMLElement | null;
   'data-testid'?: string;
 }

@@ -3,7 +3,7 @@ import * as React from 'react';
 import userEvent from '@testing-library/user-event';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 
-import { CommandPopover, type CommandItem, MENTION_PATTERN, mentionTrigger, SLASH_PATTERN, slashTrigger, useCommandTrigger } from '@oc-tech/omni-ui-components/CommandPopover';
+import { CommandPopover, type CommandItem, MENTION_PATTERN, mentionTrigger, SAVED_PROMPTS_PATTERN, savedPromptsTrigger, SLASH_PATTERN, slashTrigger, useCommandTrigger } from '@oc-tech/omni-ui-components/CommandPopover';
 import { commandPopoverPropsFactory, slashCommands, surfaceItems } from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
 
 const ClippedHost: React.FC = () => {
@@ -231,5 +231,59 @@ describe('omni-ui-components/CommandPopover', () => {
       await userEvent.type(screen.getByLabelText('box'), '@qqq');
       expect(screen.getByText('Nothing matches')).toBeInTheDocument();
     });
+  });
+});
+
+describe('omni-ui-components/CommandPopover saved prompts', () => {
+  interface SavedPrompt extends CommandItem {
+    text: string;
+  }
+  const prompts: SavedPrompt[] = [
+    { id: 'star', label: 'STAR answer', description: 'Situation, task, action, result', text: 'Answer as STAR' },
+    { id: 'edge', label: 'Edge cases', text: 'List the edge cases' },
+  ];
+
+  it('the pattern needs `/prompts` and a space; the query is the rest', () => {
+    expect(SAVED_PROMPTS_PATTERN.exec('/prompts st')?.[1]).toBe('st');
+    expect(SAVED_PROMPTS_PATTERN.exec('/prompts ')?.[1]).toBe('');
+    expect(SAVED_PROMPTS_PATTERN.test('/prompts')).toBe(false);
+    expect(SAVED_PROMPTS_PATTERN.test('say /prompts x')).toBe(false);
+  });
+
+  const Host: React.FC<{ onPick: (item: SavedPrompt) => void; source?: (query: string) => readonly SavedPrompt[] | Promise<readonly SavedPrompt[]> }> = ({ onPick, source }) => {
+    const [value, setValue] = React.useState('/prompts ');
+    const command = useCommandTrigger<SavedPrompt>({
+      value,
+      triggers: [savedPromptsTrigger<SavedPrompt>({ source: source ?? prompts, onPick: (item) => (onPick(item), setValue(item.text)), popover: { label: 'Saved prompts' } })],
+    });
+    return (
+      <>
+        <textarea aria-label="m" value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={(e) => void command.onKeyDown(e)} />
+        {command.open ? <CommandPopover<SavedPrompt> {...command.popoverProps} /> : null}
+      </>
+    );
+  };
+
+  it('lists the rows, filters an array source by label and description, and onPick gets the SAME extended item', async () => {
+    const onPick = vi.fn();
+    render(<Host onPick={onPick} />);
+    expect(screen.getAllByRole('option')).toHaveLength(2);
+    await userEvent.type(screen.getByLabelText('m'), 'result');
+    expect(screen.getAllByRole('option')).toHaveLength(1);
+    await userEvent.click(screen.getByRole('option'));
+    expect(onPick.mock.calls[0][0]).toBe(prompts[0]);
+    expect(onPick.mock.calls[0][0].text).toBe('Answer as STAR');
+  });
+
+  it('a function source answers asynchronously and Enter picks the highlighted row', async () => {
+    const onPick = vi.fn();
+    const source = vi.fn((query: string) => Promise.resolve(prompts.filter((p) => p.label.toLowerCase().includes(query.toLowerCase()))));
+    render(<Host onPick={onPick} source={source} />);
+    await waitFor(() => expect(screen.getAllByRole('option')).toHaveLength(2));
+    const area = screen.getByLabelText('m');
+    area.focus();
+    await userEvent.keyboard('{ArrowDown}{Enter}');
+    expect(onPick.mock.calls[0][0]).toBe(prompts[1]);
+    expect(source).toHaveBeenCalledWith('');
   });
 });

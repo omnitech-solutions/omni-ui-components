@@ -6,6 +6,7 @@ import { VersionPager } from '../VersionPager';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
 import { useControllableState } from '../lib/use-controllable-state';
+import { useHistoryWindow } from '../lib/chat/window';
 import { DEFAULT_TRANSCRIPT_LABELS, type ChatAttachmentPart, type ChatVersion, type ConversationTurn, type TranscriptConversationProps, type TranscriptLabels, type TurnContext, type TurnSlot } from './Transcript.conversation.types';
 import { promptOf } from './Transcript.turns';
 import {
@@ -107,7 +108,7 @@ type ConversationProps<U extends ConversationTurn, V extends ChatVersion, A exte
 const call = <U extends ConversationTurn>(slot: TurnSlot<U> | undefined, turn: U, context: TurnContext) => (slot ? slot(turn, context) : null);
 
 /**
- * The turn-oriented body of the Transcript (use it through `<Transcript turns={...} />`): the "Load earlier messages"
+ * The turn-oriented body of the Transcript (use it through `<Transcript turns={...} />`): the "Load previous messages"
  * button, the empty slot, then per turn the question (attachment chips, bubble or editor, hover actions) and the
  * assistant's reply (timeline, thinking, content with the streaming caret, stopped banner, sources, actions,
  * follow-ups) with approvals and the error around it. The order and visibility rules are the original's (see
@@ -121,6 +122,8 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
   hasEarlier,
   onLoadEarlier,
   loadingEarlier,
+  windowSize,
+  windowStep,
   empty,
   readOnly = false,
   renderTurn,
@@ -143,6 +146,7 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
   editIcon,
   stoppedIcon,
   attachmentIcons,
+  attachmentVariant = 'chip',
   copyIcon,
   copyLabel,
   labels: labelsProp,
@@ -153,6 +157,8 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
   const [editValue, setEditValue] = useControllableState<string>(editValueProp, '', onEditChange);
   const root = React.useRef<HTMLDivElement>(null);
   const lastIndex = turns.length - 1;
+  // [STATE] Only the newest `windowSize` turns are drawn; `start` turns precede them.
+  const view = useHistoryWindow(turns, (turn) => turn.id, { size: windowSize, step: windowStep });
 
   // [STATE] Focus goes back to the question's edit button when its editor closes.
   const wasEditing = React.useRef<string | null>(null);
@@ -191,7 +197,7 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
     const hasActions = Boolean(versions) || canCopy || canEdit || Boolean(userActions);
     return (
       <div data-slot="transcript-user" className={conversationUserClasses}>
-        {chips.length > 0 ? <AttachmentStrip items={chips} variant="chip" readOnly layout="wrap" className="justify-end" kindIcons={attachmentIcons} onClick={onAttachmentClick} /> : null}
+        {chips.length > 0 ? <AttachmentStrip items={chips} variant={attachmentVariant} readOnly layout="wrap" className="justify-end" kindIcons={attachmentIcons} onClick={onAttachmentClick} /> : null}
         {editing ? (
           <TranscriptEditor
             value={editValue}
@@ -346,7 +352,7 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
 
   return (
     <div ref={root} className="contents">
-      {hasEarlier && onLoadEarlier ? (
+      {view.hidden > 0 || (hasEarlier && onLoadEarlier) ? (
         <Button
           type="button"
           variant="outline"
@@ -354,13 +360,18 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
           className="self-center"
           disabled={loadingEarlier}
           data-slot="transcript-load-earlier"
-          onClick={() => void onLoadEarlier(turns[0])}
+          title={labels.loadEarlierHint}
+          onClick={(event) => {
+            // Turns already in memory come first (the scroll offset from the bottom is kept); then the host fetches a page.
+            if (view.hidden > 0) view.showEarlier(event.currentTarget);
+            else void onLoadEarlier?.(turns[0]);
+          }}
         >
           {labels.loadEarlier}
         </Button>
       ) : null}
       {turns.length === 0 && !busy ? <div data-slot="transcript-empty">{empty}</div> : null}
-      {turns.map(drawTurn)}
+      {view.items.map((turn, offset) => drawTurn(turn, view.start + offset))}
     </div>
   );
 }

@@ -2,6 +2,13 @@ import * as React from 'react';
 
 export type PanelShellMode = 'panel' | 'full';
 
+export interface PanelShellLabels {
+  /** Accessible name of the backdrop behind an overlay sidebar (a click on it closes the sidebar). Default `Close conversations`. */
+  closeSidebar: string;
+  /** Accessible name of the overlay sidebar (a modal dialog while it floats). Default `Conversations`. */
+  sidebar: string;
+}
+
 export interface PanelShellProps {
   /** `panel`: a side panel next to the host page. `full`: the assistant fills the whole area and hides the host. Default `panel`. */
   mode?: PanelShellMode;
@@ -36,6 +43,7 @@ export interface PanelShellProps {
   footer?: React.ReactNode;
   /** Overlays that belong to the assistant (a Toast with `position="absolute"`). */
   overlay?: React.ReactNode;
+  labels?: Partial<PanelShellLabels>;
   /** Extra classes of the root row. */
   className?: string;
   /** Extra classes of the assistant surface. */

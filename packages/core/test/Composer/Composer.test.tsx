@@ -64,14 +64,110 @@ describe('omni-ui-components/Composer', () => {
     expect(onSubmit).toHaveBeenCalledWith({ value: 'x\ny', attachments: [] });
   });
 
-  it('ArrowUp on an empty draft recalls the last prompt with the caret at the end; not when there is text', async () => {
-    render(<Controlled onRecallPrevious={() => 'last prompt'} />);
-    const box = screen.getByRole('textbox') as HTMLTextAreaElement;
-    await userEvent.type(box, '{ArrowUp}');
-    expect(box).toHaveValue('last prompt');
-    expect(box.selectionStart).toBe('last prompt'.length);
-    await userEvent.type(box, '!{ArrowUp}');
-    expect(box).toHaveValue('last prompt!');
+  describe('history recall (the edge rule)', () => {
+    const past = ['first', 'second', 'third'];
+    const History: React.FC<Partial<React.ComponentProps<typeof Composer>> & { start?: string }> = ({ start = '', ...props }) => {
+      const at = React.useRef<number | null>(null);
+      return (
+        <Controlled
+          value={start}
+          onRecallPrevious={() => {
+            at.current = at.current === null ? past.length - 1 : Math.max(0, at.current - 1);
+            return past[at.current];
+          }}
+          onRecallNext={() => {
+            if (at.current === null || at.current >= past.length - 1) {
+              at.current = null;
+              return undefined;
+            }
+            at.current += 1;
+            return past[at.current];
+          }}
+          {...props}
+        />
+      );
+    };
+    const box = () => screen.getByRole('textbox') as HTMLTextAreaElement;
+
+    it('ArrowUp on an empty draft recalls with the caret at the end; Up again goes further back', async () => {
+      render(<History />);
+      await userEvent.type(box(), '{ArrowUp}');
+      expect(box()).toHaveValue('third');
+      expect(box().selectionStart).toBe(5);
+      await userEvent.keyboard('{ArrowUp}');
+      expect(box()).toHaveValue('second');
+    });
+
+    it('ArrowUp recalls on the first line even with text, but not from a later line', async () => {
+      render(<History />);
+      await userEvent.type(box(), 'a{Shift>}{Enter}{/Shift}b{ArrowUp}');
+      // The caret was on line 2: the arrow only moved it up inside the text.
+      expect(box()).toHaveValue('a\nb');
+      // (No layout engine here: put the caret on line 1 the way the native Up would.)
+      box().setSelectionRange(1, 1);
+      await userEvent.keyboard('{ArrowUp}');
+      expect(box()).toHaveValue('third');
+    });
+
+    it('ArrowUp does not recall while the caret is not on the first line or a range is selected', async () => {
+      render(<History start={'one\ntwo'} />);
+      box().focus();
+      box().setSelectionRange(7, 7);
+      await userEvent.keyboard('{ArrowUp}');
+      expect(box()).toHaveValue('one\ntwo');
+      box().setSelectionRange(0, 3);
+      await userEvent.keyboard('{ArrowUp}');
+      expect(box()).toHaveValue('one\ntwo');
+    });
+
+    it('Cmd+ArrowUp and Ctrl+ArrowUp recall from anywhere in a multi-line draft', async () => {
+      render(<History start={'one\ntwo'} />);
+      box().focus();
+      box().setSelectionRange(7, 7);
+      await userEvent.keyboard('{Meta>}{ArrowUp}{/Meta}');
+      expect(box()).toHaveValue('third');
+      await userEvent.keyboard('{Control>}{ArrowUp}{/Control}');
+      expect(box()).toHaveValue('second');
+    });
+
+    it('ArrowDown on the last line walks forward and past the newest restores the draft that was typed', async () => {
+      render(<History />);
+      await userEvent.type(box(), 'draft{ArrowUp}');
+      expect(box()).toHaveValue('third');
+      await userEvent.keyboard('{ArrowUp}{ArrowDown}');
+      expect(box()).toHaveValue('third');
+      await userEvent.keyboard('{ArrowDown}');
+      expect(box()).toHaveValue('draft');
+      await userEvent.keyboard('{ArrowDown}');
+      expect(box()).toHaveValue('draft');
+    });
+
+    it('Cmd+ArrowDown works from the first line of a multi-line recalled prompt', async () => {
+      render(<History />);
+      await userEvent.type(box(), '{ArrowUp}{ArrowUp}');
+      expect(box()).toHaveValue('second');
+      await userEvent.keyboard('{Meta>}{ArrowDown}{/Meta}');
+      expect(box()).toHaveValue('third');
+    });
+
+    it('typing over a recalled prompt makes it a new draft: Down no longer restores the old one', async () => {
+      render(<History start="old" />);
+      await userEvent.type(box(), '{ArrowUp}');
+      await userEvent.type(box(), '!');
+      expect(box()).toHaveValue('third!');
+      await userEvent.keyboard('{ArrowDown}');
+      expect(box()).toHaveValue('third!');
+    });
+
+    it('Shift+ArrowUp keeps its native meaning, and nothing recalls without onRecallPrevious', async () => {
+      render(<History />);
+      await userEvent.type(box(), 'x{Shift>}{ArrowUp}{/Shift}');
+      expect(box()).toHaveValue('x');
+      render(<Controlled start="" />);
+      const plain = screen.getAllByRole('textbox')[1] as HTMLTextAreaElement;
+      await userEvent.type(plain, '{ArrowUp}');
+      expect(plain).toHaveValue('');
+    });
   });
 
   it('streaming: empty draft shows Stop (button and Escape call onStop); with text it queues', async () => {

@@ -1,5 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
+import { hitAreaY } from '../internal/support/hitArea';
 import { CONTROL_TONES, pressedClasses, toneSoftClasses, toneSolidClasses } from '../internal/support/controlTone';
 
 /**
@@ -39,8 +40,7 @@ export const buttonVariants = cva(
         lg: 'h-[var(--oui-field-height-xl)] px-6 text-base',
         icon: 'h-[var(--oui-field-height-md)] w-[var(--oui-field-height-md)]',
         /** 36px control row (Native App toolbar and footer). */
-        control:
-          'h-[var(--oui-control-height)] gap-[var(--oui-control-gap)] rounded-[var(--oui-control-radius)] px-3 text-[13.5px] [&_svg]:size-[var(--oui-control-icon)]',
+        control: `${hitAreaY} h-[var(--oui-control-height)] gap-[var(--oui-control-gap)] rounded-[var(--oui-control-radius)] px-3 text-[13.5px] [&_svg]:size-[var(--oui-control-icon)]`,
         /** 52px labelled control row. */
         'control-labelled':
           'h-[var(--oui-control-height-labelled)] gap-[var(--oui-control-gap)] rounded-[var(--oui-control-radius)] px-4 text-[13.5px] [&_svg]:size-[var(--oui-control-icon)]',
@@ -52,10 +52,23 @@ export const buttonVariants = cva(
       /** Renders the leading icon filled (`fill: currentColor`). */
       fillIcon: { true: '[&_svg]:fill-current', false: '' },
     },
-    compoundVariants: CONTROL_TONES.flatMap((tone) => [
-      { tone, soft: false, className: toneSolidClasses[tone] },
-      { tone, soft: true, className: toneSoftClasses[tone] },
-    ]),
+    compoundVariants: [
+      // The hit area is measured from the padding box: tones and the outline variant draw a 1px border to add back.
+      ...CONTROL_TONES.map((tone) => ({
+        tone,
+        buttonSize: 'control' as const,
+        className: '[--oui-hit-border:1px]',
+      })),
+      {
+        variant: 'outline' as const,
+        buttonSize: 'control' as const,
+        className: '[--oui-hit-border:1px]',
+      },
+      ...CONTROL_TONES.flatMap((tone) => [
+        { tone, soft: false, className: toneSolidClasses[tone] },
+        { tone, soft: true, className: toneSoftClasses[tone] },
+      ]),
+    ],
     defaultVariants: { variant: 'default', buttonSize: 'default', soft: false, fillIcon: false },
   },
 );
