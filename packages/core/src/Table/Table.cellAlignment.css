@@ -1,3 +1,4 @@
+@layer omni-ui-components.classes {
 /*
  * Extra appearance rules that consume `appearance.*` values passed through
  * <Table> — either from the React primitive or from DocTable's renderHTML —
@@ -25,4 +26,5 @@
 .bui-table[data-cell-alignment='right'] th,
 .bui-table[data-cell-alignment='right'] td {
   text-align: right;
+}
 }
