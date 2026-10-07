@@ -2,13 +2,13 @@ import * as React from 'react';
 import { ArrowUp, AtSign, Bookmark, Check, Clock, EyeOff, Image as ImageIcon, ListPlus, Mic, Paperclip, Plus, Square, X } from 'lucide-react';
 
 import type { CommandItem } from '@oc-tech/omni-ui-components/CommandPopover';
-import { MENTION_PATTERN, SLASH_PATTERN } from '@oc-tech/omni-ui-components/CommandPopover';
+import { MENTION_PATTERN, SAVED_PROMPTS_PATTERN, SLASH_PATTERN } from '@oc-tech/omni-ui-components/CommandPopover';
 import { useFilePreviews, type AttachmentItem, type FileRejection } from '@oc-tech/omni-ui-components/Attachment';
-import { CommandPopover, mentionTrigger, slashTrigger, useCommandTrigger, DEFAULT_COMMAND_HINT } from '@oc-tech/omni-ui-components/CommandPopover';
+import { CommandPopover, mentionTrigger, savedPromptsTrigger, slashTrigger, useCommandTrigger, DEFAULT_COMMAND_HINT } from '@oc-tech/omni-ui-components/CommandPopover';
 import { Composer, ComposerNotice, PlusMenu, type ComposerProps } from '@oc-tech/omni-ui-components/Composer';
 import type { QueuedItem } from '@oc-tech/omni-ui-components/QueuedList';
 import { attachmentIcons } from '../Attachment/Attachment.factories';
-import { slashCommands, surfaceItems } from '../CommandPopover/CommandPopover.factories';
+import { savedPrompts, slashCommands, surfaceItems, type SavedPrompt } from '../CommandPopover/CommandPopover.factories';
 import type { OnAction } from '../SplitButton/SplitButton.factories';
 import type { Variant } from '../../internal/support/makeFactory';
 
@@ -51,13 +51,40 @@ export interface ComposerDemoProps {
   initialItems?: AttachmentItem[];
   /** Show the vision warning callout. */
   warning?: boolean;
-  /** Earlier prompts: ArrowUp on an empty box recalls the newest. */
+  /** Earlier prompts: ArrowUp on the first line recalls the newest, further Ups go back, ArrowDown on the last line comes forward. */
   history?: string[];
   sendOnEnter?: boolean;
   /** A message to show as the hint line. */
   hint?: string;
   onAction?: OnAction;
 }
+
+/**
+ * Prompt history for `onRecallPrevious` / `onRecallNext`: a cursor over `sent` that starts past the newest entry. Previous walks back
+ * (stopping at the oldest), next walks forward and answers nothing past the newest, which makes the Composer put the draft back.
+ */
+export const usePromptHistory = (sent: readonly string[]) => {
+  const at = React.useRef<number | null>(null);
+  return {
+    previous: () => {
+      if (sent.length === 0) return undefined;
+      at.current = at.current === null ? sent.length - 1 : Math.max(0, at.current - 1);
+      return sent[at.current];
+    },
+    next: () => {
+      if (at.current === null) return undefined;
+      if (at.current >= sent.length - 1) {
+        at.current = null;
+        return undefined;
+      }
+      at.current += 1;
+      return sent[at.current];
+    },
+    reset: () => {
+      at.current = null;
+    },
+  };
+};
 
 const DICTATION_WORDS = ['walk', 'me', 'through', 'the', 'two', 'pointer', 'approach'];
 
@@ -93,6 +120,7 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
   const [listening, setListening] = React.useState(false);
   const [heard, setHeard] = React.useState('');
   const area = React.useRef<HTMLTextAreaElement>(null);
+  const promptHistory = usePromptHistory(sent);
   const previews = useFilePreviews(files);
 
   // One list for the strip: the demo builds the items; they come back by reference in every callback.
@@ -126,7 +154,8 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
               source: slashCommands(),
               onPick: (item) => {
                 onAction?.('command', item.id);
-                setValue('');
+                // `/prompts` hands over to the saved-prompts trigger instead of clearing the box.
+                setValue(item.id === 'prompts' ? '/prompts ' : '');
                 if (item.id === 'clear') {
                   setFiles([]);
                   setExtra([]);
@@ -134,6 +163,22 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
                 }
               },
               popover: { label: 'Commands', title: 'Commands', hint: DEFAULT_COMMAND_HINT },
+            }),
+          ]
+        : []),
+      ...(commands
+        ? [
+            savedPromptsTrigger<SavedPrompt>({
+              // Async on purpose, like a library searched on a server.
+              source: (query) =>
+                new Promise<SavedPrompt[]>((resolve) =>
+                  setTimeout(() => resolve(savedPrompts().filter((item) => `${item.label} ${item.description}`.toLowerCase().includes(query.trim().toLowerCase()))), 60),
+                ),
+              onPick: (item) => {
+                setValue(item.text);
+                onAction?.('saved-prompt', item.id);
+              },
+              popover: { label: 'Saved prompts', title: 'Saved prompts', hint: DEFAULT_COMMAND_HINT },
             }),
           ]
         : []),
@@ -181,6 +226,7 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
       onChange={setValue}
       onSubmit={({ value: text, attachments: atts }) => {
         setSent((all) => [...all, text]);
+        promptHistory.reset();
         onAction?.('send', { text, files: atts.map((item) => item.name) });
         setValue('');
         setFiles([]);
@@ -200,7 +246,8 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
       onFocus={() => onAction?.('focus')}
       onBlur={() => onAction?.('blur')}
       onBeforeKeyDown={command.onKeyDown}
-      onRecallPrevious={() => sent.at(-1)}
+      onRecallPrevious={promptHistory.previous}
+      onRecallNext={promptHistory.next}
       textareaProps={{
         role: 'combobox',
         'aria-expanded': command.open,
@@ -233,6 +280,7 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
       triggers={[
         { id: 'slash', pattern: SLASH_PATTERN },
         { id: 'mention', pattern: MENTION_PATTERN },
+        { id: 'saved-prompts', pattern: SAVED_PROMPTS_PATTERN },
       ]}
       onTrigger={(event) => onAction?.('trigger', event)}
       onDictationStart={
@@ -286,7 +334,11 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
                   },
                 ]
               : []),
-            { id: 'prompts', icon: <Bookmark />, label: 'Saved prompts', description: 'Your prompt library', separated: true, onClick: () => onAction?.('prompts') },
+            { id: 'prompts', icon: <Bookmark />, label: 'Saved prompts', description: 'Your prompt library', separated: true, onClick: () => {
+              setValue('/prompts ');
+              setTimeout(api.focus, 0);
+              onAction?.('prompts');
+            } },
           ]}
         />
       )}
