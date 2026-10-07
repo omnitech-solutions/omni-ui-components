@@ -94,6 +94,8 @@ export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimit
         Placeholder.configure({ placeholder: placeholder ?? 'Start writing…' }),
       ],
       content: value,
+      // TipTap 3 stops re-rendering on transactions by default; the toolbar's pressed and undo/redo states derive from them.
+      shouldRerenderOnTransaction: true,
       editable: !disabled && !readOnly,
       onUpdate: ({ editor: ed }) => onChange?.(ed.getHTML()),
     });
