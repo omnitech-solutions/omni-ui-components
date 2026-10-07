@@ -85,11 +85,8 @@ export const ColorPickerPrimitive = React.forwardRef<HTMLButtonElement, ColorPic
                 type="color"
                 aria-label="Pick a color"
                 value={current}
-                onInput={(e) => commit((e.currentTarget as HTMLInputElement).value)}
-                onChange={(e) => {
-                  commit(e.currentTarget.value);
-                  setOpen(false);
-                }}
+                // React maps onChange to the native input event, which fires while dragging: keep the popover open.
+                onChange={(e) => commit(e.currentTarget.value)}
                 disabled={disabled || readOnly}
                 className="size-9 shrink-0 cursor-pointer rounded-md border border-[var(--oui-border-field)] bg-transparent"
               />

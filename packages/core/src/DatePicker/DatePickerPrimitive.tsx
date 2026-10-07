@@ -179,6 +179,7 @@ const DatePickerPrimitiveInner = React.forwardRef<HTMLButtonElement, DatePickerP
             ) : (
               <Calendar
                 mode="single"
+                defaultMonth={current instanceof Date ? current : undefined}
                 selected={(current as Date | undefined) ?? undefined}
                 onSelect={(next: Date | undefined) => {
                   commit(next);
