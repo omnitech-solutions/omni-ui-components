@@ -99,6 +99,8 @@
     --oui-panel-border:            #e3e6ec;
     --oui-panel-divider:           #e8ebf0; /* 1px separators under the header and over the dock */
     --oui-panel-meta-fg:           #6b7280;
+    --oui-tag-filled-bg:           #eef0f4;
+    --oui-tag-filled-fg:           #374151;
 
     /* Code colours (highlight.js classes are painted from these; derived from the assistant prototype palette). */
     --oui-code-plain:              oklch(0.28 0.02 260);
@@ -159,6 +161,8 @@
     --oui-panel-border:            #24314a;
     --oui-panel-divider:           #212c42;
     --oui-panel-meta-fg:           #7d8aa3;
+    --oui-tag-filled-bg:           #212c42;
+    --oui-tag-filled-fg:           #a9b6cf;
 
     --oui-code-plain:              oklch(0.9 0.008 260);
     --oui-code-keyword:            oklch(0.76 0.14 300);

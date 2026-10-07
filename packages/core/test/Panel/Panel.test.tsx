@@ -591,6 +591,27 @@ describe('omni-ui-components/Panel', () => {
       regions.slice(1).forEach((panel) => expect((panel as HTMLElement).style.flex).toMatch(/^1 1 0(px)?$/));
     });
 
+    it('reflows with `visible`: the transcript keeps 330 (min 300), the rest share equally, the last panel stays', () => {
+      const { rerender } = render(<NativePanelsDemo visible={{ code: false }} />);
+      expect(screen.getAllByRole('region')).toHaveLength(2);
+      rerender(<NativePanelsDemo visible={{ chat: false, code: false }} />);
+      const [only] = screen.getAllByRole('region');
+      expect(screen.getAllByRole('region')).toHaveLength(1);
+      expect((only as HTMLElement).style.flex).toMatch(/^1 1 0(px)?$/);
+      expect((only as HTMLElement).style.minWidth).not.toBe('300px');
+      rerender(<NativePanelsDemo visible={{ chat: false, answer: false, code: false }} />);
+      expect(screen.getByRole('region', { name: 'Transcript & chat' })).toBeInTheDocument();
+      rerender(<NativePanelsDemo visible={{ chat: false, answer: true, code: true }} />);
+      expect(screen.getAllByRole('region').map((region) => (region as HTMLElement).style.flex)).toEqual(
+        ['1 1 0px', '1 1 0px'].map((f) => expect.stringMatching(/^1 1 0(px)?$/)),
+      );
+    });
+
+    it('the Answer meta keeps its full text as a title', () => {
+      render(<NativePanelsDemo />);
+      expect(screen.getByTestId('answer-meta')).toHaveAttribute('title', 'Last capture 08:33 · no question found');
+    });
+
     it('sets the see-through token and the row width from props', () => {
       render(<NativePanelsDemo seeThrough={0.22} width={900} />);
       const row = screen.getByTestId('native-panels');
