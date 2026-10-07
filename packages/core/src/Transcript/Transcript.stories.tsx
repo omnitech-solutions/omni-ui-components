@@ -343,12 +343,12 @@ export const ConversationReadOnly: ConversationStory = {
 /** A sent question with its files as read-only cards (`attachmentVariant="card"`): thumbnail, name, status line ("Uploading…", "Not sent"), no remove button; choosing one calls `onAttachmentClick`. */
 export const ConversationAttachmentCards: ConversationStory = {
   ...conversationMeta,
-  args: { ...conversationMeta.args, turns: attachmentTurns(), attachmentVariant: 'card', composer: false },
+  args: { ...conversationMeta.args, turns: attachmentTurns(), attachmentVariant: 'card', composer: false, onAction: fn() },
   play: async ({ canvasElement, args }) => {
     const log = within(canvasElement).getByRole('log', { name: 'Conversation' });
     await expect(within(log).queryByRole('button', { name: /^Remove/ })).toBeNull();
     await expect(within(log).getByText('Not sent')).toBeVisible();
-    await userEvent.click(within(log).getByRole('button', { name: 'whiteboard.png' }));
+    await userEvent.click(within(log).getByRole('button', { name: /whiteboard\.png/ }));
     await expect(args.onAction).toHaveBeenCalledWith('attachment', 'att-2');
   },
 };
