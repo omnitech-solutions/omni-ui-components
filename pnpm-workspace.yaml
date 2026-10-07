@@ -5,8 +5,9 @@ allowBuilds:
   esbuild: true
 
 catalog:
+  '@biomejs/biome': 2.5.15
   '@types/node': ^25.9.1
-  oxlint: ^1.54.0
+  lefthook: ^2.1.17
   prettier: ^3.5.3
   tsx: ^4.19.3
   typescript: ^6.0.3
