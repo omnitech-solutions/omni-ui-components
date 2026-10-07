@@ -58,6 +58,8 @@ export function BodyRow<TRecord, TRowData>({
   const { BodyRow: TBRow } = registry.components;
 
   const rowKey = String(resolved.key);
+  // onRow / row.onRow may return any <tr> attribute or listener; only these three are merged with Table's own.
+  const { className: _rowPropsClass, style: _rowPropsStyle, onClick: _rowPropsOnClick, ...restRowProps } = rowProps;
   const rowClassName = classNames(
     selected && 'bg-[var(--bui-table-row-selected-bg)]',
     classMap['body.row'],
@@ -100,7 +102,7 @@ export function BodyRow<TRecord, TRowData>({
   return (
     <React.Fragment key={rowKey}>
       {isDraggable ? (
-        <SortableBodyRow rowKey={rowKey} onKeyboardMove={moveRowByKeyboard} {...dataAttrs} className={rowClassName} style={rowStyle} onClick={handleRowClick}>
+        <SortableBodyRow rowKey={rowKey} onKeyboardMove={moveRowByKeyboard} {...restRowProps} {...dataAttrs} className={rowClassName} style={rowStyle} onClick={handleRowClick}>
           {cells}
         </SortableBodyRow>
       ) : (
@@ -111,6 +113,7 @@ export function BodyRow<TRecord, TRowData>({
           record={resolved.record}
           row={resolved.row}
           rowIndex={rowIndex}
+          {...restRowProps}
           {...dataAttrs}
           className={rowClassName}
           style={rowStyle}
