@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { ActionMenu } from "@oc-tech/omni-ui-components/ActionMenu";
 import {
@@ -248,6 +249,39 @@ export const FooterStates: Story = {
 export const Window1180: Story = {
   name: "Window 1180",
   args: { width: 1180 },
+  // Interaction: a capture press shows the steps and Stop, Stop clears them, Pause shows Resume and dims the toolbar (T2 M3 T8 F3).
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const capture = canvas.getByRole("button", { name: "Capture", exact: true });
+    const mic = canvas.getByRole("button", { name: "Mic", exact: true });
+    await expect(canvas.queryByText("Reading the problem")).toBeNull();
+
+    // Capture press: the run starts, the checklist and the Answer header's Stop appear.
+    await userEvent.click(capture);
+    await expect(await canvas.findByText("Reading the problem")).toBeVisible();
+    await expect(canvas.getByText("Captured the screen")).toBeVisible();
+    const stop = canvas.getByRole("button", { name: /^Stop/ });
+
+    // Stop: the steps and the Stop button are gone, the Answer empty state is back.
+    await userEvent.click(stop);
+    await waitFor(() => expect(canvas.queryByText("Reading the problem")).toBeNull());
+    await expect(canvas.queryByRole("button", { name: /^Stop/ })).toBeNull();
+    await expect(canvas.getByText("Nothing analysed yet")).toBeVisible();
+
+    // Pause: the footer offers Resume, capture and mic are unavailable, the rest of the toolbar stays usable.
+    await userEvent.click(canvas.getByRole("button", { name: "Pause session" }));
+    await expect(await canvas.findByRole("button", { name: "Resume session" })).toBeVisible();
+    await expect(canvas.queryByRole("button", { name: "Pause session" })).toBeNull();
+    await expect(capture).toHaveAttribute("aria-disabled", "true");
+    await expect(mic).toHaveAttribute("aria-disabled", "true");
+    await expect(canvas.getByRole("button", { name: "Shortcuts" })).not.toHaveAttribute("aria-disabled", "true");
+    await expect(canvas.getByRole("button", { name: "Answer" })).not.toHaveAttribute("aria-disabled", "true");
+
+    // Resume: the toolbar is live again.
+    await userEvent.click(canvas.getByRole("button", { name: "Resume session" }));
+    await waitFor(() => expect(capture).not.toHaveAttribute("aria-disabled", "true"));
+    await expect(mic).not.toHaveAttribute("aria-disabled", "true");
+  },
   render: (args) => (
     <Rows>
       <NativeAppWindow {...args} />
