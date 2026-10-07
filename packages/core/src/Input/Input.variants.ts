@@ -43,7 +43,7 @@ export const inputVariants = cva(
          * Set the token on any ancestor; the unset default is opaque.
          */
         panel: [
-          'rounded-[9px] border-transparent text-[13px]',
+          'rounded-[9px] border-transparent text-[13px] text-ellipsis',
           'bg-[color:color-mix(in_srgb,var(--oui-panel-dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)]',
           'placeholder:text-[color:var(--oui-panel-meta-fg)]',
           'hover:border-transparent focus-visible:border-[var(--oui-border-interactive)]',
