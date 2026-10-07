@@ -177,4 +177,9 @@ describe('omni-ui-components/ConversationHeader', () => {
     await userEvent.keyboard('Renamed{Enter}');
     expect(await screen.findByRole('button', { name: /Renamed/ })).toBeInTheDocument();
   });
+
+  it('keeps a gap between the model control and the trailing buttons', () => {
+    render(<ConversationHeader {...conversationHeaderPropsFactory({ modelControl: <span>Model chip</span> })} />);
+    expect(screen.getByText('Model chip').closest('[data-slot="conversation-model"]')).toHaveClass('mr-2');
+  });
 });
