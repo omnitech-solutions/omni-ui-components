@@ -1,9 +1,7 @@
-import * as React from 'react';
+import { StepperPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { rangeSpec } from '@rjsf/utils';
 import { FileText } from 'lucide-react';
-
-import { StepperPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Stepper widget for `type: 'integer' | 'number'` schemas. */

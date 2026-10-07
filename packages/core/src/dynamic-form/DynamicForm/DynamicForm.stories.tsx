@@ -1,14 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
-  addressFormFactory,
-  automationFormFactory,
-  kitchenSinkFormFactory,
   type AddressFormData,
   type AutomationFormData,
+  addressFormFactory,
+  automationFormFactory,
   type KitchenSinkFormData,
+  kitchenSinkFormFactory,
 } from 'factories/dynamic-form/DynamicForm/DynamicForm.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type AnyFormData = AddressFormData | AutomationFormData | KitchenSinkFormData;
 type Args = DynamicFormStoryArgs<AnyFormData>;

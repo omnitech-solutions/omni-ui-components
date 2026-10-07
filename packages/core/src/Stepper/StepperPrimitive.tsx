@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { Minus, Plus } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Minus, Plus } from 'lucide-react';
+import * as React from 'react';
 import type { StepperPrimitiveProps } from './Stepper.types';
 
 /**
@@ -42,7 +41,10 @@ const StepperPrimitiveInner = React.forwardRef<HTMLDivElement, StepperPrimitiveP
     ref,
   ) => {
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
 
     const [internal, setInternal] = React.useState<number>(defaultValue ?? min);
     const isControlled = value !== undefined;
@@ -70,7 +72,8 @@ const StepperPrimitiveInner = React.forwardRef<HTMLDivElement, StepperPrimitiveP
     })();
 
     const heightClass = stepperSize === 'sm' ? 'h-8' : stepperSize === 'lg' ? 'h-11' : 'h-9';
-    const btnSizeClass = stepperSize === 'sm' ? 'size-6' : stepperSize === 'lg' ? 'size-9' : 'size-7';
+    const btnSizeClass =
+      stepperSize === 'sm' ? 'size-6' : stepperSize === 'lg' ? 'size-9' : 'size-7';
 
     return (
       <div
@@ -96,7 +99,10 @@ const StepperPrimitiveInner = React.forwardRef<HTMLDivElement, StepperPrimitiveP
           className="inline-flex items-center gap-1.5 px-2 text-sm font-medium tabular-nums text-[var(--oui-foreground)] whitespace-nowrap"
         >
           {icon ? (
-            <span aria-hidden="true" className="inline-flex shrink-0 items-center text-[var(--oui-foreground-muted)] [&_svg]:size-3.5">
+            <span
+              aria-hidden="true"
+              className="inline-flex shrink-0 items-center text-[var(--oui-foreground-muted)] [&_svg]:size-3.5"
+            >
               {icon}
             </span>
           ) : null}

@@ -1,9 +1,12 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { Divider } from '../Divider';
 import type { StatusClockProps } from './StatusClock.types';
-import { statusClockIconVariants, statusClockTimerVariants, statusClockVariants } from './StatusClock.variants';
+import {
+  statusClockIconVariants,
+  statusClockTimerVariants,
+  statusClockVariants,
+} from './StatusClock.variants';
 
 /**
  * Omni StatusClock: the live-session status of the footer. A caller-supplied icon node (the filled record
@@ -46,15 +49,26 @@ export const StatusClock = React.forwardRef<HTMLDivElement, StatusClockProps>(
         {...rest}
       >
         {shownIcon ? (
-          <span data-slot="status-clock-icon" aria-hidden="true" className={statusClockIconVariants({ state })}>
+          <span
+            data-slot="status-clock-icon"
+            aria-hidden="true"
+            className={statusClockIconVariants({ state })}
+          >
             {shownIcon}
           </span>
         ) : null}
-        <span data-slot="status-clock-timer" role="timer" className={statusClockTimerVariants({ state })}>
+        <span
+          data-slot="status-clock-timer"
+          role="timer"
+          className={statusClockTimerVariants({ state })}
+        >
           {elapsed}
         </span>
         {paused && pausedLabel !== null ? (
-          <span data-slot="status-clock-paused" className="flex-none text-[14px] font-medium text-[color:var(--oui-clock-paused)]">
+          <span
+            data-slot="status-clock-paused"
+            className="flex-none text-[14px] font-medium text-[color:var(--oui-clock-paused)]"
+          >
             {pausedLabel}
           </span>
         ) : null}
@@ -71,7 +85,9 @@ export const StatusClock = React.forwardRef<HTMLDivElement, StatusClockProps>(
               data-copied={buildTag.copied ? 'true' : undefined}
               title={buildTag.title}
               aria-label={
-                buildTag.copied ? (buildTag.copiedLabel ?? 'Copied') : (buildTag['aria-label'] ?? `Copy build ${buildTag.title ?? buildTag.sha}`)
+                buildTag.copied
+                  ? (buildTag.copiedLabel ?? 'Copied')
+                  : (buildTag['aria-label'] ?? `Copy build ${buildTag.title ?? buildTag.sha}`)
               }
               onClick={buildTag.onCopy}
               className={cn(
@@ -86,7 +102,11 @@ export const StatusClock = React.forwardRef<HTMLDivElement, StatusClockProps>(
               ) : (
                 <>
                   {buildTag.commitIcon ? (
-                    <span data-slot="status-clock-commit-icon" aria-hidden="true" className="inline-flex flex-none [&_svg]:size-3.5">
+                    <span
+                      data-slot="status-clock-commit-icon"
+                      aria-hidden="true"
+                      className="inline-flex flex-none [&_svg]:size-3.5"
+                    >
                       {buildTag.commitIcon}
                     </span>
                   ) : null}
@@ -99,7 +119,11 @@ export const StatusClock = React.forwardRef<HTMLDivElement, StatusClockProps>(
                         ·
                       </span>
                       {buildTag.branchIcon ? (
-                        <span data-slot="status-clock-branch-icon" aria-hidden="true" className="inline-flex flex-none [&_svg]:size-3.5">
+                        <span
+                          data-slot="status-clock-branch-icon"
+                          aria-hidden="true"
+                          className="inline-flex flex-none [&_svg]:size-3.5"
+                        >
                           {buildTag.branchIcon}
                         </span>
                       ) : null}

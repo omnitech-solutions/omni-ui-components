@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { z } from 'zod';
 import type { RJSFSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import { renderDynamicForm } from './testing/renderDynamicForm';
 
@@ -27,7 +26,11 @@ const extractRows = (): RowSpan[] => {
     const cells = Array.from(g.children) as HTMLElement[];
     return {
       cols: Number(cols),
-      fields: cells.map((c) => c.querySelector<HTMLElement>('input,textarea')?.getAttribute('id')?.split('_').pop() ?? ''),
+      fields: cells.map(
+        (c) =>
+          c.querySelector<HTMLElement>('input,textarea')?.getAttribute('id')?.split('_').pop() ??
+          '',
+      ),
       spans: cells.map((c) => {
         const m = c.style.gridColumn.match(/span (\d+)/);
         return m ? Number(m[1]) : 1;

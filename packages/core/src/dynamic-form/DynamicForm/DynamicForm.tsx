@@ -1,16 +1,21 @@
-import * as React from 'react';
-import RjsfForm from '@rjsf/shadcn';
-import { Templates as ShadcnTemplates, Widgets as ShadcnWidgets } from '@rjsf/shadcn';
-import type { ErrorSchema, RegistryFieldsType, RegistryWidgetsType, RJSFSchema, TemplatesType, UiSchema } from '@rjsf/utils';
+import { Form } from '@oc-tech/omni-ui-components';
+import RjsfForm, { Templates as ShadcnTemplates, Widgets as ShadcnWidgets } from '@rjsf/shadcn';
+import type {
+  ErrorSchema,
+  RegistryFieldsType,
+  RegistryWidgetsType,
+  RJSFSchema,
+  TemplatesType,
+  UiSchema,
+} from '@rjsf/utils';
 import { deepEquals } from '@rjsf/utils';
 import ajvValidator from '@rjsf/validator-ajv8';
+import * as React from 'react';
 import type { z } from 'zod';
-
-import { Form } from '@oc-tech/omni-ui-components';
 import type { FormError } from '../appFormSchema';
 import { appFields } from '../registries/fields';
-import { appWidgets } from '../registries/widgets';
 import { appTemplates } from '../registries/templates';
+import { appWidgets } from '../registries/widgets';
 
 /**
  * Props for {@link DynamicForm}. `onSubmit` only runs when Zod parsing of
@@ -98,7 +103,10 @@ function RjsfBridge({
    * `formData` in the parent or story shell) recomputes correctly and the
    * parent can reset / hydrate `formData` after mount. RJSF onChange still
    * mirrors back into Omni form via `setFieldValue` below. */
-  const mergedUiSchema = React.useMemo<UiSchema>(() => ({ ...uiSchema, ...noopSubmitUiSchema }), [uiSchema]);
+  const mergedUiSchema = React.useMemo<UiSchema>(
+    () => ({ ...uiSchema, ...noopSubmitUiSchema }),
+    [uiSchema],
+  );
   return (
     <RjsfForm
       tagName="div"
@@ -146,8 +154,25 @@ function RjsfBridge({
  *   <Button type="submit">Save</Button>
  * </DynamicForm>
  */
-function DynamicFormImpl<TFormData extends Record<string, unknown>, TSubmitData>(props: DynamicFormProps<TFormData, TSubmitData>): JSX.Element {
-  const { schema, uiSchema, zodSchema, formData, fields, widgets, templates, formContext, onChange, onSubmit, onError, disabled, readOnly, children } = props;
+function DynamicFormImpl<TFormData extends Record<string, unknown>, TSubmitData>(
+  props: DynamicFormProps<TFormData, TSubmitData>,
+): JSX.Element {
+  const {
+    schema,
+    uiSchema,
+    zodSchema,
+    formData,
+    fields,
+    widgets,
+    templates,
+    formContext,
+    onChange,
+    onSubmit,
+    onError,
+    disabled,
+    readOnly,
+    children,
+  } = props;
 
   const [extraErrors, setExtraErrors] = React.useState<ErrorSchema | undefined>(undefined);
 
@@ -169,11 +194,25 @@ function DynamicFormImpl<TFormData extends Record<string, unknown>, TSubmitData>
   );
 
   const mergedFields = React.useMemo(() => ({ ...appFields, ...fields }), [fields]);
-  const mergedWidgets = React.useMemo(() => ({ ...ShadcnWidgets, ...appWidgets, ...widgets }), [widgets]);
-  const mergedTemplates = React.useMemo(() => ({ ...ShadcnTemplates, ...appTemplates, ...templates }), [templates]);
+  const mergedWidgets = React.useMemo(
+    () => ({ ...ShadcnWidgets, ...appWidgets, ...widgets }),
+    [widgets],
+  );
+  const mergedTemplates = React.useMemo(
+    () => ({ ...ShadcnTemplates, ...appTemplates, ...templates }),
+    [templates],
+  );
 
   return (
-    <Form zodSchema={zodSchema} formData={formData} onChange={handleChange} onSubmit={onSubmit} onError={handleError} disabled={disabled} readOnly={readOnly}>
+    <Form
+      zodSchema={zodSchema}
+      formData={formData}
+      onChange={handleChange}
+      onSubmit={onSubmit}
+      onError={handleError}
+      disabled={disabled}
+      readOnly={readOnly}
+    >
       {(form: any) => (
         <>
           <RjsfBridge

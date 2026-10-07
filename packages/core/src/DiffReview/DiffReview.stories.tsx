@@ -1,8 +1,5 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
 import { DiffReview, type DiffReviewProps } from '@oc-tech/omni-ui-components/DiffReview';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   DIFF_REVIEW_STATUSES,
   DiffReviewDemo,
@@ -11,10 +8,15 @@ import {
   phaseActions,
   sampleChanges,
 } from 'factories/omni-ui-components/DiffReview/DiffReview.factories';
+import type * as React from 'react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 type StoryArgs = DiffReviewProps & { onAction?: (name: string, detail?: unknown) => void };
 
-const Stage: React.FC<React.PropsWithChildren<{ width?: number }>> = ({ width = 640, children }) => (
+const Stage: React.FC<React.PropsWithChildren<{ width?: number }>> = ({
+  width = 640,
+  children,
+}) => (
   <div className="p-6">
     <div style={{ maxWidth: width }}>{children}</div>
   </div>
@@ -35,21 +37,53 @@ const meta: Meta<StoryArgs> = {
   },
   args: { ...diffReviewPropsFactory() },
   argTypes: {
-    changes: { control: 'object', description: 'Reviewable surfaces: `{ id, label, description?, icon?, language?, before, after }`.' },
-    status: { control: 'select', options: DIFF_REVIEW_STATUSES, description: 'Where the proposal is. Drives the pill and the footer note.' },
-    variant: { control: 'inline-radio', options: ['diff', 'checklist'], description: 'Checklist needs more than one change; with one it falls back to diff.' },
-    highlight: { control: false, description: 'A HighlightFn (`highlightLines`). Unset: plain text. The language is each change\'s `language`.' },
-    contextLines: { control: { type: 'number', min: 0, max: 6 }, description: 'Unchanged lines kept around each change. Default 1.' },
-    actions: { control: false, description: 'Footer buttons `{ key, label | (ctx) => label, primary, disabled | (ctx) => boolean, icon, onClick({ changes, selected }) }`.' },
+    changes: {
+      control: 'object',
+      description:
+        'Reviewable surfaces: `{ id, label, description?, icon?, language?, before, after }`.',
+    },
+    status: {
+      control: 'select',
+      options: DIFF_REVIEW_STATUSES,
+      description: 'Where the proposal is. Drives the pill and the footer note.',
+    },
+    variant: {
+      control: 'inline-radio',
+      options: ['diff', 'checklist'],
+      description: 'Checklist needs more than one change; with one it falls back to diff.',
+    },
+    highlight: {
+      control: false,
+      description:
+        "A HighlightFn (`highlightLines`). Unset: plain text. The language is each change's `language`.",
+    },
+    contextLines: {
+      control: { type: 'number', min: 0, max: 6 },
+      description: 'Unchanged lines kept around each change. Default 1.',
+    },
+    actions: {
+      control: false,
+      description:
+        'Footer buttons `{ key, label | (ctx) => label, primary, disabled | (ctx) => boolean, icon, onClick({ changes, selected }) }`.',
+    },
     note: { control: 'text', description: 'Replaces the status note.' },
     product: { control: 'text', description: 'Fills `{product}` in the notes.' },
     fallback: { control: false, description: 'Shown instead of the diff when `changes` is empty.' },
-    labels: { control: 'object', description: 'Every string (partial). Counts and the apply label are functions.' },
-    icons: { control: false, description: 'Caller-supplied nodes: badge, checklistBadge, change, notes per status.' },
+    labels: {
+      control: 'object',
+      description: 'Every string (partial). Counts and the apply label are functions.',
+    },
+    icons: {
+      control: false,
+      description: 'Caller-supplied nodes: badge, checklistBadge, change, notes per status.',
+    },
     defaultActiveId: { control: 'text' },
     onTabChange: { action: 'tab' },
     onSelectionChange: { action: 'selection' },
-    onAction: { action: 'transition', description: 'Story-only: the demo reports apply, reject, preview, undo, restore.' },
+    onAction: {
+      action: 'transition',
+      description: 'Story-only: the demo reports apply, reject, preview, undo, restore.',
+    },
   },
   render: (args) => {
     const { onAction, ...props } = args;
@@ -82,12 +116,16 @@ export const Checklist: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Notes' }));
     await userEvent.click(canvas.getByRole('button', { name: 'Apply 1' }));
     await waitFor(() => expect(args.onAction).toHaveBeenCalledWith('apply', ['notes']));
-    await expect(canvasElement.querySelector('[data-slot="diff-review-status"]')).toHaveTextContent('Applied');
+    await expect(canvasElement.querySelector('[data-slot="diff-review-status"]')).toHaveTextContent(
+      'Applied',
+    );
   },
 };
 
 /** Two changes read "Apply both". */
-export const ChecklistTwoChanges: Story = { args: { variant: 'checklist', changes: sampleChanges(2) } };
+export const ChecklistTwoChanges: Story = {
+  args: { variant: 'checklist', changes: sampleChanges(2) },
+};
 
 /** Tabs with the keyboard: Right / Left wrap, End / Home jump; the tab list is one tab stop (roving tabindex). */
 export const KeyboardTabs: Story = {
@@ -121,7 +159,15 @@ export const EveryStatus: Story = {
             {...args}
             status={status}
             variant="diff"
-            actions={phaseActions({ status, onApply: fn(), onReject: fn(), onPreview: fn(), onStopPreview: fn(), onUndo: fn(), onRestore: fn() })}
+            actions={phaseActions({
+              status,
+              onApply: fn(),
+              onReject: fn(),
+              onPreview: fn(),
+              onStopPreview: fn(),
+              onUndo: fn(),
+              onRestore: fn(),
+            })}
           />
         </div>
       ))}
@@ -136,8 +182,15 @@ export const WithAndWithoutHighlighting: Story = {
     <div className="flex flex-wrap gap-6 p-6">
       {[true, false].map((on) => (
         <div key={String(on)} className="flex w-[520px] flex-col gap-1">
-          <span className="font-mono text-[11px] text-muted-foreground">{on ? 'highlight={highlightLines}' : 'no highlight'}</span>
-          <DiffReview {...args} changes={[sampleChanges()[1]!]} highlight={on ? args.highlight : undefined} actions={[]} />
+          <span className="font-mono text-[11px] text-muted-foreground">
+            {on ? 'highlight={highlightLines}' : 'no highlight'}
+          </span>
+          <DiffReview
+            {...args}
+            changes={[sampleChanges()[1]!]}
+            highlight={on ? args.highlight : undefined}
+            actions={[]}
+          />
         </div>
       ))}
     </div>
@@ -149,12 +202,19 @@ export const LongDiff: Story = { args: { changes: [longChange()], contextLines: 
 
 /** No changes could be described: the raw proposal in the `fallback` slot. */
 export const FallbackWhenEmpty: Story = {
-  args: { changes: [], fallback: '{\n  "patch": {\n    "notes": "Sweep once instead of merging pairwise",\n    "code": "mergeIntervals.ts"\n  }\n}' },
+  args: {
+    changes: [],
+    fallback:
+      '{\n  "patch": {\n    "notes": "Sweep once instead of merging pairwise",\n    "code": "mergeIntervals.ts"\n  }\n}',
+  },
 };
 
 /** Conflicted: the note is replaced by the caller's explanation and no action is offered. */
 export const ConflictedWithNote: Story = {
-  args: { status: 'conflicted', note: 'Notes changed while you were reviewing. Ask for a fresh proposal.' },
+  args: {
+    status: 'conflicted',
+    note: 'Notes changed while you were reviewing. Ask for a fresh proposal.',
+  },
 };
 
 /** Strings through `labels`: translated title, pills and notes. */
@@ -164,8 +224,22 @@ export const TranslatedLabels: Story = {
       region: 'Cambio propuesto',
       title: 'Cambio propuesto',
       summary: (n, a, r) => `${n} superficies · +${a} −${r}`,
-      statuses: { pending: 'Sin aplicar', preview: 'Vista previa', applied: 'Aplicado', rejected: 'Rechazado', reverted: 'Revertido', conflicted: 'Sin aplicar' },
-      notes: { pending: 'Aún no se aplicó nada', preview: 'Mostrando en {product}', applied: 'Aplicado en {product}', rejected: 'Rechazado', reverted: 'Revertido', conflicted: 'Conflicto en {product}' },
+      statuses: {
+        pending: 'Sin aplicar',
+        preview: 'Vista previa',
+        applied: 'Aplicado',
+        rejected: 'Rechazado',
+        reverted: 'Revertido',
+        conflicted: 'Sin aplicar',
+      },
+      notes: {
+        pending: 'Aún no se aplicó nada',
+        preview: 'Mostrando en {product}',
+        applied: 'Aplicado en {product}',
+        rejected: 'Rechazado',
+        reverted: 'Revertido',
+        conflicted: 'Conflicto en {product}',
+      },
     },
   },
 };

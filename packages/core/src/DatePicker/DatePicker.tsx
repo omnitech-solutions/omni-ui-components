@@ -1,13 +1,27 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { DatePickerPrimitive } from './DatePickerPrimitive';
 import type { DatePickerProps } from './DatePicker.types';
+import { DatePickerPrimitive } from './DatePickerPrimitive';
 
 /** Chrome-wrapped Omni DatePicker (Popover + Calendar). Single or range mode. */
 const DatePickerInner = React.forwardRef<HTMLButtonElement, DatePickerProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

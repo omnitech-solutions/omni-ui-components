@@ -1,9 +1,12 @@
-import * as React from 'react';
+import {
+  ApprovalCard,
+  type ApprovalCardProps,
+  type ApprovalStatus,
+} from '@oc-tech/omni-ui-components/ApprovalCard';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
-
-import { ApprovalCard, type ApprovalCardProps, type ApprovalStatus } from '@oc-tech/omni-ui-components/ApprovalCard';
 import { approvalCardPropsFactory } from 'factories/omni-ui-components/ApprovalCard/ApprovalCard.factories';
+import * as React from 'react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 /** Resolves its own request so the buttons give way to the outcome. */
 const Demo: React.FC<ApprovalCardProps> = (props) => {
@@ -62,7 +65,10 @@ export const Pending: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Allow once' }));
-    await expect(args.onDecide).toHaveBeenCalledWith('once', expect.objectContaining({ title: 'Run the solution against your tests?' }));
+    await expect(args.onDecide).toHaveBeenCalledWith(
+      'once',
+      expect.objectContaining({ title: 'Run the solution against your tests?' }),
+    );
     await expect(canvas.getByText('Allowed once')).toBeVisible();
   },
 };

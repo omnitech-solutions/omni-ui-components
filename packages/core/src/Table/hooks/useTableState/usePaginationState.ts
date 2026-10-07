@@ -1,5 +1,5 @@
-import * as React from 'react';
 import type { PaginationState } from '@tanstack/react-table';
+import * as React from 'react';
 import { resolvedRowsLengthHint } from '../../internal';
 import type { TableProps } from '../../Table.types';
 
@@ -11,7 +11,10 @@ export function usePaginationState<TRecord, TRowData>(rawProps: TableProps<TReco
       : resolvedRowsLengthHint(rawProps);
 
   const [paginationStateValue, setPaginationStateValue] = React.useState<PaginationState>({
-    pageIndex: typeof pagination === 'object' && pagination ? (pagination.current ?? pagination.defaultCurrent ?? 1) - 1 : 0,
+    pageIndex:
+      typeof pagination === 'object' && pagination
+        ? (pagination.current ?? pagination.defaultCurrent ?? 1) - 1
+        : 0,
     pageSize: Math.max(initialPageSize, 1),
   });
 

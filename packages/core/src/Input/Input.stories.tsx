@@ -1,11 +1,12 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Input, type InputProps } from '@oc-tech/omni-ui-components/Input';
+import type { Meta, StoryObj } from '@storybook/react';
 import { inputPropsFactory } from 'factories/omni-ui-components/Input/Input.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<InputProps> = (args) => {
-  const [value, setValue] = React.useState<string>(typeof args.value === 'string' ? args.value : '');
+  const [value, setValue] = React.useState<string>(
+    typeof args.value === 'string' ? args.value : '',
+  );
   React.useEffect(() => {
     setValue(typeof args.value === 'string' ? args.value : '');
   }, [args.value]);
@@ -83,7 +84,15 @@ export const SizesMatrix: Story = {
 };
 
 export const Multiline: Story = {
-  args: { multiline: true, variant: 'panel', label: undefined, 'aria-label': 'Message', placeholder: 'Message… (Enter sends, Shift+Enter adds a line)', sendOnEnter: true, maxHeight: 200 },
+  args: {
+    multiline: true,
+    variant: 'panel',
+    label: undefined,
+    'aria-label': 'Message',
+    placeholder: 'Message… (Enter sends, Shift+Enter adds a line)',
+    sendOnEnter: true,
+    maxHeight: 200,
+  },
   parameters: {
     docs: {
       description: {

@@ -1,13 +1,14 @@
-import * as React from 'react';
+import {
+  ConversationHeader,
+  type ConversationHeaderProps,
+} from '@oc-tech/omni-ui-components/ConversationHeader';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
-import { ConversationHeader, type ConversationHeaderProps } from '@oc-tech/omni-ui-components/ConversationHeader';
 import {
   ConversationHeaderDemo,
   conversationHeaderPropsFactory,
   conversationHeaderVariants,
 } from 'factories/omni-ui-components/ConversationHeader/ConversationHeader.factories';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta<ConversationHeaderProps> = {
   title: 'omni-ui-components/ConversationHeader',
@@ -24,16 +25,37 @@ const meta: Meta<ConversationHeaderProps> = {
   },
   args: { ...conversationHeaderPropsFactory(), onRename: fn() },
   argTypes: {
-    conversation: { control: 'object', description: 'The open conversation item `{ id, title, ... }`. Its title is shown; without one `labels.untitled` shows and the menu is off.' },
-    menuItems: { control: 'object', description: 'Rows `{ id, label, icon, onClick, danger, separated, startsRename, disabled }`. No rows: the title is plain text.' },
+    conversation: {
+      control: 'object',
+      description:
+        'The open conversation item `{ id, title, ... }`. Its title is shown; without one `labels.untitled` shows and the menu is off.',
+    },
+    menuItems: {
+      control: 'object',
+      description:
+        'Rows `{ id, label, icon, onClick, danger, separated, startsRename, disabled }`. No rows: the title is plain text.',
+    },
     maxLength: { control: 'number', description: 'Max length of the rename field. Default 256.' },
-    renaming: { control: 'boolean', description: 'Controlled rename mode. Omit for the uncontrolled field opened by the Rename row.' },
-    onHistoryToggle: { action: 'history toggle', description: 'The history button; not rendered without it.' },
+    renaming: {
+      control: 'boolean',
+      description:
+        'Controlled rename mode. Omit for the uncontrolled field opened by the Rename row.',
+    },
+    onHistoryToggle: {
+      action: 'history toggle',
+      description: 'The history button; not rendered without it.',
+    },
     onRenameStart: { action: 'rename start', description: 'Rename field opened (conversation).' },
-    onRenameCancel: { action: 'rename cancel', description: 'Rename cancelled with Escape (conversation).' },
+    onRenameCancel: {
+      action: 'rename cancel',
+      description: 'Rename cancelled with Escape (conversation).',
+    },
     actions: { control: 'object', description: 'Buttons after the model control (same shape).' },
     labels: { control: 'object', description: '`toolbar`, `untitled`, `renameField`, `menu`.' },
-    onRename: { action: 'rename', description: '(conversation, title): the trimmed new title; only when non-empty and changed.' },
+    onRename: {
+      action: 'rename',
+      description: '(conversation, title): the trimmed new title; only when non-empty and changed.',
+    },
   },
   decorators: [
     (Story) => (
@@ -80,7 +102,9 @@ export const RenameCancelsOnEscape: Story = {
     await userEvent.click(await within(document.body).findByRole('menuitem', { name: 'Rename' }));
     await canvas.findByRole('textbox', { name: 'Conversation title' });
     await userEvent.keyboard('Nope{Escape}');
-    expect(await canvas.findByRole('button', { name: /Two Sum with a hash map/ })).toBeInTheDocument();
+    expect(
+      await canvas.findByRole('button', { name: /Two Sum with a hash map/ }),
+    ).toBeInTheDocument();
   },
 };
 

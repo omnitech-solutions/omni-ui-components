@@ -1,8 +1,11 @@
-import * as React from 'react';
+import {
+  DatePicker,
+  type DatePickerProps,
+  type DateRange,
+} from '@oc-tech/omni-ui-components/DatePicker';
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { DatePicker, type DatePickerProps, type DateRange } from '@oc-tech/omni-ui-components/DatePicker';
 import { datePickerPropsFactory } from 'factories/omni-ui-components/DatePicker/DatePicker.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<DatePickerProps> = (args) => {
   const [value, setValue] = React.useState<Date | DateRange | null>(args.value ?? null);
@@ -37,7 +40,13 @@ type Story = StoryObj<typeof DatePicker>;
 
 export const Default: Story = {};
 export const Prefilled: Story = { args: { value: new Date(2026, 6, 15) } };
-export const RangeMode: Story = { args: { mode: 'range', label: 'Date range', value: { from: new Date(2026, 6, 1), to: new Date(2026, 6, 15) } } };
+export const RangeMode: Story = {
+  args: {
+    mode: 'range',
+    label: 'Date range',
+    value: { from: new Date(2026, 6, 1), to: new Date(2026, 6, 15) },
+  },
+};
 export const Required: Story = { args: { required: true } };
 export const WithError: Story = { args: { error: 'Pick a date in the future', value: null } };
 export const Disabled: Story = { args: { disabled: true, value: new Date(2026, 6, 15) } };

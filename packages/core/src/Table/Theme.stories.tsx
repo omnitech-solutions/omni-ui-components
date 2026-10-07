@@ -1,8 +1,12 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
 import { Table } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
+import type * as React from 'react';
 import { ComponentWrapper } from './storySupport';
-import { defaultColumns, appearanceVariantProjects, type ProjectRecord } from './Table.story.fixtures';
+import {
+  appearanceVariantProjects,
+  defaultColumns,
+  type ProjectRecord,
+} from './Table.story.fixtures';
 
 const meta: Meta = {
   title: 'omni-ui-components/Table/Theme',
@@ -33,7 +37,12 @@ interface ThemeStoryConfig {
 const themeStory = ({ theme, testIdPrefix, title, description }: ThemeStoryConfig): Story => ({
   render: () => (
     <ComponentWrapper title={title} description={description}>
-      <Table<ProjectRecord> columns={defaultColumns} rows={rows} theme={theme} testIdPrefix={testIdPrefix} />
+      <Table<ProjectRecord>
+        columns={defaultColumns}
+        rows={rows}
+        theme={theme}
+        testIdPrefix={testIdPrefix}
+      />
     </ComponentWrapper>
   ),
 });

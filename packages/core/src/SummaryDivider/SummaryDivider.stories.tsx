@@ -1,9 +1,10 @@
-import * as React from 'react';
+import {
+  SummaryDivider,
+  type SummaryDividerProps,
+} from '@oc-tech/omni-ui-components/SummaryDivider';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from 'storybook/test';
-
-import { SummaryDivider, type SummaryDividerProps } from '@oc-tech/omni-ui-components/SummaryDivider';
 import { summaryDividerPropsFactory } from 'factories/omni-ui-components/SummaryDivider/SummaryDivider.factories';
+import { expect, userEvent, within } from 'storybook/test';
 
 const meta: Meta<SummaryDividerProps> = {
   title: 'omni-ui-components/SummaryDivider',

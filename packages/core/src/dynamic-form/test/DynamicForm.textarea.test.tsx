@@ -1,8 +1,12 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
 import { z } from 'zod';
 
-import { buildSingleFieldSchema, buildSingleFieldUiSchema, renderDynamicForm, screen } from './testing/renderDynamicForm';
+import {
+  buildSingleFieldSchema,
+  buildSingleFieldUiSchema,
+  renderDynamicForm,
+  screen,
+} from './testing/renderDynamicForm';
 
 /**
  * TextareaWidget through the full DynamicForm ancestry — mirrors the
@@ -38,7 +42,10 @@ describe('DynamicForm — TextareaWidget integration', () => {
     it('respects ui:options.rows when provided', () => {
       renderDynamicForm({
         schema: subjectSchema,
-        uiSchema: buildSingleFieldUiSchema('notes', { 'ui:widget': 'textarea', 'ui:options': { rows: 9 } }),
+        uiSchema: buildSingleFieldUiSchema('notes', {
+          'ui:widget': 'textarea',
+          'ui:options': { rows: 9 },
+        }),
         zodSchema: z.object({ notes: z.string() }),
         formData: { notes: '' },
       });
@@ -48,11 +55,17 @@ describe('DynamicForm — TextareaWidget integration', () => {
     it('forwards ui:placeholder', () => {
       renderDynamicForm({
         schema: subjectSchema,
-        uiSchema: buildSingleFieldUiSchema('notes', { 'ui:widget': 'textarea', 'ui:placeholder': "What's on your mind?" }),
+        uiSchema: buildSingleFieldUiSchema('notes', {
+          'ui:widget': 'textarea',
+          'ui:placeholder': "What's on your mind?",
+        }),
         zodSchema: z.object({ notes: z.string() }),
         formData: { notes: '' },
       });
-      expect(document.querySelector('textarea')).toHaveAttribute('placeholder', "What's on your mind?");
+      expect(document.querySelector('textarea')).toHaveAttribute(
+        'placeholder',
+        "What's on your mind?",
+      );
     });
   });
 
@@ -105,7 +118,13 @@ describe('DynamicForm — TextareaWidget integration', () => {
       await submit();
       expect(onSubmit).not.toHaveBeenCalled();
       expect(onError).toHaveBeenCalledWith(
-        expect.arrayContaining([expect.objectContaining({ path: ['notes'], source: 'zod', message: 'notes must be at least 10 chars' })]),
+        expect.arrayContaining([
+          expect.objectContaining({
+            path: ['notes'],
+            source: 'zod',
+            message: 'notes must be at least 10 chars',
+          }),
+        ]),
       );
     });
   });

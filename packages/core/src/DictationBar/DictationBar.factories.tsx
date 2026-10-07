@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { Check, X } from 'lucide-react';
-
 import type { DictationBarProps } from '@oc-tech/omni-ui-components/DictationBar';
+import { Check, X } from 'lucide-react';
 import type { Variant } from '../../internal/support/makeFactory';
 
-export const dictationBarPropsFactory = (overrides: Partial<DictationBarProps> = {}): DictationBarProps => ({
+export const dictationBarPropsFactory = (
+  overrides: Partial<DictationBarProps> = {},
+): DictationBarProps => ({
   text: '',
   cancelIcon: <X />,
   doneIcon: <Check />,

@@ -9,12 +9,17 @@ export function useIsDark(): boolean {
   const [isDark, setIsDark] = React.useState(false);
   React.useEffect(() => {
     const read = () => {
-      const root = document.documentElement.getAttribute('data-theme') || document.body.getAttribute('data-theme');
+      const root =
+        document.documentElement.getAttribute('data-theme') ||
+        document.body.getAttribute('data-theme');
       setIsDark(root === 'dark');
     };
     read();
     const observer = new MutationObserver(read);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
     observer.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
     return () => observer.disconnect();
   }, []);

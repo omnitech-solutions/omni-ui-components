@@ -1,7 +1,13 @@
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
+import {
+  type CssToken,
+  looksLikeColor,
+  readCssTokens,
+  resolveCssVar,
+} from '../../../../.storybook/internal/support/readCssTokens';
 import { InlineCode, SegmentedPill, TableOfContents, type TocItem } from './storySupport';
-import { looksLikeColor, readCssTokens, resolveCssVar, type CssToken } from '../../../../.storybook/internal/support/readCssTokens';
+
 interface TokenSection {
   id: string;
   key: string;
@@ -22,37 +28,47 @@ const TOKEN_GROUPS: TokenGroupDefinition[] = [
   {
     key: 'surface',
     title: 'Surface and shell',
-    description: 'Root table container tokens for panel background, foreground, borders, radius, and shell-level structure.',
+    description:
+      'Root table container tokens for panel background, foreground, borders, radius, and shell-level structure.',
     match: (name) => /^(bg|fg|muted-fg|border|border-strong|radius)$/.test(name),
     order: 0,
   },
   {
     key: 'header',
     title: 'Header',
-    description: 'Header row tokens for fill, text, split borders, and sort/filter interactive states.',
+    description:
+      'Header row tokens for fill, text, split borders, and sort/filter interactive states.',
     match: (name) => name.startsWith('header-'),
     order: 1,
   },
   {
     key: 'rows',
     title: 'Rows and states',
-    description: 'Row-level tokens for hover, selected, expanded, striped, footer, and scroll-state treatment.',
-    match: (name) => name.startsWith('row-') || name.startsWith('footer-') || name.startsWith('sticky-scrollbar-'),
+    description:
+      'Row-level tokens for hover, selected, expanded, striped, footer, and scroll-state treatment.',
+    match: (name) =>
+      name.startsWith('row-') || name.startsWith('footer-') || name.startsWith('sticky-scrollbar-'),
     order: 2,
   },
   {
     key: 'cell',
     title: 'Cell spacing and type',
-    description: 'Cell typography, line-height, and spacing scales used by the Table size variants.',
+    description:
+      'Cell typography, line-height, and spacing scales used by the Table size variants.',
     match: (name) => name.startsWith('cell-'),
     order: 3,
   },
   {
     key: 'controls',
     title: 'Controls and overlays',
-    description: 'Tokens for filter menus, expand cells, selection width, focus, and state feedback tied to interactive table controls.',
+    description:
+      'Tokens for filter menus, expand cells, selection width, focus, and state feedback tied to interactive table controls.',
     match: (name) =>
-      name.startsWith('filter-') || name.startsWith('expand-') || name.startsWith('selection-') || name.startsWith('focus-') || name.startsWith('error-'),
+      name.startsWith('filter-') ||
+      name.startsWith('expand-') ||
+      name.startsWith('selection-') ||
+      name.startsWith('focus-') ||
+      name.startsWith('error-'),
     order: 4,
   },
   {
@@ -74,7 +90,8 @@ const TOKEN_GROUPS: TokenGroupDefinition[] = [
 const DEFAULT_GROUP: TokenGroupDefinition = {
   key: 'misc',
   title: 'Miscellaneous',
-  description: 'Table-owned tokens that do not match one of the primary families yet. New token families land here automatically until promoted.',
+  description:
+    'Table-owned tokens that do not match one of the primary families yet. New token families land here automatically until promoted.',
   match: () => true,
   order: 99,
 };
@@ -113,15 +130,37 @@ const previewForToken = (token: CssToken, valueMap: Record<string, string>) => {
   const resolved = resolveTokenValue(token.value, valueMap) || resolveCssVar(token.name);
 
   if (family === 'color') {
-    return <span aria-hidden="true" className="block size-10 rounded-md border border-border" style={{ background: resolved }} />;
+    return (
+      <span
+        aria-hidden="true"
+        className="block size-10 rounded-md border border-border"
+        style={{ background: resolved }}
+      />
+    );
   }
 
   if (token.name.includes('radius')) {
-    return <span aria-hidden="true" className="block size-10 border border-border bg-emerald-500/20" style={{ borderRadius: `var(${token.name})` }} />;
+    return (
+      <span
+        aria-hidden="true"
+        className="block size-10 border border-border bg-emerald-500/20"
+        style={{ borderRadius: `var(${token.name})` }}
+      />
+    );
   }
 
-  if (token.name.includes('padding') || token.name.includes('width') || token.name.includes('size')) {
-    return <span aria-hidden="true" className="block h-3 rounded-full bg-emerald-500/45" style={{ width: `min(var(${token.name}), 120px)` }} />;
+  if (
+    token.name.includes('padding') ||
+    token.name.includes('width') ||
+    token.name.includes('size')
+  ) {
+    return (
+      <span
+        aria-hidden="true"
+        className="block h-3 rounded-full bg-emerald-500/45"
+        style={{ width: `min(var(${token.name}), 120px)` }}
+      />
+    );
   }
 
   if (token.name.includes('font-size')) {
@@ -149,11 +188,20 @@ const previewForToken = (token: CssToken, valueMap: Record<string, string>) => {
   }
 
   if (token.name.includes('shadow')) {
-    return <span aria-hidden="true" className="block size-10 rounded-md bg-background" style={{ boxShadow: `var(${token.name})` }} />;
+    return (
+      <span
+        aria-hidden="true"
+        className="block size-10 rounded-md bg-background"
+        style={{ boxShadow: `var(${token.name})` }}
+      />
+    );
   }
 
   return (
-    <span aria-hidden="true" className="inline-flex min-h-10 items-center rounded-md border border-border px-2 text-[11px] text-muted-foreground">
+    <span
+      aria-hidden="true"
+      className="inline-flex min-h-10 items-center rounded-md border border-border px-2 text-[11px] text-muted-foreground"
+    >
       {resolved}
     </span>
   );
@@ -161,7 +209,9 @@ const previewForToken = (token: CssToken, valueMap: Record<string, string>) => {
 
 const tokenLabel = (name: string) => name.replace('--bui-table-', '');
 
-const TokenValue = ({ value }: { value: string }) => <code className="rounded bg-muted px-2 py-1 text-[11px] text-muted-foreground">{value}</code>;
+const TokenValue = ({ value }: { value: string }) => (
+  <code className="rounded bg-muted px-2 py-1 text-[11px] text-muted-foreground">{value}</code>
+);
 
 const TokenRow = ({ token, valueMap }: { token: CssToken; valueMap: Record<string, string> }) => (
   <div className="grid grid-cols-[64px_minmax(0,1.1fr)_minmax(0,1.4fr)] items-center gap-4 border-b border-border/60 px-2 py-3 last:border-b-0">
@@ -176,7 +226,15 @@ const TokenRow = ({ token, valueMap }: { token: CssToken; valueMap: Record<strin
   </div>
 );
 
-const TokenSectionView = ({ section, tokens, valueMap }: { section: TokenSection; tokens: CssToken[]; valueMap: Record<string, string> }) => (
+const TokenSectionView = ({
+  section,
+  tokens,
+  valueMap,
+}: {
+  section: TokenSection;
+  tokens: CssToken[];
+  valueMap: Record<string, string>;
+}) => (
   <section id={section.id} className="pb-pipeline-section">
     <div className="mb-4">
       <SegmentedPill
@@ -209,7 +267,10 @@ const DesignTokensPage = () => {
     setTokens(rootTokens.filter((token) => token.name.startsWith('--bui-table-')));
   }, []);
 
-  const valueMap = React.useMemo(() => Object.fromEntries(tokens.map((token) => [token.name, token.value])), [tokens]);
+  const valueMap = React.useMemo(
+    () => Object.fromEntries(tokens.map((token) => [token.name, token.value])),
+    [tokens],
+  );
   const sections = React.useMemo(() => {
     const grouped = new Map<string, TokenSection>();
 
@@ -237,8 +298,10 @@ const DesignTokensPage = () => {
         tokens: [...section.tokens].sort((left, right) => left.name.localeCompare(right.name)),
       }))
       .sort((left, right) => {
-        const leftOrder = (TOKEN_GROUPS.find((group) => group.key === left.key) ?? DEFAULT_GROUP).order;
-        const rightOrder = (TOKEN_GROUPS.find((group) => group.key === right.key) ?? DEFAULT_GROUP).order;
+        const leftOrder = (TOKEN_GROUPS.find((group) => group.key === left.key) ?? DEFAULT_GROUP)
+          .order;
+        const rightOrder = (TOKEN_GROUPS.find((group) => group.key === right.key) ?? DEFAULT_GROUP)
+          .order;
         if (leftOrder !== rightOrder) return leftOrder - rightOrder;
         return left.title.localeCompare(right.title);
       });
@@ -262,7 +325,10 @@ const DesignTokensPage = () => {
             ]}
           />
         </h2>
-        <p>Table-specific tokens only. This page excludes shared theme variables and shows the local token surface owned by the Table component.</p>
+        <p>
+          Table-specific tokens only. This page excludes shared theme variables and shows the local
+          token surface owned by the Table component.
+        </p>
       </div>
 
       <div className="pb-overview-layout">
@@ -270,17 +336,25 @@ const DesignTokensPage = () => {
           <section id="table-tokens-scope" className="pb-pipeline-section">
             <h3 className="pb-pipeline-section-title">Scope</h3>
             <p>
-              Tokens are read directly from <InlineCode code="Table.tokens.css" /> and filtered to <InlineCode code="--bui-table-*" /> variables. Shared aliases
-              from the Omni core theme remain referenced in values, but they are intentionally not listed here.
+              Tokens are read directly from <InlineCode code="Table.tokens.css" /> and filtered to{' '}
+              <InlineCode code="--bui-table-*" /> variables. Shared aliases from the Omni core theme
+              remain referenced in values, but they are intentionally not listed here.
             </p>
           </section>
 
           {sections.map((section) => (
-            <TokenSectionView key={section.id} section={section} tokens={section.tokens} valueMap={valueMap} />
+            <TokenSectionView
+              key={section.id}
+              section={section}
+              tokens={section.tokens}
+              valueMap={valueMap}
+            />
           ))}
         </main>
 
-        <TableOfContents items={[{ id: 'table-tokens-scope', label: 'Scope', group: 'Table tokens' }, ...tocItems]} />
+        <TableOfContents
+          items={[{ id: 'table-tokens-scope', label: 'Scope', group: 'Table tokens' }, ...tocItems]}
+        />
       </div>
     </div>
   );

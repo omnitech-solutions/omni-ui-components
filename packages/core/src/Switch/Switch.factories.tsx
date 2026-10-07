@@ -18,5 +18,13 @@ export const switchVariants: Variant<SwitchProps>[] = [
   { name: 'On', args: { label: 'On', checked: true } },
   { name: 'Label on left', args: { label: 'Label on left', switchSide: 'right', checked: true } },
   { name: 'Disabled', args: { label: 'Disabled', disabled: true, checked: false } },
-  { name: 'Invalid', args: { label: 'Invalid', error: 'Please enable notifications', required: true, checked: false } },
+  {
+    name: 'Invalid',
+    args: {
+      label: 'Invalid',
+      error: 'Please enable notifications',
+      required: true,
+      checked: false,
+    },
+  },
 ];

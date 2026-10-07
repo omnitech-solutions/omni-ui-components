@@ -1,8 +1,7 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { inputVariants, multilineClasses } from './Input.variants';
+import * as React from 'react';
 import type { InputPrimitiveProps } from './Input.types';
+import { inputVariants, multilineClasses } from './Input.variants';
 
 /**
  * The multiline mode of {@link InputPrimitive}: an auto-growing `<textarea>` that follows the same variants as the
@@ -35,7 +34,12 @@ export const MultilineField = React.forwardRef<HTMLTextAreaElement, InputPrimiti
     forwarded,
   ) => {
     const area = React.useRef<HTMLTextAreaElement | null>(null);
-    const text = typeof value === 'string' ? value : value === undefined || value === null ? '' : String(value);
+    const text =
+      typeof value === 'string'
+        ? value
+        : value === undefined || value === null
+          ? ''
+          : String(value);
     const state = disabled ? 'disabled' : readOnly ? 'readonly' : invalid ? 'invalid' : 'idle';
 
     // [STATE] Grow with the content up to maxHeight, then scroll inside; shrink again when text is deleted.
@@ -59,13 +63,17 @@ export const MultilineField = React.forwardRef<HTMLTextAreaElement, InputPrimiti
     };
 
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
     return (
       <textarea
         ref={(node) => {
           area.current = node;
           if (typeof forwarded === 'function') forwarded(node);
-          else if (forwarded) (forwarded as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
+          else if (forwarded)
+            (forwarded as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
         }}
         id={id}
         rows={1}

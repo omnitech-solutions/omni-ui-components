@@ -24,7 +24,8 @@ function setup(code = 'AltRight', holdMs?: number) {
       },
     }),
   );
-  const press = (key: string, init: KeyboardEventInit = {}) => fireEvent.keyDown(window, { code: key, ...init });
+  const press = (key: string, init: KeyboardEventInit = {}) =>
+    fireEvent.keyDown(window, { code: key, ...init });
   const release = (key: string) => fireEvent.keyUp(window, { code: key });
   return {
     log,
@@ -106,7 +107,15 @@ describe('omni-ui-components/lib/useHoldToTalk', () => {
   });
 
   it('is inert when disabled, with an empty code, or after unmount', () => {
-    const off = renderHook(() => useHoldToTalk({ code: '', enabled: true, active: false, onStart: () => undefined, onFinish: () => undefined }));
+    const off = renderHook(() =>
+      useHoldToTalk({
+        code: '',
+        enabled: true,
+        active: false,
+        onStart: () => undefined,
+        onFinish: () => undefined,
+      }),
+    );
     off.unmount();
     const key = setup();
     key.unmount();

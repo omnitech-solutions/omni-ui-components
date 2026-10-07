@@ -1,4 +1,15 @@
-import * as React from 'react';
+import { ApprovalCard, type ApprovalStatus } from '@oc-tech/omni-ui-components/ApprovalCard';
+import { ErrorCard } from '@oc-tech/omni-ui-components/ErrorCard';
+import { FeedbackPanel } from '@oc-tech/omni-ui-components/FeedbackPanel';
+import { highlightLines } from '@oc-tech/omni-ui-components/Highlight';
+import { Markdown, type MarkdownProps } from '@oc-tech/omni-ui-components/Markdown';
+import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
+import { Sources } from '@oc-tech/omni-ui-components/Sources';
+import { StepTimeline } from '@oc-tech/omni-ui-components/StepTimeline';
+import { Suggestions } from '@oc-tech/omni-ui-components/Suggestions';
+import { SummaryDivider } from '@oc-tech/omni-ui-components/SummaryDivider';
+import { Thinking } from '@oc-tech/omni-ui-components/Thinking';
+import { VersionPager } from '@oc-tech/omni-ui-components/VersionPager';
 import {
   Brain,
   Check,
@@ -17,24 +28,12 @@ import {
   Volume2,
   X,
 } from 'lucide-react';
-
-import { ApprovalCard, type ApprovalStatus } from '@oc-tech/omni-ui-components/ApprovalCard';
-import { ErrorCard } from '@oc-tech/omni-ui-components/ErrorCard';
-import { FeedbackPanel } from '@oc-tech/omni-ui-components/FeedbackPanel';
-import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
-import { Sources } from '@oc-tech/omni-ui-components/Sources';
-import { StepTimeline } from '@oc-tech/omni-ui-components/StepTimeline';
-import { Suggestions } from '@oc-tech/omni-ui-components/Suggestions';
-import { SummaryDivider } from '@oc-tech/omni-ui-components/SummaryDivider';
-import { Thinking } from '@oc-tech/omni-ui-components/Thinking';
-import { VersionPager } from '@oc-tech/omni-ui-components/VersionPager';
+import * as React from 'react';
+import type { Variant } from '../../internal/support/makeFactory';
+import { SAMPLE_REASONS } from '../FeedbackPanel/FeedbackPanel.factories';
+import { sampleSources } from '../Sources/Sources.factories';
 import { doneSteps, runningSteps } from '../StepTimeline/StepTimeline.factories';
 import { SAMPLE_REASONING } from '../Thinking/Thinking.factories';
-import { sampleSources } from '../Sources/Sources.factories';
-import { SAMPLE_REASONS } from '../FeedbackPanel/FeedbackPanel.factories';
-import { highlightLines } from '@oc-tech/omni-ui-components/Highlight';
-import { Markdown, type MarkdownProps } from '@oc-tech/omni-ui-components/Markdown';
-import type { Variant } from '../../internal/support/makeFactory';
 
 /** A reply with headings, emphasis, a list, a table, a link, inline code, a TypeScript block and citations `[1]` `[2]`. */
 export const SAMPLE_REPLY = [
@@ -136,7 +135,11 @@ export interface ChatReplyShowcaseProps {
  * (Transcript), then thinking, steps, markdown with code and citations, sources, an approval, actions with a
  * version pager, the feedback panel (thumbs down) and follow-ups. A citation pill opens its source.
  */
-export const ChatReplyShowcase: React.FC<ChatReplyShowcaseProps> = ({ phase = 'done', timeline = 'summary', onAction }) => {
+export const ChatReplyShowcase: React.FC<ChatReplyShowcaseProps> = ({
+  phase = 'done',
+  timeline = 'summary',
+  onAction,
+}) => {
   const streaming = phase === 'streaming';
   const [openSource, setOpenSource] = React.useState<number | null>(null);
   const [rating, setRating] = React.useState<'up' | 'down' | null>(null);
@@ -146,18 +149,31 @@ export const ChatReplyShowcase: React.FC<ChatReplyShowcaseProps> = ({ phase = 'd
   const [speaking, setSpeaking] = React.useState(false);
   const [copied, setCopied] = React.useState<string | null>(null);
   const [approval, setApproval] = React.useState<ApprovalStatus>('pending');
-  const text = streaming ? SAMPLE_REPLY.slice(0, SAMPLE_REPLY.indexOf('return null;') + 4) : SAMPLE_REPLY;
+  const text = streaming
+    ? SAMPLE_REPLY.slice(0, SAMPLE_REPLY.indexOf('return null;') + 4)
+    : SAMPLE_REPLY;
 
   return (
     <div className="flex max-w-[680px] flex-col gap-3 rounded-xl border border-solid border-[color:var(--oui-panel-border)] bg-[color:var(--oui-panel-bg)] p-4 text-[color:var(--oui-tone-neutral-fg)]">
-      <SummaryDivider count={6} text="You asked for a Two Sum solution and agreed on a hash map." icon={<ListCollapse />} chevron={<ChevronDown />} />
+      <SummaryDivider
+        count={6}
+        text="You asked for a Two Sum solution and agreed on a hash map."
+        icon={<ListCollapse />}
+        chevron={<ChevronDown />}
+      />
       <StepTimeline
         variant={timeline}
         steps={streaming ? runningSteps() : doneSteps()}
         seconds={4.2}
         icons={{ done: <Check />, chevron: <ChevronDown /> }}
       />
-      <Thinking streaming={streaming} seconds={4} text={SAMPLE_REASONING} icon={<Brain />} chevron={<ChevronDown />} />
+      <Thinking
+        streaming={streaming}
+        seconds={4}
+        text={SAMPLE_REASONING}
+        icon={<Brain />}
+        chevron={<ChevronDown />}
+      />
       <Markdown
         text={text}
         streaming={streaming}
@@ -270,7 +286,11 @@ export const ChatReplyShowcase: React.FC<ChatReplyShowcaseProps> = ({ phase = 'd
             icon={<CornerDownRight />}
             onSelect={(suggestion) => onAction?.('follow-up', suggestion.label)}
           />
-          <ErrorCard variant="stopped" icon={<CircleStop />} title="Stopped. Nothing has been applied." />
+          <ErrorCard
+            variant="stopped"
+            icon={<CircleStop />}
+            title="Stopped. Nothing has been applied."
+          />
         </>
       )}
     </div>

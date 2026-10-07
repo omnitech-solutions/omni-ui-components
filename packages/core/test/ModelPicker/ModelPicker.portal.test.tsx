@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { ModelPicker } from '@oc-tech/omni-ui-components';
+import { render, screen } from '@testing-library/react';
 import { modelPickerPropsFactory } from 'factories/omni-ui-components/ModelPicker/ModelPicker.factories';
 
 describe('omni-ui-components/ModelPicker portal', () => {

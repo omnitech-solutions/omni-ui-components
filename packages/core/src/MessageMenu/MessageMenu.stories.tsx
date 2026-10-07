@@ -1,9 +1,12 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
-
 import { MessageMenu, type MessageMenuProps } from '@oc-tech/omni-ui-components/MessageMenu';
-import { MessageMenuDemo, messageMenuPropsFactory, sampleConversation } from 'factories/omni-ui-components/MessageMenu/MessageMenu.factories';
+import type { Meta, StoryObj } from '@storybook/react';
+import {
+  MessageMenuDemo,
+  messageMenuPropsFactory,
+  sampleConversation,
+} from 'factories/omni-ui-components/MessageMenu/MessageMenu.factories';
+import type * as React from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta<MessageMenuProps> = {
   title: 'omni-ui-components/MessageMenu',
@@ -21,11 +24,20 @@ const meta: Meta<MessageMenuProps> = {
   args: messageMenuPropsFactory(),
   argTypes: {
     message: { control: 'object' },
-    conversation: { control: 'object', description: 'Adds "Download conversation" (Markdown file).' },
+    conversation: {
+      control: 'object',
+      description: 'Adds "Download conversation" (Markdown file).',
+    },
     labels: { control: 'object' },
-    onCopy: { action: 'copy', description: '(message) after the text is on the clipboard. Absent: no Copy row.' },
+    onCopy: {
+      action: 'copy',
+      description: '(message) after the text is on the clipboard. Absent: no Copy row.',
+    },
     onHide: { action: 'hide', description: '(message) for Hide and Unhide. Absent: no Hide row.' },
-    onDelete: { action: 'delete', description: '(message) after the confirm. Absent: no Delete row.' },
+    onDelete: {
+      action: 'delete',
+      description: '(message) after the confirm. Absent: no Delete row.',
+    },
     trigger: { control: false },
     icons: { control: false },
   },
@@ -40,9 +52,18 @@ export default meta;
 type Story = StoryObj<MessageMenuProps>;
 
 export const Default: Story = { args: { defaultOpen: true } };
-export const WithDownload: Story = { args: { defaultOpen: true, conversation: sampleConversation } };
-export const HiddenMessage: Story = { args: { defaultOpen: true, message: { id: 'm1', role: 'assistant', text: 'Hidden', hidden: true } } };
-export const CopyOnly: Story = { args: { defaultOpen: true, onHide: undefined, onDelete: undefined } };
+export const WithDownload: Story = {
+  args: { defaultOpen: true, conversation: sampleConversation },
+};
+export const HiddenMessage: Story = {
+  args: {
+    defaultOpen: true,
+    message: { id: 'm1', role: 'assistant', text: 'Hidden', hidden: true },
+  },
+};
+export const CopyOnly: Story = {
+  args: { defaultOpen: true, onHide: undefined, onDelete: undefined },
+};
 
 export const DeleteConfirm: Story = {
   render: () => <MessageMenuDemo />,

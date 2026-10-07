@@ -1,34 +1,33 @@
 import * as React from 'react';
-
-import { useControllableState } from '../lib/use-controllable-state';
 import { ApprovalCard, type ApprovalItem } from '../ApprovalCard';
 import { ErrorCard } from '../ErrorCard';
 import { FeedbackPanel, type FeedbackReason } from '../FeedbackPanel';
+import { useControllableState } from '../lib/use-controllable-state';
 import { Markdown } from '../Markdown';
-import { MessageActions, type MessageAction } from '../MessageActions';
+import { type MessageAction, MessageActions } from '../MessageActions';
 import { Sources } from '../Sources';
 import { StepTimeline, type StepTimelineStatus, type StepTimelineStep } from '../StepTimeline';
 import { Suggestions } from '../Suggestions';
 import { SummaryDivider } from '../SummaryDivider';
 import { Thinking } from '../Thinking';
 import {
-  DEFAULT_TRANSCRIPT_LABELS,
-  Transcript,
   type ChatAttachmentPart,
   type ChatSource,
   type ChatVersion,
   type ConversationTurn,
+  DEFAULT_TRANSCRIPT_LABELS,
+  Transcript,
   type TranscriptTurnSlots,
   type TurnContext,
 } from '../Transcript';
 import { VersionPager } from '../VersionPager';
-import { conversationTranscriptPartVariants } from './ConversationTranscript.variants';
 import {
-  DEFAULT_CONVERSATION_TRANSCRIPT_LABELS,
   type ConversationOpenSource,
   type ConversationRating,
   type ConversationTranscriptProps,
+  DEFAULT_CONVERSATION_TRANSCRIPT_LABELS,
 } from './ConversationTranscript.types';
+import { conversationTranscriptPartVariants } from './ConversationTranscript.variants';
 
 export { DEFAULT_CONVERSATION_TRANSCRIPT_LABELS };
 
@@ -89,8 +88,15 @@ export function ConversationTranscript<
   ...rest
 }: ConversationTranscriptProps<U, V, A, S, P, R>) {
   const labels = { ...DEFAULT_CONVERSATION_TRANSCRIPT_LABELS, ...labelOverrides };
-  const [openSource, setOpenSource] = useControllableState<ConversationOpenSource>(openSourceProp, defaultOpenSource, onOpenSourceChange);
-  const [ratingMap, setRatingMap] = useControllableState<Record<string, ConversationRating>>(ratings, defaultRatings ?? {});
+  const [openSource, setOpenSource] = useControllableState<ConversationOpenSource>(
+    openSourceProp,
+    defaultOpenSource,
+    onOpenSourceChange,
+  );
+  const [ratingMap, setRatingMap] = useControllableState<Record<string, ConversationRating>>(
+    ratings,
+    defaultRatings ?? {},
+  );
   const [feedbackFor, setFeedbackFor] = React.useState<string | null>(null);
   const [copied, setCopied] = React.useState<string | null>(null);
   const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -113,7 +119,10 @@ export function ConversationTranscript<
 
   const approvalsFor = (turn: U, pending: boolean) =>
     (approvals ?? [])
-      .filter((entry) => entry.turnId === turn.id && ((entry.status ?? 'pending') === 'pending') === pending)
+      .filter(
+        (entry) =>
+          entry.turnId === turn.id && ((entry.status ?? 'pending') === 'pending') === pending,
+      )
       .map((entry) => (
         <ApprovalCard<P>
           key={entry.approval.id}
@@ -122,7 +131,11 @@ export function ConversationTranscript<
           icons={icons.approval}
           labels={partLabels.approval}
           className={conversationTranscriptPartVariants({ part: 'approval' })}
-          onDecide={onDecideApproval ? (decision, approval) => onDecideApproval(approval, decision, turn) : undefined}
+          onDecide={
+            onDecideApproval
+              ? (decision, approval) => onDecideApproval(approval, decision, turn)
+              : undefined
+          }
         />
       ));
 
@@ -130,7 +143,13 @@ export function ConversationTranscript<
     timeline: (turn, context) => {
       const steps = turn.answer?.steps ?? [];
       if (steps.length === 0) return null;
-      const status: StepTimelineStatus = context.waiting ? 'waiting' : context.running ? 'running' : context.stopped ? 'stopped' : 'done';
+      const status: StepTimelineStatus = context.waiting
+        ? 'waiting'
+        : context.running
+          ? 'running'
+          : context.stopped
+            ? 'stopped'
+            : 'done';
       return (
         <StepTimeline
           steps={steps.map(
@@ -145,7 +164,12 @@ export function ConversationTranscript<
           )}
           status={status}
           seconds={turn.answer?.seconds}
-          icons={{ done: icons.stepDone, failed: icons.stepFailed, chevron: icons.chevron, spinner: icons.spinner }}
+          icons={{
+            done: icons.stepDone,
+            failed: icons.stepFailed,
+            chevron: icons.chevron,
+            spinner: icons.spinner,
+          }}
           labels={partLabels.steps}
           onOpenChange={onToggleSteps ? (open) => onToggleSteps(turn, open) : undefined}
         />
@@ -183,7 +207,7 @@ export function ConversationTranscript<
       ) : null,
     actions: (turn, context) => {
       const message = turn.answer?.final ?? turn.answer?.first;
-      const siblings = (turn.answer?.final?.siblings ?? turn.answer?.first.siblings) ?? [];
+      const siblings = turn.answer?.final?.siblings ?? turn.answer?.first.siblings ?? [];
       const rating = ratingMap[turn.id] ?? null;
       const actions: MessageAction[] = [];
       if (onCopyReply && copyIcon !== undefined && copyIcon !== null) {
@@ -199,14 +223,23 @@ export function ConversationTranscript<
         });
       }
       if (context.regenerate) {
-        actions.push({ id: 'regenerate', icon: icons.regenerate, label: labels.regenerate, disabled: context.running, onClick: context.regenerate });
+        actions.push({
+          id: 'regenerate',
+          icon: icons.regenerate,
+          label: labels.regenerate,
+          disabled: context.running,
+          onClick: context.regenerate,
+        });
       }
       if (context.selectVersion && message && siblings.length > 1) {
         actions.push({
           id: 'versions',
           node: (
             <VersionPager<ChatVersion>
-              index={Math.max(0, siblings.findIndex((version) => version.id === message.id))}
+              index={Math.max(
+                0,
+                siblings.findIndex((version) => version.id === message.id),
+              )}
               versions={siblings}
               previousIcon={icons.previous}
               nextIcon={icons.next}
@@ -218,13 +251,27 @@ export function ConversationTranscript<
       }
       if (onRate) {
         actions.push(
-          { id: 'up', icon: icons.thumbsUp, label: labels.goodReply, pressed: rating === 'up', onClick: () => rate(turn, 'up') },
-          { id: 'down', icon: icons.thumbsDown, label: labels.badReply, pressed: rating === 'down', onClick: () => rate(turn, 'down') },
+          {
+            id: 'up',
+            icon: icons.thumbsUp,
+            label: labels.goodReply,
+            pressed: rating === 'up',
+            onClick: () => rate(turn, 'up'),
+          },
+          {
+            id: 'down',
+            icon: icons.thumbsDown,
+            label: labels.badReply,
+            pressed: rating === 'down',
+            onClick: () => rate(turn, 'down'),
+          },
         );
       }
       actions.push(...(extraActions?.(turn) ?? []));
       if (actions.length === 0) return null;
-      return <MessageActions actions={actions} meta={actionsMeta?.(turn)} label={partLabels.actions} />;
+      return (
+        <MessageActions actions={actions} meta={actionsMeta?.(turn)} label={partLabels.actions} />
+      );
     },
     feedback: (turn) =>
       canFeedback && feedbackFor === turn.id && feedbackReasons ? (
@@ -309,7 +356,11 @@ export function ConversationTranscript<
             onCite={
               onCite && turn
                 ? (source) => {
-                    setOpenSource(openSource?.turnId === turn.id && openSource.n === source.n ? null : { turnId: turn.id, n: source.n });
+                    setOpenSource(
+                      openSource?.turnId === turn.id && openSource.n === source.n
+                        ? null
+                        : { turnId: turn.id, n: source.n },
+                    );
                     return onCite(source as S, turn);
                   }
                 : undefined

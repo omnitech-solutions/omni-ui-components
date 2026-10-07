@@ -1,10 +1,9 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
+
+import { IconButton, type IconButtonProps } from '@oc-tech/omni-ui-components/IconButton';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Trash2 } from 'lucide-react';
-
-import { IconButton, type IconButtonProps } from '@oc-tech/omni-ui-components/IconButton';
 
 const renderIconButton = (overrides: Partial<IconButtonProps> = {}) =>
   render(<IconButton aria-label="Remove" icon={<Trash2 data-testid="icon" />} {...overrides} />);
@@ -36,22 +35,33 @@ describe('omni-ui-components/IconButton', () => {
 
     it('honors an explicit title prop', () => {
       renderIconButton({ title: 'Delete forever' });
-      expect(screen.getByRole('button', { name: 'Remove' })).toHaveAttribute('title', 'Delete forever');
+      expect(screen.getByRole('button', { name: 'Remove' })).toHaveAttribute(
+        'title',
+        'Delete forever',
+      );
     });
   });
 
   describe('variants + sizes', () => {
-    (['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'] as const).forEach((variant) => {
-      it(`renders variant=${variant}`, () => {
-        renderIconButton({ variant });
-        expect(screen.getByRole('button', { name: 'Remove' })).toHaveAttribute('data-variant', variant);
-      });
-    });
+    (['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'] as const).forEach(
+      (variant) => {
+        it(`renders variant=${variant}`, () => {
+          renderIconButton({ variant });
+          expect(screen.getByRole('button', { name: 'Remove' })).toHaveAttribute(
+            'data-variant',
+            variant,
+          );
+        });
+      },
+    );
 
     (['sm', 'default', 'md', 'lg'] as const).forEach((iconSize) => {
       it(`renders iconSize=${iconSize}`, () => {
         renderIconButton({ iconSize });
-        expect(screen.getByRole('button', { name: 'Remove' })).toHaveAttribute('data-icon-size', iconSize);
+        expect(screen.getByRole('button', { name: 'Remove' })).toHaveAttribute(
+          'data-icon-size',
+          iconSize,
+        );
       });
     });
   });

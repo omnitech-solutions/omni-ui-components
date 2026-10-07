@@ -1,7 +1,13 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import type { ActionMenuProps } from '../ActionMenu';
-import type { AttachmentItem, AttachmentKind, AttachmentLabels, FileLimits, FileRejection } from '../Attachment';
+import type {
+  AttachmentItem,
+  AttachmentKind,
+  AttachmentLabels,
+  FileLimits,
+  FileRejection,
+} from '../Attachment';
 import type { CommandTrigger } from '../CommandPopover';
 import type { QueuedItem, QueuedListLabels } from '../QueuedList';
 
@@ -34,10 +40,25 @@ export const DEFAULT_COMPOSER_LABELS: ComposerLabels = {
 };
 
 /** Which send state applies: stop when a reply runs and the draft is empty, queue when it runs and there is a draft. */
-export const sendStateOf = ({ streaming, hasDraft, canQueue = true }: { streaming: boolean; hasDraft: boolean; canQueue?: boolean }): SendState =>
-  streaming && !hasDraft ? 'streaming' : streaming && canQueue ? 'queue' : hasDraft ? 'ready' : 'idle';
+export const sendStateOf = ({
+  streaming,
+  hasDraft,
+  canQueue = true,
+}: {
+  streaming: boolean;
+  hasDraft: boolean;
+  canQueue?: boolean;
+}): SendState =>
+  streaming && !hasDraft
+    ? 'streaming'
+    : streaming && canQueue
+      ? 'queue'
+      : hasDraft
+        ? 'ready'
+        : 'idle';
 
-export interface SendButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+export interface SendButtonProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   state: SendState;
   /** Icon nodes per state: arrow for `idle` and `ready`, stop square for `streaming`, playlist-add for `queue`. */
   sendIcon: React.ReactNode;
@@ -66,7 +87,13 @@ export interface ComposerDraft<A extends AttachmentItem = AttachmentItem> {
   attachments: A[];
 }
 
-export interface ComposerProps<A extends AttachmentItem = AttachmentItem, Q extends QueuedItem = QueuedItem> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'onSubmit' | 'children' | 'onPaste' | 'onKeyDown' | 'onFocus' | 'onBlur'> {
+export interface ComposerProps<
+  A extends AttachmentItem = AttachmentItem,
+  Q extends QueuedItem = QueuedItem,
+> extends Omit<
+    React.HTMLAttributes<HTMLDivElement>,
+    'onChange' | 'onSubmit' | 'children' | 'onPaste' | 'onKeyDown' | 'onFocus' | 'onBlur'
+  > {
   /** The draft. Controlled when set (the host owns it and clears it); otherwise kept inside (`defaultValue`). Nothing in the composer clears it on submit. */
   value?: string;
   defaultValue?: string;
@@ -171,7 +198,10 @@ export interface ComposerProps<A extends AttachmentItem = AttachmentItem, Q exte
   /** Ref of the textarea (focus it after a pick, set the caret). */
   inputRef?: React.Ref<HTMLTextAreaElement>;
   /** Extra attributes for the textarea, e.g. `aria-activedescendant`, `aria-expanded`, `aria-controls`, `role="combobox"`. */
-  textareaProps?: Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'value' | 'onChange' | 'placeholder' | 'disabled' | 'rows' | 'onFocus' | 'onBlur'>;
+  textareaProps?: Omit<
+    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    'value' | 'onChange' | 'placeholder' | 'disabled' | 'rows' | 'onFocus' | 'onBlur'
+  >;
   /** Slot before the field: usually the `+` menu. A function receives {@link ComposerApi}. */
   leading?: ComposerSlot;
   /** Slot of the toolbar row (stacked) or before the actions (pill): the model button, effort. */
@@ -215,7 +245,19 @@ export interface PlusMenuItem {
   disabled?: boolean;
 }
 
-export interface PlusMenuProps extends Pick<ActionMenuProps, 'side' | 'align' | 'sideOffset' | 'width' | 'portal' | 'container' | 'open' | 'onOpenChange' | 'returnFocus'> {
+export interface PlusMenuProps
+  extends Pick<
+    ActionMenuProps,
+    | 'side'
+    | 'align'
+    | 'sideOffset'
+    | 'width'
+    | 'portal'
+    | 'container'
+    | 'open'
+    | 'onOpenChange'
+    | 'returnFocus'
+  > {
   items: PlusMenuItem[];
   /** The `+` glyph (a caller-supplied icon node). */
   icon?: React.ReactNode;
@@ -225,7 +267,8 @@ export interface PlusMenuProps extends Pick<ActionMenuProps, 'side' | 'align' | 
   appearance?: 'outlined' | 'plain';
 }
 
-export interface ComposerNoticeProps extends Omit<React.HTMLAttributes<HTMLOutputElement>, 'children'> {
+export interface ComposerNoticeProps
+  extends Omit<React.HTMLAttributes<HTMLOutputElement>, 'children'> {
   /** The message, e.g. `Haiku can't see images. Switch to Sonnet?`. */
   message: React.ReactNode;
   /** Caller-supplied icon node. */

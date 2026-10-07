@@ -1,7 +1,7 @@
-import * as React from 'react';
 import type { DragEndEvent } from '@dnd-kit/core';
 import type { Row } from '@tanstack/react-table';
-import type { Virtualizer, VirtualItem } from '@tanstack/react-virtual';
+import type { VirtualItem, Virtualizer } from '@tanstack/react-virtual';
+import type * as React from 'react';
 import { BodyCell } from '../components/BodyCell';
 import { BulkActionsBar } from '../components/BulkActionsBar';
 import { ExpandCell } from '../components/ExpandCell';
@@ -12,8 +12,9 @@ import { RowDragCell, RowDragHeader } from '../components/RowDragCells';
 import { SelectionCell } from '../components/SelectionCell';
 import { SelectionHeader } from '../components/SelectionHeader';
 import { TableStructure } from '../components/TableStructure';
-import type { TableLoadingVariant } from '../Table.Loading';
+import type { ResolvedCellEditable } from '../internal';
 import { isExpandedKey, leafCount } from '../internal';
+import type { TableLoadingVariant } from '../Table.Loading';
 import type {
   TableCellRenderContext,
   TableColumn,
@@ -25,7 +26,6 @@ import type {
   TableResolvedRow,
   TableSelectionAction,
 } from '../Table.types';
-import type { ResolvedCellEditable } from '../internal';
 
 export interface UseTableSlotsInput<TRecord, TRowData> {
   // props from TableImpl
@@ -44,10 +44,19 @@ export interface UseTableSlotsInput<TRecord, TRowData> {
   changeableSelectionKeys: string[];
   rowByKey: Map<string, TableResolvedRow<TRecord, TRowData>>;
   isSelectionDisabled: (resolved: TableResolvedRow<TRecord, TRowData>) => boolean;
-  applySelectionKeys: (keys: string[], type: 'single' | 'multiple' | 'all' | 'invert' | 'none') => string[];
+  applySelectionKeys: (
+    keys: string[],
+    type: 'single' | 'multiple' | 'all' | 'invert' | 'none',
+  ) => string[];
   selectedRecordsForKeys: (keys: string[]) => TRecord[];
-  selectionCheckboxPropsFor: (resolved: TableResolvedRow<TRecord, TRowData>) => React.InputHTMLAttributes<HTMLInputElement>;
-  handleSelect: (resolved: TableResolvedRow<TRecord, TRowData>, checked: boolean, nativeEvent: Event) => void;
+  selectionCheckboxPropsFor: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+  ) => React.InputHTMLAttributes<HTMLInputElement>;
+  handleSelect: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    checked: boolean,
+    nativeEvent: Event,
+  ) => void;
   resolvedSelectionActions: TableSelectionAction[];
   bulkActionsConfigured: boolean;
   clearSelection: () => void;
@@ -71,8 +80,14 @@ export interface UseTableSlotsInput<TRecord, TRowData> {
     override: import('../Table.types').TableCellOverride<TRecord, TRowData> | undefined,
     col: TableColumn<TRecord, TRowData>,
   ) => ResolvedCellEditable<TRecord, TRowData> | null;
-  editableCellTarget: (rowKey: string, columnKey: string, direction: -1 | 1) => import('./useEditableHandlers').EditableTarget<TRecord, TRowData> | null;
-  firstEditableCellTarget: (resolved: TableResolvedRow<TRecord, TRowData>) => import('./useEditableHandlers').EditableTarget<TRecord, TRowData> | null;
+  editableCellTarget: (
+    rowKey: string,
+    columnKey: string,
+    direction: -1 | 1,
+  ) => import('./useEditableHandlers').EditableTarget<TRecord, TRowData> | null;
+  firstEditableCellTarget: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+  ) => import('./useEditableHandlers').EditableTarget<TRecord, TRowData> | null;
   beginCellEdit: (
     resolved: TableResolvedRow<TRecord, TRowData>,
     col: TableColumn<TRecord, TRowData>,
@@ -87,9 +102,15 @@ export interface UseTableSlotsInput<TRecord, TRowData> {
     ctx: TableCellRenderContext<TRecord, TRowData>,
     nextValue?: unknown,
   ) => Promise<boolean>;
-  saveRowEdit: (resolved: TableResolvedRow<TRecord, TRowData>, rowConfig: TableEditableRowConfig<TRecord, TRowData>) => Promise<void>;
+  saveRowEdit: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    rowConfig: TableEditableRowConfig<TRecord, TRowData>,
+  ) => Promise<void>;
   cancelCellEdit: (rowKey: string, columnKey: string) => void;
-  cancelRowEdit: (resolved: TableResolvedRow<TRecord, TRowData>, rowConfig: TableEditableRowConfig<TRecord, TRowData>) => void;
+  cancelRowEdit: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    rowConfig: TableEditableRowConfig<TRecord, TRowData>,
+  ) => void;
   setEditableValue: (rowKey: string, columnKey: string, value: unknown) => void;
   rowInitialEditableValues: (
     resolved: TableResolvedRow<TRecord, TRowData>,
@@ -193,7 +214,11 @@ export function useTableSlots<TRecord, TRowData>(input: UseTableSlotsInput<TReco
     loadingVariant,
   } = input;
 
-  const renderHeaderCell = (col: TableColumn<TRecord, TRowData>, columnIndex: number, extraProps: React.ThHTMLAttributes<HTMLTableCellElement> = {}) => (
+  const renderHeaderCell = (
+    col: TableColumn<TRecord, TRowData>,
+    columnIndex: number,
+    extraProps: React.ThHTMLAttributes<HTMLTableCellElement> = {},
+  ) => (
     <HeaderCell
       key={col.key}
       col={col}
@@ -205,7 +230,10 @@ export function useTableSlots<TRecord, TRowData>(input: UseTableSlotsInput<TReco
     />
   );
 
-  const renderRowDragHeader = () => (hasDraggableRows ? <RowDragHeader className={classMap['body.cell']} style={styleMap['body.cell']} /> : null);
+  const renderRowDragHeader = () =>
+    hasDraggableRows ? (
+      <RowDragHeader className={classMap['body.cell']} style={styleMap['body.cell']} />
+    ) : null;
 
   const renderRowDragCell = (resolved: TableResolvedRow<TRecord, TRowData>) =>
     hasDraggableRows ? (
@@ -223,7 +251,9 @@ export function useTableSlots<TRecord, TRowData>(input: UseTableSlotsInput<TReco
       return <th data-bui-utility-cell="true" />;
     }
     const selectedChangeableKeys = changeableSelectionKeys.filter((key) => selectedKeySet.has(key));
-    const allChangeableSelected = changeableSelectionKeys.length > 0 && selectedChangeableKeys.length === changeableSelectionKeys.length;
+    const allChangeableSelected =
+      changeableSelectionKeys.length > 0 &&
+      selectedChangeableKeys.length === changeableSelectionKeys.length;
     const someChangeableSelected = selectedChangeableKeys.length > 0 && !allChangeableSelected;
     const selectionActions = bulkActionsConfigured ? [] : resolvedSelectionActions;
     const handleSelectAll = (nextChecked: boolean) => {
@@ -231,12 +261,18 @@ export function useTableSlots<TRecord, TRowData>(input: UseTableSlotsInput<TReco
         const resolved = rowByKey.get(key);
         return resolved ? isSelectionDisabled(resolved) : false;
       });
-      const nextKeys = nextChecked ? Array.from(new Set([...selectedKeys, ...changeableSelectionKeys])) : currentSelectedDisabledKeys;
+      const nextKeys = nextChecked
+        ? Array.from(new Set([...selectedKeys, ...changeableSelectionKeys]))
+        : currentSelectedDisabledKeys;
       const changeKeys = nextChecked
         ? changeableSelectionKeys.filter((key) => !selectedKeySet.has(key))
         : changeableSelectionKeys.filter((key) => selectedKeySet.has(key));
       const appliedKeys = applySelectionKeys(nextKeys, 'all');
-      rowSelection.onSelectAll?.(nextChecked, selectedRecordsForKeys(appliedKeys), selectedRecordsForKeys(changeKeys));
+      rowSelection.onSelectAll?.(
+        nextChecked,
+        selectedRecordsForKeys(appliedKeys),
+        selectedRecordsForKeys(changeKeys),
+      );
       lastSelectedKeyRef.current = null;
     };
     return (
@@ -257,7 +293,9 @@ export function useTableSlots<TRecord, TRowData>(input: UseTableSlotsInput<TReco
   };
 
   const renderExpandHeader = () =>
-    treeMode || !expandable || expandable.showExpandColumn === false ? null : <ExpandHeader expandable={expandable} className={classMap['expand.cell']} />;
+    treeMode || !expandable || expandable.showExpandColumn === false ? null : (
+      <ExpandHeader expandable={expandable} className={classMap['expand.cell']} />
+    );
 
   const renderSelectionCell = (resolved: TableResolvedRow<TRecord, TRowData>, rowIndex: number) => {
     if (!rowSelection) return null;
@@ -277,13 +315,20 @@ export function useTableSlots<TRecord, TRowData>(input: UseTableSlotsInput<TReco
     );
   };
 
-  const renderExpandCell = (resolved: TableResolvedRow<TRecord, TRowData>, rowIndex: number, indent = 0) => {
+  const renderExpandCell = (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    rowIndex: number,
+    indent = 0,
+  ) => {
     if (treeMode) return null;
     if (!expandable || expandable.showExpandColumn === false) return null;
     const canExpand = expandable.rowExpandable
       ? expandable.rowExpandable(resolved.record, resolved.row)
       : Boolean(expandable.expandedRowRender || resolved.row.children?.length);
-    const fixedSide = (expandable.fixed === true ? 'left' : expandable.fixed) as 'left' | 'right' | undefined;
+    const fixedSide = (expandable.fixed === true ? 'left' : expandable.fixed) as
+      | 'left'
+      | 'right'
+      | undefined;
     return (
       <ExpandCell
         resolved={resolved}

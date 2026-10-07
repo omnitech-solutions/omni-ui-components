@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
+import type * as React from 'react';
 
 export interface FieldChromeContractArgs<P> {
   name: string;
@@ -9,7 +9,12 @@ export interface FieldChromeContractArgs<P> {
 }
 
 // Shared chrome contract for FieldShell-wrapped Omni field components.
-export function runFieldChromeContract<P extends Record<string, unknown>>({ name, Component, baseProps, primitiveSelector }: FieldChromeContractArgs<P>): void {
+export function runFieldChromeContract<P extends Record<string, unknown>>({
+  name,
+  Component,
+  baseProps,
+  primitiveSelector,
+}: FieldChromeContractArgs<P>): void {
   describe(`${name} field chrome contract`, () => {
     it('renders the label', () => {
       render(<Component {...(baseProps as any)} label="My Label" />);

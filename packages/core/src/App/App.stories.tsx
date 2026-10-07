@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { App } from '@oc-tech/omni-ui-components/App';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof App> = {
   title: 'omni-ui-components/App',
@@ -19,7 +18,11 @@ export default meta;
 
 type Story = StoryObj<typeof App>;
 export const Default: Story = {
-  render: () => <App><div className="rounded border p-4">Application shell passthrough</div></App>,
+  render: () => (
+    <App>
+      <div className="rounded border p-4">Application shell passthrough</div>
+    </App>
+  ),
 };
 
 export const NestedLayout: Story = {
@@ -27,7 +30,9 @@ export const NestedLayout: Story = {
     <App>
       <div className="space-y-3 rounded border p-4">
         <div className="text-sm font-semibold">Workspace</div>
-        <div className="text-sm text-muted-foreground">The wrapper does not alter nested content structure.</div>
+        <div className="text-sm text-muted-foreground">
+          The wrapper does not alter nested content structure.
+        </div>
       </div>
     </App>
   ),

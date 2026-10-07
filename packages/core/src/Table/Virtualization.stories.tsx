@@ -1,8 +1,9 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
 import { Table, type TableRef } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 import { ComponentWrapper } from './storySupport';
-import { largeProjects, wideProjectColumns, type ProjectRecord } from './Table.story.fixtures';
+import { largeProjects, type ProjectRecord, wideProjectColumns } from './Table.story.fixtures';
+
 const meta: Meta = {
   title: 'omni-ui-components/Table/Virtualization',
   // No `autodocs` tag — the autodocs page renders every story simultaneously,
@@ -122,13 +123,25 @@ const TableRefScrollToExample = () => {
   return (
     <div className="grid gap-3">
       <div className="flex gap-2">
-        <button type="button" className="pb-nav-btn" onClick={() => tableRef.current?.scrollTo({ top: 0 })}>
+        <button
+          type="button"
+          className="pb-nav-btn"
+          onClick={() => tableRef.current?.scrollTo({ top: 0 })}
+        >
           Top
         </button>
-        <button type="button" className="pb-nav-btn" onClick={() => tableRef.current?.scrollTo({ index: 40, align: 'start' })}>
+        <button
+          type="button"
+          className="pb-nav-btn"
+          onClick={() => tableRef.current?.scrollTo({ index: 40, align: 'start' })}
+        >
           Row 41
         </button>
-        <button type="button" className="pb-nav-btn" onClick={() => tableRef.current?.scrollTo({ key: 'project-75', align: 'center' })}>
+        <button
+          type="button"
+          className="pb-nav-btn"
+          onClick={() => tableRef.current?.scrollTo({ key: 'project-75', align: 'center' })}
+        >
           Project 75
         </button>
       </div>

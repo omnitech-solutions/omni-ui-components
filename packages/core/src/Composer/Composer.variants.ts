@@ -33,14 +33,21 @@ export const composerRoundClasses = 'size-[34px] flex-none rounded-full';
 
 export const composerHintClasses = 'px-1 pt-1 text-[11.5px] text-[color:var(--oui-panel-meta-fg)]';
 
-export const composerNoticeVariants = cva('flex min-w-0 items-center gap-2 rounded-lg border border-solid px-2.5 py-1.5 text-[12.5px] [&_svg]:size-4 [&_svg]:flex-none', {
-  variants: {
-    tone: {
-      warning: 'border-[color:var(--oui-tone-warning-border)] bg-[color:var(--oui-tone-warning-bg)] text-[color:var(--oui-tone-warning-fg)]',
-      danger: 'border-[color:var(--oui-tone-danger-border)] bg-[color:var(--oui-tone-danger-bg)] text-[color:var(--oui-tone-danger-fg)]',
-      accent: 'border-[color:var(--oui-tone-accent-border)] bg-[color:var(--oui-tone-accent-bg)] text-[color:var(--oui-tone-accent-fg)]',
-      neutral: 'border-[color:var(--oui-panel-divider)] bg-transparent text-[color:var(--oui-panel-meta-fg)]',
+export const composerNoticeVariants = cva(
+  'flex min-w-0 items-center gap-2 rounded-lg border border-solid px-2.5 py-1.5 text-[12.5px] [&_svg]:size-4 [&_svg]:flex-none',
+  {
+    variants: {
+      tone: {
+        warning:
+          'border-[color:var(--oui-tone-warning-border)] bg-[color:var(--oui-tone-warning-bg)] text-[color:var(--oui-tone-warning-fg)]',
+        danger:
+          'border-[color:var(--oui-tone-danger-border)] bg-[color:var(--oui-tone-danger-bg)] text-[color:var(--oui-tone-danger-fg)]',
+        accent:
+          'border-[color:var(--oui-tone-accent-border)] bg-[color:var(--oui-tone-accent-bg)] text-[color:var(--oui-tone-accent-fg)]',
+        neutral:
+          'border-[color:var(--oui-panel-divider)] bg-transparent text-[color:var(--oui-panel-meta-fg)]',
+      },
     },
+    defaultVariants: { tone: 'warning' },
   },
-  defaultVariants: { tone: 'warning' },
-});
+);

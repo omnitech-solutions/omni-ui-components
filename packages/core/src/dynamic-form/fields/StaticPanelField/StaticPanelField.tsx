@@ -1,4 +1,3 @@
-import * as React from 'react';
 import type { FieldProps } from '@rjsf/utils';
 
 import type { OmniRjsfFormContext } from '../../lib/formContext';
@@ -20,9 +19,14 @@ import type { OmniRjsfFormContext } from '../../lib/formContext';
 export const StaticPanelField = (props: FieldProps) => {
   const { idSchema, uiSchema, registry, name } = props;
   const fromIdSchema = (idSchema as { $id?: string } | undefined)?.$id;
-  const id = fromIdSchema && fromIdSchema.length > 0 ? fromIdSchema : name ? `root_${name}` : 'static-panel';
-  const uiOptions = (uiSchema as unknown as { 'ui:options'?: Record<string, unknown> } | undefined)?.['ui:options'] ?? {};
-  const panelKey = typeof uiOptions['panelKey'] === 'string' ? (uiOptions['panelKey'] as string) : '';
+  const id =
+    fromIdSchema && fromIdSchema.length > 0 ? fromIdSchema : name ? `root_${name}` : 'static-panel';
+  const uiOptions =
+    (uiSchema as unknown as { 'ui:options'?: Record<string, unknown> } | undefined)?.[
+      'ui:options'
+    ] ?? {};
+  const panelKey =
+    typeof uiOptions['panelKey'] === 'string' ? (uiOptions['panelKey'] as string) : '';
   const lines = Array.isArray(uiOptions['lines']) ? (uiOptions['lines'] as string[]) : [];
 
   const context = (registry?.formContext ?? {}) as Partial<OmniRjsfFormContext>;

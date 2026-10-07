@@ -1,10 +1,30 @@
+import {
+  Ban,
+  CheckCircle2,
+  CircleAlert,
+  Eye,
+  FileCode2,
+  FileText,
+  FlaskConical,
+  GitCompareArrows,
+  Info,
+  ListChecks,
+  Undo2,
+} from 'lucide-react';
 import * as React from 'react';
-import { Ban, CheckCircle2, CircleAlert, Eye, FileCode2, FileText, FlaskConical, GitCompareArrows, Info, ListChecks, Undo2 } from 'lucide-react';
 
 import { highlightLines } from '../Highlight';
 import { makeFactory, type Variant } from '../internal/support/makeFactory';
 import { DiffReview } from './DiffReview';
-import type { DiffChange, DiffReviewAction, DiffReviewActionContext, DiffReviewIcons, DiffReviewProps, DiffReviewStatus, DiffReviewVariant } from './DiffReview.types';
+import type {
+  DiffChange,
+  DiffReviewAction,
+  DiffReviewActionContext,
+  DiffReviewIcons,
+  DiffReviewProps,
+  DiffReviewStatus,
+  DiffReviewVariant,
+} from './DiffReview.types';
 
 // ---------------------------------------------------------------------------------------------------------------
 // Fixtures: the three surfaces of a proposed change to a small answer (notes, code, tests).
@@ -15,7 +35,14 @@ export const NOTES_CHANGE: DiffChange = {
   label: 'Notes',
   description: 'Talking points for the answer',
   icon: <FileText />,
-  before: ['## Approach', '- Sort the intervals by start.', '- Merge while they overlap.', '', '## Complexity', '- O(n log n) time.'].join('\n'),
+  before: [
+    '## Approach',
+    '- Sort the intervals by start.',
+    '- Merge while they overlap.',
+    '',
+    '## Complexity',
+    '- O(n log n) time.',
+  ].join('\n'),
   after: [
     '## Approach',
     '- Sort the intervals by start.',
@@ -65,7 +92,11 @@ export const TESTS_CHANGE: DiffChange = {
   description: 'mergeIntervals.test.ts',
   icon: <FlaskConical />,
   language: 'ts',
-  before: ["it('merges overlaps', () => {", '  expect(mergeIntervals([[1, 3], [2, 6]])).toEqual([[1, 6]]);', '});'].join('\n'),
+  before: [
+    "it('merges overlaps', () => {",
+    '  expect(mergeIntervals([[1, 3], [2, 6]])).toEqual([[1, 6]]);',
+    '});',
+  ].join('\n'),
   after: [
     "it('merges overlaps', () => {",
     '  expect(mergeIntervals([[1, 3], [2, 6]])).toEqual([[1, 6]]);',
@@ -78,7 +109,8 @@ export const TESTS_CHANGE: DiffChange = {
 };
 
 /** The three changes of a proposal; `count` takes the first n. */
-export const sampleChanges = (count = 3): DiffChange[] => [NOTES_CHANGE, CODE_CHANGE, TESTS_CHANGE].slice(0, count);
+export const sampleChanges = (count = 3): DiffChange[] =>
+  [NOTES_CHANGE, CODE_CHANGE, TESTS_CHANGE].slice(0, count);
 
 /** A long single-surface diff: two edits far apart in a 60-line file, so the `⋯` gap row shows. */
 export const longChange = (): DiffChange => {
@@ -86,11 +118,24 @@ export const longChange = (): DiffChange => {
   const after = [...lines];
   after[2] = 'const value3 = 30; // tuned';
   after[52] = 'const value53 = 530; // tuned';
-  return { id: 'long', label: 'config.ts', language: 'ts', before: lines.join('\n'), after: after.join('\n') };
+  return {
+    id: 'long',
+    label: 'config.ts',
+    language: 'ts',
+    before: lines.join('\n'),
+    after: after.join('\n'),
+  };
 };
 
 /** Every phase of a card: the status pill and the footer note. */
-export const DIFF_REVIEW_STATUSES: DiffReviewStatus[] = ['pending', 'preview', 'applied', 'rejected', 'reverted', 'conflicted'];
+export const DIFF_REVIEW_STATUSES: DiffReviewStatus[] = [
+  'pending',
+  'preview',
+  'applied',
+  'rejected',
+  'reverted',
+  'conflicted',
+];
 
 export const DIFF_REVIEW_ICONS: DiffReviewIcons = {
   badge: <GitCompareArrows />,
@@ -175,34 +220,75 @@ export interface PhaseActionsOptions extends PhaseActionHandlers {
  * In the checklist the Apply label follows the selection (Apply both, Apply all, Apply 2) and Apply is off with
  * nothing ticked.
  */
-export function phaseActions({ status, variant = 'diff', working = false, labels: labelsProp, ...handlers }: PhaseActionsOptions): DiffReviewAction[] {
+export function phaseActions({
+  status,
+  variant = 'diff',
+  working = false,
+  labels: labelsProp,
+  ...handlers
+}: PhaseActionsOptions): DiffReviewAction[] {
   const labels = { ...DEFAULT_DIFF_REVIEW_ACTION_LABELS, ...labelsProp };
   const checklist = variant === 'checklist';
-  const apply = (key: string, text: string): DiffReviewAction[] => (!handlers.onApply ? [] : [{
-    key,
-    primary: true,
-    label: ({ selected, changes, variant: shown }) =>
-      shown === 'checklist' ? (selected.length === changes.length ? (changes.length === 2 ? labels.applyBoth : labels.applyAll) : labels.applyCount(selected.length)) : text,
-    disabled: ({ selected, variant: shown }) => working || (shown === 'checklist' && selected.length === 0),
-    onClick: (context) => handlers.onApply?.(context),
-  }]);
-  const plain = (key: string, label: string, onClick?: () => void | Promise<void>): DiffReviewAction[] => (onClick ? [{ key, label, disabled: working, onClick }] : []);
+  const apply = (key: string, text: string): DiffReviewAction[] =>
+    !handlers.onApply
+      ? []
+      : [
+          {
+            key,
+            primary: true,
+            label: ({ selected, changes, variant: shown }) =>
+              shown === 'checklist'
+                ? selected.length === changes.length
+                  ? changes.length === 2
+                    ? labels.applyBoth
+                    : labels.applyAll
+                  : labels.applyCount(selected.length)
+                : text,
+            disabled: ({ selected, variant: shown }) =>
+              working || (shown === 'checklist' && selected.length === 0),
+            onClick: (context) => handlers.onApply?.(context),
+          },
+        ];
+  const plain = (
+    key: string,
+    label: string,
+    onClick?: () => void | Promise<void>,
+  ): DiffReviewAction[] => (onClick ? [{ key, label, disabled: working, onClick }] : []);
 
   switch (status) {
     case 'pending':
       return [
         ...plain('reject', checklist ? labels.discard : labels.reject, handlers.onReject),
-        ...plain('preview', checklist ? labels.previewChecklist : labels.preview, handlers.onPreview),
+        ...plain(
+          'preview',
+          checklist ? labels.previewChecklist : labels.preview,
+          handlers.onPreview,
+        ),
         ...apply('apply', labels.apply),
       ];
     case 'preview':
-      return [...plain('stop-preview', labels.stopPreview, handlers.onStopPreview), ...apply('apply', labels.apply)];
+      return [
+        ...plain('stop-preview', labels.stopPreview, handlers.onStopPreview),
+        ...apply('apply', labels.apply),
+      ];
     case 'applied':
-      return plain('undo', labels.undo, handlers.onUndo).map((action) => ({ ...action, icon: <Undo2 /> }));
+      return plain('undo', labels.undo, handlers.onUndo).map((action) => ({
+        ...action,
+        icon: <Undo2 />,
+      }));
     case 'rejected':
       return plain('restore', labels.restore, handlers.onRestore);
     case 'reverted':
-      return handlers.onApply ? [{ key: 'reapply', label: labels.reapply, disabled: working, onClick: (context) => handlers.onApply?.(context) }] : [];
+      return handlers.onApply
+        ? [
+            {
+              key: 'reapply',
+              label: labels.reapply,
+              disabled: working,
+              onClick: (context) => handlers.onApply?.(context),
+            },
+          ]
+        : [];
     case 'conflicted':
       return [];
   }
@@ -220,7 +306,12 @@ export const diffReviewPropsFactory = makeFactory<DiffReviewProps>({
   highlight: highlightLines,
   icons: DIFF_REVIEW_ICONS,
   product: 'Studio',
-  actions: phaseActions({ status: 'pending', onApply: () => undefined, onReject: () => undefined, onPreview: () => undefined }),
+  actions: phaseActions({
+    status: 'pending',
+    onApply: () => undefined,
+    onReject: () => undefined,
+    onPreview: () => undefined,
+  }),
 });
 
 const withActions = (status: DiffReviewStatus, variant: DiffReviewVariant = 'diff') =>
@@ -242,10 +333,26 @@ export const diffReviewVariants: Variant<DiffReviewProps>[] = [
   { name: 'Diff, rejected', args: { status: 'rejected', actions: withActions('rejected') } },
   { name: 'Diff, rolled back', args: { status: 'reverted', actions: withActions('reverted') } },
   { name: 'Diff, conflicted', args: { status: 'conflicted', actions: withActions('conflicted') } },
-  { name: 'Checklist, pending', args: { variant: 'checklist', actions: withActions('pending', 'checklist') } },
-  { name: 'Diff, no highlighting', args: { highlight: undefined, actions: withActions('pending') } },
-  { name: 'Diff, long (gap rows)', args: { changes: [longChange()], actions: withActions('pending') } },
-  { name: 'Fallback (no changes)', args: { changes: [], fallback: '{\n  "patch": { "notes": "…" }\n}', actions: withActions('pending') } },
+  {
+    name: 'Checklist, pending',
+    args: { variant: 'checklist', actions: withActions('pending', 'checklist') },
+  },
+  {
+    name: 'Diff, no highlighting',
+    args: { highlight: undefined, actions: withActions('pending') },
+  },
+  {
+    name: 'Diff, long (gap rows)',
+    args: { changes: [longChange()], actions: withActions('pending') },
+  },
+  {
+    name: 'Fallback (no changes)',
+    args: {
+      changes: [],
+      fallback: '{\n  "patch": { "notes": "…" }\n}',
+      actions: withActions('pending'),
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -260,7 +367,13 @@ export interface DiffReviewDemoProps extends Partial<Omit<DiffReviewProps, 'acti
 }
 
 /** Owns the status; wires `phaseActions` to it. Apply → Applied → Undo → Rolled back → Re-apply, Reject → Restore. */
-export const DiffReviewDemo: React.FC<DiffReviewDemoProps> = ({ status: initial = 'pending', variant = 'diff', onAction, preview = true, ...props }) => {
+export const DiffReviewDemo: React.FC<DiffReviewDemoProps> = ({
+  status: initial = 'pending',
+  variant = 'diff',
+  onAction,
+  preview = true,
+  ...props
+}) => {
   const [status, setStatus] = React.useState<DiffReviewStatus>(initial);
   React.useEffect(() => setStatus(initial), [initial]);
   const go = (name: string, next: DiffReviewStatus, detail?: unknown) => {
@@ -276,7 +389,12 @@ export const DiffReviewDemo: React.FC<DiffReviewDemoProps> = ({ status: initial 
       actions={phaseActions({
         status,
         variant,
-        onApply: ({ selected }) => go('apply', 'applied', selected.map((change) => change.id)),
+        onApply: ({ selected }) =>
+          go(
+            'apply',
+            'applied',
+            selected.map((change) => change.id),
+          ),
         onReject: () => go('reject', 'rejected'),
         onPreview: preview ? () => go('preview', 'preview') : undefined,
         onStopPreview: () => go('stop-preview', 'pending'),

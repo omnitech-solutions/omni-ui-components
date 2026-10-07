@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import type { UiSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import type { DynamicFormFixture, FormFixture } from '../../DynamicForm/DynamicForm.factories';
 
@@ -27,21 +27,32 @@ const AMOUNT_SCHEMA = {
   },
 };
 
-const AMOUNT_ZOD = z.object({ amount: z.number().nonnegative() }) as unknown as z.ZodType<AmountFormData>;
+const AMOUNT_ZOD = z.object({
+  amount: z.number().nonnegative(),
+}) as unknown as z.ZodType<AmountFormData>;
 
-const formatAmount = (n: number): string => new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(Number.isFinite(n) ? n : 0);
+const formatAmount = (n: number): string =>
+  new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(
+    Number.isFinite(n) ? n : 0,
+  );
 
 const deriveAmount = (formData: Readonly<Partial<AmountFormData>>): AmountDerived => {
   const amount = typeof formData.amount === 'number' ? formData.amount : 0;
   return { amountLabel: `${formatAmount(amount)} Excluding Tax` };
 };
 
-const fixtureFor = (uiSchemaOverrides: UiSchema = {}, initialAmount = 0): DynamicFormFixture<AmountFormData, AmountDerived> => ({
+const fixtureFor = (
+  uiSchemaOverrides: UiSchema = {},
+  initialAmount = 0,
+): DynamicFormFixture<AmountFormData, AmountDerived> => ({
   schema: AMOUNT_SCHEMA,
   uiSchema: {
     'ui:rows': [['amount'], ['amountLabel']],
     amount: { 'ui:widget': 'numberInput' },
-    amountLabel: { 'ui:widget': 'derivedText', 'ui:options': { derivedKey: 'amountLabel', tone: 'muted' } },
+    amountLabel: {
+      'ui:widget': 'derivedText',
+      'ui:options': { derivedKey: 'amountLabel', tone: 'muted' },
+    },
     ...uiSchemaOverrides,
   },
   zodSchema: AMOUNT_ZOD,
@@ -50,10 +61,24 @@ const fixtureFor = (uiSchemaOverrides: UiSchema = {}, initialAmount = 0): Dynami
   formContext: { optionSets: {}, actions: {}, locale: 'en-GB' },
 });
 
-export const defaultDerivedTextFixture = (): DynamicFormFixture<AmountFormData, AmountDerived> => fixtureFor();
-export const prefilledDerivedTextFixture = (): DynamicFormFixture<AmountFormData, AmountDerived> => fixtureFor({}, 1234.56);
-export const successToneDerivedTextFixture = (): DynamicFormFixture<AmountFormData, AmountDerived> =>
-  fixtureFor({ amountLabel: { 'ui:widget': 'derivedText', 'ui:options': { derivedKey: 'amountLabel', tone: 'success' } } }, 200);
+export const defaultDerivedTextFixture = (): DynamicFormFixture<AmountFormData, AmountDerived> =>
+  fixtureFor();
+export const prefilledDerivedTextFixture = (): DynamicFormFixture<AmountFormData, AmountDerived> =>
+  fixtureFor({}, 1234.56);
+export const successToneDerivedTextFixture = (): DynamicFormFixture<
+  AmountFormData,
+  AmountDerived
+> =>
+  fixtureFor(
+    {
+      amountLabel: {
+        'ui:widget': 'derivedText',
+        'ui:options': { derivedKey: 'amountLabel', tone: 'success' },
+      },
+    },
+    200,
+  );
 
 /** Compatibility shim — story shell accepts FormFixture or DynamicFormFixture. */
-export const formFixtureFromDerivedText = (): FormFixture<AmountFormData> => defaultDerivedTextFixture();
+export const formFixtureFromDerivedText = (): FormFixture<AmountFormData> =>
+  defaultDerivedTextFixture();

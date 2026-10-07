@@ -31,5 +31,8 @@ export const radioVariants: Variant<RadioProps>[] = [
   { name: 'Selected', args: { label: 'Selected', value: 'pro' } },
   { name: 'Horizontal', args: { label: 'Horizontal', orientation: 'horizontal', value: 'free' } },
   { name: 'Disabled', args: { label: 'Disabled', disabled: true, value: 'team' } },
-  { name: 'Invalid', args: { label: 'Invalid', error: 'Please pick a plan', required: true, value: '' } },
+  {
+    name: 'Invalid',
+    args: { label: 'Invalid', error: 'Please pick a plan', required: true, value: '' },
+  },
 ];

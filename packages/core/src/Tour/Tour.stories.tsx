@@ -1,8 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-
 import { Button } from '@oc-tech/omni-ui-components/Button';
 import { Tour } from '@oc-tech/omni-ui-components/Tour';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const meta: Meta<typeof Tour> = {
   title: 'omni-ui-components/Tour',
@@ -26,9 +25,21 @@ export const Default: Story = {
     const [open, setOpen] = React.useState(true);
     const [current, setCurrent] = React.useState(0);
     const steps = [
-      { title: 'Welcome to the workspace', description: 'Use this guided tour to understand the primary actions, team signals, and where important review work happens.' },
-      { title: 'Review queue', description: 'Start with items that need approval. This is where publishing risk, owner status, and blockers become visible.' },
-      { title: 'Finish and continue', description: 'Once the user understands the flow, close the tour and let them continue in the real interface.' },
+      {
+        title: 'Welcome to the workspace',
+        description:
+          'Use this guided tour to understand the primary actions, team signals, and where important review work happens.',
+      },
+      {
+        title: 'Review queue',
+        description:
+          'Start with items that need approval. This is where publishing risk, owner status, and blockers become visible.',
+      },
+      {
+        title: 'Finish and continue',
+        description:
+          'Once the user understands the flow, close the tour and let them continue in the real interface.',
+      },
     ];
 
     return (
@@ -37,7 +48,9 @@ export const Default: Story = {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-sm font-semibold">Release workspace</div>
-              <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">A representative page shell so the guided overlay has visible context.</div>
+              <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">
+                A representative page shell so the guided overlay has visible context.
+              </div>
             </div>
             <Button
               onClick={() => {
@@ -51,19 +64,31 @@ export const Default: Story = {
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             <div className="rounded-xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-4">
               <div className="text-sm font-semibold">Queue</div>
-              <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">5 approvals waiting</div>
+              <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">
+                5 approvals waiting
+              </div>
             </div>
             <div className="rounded-xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-4">
               <div className="text-sm font-semibold">Drafts</div>
-              <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">12 active changes</div>
+              <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">
+                12 active changes
+              </div>
             </div>
             <div className="rounded-xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-4">
               <div className="text-sm font-semibold">Activity</div>
-              <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">Recent owner updates and comments</div>
+              <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">
+                Recent owner updates and comments
+              </div>
             </div>
           </div>
         </div>
-        <Tour open={open} current={current} steps={steps} onCurrentChange={setCurrent} onClose={() => setOpen(false)} />
+        <Tour
+          open={open}
+          current={current}
+          steps={steps}
+          onCurrentChange={setCurrent}
+          onClose={() => setOpen(false)}
+        />
       </div>
     );
   },
@@ -77,8 +102,15 @@ export const SecondStep: Story = {
         current={1}
         steps={[
           { title: 'Welcome', description: 'Intro to the workspace.' },
-          { title: 'Check the queue first', description: 'This step shows how a tour can advance through a structured sequence of guidance.' },
-          { title: 'Wrap up', description: 'End the tour once the user has enough context to continue alone.' },
+          {
+            title: 'Check the queue first',
+            description:
+              'This step shows how a tour can advance through a structured sequence of guidance.',
+          },
+          {
+            title: 'Wrap up',
+            description: 'End the tour once the user has enough context to continue alone.',
+          },
         ]}
       />
     </div>

@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { Tag } from '@oc-tech/omni-ui-components/Tag';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 describe('omni-ui-components/Tag', () => {
   it('renders label', () => {
@@ -24,11 +24,15 @@ describe('omni-ui-components/Tag', () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 
-  it("filled variant is borderless and flagged", () => {
-    render(<Tag variant="filled" mono>O(n) time</Tag>);
-    const tag = screen.getByText("O(n) time");
-    expect(tag).toHaveAttribute("data-variant", "filled");
-    expect(tag.className).toContain("border-0");
-    expect(tag.className).toContain("--oui-tag-filled-bg");
+  it('filled variant is borderless and flagged', () => {
+    render(
+      <Tag variant="filled" mono>
+        O(n) time
+      </Tag>,
+    );
+    const tag = screen.getByText('O(n) time');
+    expect(tag).toHaveAttribute('data-variant', 'filled');
+    expect(tag.className).toContain('border-0');
+    expect(tag.className).toContain('--oui-tag-filled-bg');
   });
 });

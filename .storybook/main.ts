@@ -9,7 +9,10 @@ const coreSrc = path.join(repoRoot, 'packages', 'core', 'src');
 
 const config: StorybookConfig = {
   framework: { name: '@storybook/react-vite', options: {} },
-  stories: ['../.storybook/**/*.@(story|stories).@(ts|tsx)', '../packages/core/src/**/*.@(story|stories).@(ts|tsx)'],
+  stories: [
+    '../.storybook/**/*.@(story|stories).@(ts|tsx)',
+    '../packages/core/src/**/*.@(story|stories).@(ts|tsx)',
+  ],
   addons: ['@storybook/addon-docs', '@storybook/addon-a11y', '@storybook/addon-themes'],
   typescript: {
     check: false,

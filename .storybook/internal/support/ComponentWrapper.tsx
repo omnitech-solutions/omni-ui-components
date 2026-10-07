@@ -11,10 +11,9 @@
  *     </ComponentWrapper>
  */
 import * as React from 'react';
-
+import { getRegisteredFixtures } from './fixtureRegistry';
 import { InlineCode } from './InlineCode';
 import { ShowCodePanel } from './ShowCodePanel';
-import { getRegisteredFixtures } from './fixtureRegistry';
 import type { UseDynamicSnippetOptions } from './useDynamicSnippet';
 
 export interface ComponentWrapperProps {
@@ -102,7 +101,13 @@ const resolveComponentName = (type: React.ReactElement['type']): string => {
 const renderDescription = (description: React.ReactNode): React.ReactNode => {
   if (typeof description !== 'string') return description;
   const parts = description.split(/(`[^`]+`)/g);
-  return parts.map((part, index) => (part.startsWith('`') && part.endsWith('`') ? <InlineCode key={index} code={part.slice(1, -1)} /> : part));
+  return parts.map((part, index) =>
+    part.startsWith('`') && part.endsWith('`') ? (
+      <InlineCode key={index} code={part.slice(1, -1)} />
+    ) : (
+      part
+    ),
+  );
 };
 
 export const ComponentWrapper: React.FC<ComponentWrapperProps> = ({
@@ -133,7 +138,8 @@ export const ComponentWrapper: React.FC<ComponentWrapperProps> = ({
   //      gets a matching `const rows = …;` emitted for free.
   const registered = getRegisteredFixtures();
   const propDerived: Record<string, unknown> = {};
-  const isReactElement = (v: unknown): boolean => Boolean(v && typeof v === 'object' && '$$typeof' in (v as object));
+  const isReactElement = (v: unknown): boolean =>
+    Boolean(v && typeof v === 'object' && '$$typeof' in (v as object));
   const containsReactElement = (v: unknown): boolean => Array.isArray(v) && v.some(isReactElement);
   for (const [key, value] of Object.entries(elementProps)) {
     if (value === null || (typeof value !== 'object' && typeof value !== 'function')) continue;
@@ -146,7 +152,10 @@ export const ComponentWrapper: React.FC<ComponentWrapperProps> = ({
   }
   const mergedFixtures = { ...registered, ...propDerived, ...fixtures };
   return (
-    <div className={className} style={{ maxWidth: 800, minWidth: 600, marginInline: 'auto', width: '100%' }}>
+    <div
+      className={className}
+      style={{ maxWidth: 800, minWidth: 600, marginInline: 'auto', width: '100%' }}
+    >
       {(title || description) && (
         <header className="pb-pipeline-section" style={{ margin: 0 }}>
           {title && <h3 className="pb-pipeline-section-title">{title}</h3>}

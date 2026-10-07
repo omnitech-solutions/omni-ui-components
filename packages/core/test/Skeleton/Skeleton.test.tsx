@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render } from '@testing-library/react';
 
 import { Skeleton } from '@oc-tech/omni-ui-components/Skeleton';
+import { render } from '@testing-library/react';
 
 describe('omni-ui-components/Skeleton', () => {
   it('renders skeleton block', () => {

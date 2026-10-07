@@ -1,10 +1,9 @@
 import '@testing-library/jest-dom';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { Button } from '@oc-tech/omni-ui-components/Button';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-import { Button } from '@oc-tech/omni-ui-components/Button';
 import {
   buttonActionVariants,
   buttonPropsFactory,
@@ -101,7 +100,10 @@ describe('omni-ui-components/Button variations', () => {
       expect(shortcut.querySelector('kbd')).toBeNull();
       expect(shortcut).toHaveClass('font-mono', 'text-[11px]', 'opacity-70');
       expect(shortcut.className).not.toMatch(/border|rounded/);
-      expect(btn.querySelector('[data-slot="button-shortcut"]')).toHaveAttribute('aria-hidden', 'true');
+      expect(btn.querySelector('[data-slot="button-shortcut"]')).toHaveAttribute(
+        'aria-hidden',
+        'true',
+      );
       expect(btn.lastElementChild).toBe(btn.querySelector('[data-slot="button-shortcut"]'));
     });
 
@@ -129,7 +131,10 @@ describe('omni-ui-components/Button variations', () => {
       expect(btn).toHaveAttribute('aria-busy', 'true');
       expect(btn).toHaveAttribute('data-loading', 'true');
       expect(screen.queryByTestId('lead')).toBeNull();
-      expect(btn.querySelector('[data-slot="button-spinner"]')).toHaveAttribute('aria-hidden', 'true');
+      expect(btn.querySelector('[data-slot="button-spinner"]')).toHaveAttribute(
+        'aria-hidden',
+        'true',
+      );
     });
 
     it('does not call onClick while loading', async () => {
@@ -162,7 +167,9 @@ describe('omni-ui-components/Button variations', () => {
 
     it('carries the pressed look as a style hook on aria-pressed', () => {
       render(<Button pressed>Answer</Button>);
-      expect(screen.getByRole('button').className).toContain('aria-pressed:bg-[color:var(--oui-tone-accent-bg)]');
+      expect(screen.getByRole('button').className).toContain(
+        'aria-pressed:bg-[color:var(--oui-tone-accent-bg)]',
+      );
     });
   });
 
@@ -177,13 +184,18 @@ describe('omni-ui-components/Button variations', () => {
 
     it('accepts any CSS length', () => {
       render(<Button labelMaxWidth="16rem">Long label</Button>);
-      expect(screen.getByText('Long label')).toHaveAttribute('style', expect.stringContaining('max-width: 16rem'));
+      expect(screen.getByText('Long label')).toHaveAttribute(
+        'style',
+        expect.stringContaining('max-width: 16rem'),
+      );
     });
 
     it('sets the full label as the title only when the label is truncated', () => {
       const scroll = vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockReturnValue(300);
       const client = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(120);
-      const { unmount } = render(<Button labelMaxWidth={120}>Data Structures &amp; Algorithms</Button>);
+      const { unmount } = render(
+        <Button labelMaxWidth={120}>Data Structures &amp; Algorithms</Button>,
+      );
       expect(screen.getByRole('button')).toHaveAttribute('title', 'Data Structures & Algorithms');
       unmount();
       scroll.mockReturnValue(100);
@@ -221,7 +233,9 @@ describe('omni-ui-components/Button variations', () => {
         </Button>,
       );
       const link = screen.getByRole('link');
-      ['aschild', 'asChild', 'tone', 'soft', 'loading', 'type'].forEach((attr) => expect(link).not.toHaveAttribute(attr));
+      ['aschild', 'asChild', 'tone', 'soft', 'loading', 'type'].forEach((attr) =>
+        expect(link).not.toHaveAttribute(attr),
+      );
     });
 
     it('renders icon, label and shortcut inside the child', () => {
@@ -302,13 +316,17 @@ describe('omni-ui-components/Button variations', () => {
     it('every tone has a filled and a soft entry', () => {
       expect(buttonToneVariants).toHaveLength(TONES.length * 2);
       TONES.forEach((tone) => {
-        expect(buttonToneVariants.some((v) => v.args.tone === tone && v.args.soft === true)).toBe(true);
+        expect(buttonToneVariants.some((v) => v.args.tone === tone && v.args.soft === true)).toBe(
+          true,
+        );
         expect(buttonToneVariants.some((v) => v.args.tone === tone && !v.args.soft)).toBe(true);
       });
     });
 
     it('the size matrix includes both control sizes', () => {
-      expect(buttonSizeVariants.map((v) => v.args.buttonSize)).toEqual(expect.arrayContaining(['control', 'control-labelled']));
+      expect(buttonSizeVariants.map((v) => v.args.buttonSize)).toEqual(
+        expect.arrayContaining(['control', 'control-labelled']),
+      );
     });
 
     [...buttonToneVariants, ...buttonActionVariants, ...buttonStateVariants].forEach((variant) => {
@@ -334,7 +352,9 @@ describe('omni-ui-components/Button variations', () => {
 
     TONES.forEach((tone) => {
       it(`defines the ${tone} tone (fg, bg, border) for light and, except neutral, dark`, () => {
-        ['fg', 'bg', 'border', 'solid-bg', 'solid-fg'].forEach((part) => expect(css).toContain(`--oui-tone-${tone}-${part}:`));
+        ['fg', 'bg', 'border', 'solid-bg', 'solid-fg'].forEach((part) =>
+          expect(css).toContain(`--oui-tone-${tone}-${part}:`),
+        );
         if (tone !== 'neutral') expect(dark).toContain(`--oui-tone-${tone}-fg:`);
       });
     });

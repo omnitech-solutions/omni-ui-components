@@ -1,11 +1,17 @@
-import * as React from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from 'components/ui/command';
-import { Check, ChevronDown } from 'lucide-react';
-
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from 'components/ui/command';
 import { cn } from 'lib/utils';
-import { selectVariants } from './Select.variants';
+import { Check, ChevronDown } from 'lucide-react';
+import * as React from 'react';
 import type { SelectPrimitiveProps } from './Select.types';
+import { selectVariants } from './Select.variants';
 
 /**
  * Raw Omni Select primitive — a searchable Popover + Command combobox
@@ -54,7 +60,10 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
     const selected = options.find((o) => o.value === value);
 
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
 
     const handlePick = (next: string) => {
       onChange?.(next);
@@ -102,11 +111,25 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
             autoFocus={autoFocus}
             onBlur={onBlur as never}
             onFocus={onFocus as never}
-            className={cn(selectVariants({ variant, selectSize }), 'items-center justify-between bg-none pr-3 text-left', className)}
+            className={cn(
+              selectVariants({ variant, selectSize }),
+              'items-center justify-between bg-none pr-3 text-left',
+              className,
+            )}
           >
-            <span className={cn('truncate', isPlaceholder && 'text-[var(--oui-foreground-placeholder)]')}>{selected?.label ?? placeholder}</span>
+            <span
+              className={cn(
+                'truncate',
+                isPlaceholder && 'text-[var(--oui-foreground-placeholder)]',
+              )}
+            >
+              {selected?.label ?? placeholder}
+            </span>
             <ChevronDown
-              className={cn('h-3.5 w-3.5 shrink-0 text-[var(--oui-foreground-muted)] transition-transform', open && 'rotate-180')}
+              className={cn(
+                'h-3.5 w-3.5 shrink-0 text-[var(--oui-foreground-muted)] transition-transform',
+                open && 'rotate-180',
+              )}
               aria-hidden="true"
             />
           </button>
@@ -127,7 +150,10 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
                     key={heading ?? '__ungrouped__'}
                     heading={
                       heading ? (
-                        <span data-testid={`${testId}-group-${heading}`} className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        <span
+                          data-testid={`${testId}-group-${heading}`}
+                          className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+                        >
                           {heading}
                         </span>
                       ) : undefined
@@ -146,16 +172,33 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
                           className={cn(
                             'cursor-pointer',
                             'data-[selected=true]:bg-muted/60 data-[selected=true]:text-foreground',
-                            isSelected && 'bg-muted font-medium text-foreground data-[selected=true]:bg-muted',
+                            isSelected &&
+                              'bg-muted font-medium text-foreground data-[selected=true]:bg-muted',
                           )}
                         >
                           {opt.color ? (
-                            <span aria-hidden="true" className="mr-2 inline-block size-2 rounded-full" style={{ backgroundColor: opt.color }} />
+                            <span
+                              aria-hidden="true"
+                              className="mr-2 inline-block size-2 rounded-full"
+                              style={{ backgroundColor: opt.color }}
+                            />
                           ) : null}
-                          {!opt.color ? <Check className={cn('mr-2 h-4 w-4', isSelected ? 'opacity-100' : 'opacity-0')} aria-hidden="true" /> : null}
+                          {!opt.color ? (
+                            <Check
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                isSelected ? 'opacity-100' : 'opacity-0',
+                              )}
+                              aria-hidden="true"
+                            />
+                          ) : null}
                           <span className="flex flex-col">
                             <span>{opt.label}</span>
-                            {opt.description ? <span className="text-xs text-muted-foreground">{opt.description}</span> : null}
+                            {opt.description ? (
+                              <span className="text-xs text-muted-foreground">
+                                {opt.description}
+                              </span>
+                            ) : null}
                           </span>
                         </CommandItem>
                       );

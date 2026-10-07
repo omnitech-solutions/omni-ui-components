@@ -1,11 +1,10 @@
+import { cn } from 'lib/utils';
 import * as React from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-
-import { cn } from 'lib/utils';
 import { Button } from '../Button';
-import { TokenLines } from '../Highlight/TokenLines';
 import type { HighlightFn } from '../Highlight';
+import { TokenLines } from '../Highlight/TokenLines';
 import { CITE_ELEMENT, remarkCitations } from './Markdown.citations';
 import { closeOpenMarkdown } from './Markdown.streaming';
 import type { CitationSource, MarkdownLabels, MarkdownProps } from './Markdown.types';
@@ -52,8 +51,22 @@ interface CodeBlockProps {
 }
 
 /** A fenced block: header with the language and the copy control, then monospace (optionally highlighted) code. */
-const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, highlight, lineNumbers, wrap, labels, copyIcon, copiedIcon, copied, onCopy }) => {
-  const lines = React.useMemo(() => (highlight ? highlight(code, language) : null), [highlight, code, language]);
+const CodeBlock: React.FC<CodeBlockProps> = ({
+  code,
+  language,
+  highlight,
+  lineNumbers,
+  wrap,
+  labels,
+  copyIcon,
+  copiedIcon,
+  copied,
+  onCopy,
+}) => {
+  const lines = React.useMemo(
+    () => (highlight ? highlight(code, language) : null),
+    [highlight, code, language],
+  );
   const copyable = Boolean(onCopy) && copyIcon !== undefined && copyIcon !== null;
   const name = language || labels.codeFallbackLanguage;
   return (
@@ -78,7 +91,10 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, highlight, lineNu
       <pre
         tabIndex={0}
         aria-label={`${name} code`}
-        className={cn(markdownCodeTextClasses, wrap ? 'whitespace-pre-wrap break-words' : 'overflow-x-auto whitespace-pre')}
+        className={cn(
+          markdownCodeTextClasses,
+          wrap ? 'whitespace-pre-wrap break-words' : 'overflow-x-auto whitespace-pre',
+        )}
       >
         <code>{lines ? <TokenLines lines={lines} lineNumbers={lineNumbers} /> : code}</code>
       </pre>
@@ -129,7 +145,10 @@ const MarkdownImpl = React.memo(
       },
       ref,
     ) => {
-      const labels = React.useMemo<MarkdownLabels>(() => ({ ...DEFAULT_MARKDOWN_LABELS, ...labelOverrides }), [labelOverrides]);
+      const labels = React.useMemo<MarkdownLabels>(
+        () => ({ ...DEFAULT_MARKDOWN_LABELS, ...labelOverrides }),
+        [labelOverrides],
+      );
       const components = React.useMemo<Components>(() => {
         const heading = ({ children }: { children?: React.ReactNode }) => (
           <div data-slot="markdown-heading" className={markdownHeadingClasses}>
@@ -145,13 +164,31 @@ const MarkdownImpl = React.memo(
           h6: heading,
           p: ({ children }) => <p className={markdownParagraphClasses}>{children}</p>,
           ul: ({ children, className: own }) => (
-            <ul className={cn(markdownListClasses, 'list-disc', own?.includes('contains-task-list') && 'list-none ps-1')}>{children}</ul>
+            <ul
+              className={cn(
+                markdownListClasses,
+                'list-disc',
+                own?.includes('contains-task-list') && 'list-none ps-1',
+              )}
+            >
+              {children}
+            </ul>
           ),
-          ol: ({ children }) => <ol className={cn(markdownListClasses, 'list-decimal')}>{children}</ol>,
-          blockquote: ({ children }) => <blockquote className={markdownBlockquoteClasses}>{children}</blockquote>,
+          ol: ({ children }) => (
+            <ol className={cn(markdownListClasses, 'list-decimal')}>{children}</ol>
+          ),
+          blockquote: ({ children }) => (
+            <blockquote className={markdownBlockquoteClasses}>{children}</blockquote>
+          ),
           hr: () => <hr className={markdownRuleClasses} />,
           a: ({ children, href }) => (
-            <a href={href} target="_blank" rel="noopener noreferrer" className={markdownLinkClasses} onClick={() => href && onLinkClick?.(href)}>
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={markdownLinkClasses}
+              onClick={() => href && onLinkClick?.(href)}
+            >
               {children}
             </a>
           ),
@@ -181,7 +218,9 @@ const MarkdownImpl = React.memo(
               />
             );
           },
-          code: ({ children, className: own }) => <code className={own ? own : markdownInlineCodeClasses}>{children}</code>,
+          code: ({ children, className: own }) => (
+            <code className={own ? own : markdownInlineCodeClasses}>{children}</code>
+          ),
           [CITE_ELEMENT]: ({ n }: CiteProps) => {
             if (!onCite) return <span>[{n}]</span>;
             const name = labels.cite.replace('{n}', String(n));
@@ -192,7 +231,9 @@ const MarkdownImpl = React.memo(
                 aria-label={name}
                 title={name}
                 className={markdownCiteClasses}
-                onClick={() => onCite(sources?.find((source) => source.n === Number(n)) ?? { n: Number(n) })}
+                onClick={() =>
+                  onCite(sources?.find((source) => source.n === Number(n)) ?? { n: Number(n) })
+                }
               >
                 {n}
               </button>
@@ -200,22 +241,52 @@ const MarkdownImpl = React.memo(
           },
         } as Components;
         return { ...built, ...overrides };
-      }, [highlight, codeLineNumbers, wrapCode, labels, copyIcon, copiedIcon, copiedCode, onCopy, onCite, sources, onLinkClick, overrides]);
+      }, [
+        highlight,
+        codeLineNumbers,
+        wrapCode,
+        labels,
+        copyIcon,
+        copiedIcon,
+        copiedCode,
+        onCopy,
+        onCite,
+        sources,
+        onLinkClick,
+        overrides,
+      ]);
 
       const citations = sources ? sources.map((source) => source.n) : (citationNumbers ?? []);
       const citeKey = citations.join(',');
       // The numbers, not the array identity, decide when the plugin list changes.
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      const plugins = React.useMemo(() => [remarkGfm, remarkCitations(new Set(citations))], [citeKey]);
+      const plugins = React.useMemo(
+        () => [remarkGfm, remarkCitations(new Set(citations))],
+        [citeKey],
+      );
       const source = streaming ? closeOpenMarkdown(text) : text;
 
       return (
-        <div ref={ref} data-slot="markdown" data-streaming={streaming ? 'true' : undefined} className={cn(markdownRootClasses, className)} {...rest}>
+        <div
+          ref={ref}
+          data-slot="markdown"
+          data-streaming={streaming ? 'true' : undefined}
+          className={cn(markdownRootClasses, className)}
+          {...rest}
+        >
           <ReactMarkdown remarkPlugins={plugins} components={components}>
             {source}
           </ReactMarkdown>
           {streaming && cursor !== null ? (
-            <div>{cursor ?? <span data-slot="markdown-cursor" aria-hidden="true" className={markdownCursorClasses} />}</div>
+            <div>
+              {cursor ?? (
+                <span
+                  data-slot="markdown-cursor"
+                  aria-hidden="true"
+                  className={markdownCursorClasses}
+                />
+              )}
+            </div>
           ) : null}
         </div>
       );

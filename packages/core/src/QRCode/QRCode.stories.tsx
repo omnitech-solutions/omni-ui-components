@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { QRCode } from '@oc-tech/omni-ui-components/QRCode';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof QRCode> = {
   title: 'omni-ui-components/QRCode',

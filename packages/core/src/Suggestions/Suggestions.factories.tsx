@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { CornerDownRight } from 'lucide-react';
-
 import type { SuggestionsProps } from '@oc-tech/omni-ui-components/Suggestions';
+import { CornerDownRight } from 'lucide-react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Build `<Suggestions>` props for stories and tests. */
-export const suggestionsPropsFactory = (overrides: Partial<SuggestionsProps> = {}): SuggestionsProps => ({
+export const suggestionsPropsFactory = (
+  overrides: Partial<SuggestionsProps> = {},
+): SuggestionsProps => ({
   items: [
     { id: 'test', label: 'Show me a test for it' },
     { id: 'sorted', label: 'What if the array is sorted?' },

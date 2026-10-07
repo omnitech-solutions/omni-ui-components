@@ -1,11 +1,12 @@
-import * as React from 'react';
 import { DynamicForm } from '@oc-tech/omni-ui-components/dynamic-form';
 import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 import '../internal/support/overview.css';
-import source from './ComponentOverview.stories.tsx?raw';
-import { buildSourceSnippet } from '../internal/support/sourceSnippet';
-import countrySource from '../../packages/core/src/Select/countries.ts?raw';
 import factorySupport from '../../packages/core/src/internal/support/makeFactory.ts?raw';
+import countrySource from '../../packages/core/src/Select/countries.ts?raw';
+import { buildSourceSnippet } from '../internal/support/sourceSnippet';
+import source from './ComponentOverview.stories.tsx?raw';
+
 const factorySources = import.meta.glob('../../packages/core/src/**/*.factories.{ts,tsx}', {
   query: '?raw',
   import: 'default',
@@ -13,142 +14,183 @@ const factorySources = import.meta.glob('../../packages/core/src/**/*.factories.
 }) as Record<string, string>;
 const snippetDependencies = Object.fromEntries(
   Object.entries(factorySources).map(([path, content]) => [
-    path.replace('../../packages/core/src/', 'factories/omni-ui-components/').replace(/\.tsx?$/, ''),
+    path
+      .replace('../../packages/core/src/', 'factories/omni-ui-components/')
+      .replace(/\.tsx?$/, ''),
     content,
   ]),
 );
 snippetDependencies['../../internal/support/makeFactory'] = factorySupport;
 snippetDependencies['./countries'] = countrySource;
-import { ComponentLink } from '../internal/support/ComponentLink';
 
 import {
-  Button,
-  Form,
-  FormField,
-  Checkbox,
-  CheckboxGroup,
-  Badge,
-  Rate,
-  Transfer,
-  Wizard,
-  ListItem,
-  clamp,
-  isNil,
-  ColorPicker,
-  CurrencyInput,
-  DatePicker,
-  DateTimePicker,
-  EmailInput,
-  FileUpload,
   ActionMenu,
-  IconButton,
-  Input,
-  InputOTP,
-  MultiSelect,
-  NumberInput,
-  PasswordInput,
-  PhoneInput,
-  Radio,
-  RichText,
-  Segmented,
-  Select,
-  Slider,
-  Panel,
-  SplitButton,
-  Steps,
-  useFollowLatest,
-  Stepper,
-  Switch,
-  TagInput,
-  Textarea,
-  TimePicker,
-  Typography,
-  Tab,
-  TabPanel,
-  Tabs,
-  TabsBar,
-  icons,
-  FloatButton,
-  Divider,
-  Flex,
-  Col as GridCol,
-  Row as GridRow,
-  Content,
-  Footer,
-  Header,
-  Sider,
-  Space,
-  Splitter,
-  SplitterPanel,
-  Masonry,
+  Affix,
+  Alert,
   Anchor,
-  Breadcrumb,
-  Dropdown,
-  DropdownContent,
-  DropdownItem,
-  DropdownLabel,
-  DropdownTrigger,
-  Menu,
-  Pagination,
+  App,
   AutoComplete,
-  Cascader,
-  Mentions,
   Avatar,
+  BackTop,
+  Badge,
+  Breadcrumb,
+  Button,
   Calendar,
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   Carousel,
+  Cascader,
+  Checkbox,
+  CheckboxGroup,
   Collapse,
+  ColorPicker,
+  ConfigProvider,
+  Content,
+  CurrencyInput,
+  clamp,
+  DatePicker,
+  DateTimePicker,
   Descriptions,
-  Empty,
-  Image,
-  List,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  QRCode,
-  Statistic,
-  Table,
-  Tag,
-  Timeline,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-  Tour,
-  Tree,
-  TreeSelect,
-  Watermark,
-  Alert,
+  Divider,
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
+  Dropdown,
+  DropdownContent,
+  DropdownItem,
+  DropdownLabel,
+  DropdownTrigger,
+  EmailInput,
+  Empty,
+  FileUpload,
+  Flex,
+  FloatButton,
+  Footer,
+  Form,
+  FormField,
+  Col as GridCol,
+  Row as GridRow,
+  Header,
+  IconButton,
+  Image,
+  Input,
+  InputOTP,
+  icons,
+  isNil,
+  List,
+  ListItem,
+  Masonry,
+  Mentions,
+  Menu,
   Modal,
   ModalContent,
   ModalHeader,
   ModalTitle,
   ModalTrigger,
-  Popconfirm,
-  Progress,
-  Result,
-  Skeleton,
-  Spin,
-  Affix,
-  App,
-  BackTop,
-  ConfigProvider,
-  Upload,
-  Button as OmniButton,
+  MultiSelect,
   message,
+  NumberInput,
   notification,
+  Button as OmniButton,
+  Pagination,
+  Panel,
+  PasswordInput,
+  PhoneInput,
+  Popconfirm,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Progress,
+  QRCode,
+  Radio,
+  Rate,
+  Result,
+  RichText,
+  Segmented,
+  Select,
+  Sider,
+  Skeleton,
+  Slider,
+  Space,
+  Spin,
+  SplitButton,
+  Splitter,
+  SplitterPanel,
+  Statistic,
+  Stepper,
+  Steps,
+  Switch,
+  Tab,
+  Table,
+  TabPanel,
+  Tabs,
+  TabsBar,
+  Tag,
+  TagInput,
+  Textarea,
+  Timeline,
+  TimePicker,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  Tour,
+  Transfer,
+  Tree,
+  TreeSelect,
+  Typography,
+  Upload,
+  useFollowLatest,
+  Watermark,
+  Wizard,
 } from '@oc-tech/omni-ui-components';
-import { z } from 'zod';
-import { CodePanel, InlineCode, SegmentedPill, TableOfContents, type TocItem } from '../internal/support';
+import { ApprovalCard } from '@oc-tech/omni-ui-components/ApprovalCard';
+import { AttachmentStrip } from '@oc-tech/omni-ui-components/Attachment';
+import { CommandPopover } from '@oc-tech/omni-ui-components/CommandPopover';
+import { ContextMeter } from '@oc-tech/omni-ui-components/ContextMeter';
+import { ConversationHeader } from '@oc-tech/omni-ui-components/ConversationHeader';
+import { ConversationList } from '@oc-tech/omni-ui-components/ConversationList';
+import { DataPrivacyPanel } from '@oc-tech/omni-ui-components/DataPrivacyPanel';
+import { DictationBar } from '@oc-tech/omni-ui-components/DictationBar';
+import { DiffReview } from '@oc-tech/omni-ui-components/DiffReview';
+import { EmptyStarters } from '@oc-tech/omni-ui-components/EmptyStarters';
+import { ErrorCard } from '@oc-tech/omni-ui-components/ErrorCard';
+import { FeedbackPanel } from '@oc-tech/omni-ui-components/FeedbackPanel';
+import { IntegrationList } from '@oc-tech/omni-ui-components/IntegrationList';
 import type { Variant } from '@oc-tech/omni-ui-components/internal/support/makeFactory';
+import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
+import { MessageMenu } from '@oc-tech/omni-ui-components/MessageMenu';
+import { ModelMenu } from '@oc-tech/omni-ui-components/ModelPicker';
+import { ModelsSettings } from '@oc-tech/omni-ui-components/ModelsSettings';
+import { PanelShell } from '@oc-tech/omni-ui-components/PanelShell';
+import { PreferencesForm } from '@oc-tech/omni-ui-components/PreferencesForm';
+import { QueuedList } from '@oc-tech/omni-ui-components/QueuedList';
+import { ShortcutList } from '@oc-tech/omni-ui-components/ShortcutList';
+import { Sources } from '@oc-tech/omni-ui-components/Sources';
+import { StatusClock } from '@oc-tech/omni-ui-components/StatusClock';
+import { StepTimeline } from '@oc-tech/omni-ui-components/StepTimeline';
+import { StreamStatus } from '@oc-tech/omni-ui-components/StreamStatus';
+import { Suggestions } from '@oc-tech/omni-ui-components/Suggestions';
+import { SummaryDivider } from '@oc-tech/omni-ui-components/SummaryDivider';
+import { Thinking } from '@oc-tech/omni-ui-components/Thinking';
+import { Toast } from '@oc-tech/omni-ui-components/Toast';
+import { VersionPager } from '@oc-tech/omni-ui-components/VersionPager';
+import {
+  actionMenuPropsFactory,
+  actionMenuVariants,
+} from 'factories/omni-ui-components/ActionMenu/ActionMenu.factories';
+import {
+  approvalCardPropsFactory,
+  approvalCardVariants,
+} from 'factories/omni-ui-components/ApprovalCard/ApprovalCard.factories';
+import {
+  attachmentRemoveIcon,
+  attachmentVariants,
+} from 'factories/omni-ui-components/Attachment/Attachment.factories';
 import {
   buttonActionVariants,
   buttonPropsFactory,
@@ -157,96 +199,91 @@ import {
   buttonToneVariants,
   buttonVariants,
 } from 'factories/omni-ui-components/Button/Button.factories';
-import { actionMenuPropsFactory, actionMenuVariants } from 'factories/omni-ui-components/ActionMenu/ActionMenu.factories';
-import { splitButtonPropsFactory, splitButtonVariants } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
-import { NativeToolbarDemo, toolbarLabelledVariants, toolbarVariants } from 'factories/omni-ui-components/Toolbar/Toolbar.factories';
-import { SessionBarDemo, sessionBarExamples } from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
-import { AttachmentStrip } from '@oc-tech/omni-ui-components/Attachment';
-import { attachmentRemoveIcon, attachmentVariants } from 'factories/omni-ui-components/Attachment/Attachment.factories';
-import { CommandPopover } from '@oc-tech/omni-ui-components/CommandPopover';
-import { commandPopoverPropsFactory, commandPopoverVariants } from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
-import { ComposerDemo, composerVariants } from 'factories/omni-ui-components/Composer/Composer.factories';
-import { DictationBar } from '@oc-tech/omni-ui-components/DictationBar';
-import { dictationBarPropsFactory, dictationBarVariants } from 'factories/omni-ui-components/DictationBar/DictationBar.factories';
-import { QueuedList } from '@oc-tech/omni-ui-components/QueuedList';
-import { queuedListPropsFactory, queuedListVariants } from 'factories/omni-ui-components/QueuedList/QueuedList.factories';
-import { ConversationDemo } from 'factories/omni-ui-components/Transcript/Transcript.factories';
-import { MarkdownDemo, markdownVariants, ChatReplyShowcase } from 'factories/omni-ui-components/Markdown/Markdown.factories';
-import { ConversationTranscriptDemo } from 'factories/omni-ui-components/ConversationTranscript/ConversationTranscript.factories';
-import { Sources } from '@oc-tech/omni-ui-components/Sources';
-import { sourcesPropsFactory, sourcesVariants } from 'factories/omni-ui-components/Sources/Sources.factories';
-import { Suggestions } from '@oc-tech/omni-ui-components/Suggestions';
-import { suggestionsPropsFactory, suggestionsVariants } from 'factories/omni-ui-components/Suggestions/Suggestions.factories';
-import { Thinking } from '@oc-tech/omni-ui-components/Thinking';
-import { thinkingPropsFactory, thinkingVariants } from 'factories/omni-ui-components/Thinking/Thinking.factories';
-import { StepTimeline } from '@oc-tech/omni-ui-components/StepTimeline';
-import { stepTimelinePropsFactory, stepTimelineVariants } from 'factories/omni-ui-components/StepTimeline/StepTimeline.factories';
-import { ErrorCard } from '@oc-tech/omni-ui-components/ErrorCard';
-import { errorCardPropsFactory, errorCardVariants } from 'factories/omni-ui-components/ErrorCard/ErrorCard.factories';
-import { ApprovalCard } from '@oc-tech/omni-ui-components/ApprovalCard';
-import { approvalCardPropsFactory, approvalCardVariants } from 'factories/omni-ui-components/ApprovalCard/ApprovalCard.factories';
-import { FeedbackPanel } from '@oc-tech/omni-ui-components/FeedbackPanel';
-import { feedbackPanelPropsFactory, feedbackPanelVariants } from 'factories/omni-ui-components/FeedbackPanel/FeedbackPanel.factories';
-import { VersionPager } from '@oc-tech/omni-ui-components/VersionPager';
-import { versionPagerPropsFactory, versionPagerVariants } from 'factories/omni-ui-components/VersionPager/VersionPager.factories';
-import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
-import { MessageMenu } from '@oc-tech/omni-ui-components/MessageMenu';
-import { messageMenuPropsFactory, messageMenuVariants } from 'factories/omni-ui-components/MessageMenu/MessageMenu.factories';
-import { messageActionsPropsFactory, messageActionsVariants } from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
-import { SummaryDivider } from '@oc-tech/omni-ui-components/SummaryDivider';
-import { summaryDividerPropsFactory, summaryDividerVariants } from 'factories/omni-ui-components/SummaryDivider/SummaryDivider.factories';
-import { ConversationList } from '@oc-tech/omni-ui-components/ConversationList';
-import { conversationListPropsFactory, conversationListVariants, ConversationListDemo } from 'factories/omni-ui-components/ConversationList/ConversationList.factories';
-import { ConversationHeader } from '@oc-tech/omni-ui-components/ConversationHeader';
-import { conversationHeaderPropsFactory, conversationHeaderVariants } from 'factories/omni-ui-components/ConversationHeader/ConversationHeader.factories';
-import { EmptyStarters } from '@oc-tech/omni-ui-components/EmptyStarters';
-import { emptyStartersPropsFactory, emptyStartersVariants } from 'factories/omni-ui-components/EmptyStarters/EmptyStarters.factories';
-import { SettingsDialogDemo, settingsDialogVariants } from 'factories/omni-ui-components/SettingsDialog/SettingsDialog.factories';
-import { Toast } from '@oc-tech/omni-ui-components/Toast';
-import { ToastDemo, toastPropsFactory, toastVariants } from 'factories/omni-ui-components/Toast/Toast.factories';
-import { PanelShell } from '@oc-tech/omni-ui-components/PanelShell';
-import { ChatShellDemo, panelShellPropsFactory, panelShellVariants } from 'factories/omni-ui-components/PanelShell/PanelShell.factories';
-import { PreferencesForm } from '@oc-tech/omni-ui-components/PreferencesForm';
-import { PreferencesFormDemo, preferencesFormPropsFactory, preferencesFormVariants } from 'factories/omni-ui-components/PreferencesForm/PreferencesForm.factories';
-import { DataPrivacyPanel } from '@oc-tech/omni-ui-components/DataPrivacyPanel';
-import { DataPrivacyPanelDemo, dataPrivacyPanelPropsFactory, dataPrivacyPanelVariants } from 'factories/omni-ui-components/DataPrivacyPanel/DataPrivacyPanel.factories';
-import { IntegrationList } from '@oc-tech/omni-ui-components/IntegrationList';
-import { IntegrationListDemo, integrationListPropsFactory, integrationListVariants } from 'factories/omni-ui-components/IntegrationList/IntegrationList.factories';
-import { ModelsSettings } from '@oc-tech/omni-ui-components/ModelsSettings';
-import { modelsSettingsPropsFactory, modelsSettingsVariants } from 'factories/omni-ui-components/ModelsSettings/ModelsSettings.factories';
-import { ShortcutList } from '@oc-tech/omni-ui-components/ShortcutList';
-import { shortcutListPropsFactory, shortcutListVariants } from 'factories/omni-ui-components/ShortcutList/ShortcutList.factories';
-import { StatusClock } from '@oc-tech/omni-ui-components/StatusClock';
-import { statusClockExamples, statusClockPropsFactory } from 'factories/omni-ui-components/StatusClock/StatusClock.factories';
-import { NativeAppWindow, nativeAppDefaults } from 'factories/omni-ui-components/showcase/NativeApp/NativeApp.factories';
-import { NativePanelsDemo, panelPropsFactory, panelVariants, TranscriptDemo } from 'factories/omni-ui-components/Panel/Panel.factories';
 import {
-  analysingEntries,
-  ComposerExample,
-  readyEntries,
-  transcriptVariants,
-  TranscriptPanel,
-} from 'factories/omni-ui-components/Transcript/Transcript.factories';
-import { ContextMeter } from '@oc-tech/omni-ui-components/ContextMeter';
-import { StreamStatus } from '@oc-tech/omni-ui-components/StreamStatus';
-import { streamStatusPropsFactory, streamStatusVariants } from 'factories/omni-ui-components/StreamStatus/StreamStatus.factories';
-import { contextMeterPropsFactory, contextMeterVariants } from 'factories/omni-ui-components/ContextMeter/ContextMeter.factories';
-import { DiffReview } from '@oc-tech/omni-ui-components/DiffReview';
-import { DiffReviewDemo, diffReviewPropsFactory, diffReviewVariants, sampleChanges } from 'factories/omni-ui-components/DiffReview/DiffReview.factories';
-import { ModelMenu } from '@oc-tech/omni-ui-components/ModelPicker';
-import { ComposerToolbarDemo, modelPickerPropsFactory, modelPickerVariants } from 'factories/omni-ui-components/ModelPicker/ModelPicker.factories';
-import { dividerPropsFactory, dividerVariants } from 'factories/omni-ui-components/Divider/Divider.factories';
-import { emptyPropsFactory, emptyVariants } from 'factories/omni-ui-components/Empty/Empty.factories';
-import { progressPropsFactory, progressRingVariants, progressVariants } from 'factories/omni-ui-components/Progress/Progress.factories';
-import { stepsPropsFactory, stepsVariants } from 'factories/omni-ui-components/Steps/Steps.factories';
-import { tagPropsFactory, tagVariants } from 'factories/omni-ui-components/Tag/Tag.factories';
-import { checkboxPropsFactory, checkboxVariants } from 'factories/omni-ui-components/Checkbox/Checkbox.factories';
-import { colorPickerPropsFactory, colorPickerVariants } from 'factories/omni-ui-components/ColorPicker/ColorPicker.factories';
-import { currencyInputPropsFactory, currencyInputVariants } from 'factories/omni-ui-components/CurrencyInput/CurrencyInput.factories';
-import { datePickerPropsFactory, datePickerVariants } from 'factories/omni-ui-components/DatePicker/DatePicker.factories';
-import { dateTimePickerPropsFactory, dateTimePickerVariants } from 'factories/omni-ui-components/DateTimePicker/DateTimePicker.factories';
-import { emailInputPropsFactory, emailInputVariants } from 'factories/omni-ui-components/EmailInput/EmailInput.factories';
-import { fileUploadPropsFactory, fileUploadVariants } from 'factories/omni-ui-components/FileUpload/FileUpload.factories';
+  checkboxPropsFactory,
+  checkboxVariants,
+} from 'factories/omni-ui-components/Checkbox/Checkbox.factories';
+import {
+  colorPickerPropsFactory,
+  colorPickerVariants,
+} from 'factories/omni-ui-components/ColorPicker/ColorPicker.factories';
+import {
+  commandPopoverPropsFactory,
+  commandPopoverVariants,
+} from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
+import {
+  ComposerDemo,
+  composerVariants,
+} from 'factories/omni-ui-components/Composer/Composer.factories';
+import {
+  contextMeterPropsFactory,
+  contextMeterVariants,
+} from 'factories/omni-ui-components/ContextMeter/ContextMeter.factories';
+import {
+  conversationHeaderPropsFactory,
+  conversationHeaderVariants,
+} from 'factories/omni-ui-components/ConversationHeader/ConversationHeader.factories';
+import {
+  ConversationListDemo,
+  conversationListPropsFactory,
+  conversationListVariants,
+} from 'factories/omni-ui-components/ConversationList/ConversationList.factories';
+import { ConversationTranscriptDemo } from 'factories/omni-ui-components/ConversationTranscript/ConversationTranscript.factories';
+import {
+  currencyInputPropsFactory,
+  currencyInputVariants,
+} from 'factories/omni-ui-components/CurrencyInput/CurrencyInput.factories';
+import {
+  DataPrivacyPanelDemo,
+  dataPrivacyPanelPropsFactory,
+  dataPrivacyPanelVariants,
+} from 'factories/omni-ui-components/DataPrivacyPanel/DataPrivacyPanel.factories';
+import {
+  datePickerPropsFactory,
+  datePickerVariants,
+} from 'factories/omni-ui-components/DatePicker/DatePicker.factories';
+import {
+  dateTimePickerPropsFactory,
+  dateTimePickerVariants,
+} from 'factories/omni-ui-components/DateTimePicker/DateTimePicker.factories';
+import {
+  dictationBarPropsFactory,
+  dictationBarVariants,
+} from 'factories/omni-ui-components/DictationBar/DictationBar.factories';
+import {
+  DiffReviewDemo,
+  diffReviewPropsFactory,
+  diffReviewVariants,
+  sampleChanges,
+} from 'factories/omni-ui-components/DiffReview/DiffReview.factories';
+import {
+  dividerPropsFactory,
+  dividerVariants,
+} from 'factories/omni-ui-components/Divider/Divider.factories';
+import {
+  emailInputPropsFactory,
+  emailInputVariants,
+} from 'factories/omni-ui-components/EmailInput/EmailInput.factories';
+import {
+  emptyPropsFactory,
+  emptyVariants,
+} from 'factories/omni-ui-components/Empty/Empty.factories';
+import {
+  emptyStartersPropsFactory,
+  emptyStartersVariants,
+} from 'factories/omni-ui-components/EmptyStarters/EmptyStarters.factories';
+import {
+  errorCardPropsFactory,
+  errorCardVariants,
+} from 'factories/omni-ui-components/ErrorCard/ErrorCard.factories';
+import {
+  feedbackPanelPropsFactory,
+  feedbackPanelVariants,
+} from 'factories/omni-ui-components/FeedbackPanel/FeedbackPanel.factories';
+import {
+  fileUploadPropsFactory,
+  fileUploadVariants,
+} from 'factories/omni-ui-components/FileUpload/FileUpload.factories';
 import {
   iconButtonPropsFactory,
   iconButtonSizeVariants,
@@ -254,22 +291,207 @@ import {
   iconButtonToneVariants,
   iconButtonVariants,
 } from 'factories/omni-ui-components/IconButton/IconButton.factories';
-import { inputPropsFactory, inputVariants } from 'factories/omni-ui-components/Input/Input.factories';
-import { inputOTPPropsFactory, inputOTPVariants } from 'factories/omni-ui-components/InputOTP/InputOTP.factories';
-import { multiSelectPropsFactory, multiSelectVariants } from 'factories/omni-ui-components/MultiSelect/MultiSelect.factories';
-import { numberInputPropsFactory, numberInputVariants } from 'factories/omni-ui-components/NumberInput/NumberInput.factories';
-import { passwordInputPropsFactory, passwordInputVariants } from 'factories/omni-ui-components/PasswordInput/PasswordInput.factories';
-import { phoneInputPropsFactory, phoneInputVariants } from 'factories/omni-ui-components/PhoneInput/PhoneInput.factories';
-import { radioPropsFactory, radioVariants } from 'factories/omni-ui-components/Radio/Radio.factories';
-import { richTextPropsFactory, richTextVariants } from 'factories/omni-ui-components/RichText/RichText.factories';
-import { segmentedControlVariants, segmentedPropsFactory, segmentedVariants } from 'factories/omni-ui-components/Segmented/Segmented.factories';
-import { selectPropsFactory, selectVariants } from 'factories/omni-ui-components/Select/Select.factories';
-import { sliderPropsFactory, sliderVariants } from 'factories/omni-ui-components/Slider/Slider.factories';
-import { stepperPropsFactory, stepperVariants } from 'factories/omni-ui-components/Stepper/Stepper.factories';
-import { switchPropsFactory, switchVariants } from 'factories/omni-ui-components/Switch/Switch.factories';
-import { tagInputPropsFactory, tagInputVariants } from 'factories/omni-ui-components/TagInput/TagInput.factories';
-import { textareaPropsFactory, textareaVariants } from 'factories/omni-ui-components/Textarea/Textarea.factories';
-import { timePickerPropsFactory, timePickerVariants } from 'factories/omni-ui-components/TimePicker/TimePicker.factories';
+import {
+  inputPropsFactory,
+  inputVariants,
+} from 'factories/omni-ui-components/Input/Input.factories';
+import {
+  inputOTPPropsFactory,
+  inputOTPVariants,
+} from 'factories/omni-ui-components/InputOTP/InputOTP.factories';
+import {
+  IntegrationListDemo,
+  integrationListPropsFactory,
+  integrationListVariants,
+} from 'factories/omni-ui-components/IntegrationList/IntegrationList.factories';
+import {
+  ChatReplyShowcase,
+  MarkdownDemo,
+  markdownVariants,
+} from 'factories/omni-ui-components/Markdown/Markdown.factories';
+import {
+  messageActionsPropsFactory,
+  messageActionsVariants,
+} from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
+import {
+  messageMenuPropsFactory,
+  messageMenuVariants,
+} from 'factories/omni-ui-components/MessageMenu/MessageMenu.factories';
+import {
+  ComposerToolbarDemo,
+  modelPickerPropsFactory,
+  modelPickerVariants,
+} from 'factories/omni-ui-components/ModelPicker/ModelPicker.factories';
+import {
+  modelsSettingsPropsFactory,
+  modelsSettingsVariants,
+} from 'factories/omni-ui-components/ModelsSettings/ModelsSettings.factories';
+import {
+  multiSelectPropsFactory,
+  multiSelectVariants,
+} from 'factories/omni-ui-components/MultiSelect/MultiSelect.factories';
+import {
+  numberInputPropsFactory,
+  numberInputVariants,
+} from 'factories/omni-ui-components/NumberInput/NumberInput.factories';
+import {
+  NativePanelsDemo,
+  panelPropsFactory,
+  panelVariants,
+  TranscriptDemo,
+} from 'factories/omni-ui-components/Panel/Panel.factories';
+import {
+  ChatShellDemo,
+  panelShellPropsFactory,
+  panelShellVariants,
+} from 'factories/omni-ui-components/PanelShell/PanelShell.factories';
+import {
+  passwordInputPropsFactory,
+  passwordInputVariants,
+} from 'factories/omni-ui-components/PasswordInput/PasswordInput.factories';
+import {
+  phoneInputPropsFactory,
+  phoneInputVariants,
+} from 'factories/omni-ui-components/PhoneInput/PhoneInput.factories';
+import {
+  PreferencesFormDemo,
+  preferencesFormPropsFactory,
+  preferencesFormVariants,
+} from 'factories/omni-ui-components/PreferencesForm/PreferencesForm.factories';
+import {
+  progressPropsFactory,
+  progressRingVariants,
+  progressVariants,
+} from 'factories/omni-ui-components/Progress/Progress.factories';
+import {
+  queuedListPropsFactory,
+  queuedListVariants,
+} from 'factories/omni-ui-components/QueuedList/QueuedList.factories';
+import {
+  radioPropsFactory,
+  radioVariants,
+} from 'factories/omni-ui-components/Radio/Radio.factories';
+import {
+  richTextPropsFactory,
+  richTextVariants,
+} from 'factories/omni-ui-components/RichText/RichText.factories';
+import {
+  segmentedControlVariants,
+  segmentedPropsFactory,
+  segmentedVariants,
+} from 'factories/omni-ui-components/Segmented/Segmented.factories';
+import {
+  selectPropsFactory,
+  selectVariants,
+} from 'factories/omni-ui-components/Select/Select.factories';
+import {
+  SessionBarDemo,
+  sessionBarExamples,
+} from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
+import {
+  SettingsDialogDemo,
+  settingsDialogVariants,
+} from 'factories/omni-ui-components/SettingsDialog/SettingsDialog.factories';
+import {
+  shortcutListPropsFactory,
+  shortcutListVariants,
+} from 'factories/omni-ui-components/ShortcutList/ShortcutList.factories';
+import {
+  sliderPropsFactory,
+  sliderVariants,
+} from 'factories/omni-ui-components/Slider/Slider.factories';
+import {
+  sourcesPropsFactory,
+  sourcesVariants,
+} from 'factories/omni-ui-components/Sources/Sources.factories';
+import {
+  splitButtonPropsFactory,
+  splitButtonVariants,
+} from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
+import {
+  statusClockExamples,
+  statusClockPropsFactory,
+} from 'factories/omni-ui-components/StatusClock/StatusClock.factories';
+import {
+  stepperPropsFactory,
+  stepperVariants,
+} from 'factories/omni-ui-components/Stepper/Stepper.factories';
+import {
+  stepsPropsFactory,
+  stepsVariants,
+} from 'factories/omni-ui-components/Steps/Steps.factories';
+import {
+  stepTimelinePropsFactory,
+  stepTimelineVariants,
+} from 'factories/omni-ui-components/StepTimeline/StepTimeline.factories';
+import {
+  streamStatusPropsFactory,
+  streamStatusVariants,
+} from 'factories/omni-ui-components/StreamStatus/StreamStatus.factories';
+import {
+  suggestionsPropsFactory,
+  suggestionsVariants,
+} from 'factories/omni-ui-components/Suggestions/Suggestions.factories';
+import {
+  summaryDividerPropsFactory,
+  summaryDividerVariants,
+} from 'factories/omni-ui-components/SummaryDivider/SummaryDivider.factories';
+import {
+  switchPropsFactory,
+  switchVariants,
+} from 'factories/omni-ui-components/Switch/Switch.factories';
+import {
+  NativeAppWindow,
+  nativeAppDefaults,
+} from 'factories/omni-ui-components/showcase/NativeApp/NativeApp.factories';
+import { tagPropsFactory, tagVariants } from 'factories/omni-ui-components/Tag/Tag.factories';
+import {
+  tagInputPropsFactory,
+  tagInputVariants,
+} from 'factories/omni-ui-components/TagInput/TagInput.factories';
+import {
+  textareaPropsFactory,
+  textareaVariants,
+} from 'factories/omni-ui-components/Textarea/Textarea.factories';
+import {
+  thinkingPropsFactory,
+  thinkingVariants,
+} from 'factories/omni-ui-components/Thinking/Thinking.factories';
+import {
+  timePickerPropsFactory,
+  timePickerVariants,
+} from 'factories/omni-ui-components/TimePicker/TimePicker.factories';
+import {
+  ToastDemo,
+  toastPropsFactory,
+  toastVariants,
+} from 'factories/omni-ui-components/Toast/Toast.factories';
+import {
+  NativeToolbarDemo,
+  toolbarLabelledVariants,
+  toolbarVariants,
+} from 'factories/omni-ui-components/Toolbar/Toolbar.factories';
+import {
+  analysingEntries,
+  ComposerExample,
+  ConversationDemo,
+  readyEntries,
+  TranscriptPanel,
+  transcriptVariants,
+} from 'factories/omni-ui-components/Transcript/Transcript.factories';
+import {
+  versionPagerPropsFactory,
+  versionPagerVariants,
+} from 'factories/omni-ui-components/VersionPager/VersionPager.factories';
+import { z } from 'zod';
+import {
+  CodePanel,
+  InlineCode,
+  SegmentedPill,
+  TableOfContents,
+  type TocItem,
+} from '../internal/support';
+import { ComponentLink } from '../internal/support/ComponentLink';
 
 interface RowProps {
   id: string;
@@ -315,7 +537,8 @@ const SectionHeading: React.FC<{
   </div>
 );
 
-const codeFromVariants = (row: OverviewRowSpec): string => buildSourceSnippet(source, row.source ?? `${row.name}Preview`, snippetDependencies);
+const codeFromVariants = (row: OverviewRowSpec): string =>
+  buildSourceSnippet(source, row.source ?? `${row.name}Preview`, snippetDependencies);
 
 type AnyComponent<P> = React.ComponentType<P>;
 
@@ -333,7 +556,13 @@ const slug = (value: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 
-function Controlled<P extends object>({ Component, factory, args, idSuffix, valueKey = 'value' as keyof P }: ControlledProps<P>) {
+function Controlled<P extends object>({
+  Component,
+  factory,
+  args,
+  idSuffix,
+  valueKey = 'value' as keyof P,
+}: ControlledProps<P>) {
   const initial = (args as Record<string, unknown>)[valueKey as string];
   const [value, setValue] = React.useState(initial);
 
@@ -364,7 +593,10 @@ const ButtonPreview: React.FC = () => (
         <Button key={variant.name} {...buttonPropsFactory(variant.args)} />
       ))}
     </div>
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6" style={{ width: 'fit-content' }}>
+    <div
+      className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6"
+      style={{ width: 'fit-content' }}
+    >
       {buttonToneVariants.map((variant) => (
         <Button key={variant.name} {...buttonPropsFactory(variant.args)} />
       ))}
@@ -442,7 +674,9 @@ const SessionBarPreview: React.FC = () => (
       </div>
     ))}
     <div className="flex w-[330px] flex-col gap-1.5">
-      <span className="font-mono text-xs text-muted-foreground">330px · wraps, build tag truncates</span>
+      <span className="font-mono text-xs text-muted-foreground">
+        330px · wraps, build tag truncates
+      </span>
       <div className="rounded-xl p-3" style={{ background: '#1a4f96' }}>
         <SessionBarDemo devBuild />
       </div>
@@ -454,25 +688,67 @@ const SessionBarPreview: React.FC = () => (
 const messagePartFrame = (title: string, node: React.ReactNode) => (
   <div key={title} className="flex max-w-[620px] flex-col gap-1.5">
     <span className="font-mono text-xs text-muted-foreground">{title}</span>
-    <div className="rounded-xl border border-solid border-[color:var(--oui-panel-border)] bg-[color:var(--oui-panel-bg)] p-3 text-[color:var(--oui-tone-neutral-fg)]">{node}</div>
+    <div className="rounded-xl border border-solid border-[color:var(--oui-panel-border)] bg-[color:var(--oui-panel-bg)] p-3 text-[color:var(--oui-tone-neutral-fg)]">
+      {node}
+    </div>
   </div>
 );
-const MessagePartsPreview = (variants: Variant<never>[], render: (args: never) => React.ReactNode): React.FC => {
-  const Preview: React.FC = () => <div className="flex flex-col gap-4">{variants.map((variant) => messagePartFrame(variant.name, render(variant.args as never)))}</div>;
+const MessagePartsPreview = (
+  variants: Variant<never>[],
+  render: (args: never) => React.ReactNode,
+): React.FC => {
+  const Preview: React.FC = () => (
+    <div className="flex flex-col gap-4">
+      {variants.map((variant) => messagePartFrame(variant.name, render(variant.args as never)))}
+    </div>
+  );
   return Preview;
 };
-const MarkdownPreview = MessagePartsPreview(markdownVariants as Variant<never>[], (args) => <MarkdownDemo {...(args as object)} />);
-const SourcesPreview = MessagePartsPreview(sourcesVariants as Variant<never>[], (args) => <Sources {...sourcesPropsFactory(args as object)} />);
-const SuggestionsPreview = MessagePartsPreview(suggestionsVariants as Variant<never>[], (args) => <Suggestions {...suggestionsPropsFactory(args as object)} />);
-const ThinkingPreview = MessagePartsPreview(thinkingVariants as Variant<never>[], (args) => <Thinking {...thinkingPropsFactory(args as object)} />);
-const StepTimelinePreview = MessagePartsPreview(stepTimelineVariants as Variant<never>[], (args) => <StepTimeline {...stepTimelinePropsFactory(args as object)} />);
-const ErrorCardPreview = MessagePartsPreview(errorCardVariants as Variant<never>[], (args) => <ErrorCard {...errorCardPropsFactory(args as object)} />);
-const ApprovalCardPreview = MessagePartsPreview(approvalCardVariants as Variant<never>[], (args) => <ApprovalCard {...approvalCardPropsFactory(args as object)} />);
-const FeedbackPanelPreview = MessagePartsPreview(feedbackPanelVariants as Variant<never>[], (args) => <FeedbackPanel {...feedbackPanelPropsFactory(args as object)} />);
-const AttachmentPreview = MessagePartsPreview(attachmentVariants as Variant<never>[], (args) => <AttachmentStrip removeIcon={attachmentRemoveIcon} onRemove={() => undefined} {...(args as { items: never })} />);
-const CommandPopoverPreview = MessagePartsPreview(commandPopoverVariants as Variant<never>[], (args) => <CommandPopover {...commandPopoverPropsFactory(args as object)} />);
-const DictationBarPreview = MessagePartsPreview(dictationBarVariants as Variant<never>[], (args) => <DictationBar {...dictationBarPropsFactory(args as object)} />);
-const QueuedListPreview = MessagePartsPreview(queuedListVariants as Variant<never>[], (args) => <QueuedList {...queuedListPropsFactory(args as object)} />);
+const MarkdownPreview = MessagePartsPreview(markdownVariants as Variant<never>[], (args) => (
+  <MarkdownDemo {...(args as object)} />
+));
+const SourcesPreview = MessagePartsPreview(sourcesVariants as Variant<never>[], (args) => (
+  <Sources {...sourcesPropsFactory(args as object)} />
+));
+const SuggestionsPreview = MessagePartsPreview(suggestionsVariants as Variant<never>[], (args) => (
+  <Suggestions {...suggestionsPropsFactory(args as object)} />
+));
+const ThinkingPreview = MessagePartsPreview(thinkingVariants as Variant<never>[], (args) => (
+  <Thinking {...thinkingPropsFactory(args as object)} />
+));
+const StepTimelinePreview = MessagePartsPreview(
+  stepTimelineVariants as Variant<never>[],
+  (args) => <StepTimeline {...stepTimelinePropsFactory(args as object)} />,
+);
+const ErrorCardPreview = MessagePartsPreview(errorCardVariants as Variant<never>[], (args) => (
+  <ErrorCard {...errorCardPropsFactory(args as object)} />
+));
+const ApprovalCardPreview = MessagePartsPreview(
+  approvalCardVariants as Variant<never>[],
+  (args) => <ApprovalCard {...approvalCardPropsFactory(args as object)} />,
+);
+const FeedbackPanelPreview = MessagePartsPreview(
+  feedbackPanelVariants as Variant<never>[],
+  (args) => <FeedbackPanel {...feedbackPanelPropsFactory(args as object)} />,
+);
+const AttachmentPreview = MessagePartsPreview(attachmentVariants as Variant<never>[], (args) => (
+  <AttachmentStrip
+    removeIcon={attachmentRemoveIcon}
+    onRemove={() => undefined}
+    {...(args as { items: never })}
+  />
+));
+const CommandPopoverPreview = MessagePartsPreview(
+  commandPopoverVariants as Variant<never>[],
+  (args) => <CommandPopover {...commandPopoverPropsFactory(args as object)} />,
+);
+const DictationBarPreview = MessagePartsPreview(
+  dictationBarVariants as Variant<never>[],
+  (args) => <DictationBar {...dictationBarPropsFactory(args as object)} />,
+);
+const QueuedListPreview = MessagePartsPreview(queuedListVariants as Variant<never>[], (args) => (
+  <QueuedList {...queuedListPropsFactory(args as object)} />
+));
 const MessageBoxPreview: React.FC = () => (
   <div className="flex max-w-[460px] flex-col gap-6 pt-40">
     <ComposerDemo />
@@ -480,10 +756,21 @@ const MessageBoxPreview: React.FC = () => (
   </div>
 );
 const ConversationPreview: React.FC = () => <ConversationDemo height={560} />;
-const VersionPagerPreview = MessagePartsPreview(versionPagerVariants as Variant<never>[], (args) => <VersionPager {...versionPagerPropsFactory(args as object)} />);
-const MessageActionsPreview = MessagePartsPreview(messageActionsVariants as Variant<never>[], (args) => <MessageActions {...messageActionsPropsFactory(args as object)} />);
-const MessageMenuPreview = MessagePartsPreview(messageMenuVariants as Variant<never>[], (args) => <MessageMenu {...messageMenuPropsFactory(args as object)} />);
-const SummaryDividerPreview =MessagePartsPreview(summaryDividerVariants as Variant<never>[], (args) => <SummaryDivider {...summaryDividerPropsFactory(args as object)} />);
+const VersionPagerPreview = MessagePartsPreview(
+  versionPagerVariants as Variant<never>[],
+  (args) => <VersionPager {...versionPagerPropsFactory(args as object)} />,
+);
+const MessageActionsPreview = MessagePartsPreview(
+  messageActionsVariants as Variant<never>[],
+  (args) => <MessageActions {...messageActionsPropsFactory(args as object)} />,
+);
+const MessageMenuPreview = MessagePartsPreview(messageMenuVariants as Variant<never>[], (args) => (
+  <MessageMenu {...messageMenuPropsFactory(args as object)} />
+));
+const SummaryDividerPreview = MessagePartsPreview(
+  summaryDividerVariants as Variant<never>[],
+  (args) => <SummaryDivider {...summaryDividerPropsFactory(args as object)} />,
+);
 const ChatReplyPreview: React.FC = () => <ChatReplyShowcase />;
 const ConversationTranscriptPreview: React.FC = () => <ConversationTranscriptDemo />;
 
@@ -492,7 +779,10 @@ const StatusClockPreview: React.FC = () => (
     {statusClockExamples.map((variant) => (
       <div key={variant.name} className="flex flex-col gap-1.5">
         <span className="font-mono text-xs text-muted-foreground">{variant.name}</span>
-        <div className="rounded-xl px-4 py-3" style={{ background: 'var(--oui-panel-bg)', border: '1px solid var(--oui-panel-border)' }}>
+        <div
+          className="rounded-xl px-4 py-3"
+          style={{ background: 'var(--oui-panel-bg)', border: '1px solid var(--oui-panel-border)' }}
+        >
           <StatusClock {...statusClockPropsFactory(variant.args)} />
         </div>
       </div>
@@ -502,7 +792,9 @@ const StatusClockPreview: React.FC = () => (
 
 const NativeAppPreview: React.FC = () => (
   <div className="flex flex-col gap-4 overflow-x-auto pb-2">
-    <span className="font-mono text-xs text-muted-foreground">Showcase / Native App: toolbar, panels and footer together at 900px</span>
+    <span className="font-mono text-xs text-muted-foreground">
+      Showcase / Native App: toolbar, panels and footer together at 900px
+    </span>
     <NativeAppWindow {...nativeAppDefaults} width={900} />
   </div>
 );
@@ -521,16 +813,23 @@ const PanelPreview: React.FC = () => (
     </div>
     <div className="flex flex-wrap items-start gap-6">
       <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-xs text-muted-foreground">Scrolling · fade, thin scrollbar, stick to bottom, Jump to latest</span>
+        <span className="font-mono text-xs text-muted-foreground">
+          Scrolling · fade, thin scrollbar, stick to bottom, Jump to latest
+        </span>
         <TranscriptDemo />
       </div>
       <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-xs text-muted-foreground">Panel configurations (props only)</span>
+        <span className="font-mono text-xs text-muted-foreground">
+          Panel configurations (props only)
+        </span>
         <div className="flex flex-wrap gap-3">
           {panelVariants.map((variant) => (
             <div key={variant.name} className="flex h-64 w-72 flex-col gap-1">
               <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
-              <div className="flex min-h-0 flex-1 rounded-xl p-2.5" style={{ background: '#1a4f96' }}>
+              <div
+                className="flex min-h-0 flex-1 rounded-xl p-2.5"
+                style={{ background: '#1a4f96' }}
+              >
                 <Panel {...panelPropsFactory(variant.args)} />
               </div>
             </div>
@@ -544,7 +843,9 @@ const PanelPreview: React.FC = () => (
 const TranscriptPreview: React.FC = () => (
   <div className="flex flex-wrap items-start gap-6">
     <div className="flex flex-col gap-1.5">
-      <span className="font-mono text-xs text-muted-foreground">Ready · event chip, hover or focus a bubble to copy</span>
+      <span className="font-mono text-xs text-muted-foreground">
+        Ready · event chip, hover or focus a bubble to copy
+      </span>
       <TranscriptPanel entries={readyEntries()} height={320} />
     </div>
     <div className="flex flex-col gap-1.5">
@@ -574,7 +875,9 @@ const ComposerPreview: React.FC = () => (
 const DiffReviewPreview: React.FC = () => (
   <div className="flex flex-wrap items-start gap-6">
     <div className="flex w-[520px] flex-col gap-1.5">
-      <span className="font-mono text-xs text-muted-foreground">Diff · tabs, context lines, Apply walks the phases</span>
+      <span className="font-mono text-xs text-muted-foreground">
+        Diff · tabs, context lines, Apply walks the phases
+      </span>
       <DiffReviewDemo />
     </div>
     <div className="flex w-[520px] flex-col gap-1.5">
@@ -583,7 +886,13 @@ const DiffReviewPreview: React.FC = () => (
     </div>
     <div className="flex w-[520px] flex-col gap-1.5">
       <span className="font-mono text-xs text-muted-foreground">Applied · no highlighting</span>
-      <DiffReview {...diffReviewPropsFactory({ status: 'applied', highlight: undefined, changes: sampleChanges(2) })} />
+      <DiffReview
+        {...diffReviewPropsFactory({
+          status: 'applied',
+          highlight: undefined,
+          changes: sampleChanges(2),
+        })}
+      />
     </div>
   </div>
 );
@@ -591,13 +900,17 @@ const DiffReviewPreview: React.FC = () => (
 const ModelPickerPreview: React.FC = () => (
   <div className="flex flex-wrap items-start gap-6">
     <div className="flex flex-col gap-1.5">
-      <span className="font-mono text-xs text-muted-foreground">Menu · grouped providers, effort</span>
+      <span className="font-mono text-xs text-muted-foreground">
+        Menu · grouped providers, effort
+      </span>
       <div className="w-[340px] rounded-md border bg-popover p-1.5 text-popover-foreground shadow-md">
         <ModelMenu {...modelPickerPropsFactory()} />
       </div>
     </div>
     <div className="flex flex-col gap-1.5">
-      <span className="font-mono text-xs text-muted-foreground">Chip + context meter in the composer</span>
+      <span className="font-mono text-xs text-muted-foreground">
+        Chip + context meter in the composer
+      </span>
       <ComposerToolbarDemo />
     </div>
   </div>
@@ -606,7 +919,9 @@ const ModelPickerPreview: React.FC = () => (
 const ContextMeterPreview: React.FC = () => (
   <div className="flex flex-wrap items-center gap-6">
     {contextMeterVariants
-      .filter((variant) => !variant.name.startsWith('Custom') && !variant.name.startsWith('No summarise'))
+      .filter(
+        (variant) => !variant.name.startsWith('Custom') && !variant.name.startsWith('No summarise'),
+      )
       .map((variant) => (
         <div key={variant.name} className="flex flex-col items-center gap-1">
           <ContextMeter {...contextMeterPropsFactory(variant.args)} />
@@ -702,9 +1017,13 @@ const EmptyStartersPreview: React.FC = () => (
 
 const SettingsDialogPreview: React.FC = () => (
   <div className="flex flex-col gap-2">
-    <span className="font-mono text-[11px] text-muted-foreground">Opens a focus-trapped dialog; arrow keys move between tabs</span>
+    <span className="font-mono text-[11px] text-muted-foreground">
+      Opens a focus-trapped dialog; arrow keys move between tabs
+    </span>
     <SettingsDialogDemo />
-    <span className="font-mono text-[11px] text-muted-foreground">{settingsDialogVariants.length} configurations in the stories</span>
+    <span className="font-mono text-[11px] text-muted-foreground">
+      {settingsDialogVariants.length} configurations in the stories
+    </span>
   </div>
 );
 
@@ -800,7 +1119,11 @@ const ShortcutListPreview: React.FC = () => (
 const ActionMenuPreview: React.FC = () => (
   <div className="flex flex-wrap items-center gap-3">
     {actionMenuVariants.map((variant) => (
-      <ActionMenu key={variant.name} {...actionMenuPropsFactory(variant.args)} trigger={<OmniButton variant="outline">{variant.name}</OmniButton>} />
+      <ActionMenu
+        key={variant.name}
+        {...actionMenuPropsFactory(variant.args)}
+        trigger={<OmniButton variant="outline">{variant.name}</OmniButton>}
+      />
     ))}
   </div>
 );
@@ -819,7 +1142,9 @@ function FieldGrid<P extends object>({
   valueKey?: keyof P;
 }) {
   return (
-    <div className={cols === 2 ? 'grid grid-cols-1 gap-4 lg:grid-cols-2' : 'grid grid-cols-1 gap-4'}>
+    <div
+      className={cols === 2 ? 'grid grid-cols-1 gap-4 lg:grid-cols-2' : 'grid grid-cols-1 gap-4'}
+    >
       {variants.map((variant) => (
         <Controlled
           key={variant.name}
@@ -834,26 +1159,97 @@ function FieldGrid<P extends object>({
   );
 }
 
-const InputPreview = () => <FieldGrid Component={Input} factory={inputPropsFactory} variants={inputVariants} />;
-const TextareaPreview = () => <FieldGrid Component={Textarea} factory={textareaPropsFactory} variants={textareaVariants} />;
-const EmailInputPreview = () => <FieldGrid Component={EmailInput} factory={emailInputPropsFactory} variants={emailInputVariants} />;
-const PasswordInputPreview = () => <FieldGrid Component={PasswordInput} factory={passwordInputPropsFactory} variants={passwordInputVariants} />;
-const NumberInputPreview = () => <FieldGrid Component={NumberInput} factory={numberInputPropsFactory} variants={numberInputVariants} />;
-const CurrencyInputPreview = () => <FieldGrid Component={CurrencyInput} factory={currencyInputPropsFactory} variants={currencyInputVariants} />;
-const PhoneInputPreview = () => <FieldGrid Component={PhoneInput} factory={phoneInputPropsFactory} variants={phoneInputVariants} />;
-const InputOTPPreview = () => <FieldGrid Component={InputOTP} factory={inputOTPPropsFactory} variants={inputOTPVariants} />;
-const TagInputPreview = () => <FieldGrid Component={TagInput} factory={tagInputPropsFactory} variants={tagInputVariants} />;
-const RichTextPreview = () => <FieldGrid Component={RichText} factory={richTextPropsFactory} variants={richTextVariants} cols={1} />;
-
-const SelectPreview = () => <FieldGrid Component={Select} factory={selectPropsFactory} variants={selectVariants} />;
-const MultiSelectPreview = () => <FieldGrid Component={MultiSelect} factory={multiSelectPropsFactory} variants={multiSelectVariants} />;
-const RadioPreview = () => <FieldGrid Component={Radio} factory={radioPropsFactory} variants={radioVariants} />;
-const CheckboxPreview = () => (
-  <FieldGrid Component={Checkbox} factory={checkboxPropsFactory} variants={checkboxVariants} valueKey={'checked' as const} />
+const InputPreview = () => (
+  <FieldGrid Component={Input} factory={inputPropsFactory} variants={inputVariants} />
 );
-const SwitchPreview = () => <FieldGrid Component={Switch} factory={switchPropsFactory} variants={switchVariants} valueKey={'checked' as const} />;
+const TextareaPreview = () => (
+  <FieldGrid Component={Textarea} factory={textareaPropsFactory} variants={textareaVariants} />
+);
+const EmailInputPreview = () => (
+  <FieldGrid
+    Component={EmailInput}
+    factory={emailInputPropsFactory}
+    variants={emailInputVariants}
+  />
+);
+const PasswordInputPreview = () => (
+  <FieldGrid
+    Component={PasswordInput}
+    factory={passwordInputPropsFactory}
+    variants={passwordInputVariants}
+  />
+);
+const NumberInputPreview = () => (
+  <FieldGrid
+    Component={NumberInput}
+    factory={numberInputPropsFactory}
+    variants={numberInputVariants}
+  />
+);
+const CurrencyInputPreview = () => (
+  <FieldGrid
+    Component={CurrencyInput}
+    factory={currencyInputPropsFactory}
+    variants={currencyInputVariants}
+  />
+);
+const PhoneInputPreview = () => (
+  <FieldGrid
+    Component={PhoneInput}
+    factory={phoneInputPropsFactory}
+    variants={phoneInputVariants}
+  />
+);
+const InputOTPPreview = () => (
+  <FieldGrid Component={InputOTP} factory={inputOTPPropsFactory} variants={inputOTPVariants} />
+);
+const TagInputPreview = () => (
+  <FieldGrid Component={TagInput} factory={tagInputPropsFactory} variants={tagInputVariants} />
+);
+const RichTextPreview = () => (
+  <FieldGrid
+    Component={RichText}
+    factory={richTextPropsFactory}
+    variants={richTextVariants}
+    cols={1}
+  />
+);
+
+const SelectPreview = () => (
+  <FieldGrid Component={Select} factory={selectPropsFactory} variants={selectVariants} />
+);
+const MultiSelectPreview = () => (
+  <FieldGrid
+    Component={MultiSelect}
+    factory={multiSelectPropsFactory}
+    variants={multiSelectVariants}
+  />
+);
+const RadioPreview = () => (
+  <FieldGrid Component={Radio} factory={radioPropsFactory} variants={radioVariants} />
+);
+const CheckboxPreview = () => (
+  <FieldGrid
+    Component={Checkbox}
+    factory={checkboxPropsFactory}
+    variants={checkboxVariants}
+    valueKey={'checked' as const}
+  />
+);
+const SwitchPreview = () => (
+  <FieldGrid
+    Component={Switch}
+    factory={switchPropsFactory}
+    variants={switchVariants}
+    valueKey={'checked' as const}
+  />
+);
 const SegmentedPreview = () => (
-  <FieldGrid Component={Segmented} factory={segmentedPropsFactory} variants={[...segmentedVariants, ...segmentedControlVariants]} />
+  <FieldGrid
+    Component={Segmented}
+    factory={segmentedPropsFactory}
+    variants={[...segmentedVariants, ...segmentedControlVariants]}
+  />
 );
 
 const ProgressPreview: React.FC = () => (
@@ -915,15 +1311,49 @@ const DividerPreview: React.FC = () => (
   </div>
 );
 
-const SliderPreview = () => <FieldGrid Component={Slider} factory={sliderPropsFactory} variants={sliderVariants} />;
-const StepperPreview = () => <FieldGrid Component={Stepper} factory={stepperPropsFactory} variants={stepperVariants} />;
+const SliderPreview = () => (
+  <FieldGrid Component={Slider} factory={sliderPropsFactory} variants={sliderVariants} />
+);
+const StepperPreview = () => (
+  <FieldGrid Component={Stepper} factory={stepperPropsFactory} variants={stepperVariants} />
+);
 
-const DatePickerPreview = () => <FieldGrid Component={DatePicker} factory={datePickerPropsFactory} variants={datePickerVariants} />;
-const TimePickerPreview = () => <FieldGrid Component={TimePicker} factory={timePickerPropsFactory} variants={timePickerVariants} />;
-const DateTimePickerPreview = () => <FieldGrid Component={DateTimePicker} factory={dateTimePickerPropsFactory} variants={dateTimePickerVariants} />;
+const DatePickerPreview = () => (
+  <FieldGrid
+    Component={DatePicker}
+    factory={datePickerPropsFactory}
+    variants={datePickerVariants}
+  />
+);
+const TimePickerPreview = () => (
+  <FieldGrid
+    Component={TimePicker}
+    factory={timePickerPropsFactory}
+    variants={timePickerVariants}
+  />
+);
+const DateTimePickerPreview = () => (
+  <FieldGrid
+    Component={DateTimePicker}
+    factory={dateTimePickerPropsFactory}
+    variants={dateTimePickerVariants}
+  />
+);
 
-const ColorPickerPreview = () => <FieldGrid Component={ColorPicker} factory={colorPickerPropsFactory} variants={colorPickerVariants} />;
-const FileUploadPreview = () => <FieldGrid Component={FileUpload} factory={fileUploadPropsFactory} variants={fileUploadVariants} />;
+const ColorPickerPreview = () => (
+  <FieldGrid
+    Component={ColorPicker}
+    factory={colorPickerPropsFactory}
+    variants={colorPickerVariants}
+  />
+);
+const FileUploadPreview = () => (
+  <FieldGrid
+    Component={FileUpload}
+    factory={fileUploadPropsFactory}
+    variants={fileUploadVariants}
+  />
+);
 
 interface OverviewRowSpec {
   name: string;
@@ -995,7 +1425,13 @@ const TourPreview = () => {
       >
         Start tour
       </OmniButton>
-      <Tour open={open} current={current} steps={steps} onCurrentChange={setCurrent} onClose={() => setOpen(false)} />
+      <Tour
+        open={open}
+        current={current}
+        steps={steps}
+        onCurrentChange={setCurrent}
+        onClose={() => setOpen(false)}
+      />
     </div>
   );
 };
@@ -1014,7 +1450,9 @@ const TabsPreview = () => (
   </Tabs>
 );
 
-const previewBox = (children: React.ReactNode) => <div className="min-h-20 rounded-lg border border-border bg-card p-6">{children}</div>;
+const previewBox = (children: React.ReactNode) => (
+  <div className="min-h-20 rounded-lg border border-border bg-card p-6">{children}</div>
+);
 
 const previews: Record<string, React.ComponentType> = {
   Icon: () =>
@@ -1120,7 +1558,9 @@ const previews: Record<string, React.ComponentType> = {
       ]}
     />
   ),
-  Breadcrumb: () => <Breadcrumb items={[{ title: 'Home' }, { title: 'Workspace' }, { title: 'Overview' }]} />,
+  Breadcrumb: () => (
+    <Breadcrumb items={[{ title: 'Home' }, { title: 'Workspace' }, { title: 'Overview' }]} />
+  ),
   Dropdown: () => (
     <Dropdown>
       <DropdownTrigger asChild>
@@ -1145,7 +1585,12 @@ const previews: Record<string, React.ComponentType> = {
   ),
   Pagination: () => <Pagination current={1} total={50} pageSize={10} />,
   AutoComplete: () => (
-    <AutoComplete label="Assignee" value="" onChange={() => undefined} options={[{ value: 'Alex Morgan' }, { value: 'Jamie Chen' }]} />
+    <AutoComplete
+      label="Assignee"
+      value=""
+      onChange={() => undefined}
+      options={[{ value: 'Alex Morgan' }, { value: 'Jamie Chen' }]}
+    />
   ),
   Cascader: () => (
     <Cascader
@@ -1163,7 +1608,10 @@ const previews: Record<string, React.ComponentType> = {
       schema={{
         type: 'object',
         required: ['name'],
-        properties: { name: { type: 'string', title: 'Name' }, email: { type: 'string', title: 'Email', format: 'email' } },
+        properties: {
+          name: { type: 'string', title: 'Name' },
+          email: { type: 'string', title: 'Email', format: 'email' },
+        },
       }}
       zodSchema={z.object({ name: z.string().min(1), email: z.string().email().optional() })}
       onSubmit={() => undefined}
@@ -1183,10 +1631,24 @@ const previews: Record<string, React.ComponentType> = {
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField name="name" required>
-            {(field) => <Input label="Name" value={String(field.value ?? '')} onChange={field.onChange} required />}
+            {(field) => (
+              <Input
+                label="Name"
+                value={String(field.value ?? '')}
+                onChange={field.onChange}
+                required
+              />
+            )}
           </FormField>
           <FormField name="email" required>
-            {(field) => <EmailInput label="Email" value={String(field.value ?? '')} onChange={field.onChange} required />}
+            {(field) => (
+              <EmailInput
+                label="Email"
+                value={String(field.value ?? '')}
+                onChange={field.onChange}
+                required
+              />
+            )}
           </FormField>
         </div>
         <Button type="submit" className="mt-4">
@@ -1194,7 +1656,15 @@ const previews: Record<string, React.ComponentType> = {
         </Button>
       </Form>,
     ),
-  Mentions: () => <Mentions label="Comment" value="@alex " placeholder="Write a comment..." rows={3} onChange={() => undefined} />,
+  Mentions: () => (
+    <Mentions
+      label="Comment"
+      value="@alex "
+      placeholder="Write a comment..."
+      rows={3}
+      onChange={() => undefined}
+    />
+  ),
   Avatar: () => <Avatar fallback="OU" />,
   Calendar: () => <Calendar className="w-full max-w-md" />,
   Card: () => (
@@ -1211,7 +1681,12 @@ const previews: Record<string, React.ComponentType> = {
       <div className="p-8 text-center">Slide two</div>
     </Carousel>
   ),
-  Collapse: () => <Collapse defaultActiveKey="one" items={[{ key: 'one', label: 'Details', children: 'Expandable content' }]} />,
+  Collapse: () => (
+    <Collapse
+      defaultActiveKey="one"
+      items={[{ key: 'one', label: 'Details', children: 'Expandable content' }]}
+    />
+  ),
   Descriptions: () => (
     <Descriptions
       items={[
@@ -1247,7 +1722,11 @@ const previews: Record<string, React.ComponentType> = {
       ]}
     />
   ),
-  Timeline: () => <Timeline items={[{ children: 'Created' }, { children: 'Reviewed' }, { children: 'Published' }]} />,
+  Timeline: () => (
+    <Timeline
+      items={[{ children: 'Created' }, { children: 'Reviewed' }, { children: 'Published' }]}
+    />
+  ),
   Tooltip: () => (
     <TooltipProvider>
       <Tooltip>
@@ -1270,7 +1749,14 @@ const previews: Record<string, React.ComponentType> = {
       ]}
     />
   ),
-  TreeSelect: () => <TreeSelect label="Location" value="" onChange={() => undefined} treeData={[{ value: 'workspace', title: 'Workspace' }]} />,
+  TreeSelect: () => (
+    <TreeSelect
+      label="Location"
+      value=""
+      onChange={() => undefined}
+      treeData={[{ value: 'workspace', title: 'Workspace' }]}
+    />
+  ),
   Watermark: () => (
     <Watermark content="INTERNAL">
       <div className="h-24 rounded border p-4">Protected content</div>
@@ -1293,7 +1779,9 @@ const previews: Record<string, React.ComponentType> = {
       </DrawerContent>
     </Drawer>
   ),
-  Message: () => <OmniButton onClick={() => message.success('Message sent')}>Show message</OmniButton>,
+  Message: () => (
+    <OmniButton onClick={() => message.success('Message sent')}>Show message</OmniButton>
+  ),
   Modal: () => (
     <Modal>
       <ModalTrigger asChild>
@@ -1323,7 +1811,9 @@ const previews: Record<string, React.ComponentType> = {
       <OmniButton variant="destructive">Delete</OmniButton>
     </Popconfirm>
   ),
-  Result: () => <Result status="success" title="Saved" subTitle="The record was saved successfully." />,
+  Result: () => (
+    <Result status="success" title="Saved" subTitle="The record was saved successfully." />
+  ),
   Skeleton: () => <Skeleton className="h-6 w-48" />,
   Spin: () => (
     <Spin spinning tip="Loading">
@@ -1337,12 +1827,15 @@ const previews: Record<string, React.ComponentType> = {
   ),
   App: () => <App>{previewBox(<span>Application shell</span>)}</App>,
   BackTop: () => <BackTop visibilityHeight={0} style={{ position: 'static' }} />,
-  ConfigProvider: () => <ConfigProvider>{previewBox(<span>Configured content</span>)}</ConfigProvider>,
+  ConfigProvider: () => (
+    <ConfigProvider>{previewBox(<span>Configured content</span>)}</ConfigProvider>
+  ),
   Upload: () => <Upload />,
   Util: () =>
     previewBox(
       <span>
-        <strong>Util</strong> · clamp(12, 0, 10) = {clamp(12, 0, 10)} · isNil(null) = {String(isNil(null))}
+        <strong>Util</strong> · clamp(12, 0, 10) = {clamp(12, 0, 10)} · isNil(null) ={' '}
+        {String(isNil(null))}
       </span>,
     ),
 };
@@ -1354,9 +1847,17 @@ const LibraryPreview: React.FC<{ name: string }> = ({ name }) => {
 
 /** Rows with their own preview and factory variants (Show code and the variant list come from them). */
 const configuredRows: Record<string, OverviewRowSpec> = {
-  Divider: { name: 'Divider', preview: DividerPreview, variants: dividerVariants as Variant<unknown>[] },
+  Divider: {
+    name: 'Divider',
+    preview: DividerPreview,
+    variants: dividerVariants as Variant<unknown>[],
+  },
   Empty: { name: 'Empty', preview: EmptyPreview, variants: emptyVariants as Variant<unknown>[] },
-  Progress: { name: 'Progress', preview: ProgressPreview, variants: [...progressVariants, ...progressRingVariants] as Variant<unknown>[] },
+  Progress: {
+    name: 'Progress',
+    preview: ProgressPreview,
+    variants: [...progressVariants, ...progressRingVariants] as Variant<unknown>[],
+  },
   Steps: { name: 'Steps', preview: StepsPreview, variants: stepsVariants as Variant<unknown>[] },
   Tag: { name: 'Tag', preview: TagPreview, variants: tagVariants as Variant<unknown>[] },
 };
@@ -1372,7 +1873,9 @@ const libraryRow = (name: string): OverviewRowSpec =>
 const TypographyPreview: React.FC = () => (
   <div className="flex flex-col gap-3">
     <Typography.Title>Typography title</Typography.Title>
-    <Typography.Paragraph>Typography paragraph content with the current Omni tokens.</Typography.Paragraph>
+    <Typography.Paragraph>
+      Typography paragraph content with the current Omni tokens.
+    </Typography.Paragraph>
     <Typography.Text type="secondary">Secondary text</Typography.Text>
     <Typography.Link href="#component-typography">Typography link</Typography.Link>
   </div>
@@ -1397,24 +1900,76 @@ const SECTIONS: OverviewSectionSpec[] = [
     rows: [
       ...['Divider', 'Flex', 'Grid', 'Layout'].map(libraryRow),
       { name: 'Panel', preview: PanelPreview, variants: panelVariants as Variant<unknown>[] },
-      { name: 'Transcript', preview: TranscriptPreview, variants: transcriptVariants as Variant<unknown>[] },
-      { name: 'Transcript (conversation)', preview: ConversationPreview, variants: [], source: 'ConversationPreview' },
-      { name: 'Attachment', preview: AttachmentPreview, variants: attachmentVariants as Variant<unknown>[] },
-      { name: 'Composer', preview: MessageBoxPreview, variants: composerVariants as Variant<unknown>[] },
-      { name: 'CommandPopover', preview: CommandPopoverPreview, variants: commandPopoverVariants as Variant<unknown>[] },
-      { name: 'DictationBar', preview: DictationBarPreview, variants: dictationBarVariants as Variant<unknown>[] },
-      { name: 'QueuedList', preview: QueuedListPreview, variants: queuedListVariants as Variant<unknown>[] },
-      { name: 'DiffReview', preview: DiffReviewPreview, variants: diffReviewVariants as Variant<unknown>[] },
-      { name: 'ModelPicker', preview: ModelPickerPreview, variants: modelPickerVariants as Variant<unknown>[] },
-      { name: 'ContextMeter', preview: ContextMeterPreview, variants: contextMeterVariants as Variant<unknown>[] },
-      { name: 'StreamStatus', preview: StreamStatusPreview, variants: streamStatusVariants as Variant<unknown>[] },
-      { name: 'useFollowLatest', preview: UseFollowLatestPreview, variants: [], source: 'UseFollowLatestPreview' },
+      {
+        name: 'Transcript',
+        preview: TranscriptPreview,
+        variants: transcriptVariants as Variant<unknown>[],
+      },
+      {
+        name: 'Transcript (conversation)',
+        preview: ConversationPreview,
+        variants: [],
+        source: 'ConversationPreview',
+      },
+      {
+        name: 'Attachment',
+        preview: AttachmentPreview,
+        variants: attachmentVariants as Variant<unknown>[],
+      },
+      {
+        name: 'Composer',
+        preview: MessageBoxPreview,
+        variants: composerVariants as Variant<unknown>[],
+      },
+      {
+        name: 'CommandPopover',
+        preview: CommandPopoverPreview,
+        variants: commandPopoverVariants as Variant<unknown>[],
+      },
+      {
+        name: 'DictationBar',
+        preview: DictationBarPreview,
+        variants: dictationBarVariants as Variant<unknown>[],
+      },
+      {
+        name: 'QueuedList',
+        preview: QueuedListPreview,
+        variants: queuedListVariants as Variant<unknown>[],
+      },
+      {
+        name: 'DiffReview',
+        preview: DiffReviewPreview,
+        variants: diffReviewVariants as Variant<unknown>[],
+      },
+      {
+        name: 'ModelPicker',
+        preview: ModelPickerPreview,
+        variants: modelPickerVariants as Variant<unknown>[],
+      },
+      {
+        name: 'ContextMeter',
+        preview: ContextMeterPreview,
+        variants: contextMeterVariants as Variant<unknown>[],
+      },
+      {
+        name: 'StreamStatus',
+        preview: StreamStatusPreview,
+        variants: streamStatusVariants as Variant<unknown>[],
+      },
+      {
+        name: 'useFollowLatest',
+        preview: UseFollowLatestPreview,
+        variants: [],
+        source: 'UseFollowLatestPreview',
+      },
       ...['Space', 'Splitter', 'Masonry'].map(libraryRow),
     ],
   },
   {
     title: 'Navigation',
-    rows: ['Anchor', 'Breadcrumb', 'Dropdown', 'Menu', 'Pagination', 'Steps', 'Tabs', 'Wizard'].map(libraryRow),
+    rows: ['Anchor', 'Breadcrumb', 'Dropdown', 'Menu', 'Pagination', 'Steps', 'Tabs', 'Wizard'].map(
+      libraryRow,
+    ),
   },
   {
     title: 'Data entry',
@@ -1437,42 +1992,120 @@ const SECTIONS: OverviewSectionSpec[] = [
       {
         name: 'IconButton',
         preview: IconButtonPreview,
-        variants: [...iconButtonVariants, ...iconButtonSizeVariants, ...iconButtonToneVariants, ...iconButtonStateVariants] as Variant<unknown>[],
+        variants: [
+          ...iconButtonVariants,
+          ...iconButtonSizeVariants,
+          ...iconButtonToneVariants,
+          ...iconButtonStateVariants,
+        ] as Variant<unknown>[],
       },
-      { name: 'SplitButton', preview: SplitButtonPreview, variants: splitButtonVariants as Variant<unknown>[] },
-      { name: 'Toolbar', preview: ToolbarPreview, variants: [...toolbarVariants, ...toolbarLabelledVariants] as Variant<unknown>[] },
-      { name: 'SessionBar', preview: SessionBarPreview, variants: sessionBarExamples as Variant<unknown>[] },
-      { name: 'StatusClock', preview: StatusClockPreview, variants: statusClockExamples as Variant<unknown>[] },
+      {
+        name: 'SplitButton',
+        preview: SplitButtonPreview,
+        variants: splitButtonVariants as Variant<unknown>[],
+      },
+      {
+        name: 'Toolbar',
+        preview: ToolbarPreview,
+        variants: [...toolbarVariants, ...toolbarLabelledVariants] as Variant<unknown>[],
+      },
+      {
+        name: 'SessionBar',
+        preview: SessionBarPreview,
+        variants: sessionBarExamples as Variant<unknown>[],
+      },
+      {
+        name: 'StatusClock',
+        preview: StatusClockPreview,
+        variants: statusClockExamples as Variant<unknown>[],
+      },
       {
         name: 'Native App (showcase)',
         preview: NativeAppPreview,
         variants: [
           { name: 'Toolbar states (1a)', args: { story: 'Showcase/Native App · Toolbar States' } },
-          { name: 'Toolbar variations and open menus (1c)', args: { story: 'Showcase/Native App · Toolbar Variations' } },
-          { name: 'Panels in three states (1d)', args: { story: 'Showcase/Native App · Panels In Three States' } },
+          {
+            name: 'Toolbar variations and open menus (1c)',
+            args: { story: 'Showcase/Native App · Toolbar Variations' },
+          },
+          {
+            name: 'Panels in three states (1d)',
+            args: { story: 'Showcase/Native App · Panels In Three States' },
+          },
           { name: 'Footer states (1e)', args: { story: 'Showcase/Native App · Footer States' } },
-          { name: 'Window 1180 and 900', args: { story: 'Showcase/Native App · Window 1180, Window 900' } },
+          {
+            name: 'Window 1180 and 900',
+            args: { story: 'Showcase/Native App · Window 1180, Window 900' },
+          },
         ] as Variant<unknown>[],
         source: 'NativeAppPreview',
       },
-      { name: 'ActionMenu', preview: ActionMenuPreview, variants: actionMenuVariants as Variant<unknown>[] },
+      {
+        name: 'ActionMenu',
+        preview: ActionMenuPreview,
+        variants: actionMenuVariants as Variant<unknown>[],
+      },
     ],
   },
   {
     title: 'Message parts',
     rows: [
-      { name: 'Markdown', preview: MarkdownPreview, variants: markdownVariants as Variant<unknown>[] },
+      {
+        name: 'Markdown',
+        preview: MarkdownPreview,
+        variants: markdownVariants as Variant<unknown>[],
+      },
       { name: 'Sources', preview: SourcesPreview, variants: sourcesVariants as Variant<unknown>[] },
-      { name: 'Suggestions', preview: SuggestionsPreview, variants: suggestionsVariants as Variant<unknown>[] },
-      { name: 'Thinking', preview: ThinkingPreview, variants: thinkingVariants as Variant<unknown>[] },
-      { name: 'StepTimeline', preview: StepTimelinePreview, variants: stepTimelineVariants as Variant<unknown>[] },
-      { name: 'ErrorCard', preview: ErrorCardPreview, variants: errorCardVariants as Variant<unknown>[] },
-      { name: 'ApprovalCard', preview: ApprovalCardPreview, variants: approvalCardVariants as Variant<unknown>[] },
-      { name: 'FeedbackPanel', preview: FeedbackPanelPreview, variants: feedbackPanelVariants as Variant<unknown>[] },
-      { name: 'VersionPager', preview: VersionPagerPreview, variants: versionPagerVariants as Variant<unknown>[] },
-      { name: 'MessageActions', preview: MessageActionsPreview, variants: messageActionsVariants as Variant<unknown>[] },
-      { name: 'MessageMenu', preview: MessageMenuPreview, variants: messageMenuVariants as Variant<unknown>[] },
-      { name: 'SummaryDivider', preview: SummaryDividerPreview, variants: summaryDividerVariants as Variant<unknown>[] },
+      {
+        name: 'Suggestions',
+        preview: SuggestionsPreview,
+        variants: suggestionsVariants as Variant<unknown>[],
+      },
+      {
+        name: 'Thinking',
+        preview: ThinkingPreview,
+        variants: thinkingVariants as Variant<unknown>[],
+      },
+      {
+        name: 'StepTimeline',
+        preview: StepTimelinePreview,
+        variants: stepTimelineVariants as Variant<unknown>[],
+      },
+      {
+        name: 'ErrorCard',
+        preview: ErrorCardPreview,
+        variants: errorCardVariants as Variant<unknown>[],
+      },
+      {
+        name: 'ApprovalCard',
+        preview: ApprovalCardPreview,
+        variants: approvalCardVariants as Variant<unknown>[],
+      },
+      {
+        name: 'FeedbackPanel',
+        preview: FeedbackPanelPreview,
+        variants: feedbackPanelVariants as Variant<unknown>[],
+      },
+      {
+        name: 'VersionPager',
+        preview: VersionPagerPreview,
+        variants: versionPagerVariants as Variant<unknown>[],
+      },
+      {
+        name: 'MessageActions',
+        preview: MessageActionsPreview,
+        variants: messageActionsVariants as Variant<unknown>[],
+      },
+      {
+        name: 'MessageMenu',
+        preview: MessageMenuPreview,
+        variants: messageMenuVariants as Variant<unknown>[],
+      },
+      {
+        name: 'SummaryDivider',
+        preview: SummaryDividerPreview,
+        variants: summaryDividerVariants as Variant<unknown>[],
+      },
       {
         name: 'Chat reply (message parts together)',
         preview: ChatReplyPreview,
@@ -1482,7 +2115,9 @@ const SECTIONS: OverviewSectionSpec[] = [
       {
         name: 'ConversationTranscript',
         preview: ConversationTranscriptPreview,
-        variants: [{ name: 'The chat reply, composed from props only', args: {} }] as Variant<unknown>[],
+        variants: [
+          { name: 'The chat reply, composed from props only', args: {} },
+        ] as Variant<unknown>[],
         source: 'ConversationTranscriptPreview',
       },
     ],
@@ -1500,7 +2135,10 @@ const SECTIONS: OverviewSectionSpec[] = [
         preview: ComposerPreview,
         variants: [
           { name: 'Empty, send muted', args: { actions: 'mic + send', variant: 'panel' } },
-          { name: 'Typing', args: { actions: 'mic + send', variant: 'panel', value: 'Assume the input is sorted' } },
+          {
+            name: 'Typing',
+            args: { actions: 'mic + send', variant: 'panel', value: 'Assume the input is sorted' },
+          },
         ] as Variant<unknown>[],
         source: 'ComposerPreview',
       },
@@ -1667,7 +2305,18 @@ const SECTIONS: OverviewSectionSpec[] = [
   },
   {
     title: 'Feedback',
-    rows: ['Alert', 'Drawer', 'Message', 'Modal', 'Notification', 'Popconfirm', 'Progress', 'Result', 'Skeleton', 'Spin'].map(libraryRow),
+    rows: [
+      'Alert',
+      'Drawer',
+      'Message',
+      'Modal',
+      'Notification',
+      'Popconfirm',
+      'Progress',
+      'Result',
+      'Skeleton',
+      'Spin',
+    ].map(libraryRow),
   },
   {
     title: 'Other',
@@ -1676,17 +2325,57 @@ const SECTIONS: OverviewSectionSpec[] = [
   {
     title: 'Chat shell and settings',
     rows: [
-      { name: 'PanelShell', preview: PanelShellPreview, variants: panelShellVariants as Variant<unknown>[] },
-      { name: 'ConversationList', preview: ConversationListPreview, variants: conversationListVariants as Variant<unknown>[] },
-      { name: 'ConversationHeader', preview: ConversationHeaderPreview, variants: conversationHeaderVariants as Variant<unknown>[] },
-      { name: 'EmptyStarters', preview: EmptyStartersPreview, variants: emptyStartersVariants as Variant<unknown>[] },
+      {
+        name: 'PanelShell',
+        preview: PanelShellPreview,
+        variants: panelShellVariants as Variant<unknown>[],
+      },
+      {
+        name: 'ConversationList',
+        preview: ConversationListPreview,
+        variants: conversationListVariants as Variant<unknown>[],
+      },
+      {
+        name: 'ConversationHeader',
+        preview: ConversationHeaderPreview,
+        variants: conversationHeaderVariants as Variant<unknown>[],
+      },
+      {
+        name: 'EmptyStarters',
+        preview: EmptyStartersPreview,
+        variants: emptyStartersVariants as Variant<unknown>[],
+      },
       { name: 'Toast', preview: ToastPreview, variants: toastVariants as Variant<unknown>[] },
-      { name: 'SettingsDialog', preview: SettingsDialogPreview, variants: settingsDialogVariants as Variant<unknown>[] },
-      { name: 'PreferencesForm', preview: PreferencesFormPreview, variants: preferencesFormVariants as Variant<unknown>[] },
-      { name: 'DataPrivacyPanel', preview: DataPrivacyPanelPreview, variants: dataPrivacyPanelVariants as Variant<unknown>[] },
-      { name: 'IntegrationList', preview: IntegrationListPreview, variants: integrationListVariants as Variant<unknown>[] },
-      { name: 'ModelsSettings', preview: ModelsSettingsPreview, variants: modelsSettingsVariants as Variant<unknown>[] },
-      { name: 'ShortcutList', preview: ShortcutListPreview, variants: shortcutListVariants as Variant<unknown>[] },
+      {
+        name: 'SettingsDialog',
+        preview: SettingsDialogPreview,
+        variants: settingsDialogVariants as Variant<unknown>[],
+      },
+      {
+        name: 'PreferencesForm',
+        preview: PreferencesFormPreview,
+        variants: preferencesFormVariants as Variant<unknown>[],
+      },
+      {
+        name: 'DataPrivacyPanel',
+        preview: DataPrivacyPanelPreview,
+        variants: dataPrivacyPanelVariants as Variant<unknown>[],
+      },
+      {
+        name: 'IntegrationList',
+        preview: IntegrationListPreview,
+        variants: integrationListVariants as Variant<unknown>[],
+      },
+      {
+        name: 'ModelsSettings',
+        preview: ModelsSettingsPreview,
+        variants: modelsSettingsVariants as Variant<unknown>[],
+      },
+      {
+        name: 'ShortcutList',
+        preview: ShortcutListPreview,
+        variants: shortcutListVariants as Variant<unknown>[],
+      },
     ],
   },
 ];
@@ -1710,17 +2399,28 @@ const ComponentOverviewPage: React.FC = () => {
           <header className="pb-shell-header mb-8 max-w-4xl">
             <h1 className="text-4xl font-semibold text-foreground">Component Overview</h1>
             <p className="mt-3 text-[15px] leading-8 text-muted-foreground">
-              Browse the Omni UI component set with the same reference layout used for Table. Each row keeps the component identity, JSX contract,
-              live preview, and runnable example code together.
+              Browse the Omni UI component set with the same reference layout used for Table. Each
+              row keeps the component identity, JSX contract, live preview, and runnable example
+              code together.
             </p>
           </header>
           {SECTIONS.map((section, sectionIndex) => (
             <React.Fragment key={section.title}>
-              <SectionHeading id={sectionId(section.title)} index={String(sectionIndex + 1)} title={section.title} />
+              <SectionHeading
+                id={sectionId(section.title)}
+                index={String(sectionIndex + 1)}
+                title={section.title}
+              />
               {section.rows.map((row, rowIndex) => {
                 const Preview = row.preview;
                 return (
-                  <Row key={row.name} id={rowId(row.name)} index={`${sectionIndex + 1}.${rowIndex + 1}`} name={row.name} code={codeFromVariants(row)}>
+                  <Row
+                    key={row.name}
+                    id={rowId(row.name)}
+                    index={`${sectionIndex + 1}.${rowIndex + 1}`}
+                    name={row.name}
+                    code={codeFromVariants(row)}
+                  >
                     <Preview />
                   </Row>
                 );

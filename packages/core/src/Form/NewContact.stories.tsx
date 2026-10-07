@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
+import {
+  type ContactScenarioFormData,
+  contactScenarioFormFactory,
+} from 'factories/omni-ui-components/Form/contactScenario.factories';
 import { defineFormStories, type FormStoryArgs } from 'storybook-helpers/defineFormStories';
-import { contactScenarioFormFactory, type ContactScenarioFormData } from 'factories/omni-ui-components/Form/contactScenario.factories';
 
 type Args = FormStoryArgs<ContactScenarioFormData>;
 

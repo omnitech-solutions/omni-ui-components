@@ -1,8 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
 
 import { Table } from '@oc-tech/omni-ui-components/Table';
-import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ShowcaseShell } from './ShowcaseShell';
 
 interface TeamMember {
@@ -16,15 +15,60 @@ interface TeamMember {
 }
 
 const roster: TeamMember[] = [
-  { id: 'u-1', name: 'Amelia Reyes', email: 'amelia@omni.example', role: 'Owner', billable: true, hourlyRate: 165, status: 'Active' },
-  { id: 'u-2', name: 'Bao Nguyen', email: 'bao@omni.example', role: 'Editor', billable: true, hourlyRate: 120, status: 'Active' },
-  { id: 'u-3', name: 'Corey Hicks', email: 'corey@omni.example', role: 'Editor', billable: false, hourlyRate: 0, status: 'Invited' },
-  { id: 'u-4', name: 'Devi Ramanathan', email: 'devi@omni.example', role: 'Viewer', billable: false, hourlyRate: 0, status: 'Deactivated' },
-  { id: 'u-5', name: 'Emil Larsson', email: 'emil@omni.example', role: 'Editor', billable: true, hourlyRate: 95, status: 'Active' },
+  {
+    id: 'u-1',
+    name: 'Amelia Reyes',
+    email: 'amelia@omni.example',
+    role: 'Owner',
+    billable: true,
+    hourlyRate: 165,
+    status: 'Active',
+  },
+  {
+    id: 'u-2',
+    name: 'Bao Nguyen',
+    email: 'bao@omni.example',
+    role: 'Editor',
+    billable: true,
+    hourlyRate: 120,
+    status: 'Active',
+  },
+  {
+    id: 'u-3',
+    name: 'Corey Hicks',
+    email: 'corey@omni.example',
+    role: 'Editor',
+    billable: false,
+    hourlyRate: 0,
+    status: 'Invited',
+  },
+  {
+    id: 'u-4',
+    name: 'Devi Ramanathan',
+    email: 'devi@omni.example',
+    role: 'Viewer',
+    billable: false,
+    hourlyRate: 0,
+    status: 'Deactivated',
+  },
+  {
+    id: 'u-5',
+    name: 'Emil Larsson',
+    email: 'emil@omni.example',
+    role: 'Editor',
+    billable: true,
+    hourlyRate: 95,
+    status: 'Active',
+  },
 ];
 
 const rosterColumns: TableColumn<TeamMember>[] = [
-  { key: 'name', dataIndex: 'name', title: 'Member', sorter: (a, b) => a.name.localeCompare(b.name) },
+  {
+    key: 'name',
+    dataIndex: 'name',
+    title: 'Member',
+    sorter: (a, b) => a.name.localeCompare(b.name),
+  },
   { key: 'email', dataIndex: 'email', title: 'Email' },
   {
     key: 'role',
@@ -37,7 +81,12 @@ const rosterColumns: TableColumn<TeamMember>[] = [
     ],
     onFilter: (value, record) => record.role === value,
   },
-  { key: 'billable', dataIndex: 'billable', title: 'Billable', render: (v: boolean) => (v ? 'Yes' : 'No') },
+  {
+    key: 'billable',
+    dataIndex: 'billable',
+    title: 'Billable',
+    render: (v: boolean) => (v ? 'Yes' : 'No'),
+  },
   {
     key: 'hourlyRate',
     dataIndex: 'hourlyRate',

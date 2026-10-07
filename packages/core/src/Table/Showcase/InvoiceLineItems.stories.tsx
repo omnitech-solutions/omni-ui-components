@@ -1,8 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Table } from '@oc-tech/omni-ui-components/Table';
-import { invoiceColumns, invoiceLines, type InvoiceLineRecord } from '../Table.story.fixtures';
+import type { Meta, StoryObj } from '@storybook/react';
+import type * as React from 'react';
+import { type InvoiceLineRecord, invoiceColumns, invoiceLines } from '../Table.story.fixtures';
 import { ShowcaseShell } from './ShowcaseShell';
 
 const meta: Meta = {
@@ -11,15 +10,20 @@ const meta: Meta = {
 };
 export default meta;
 
-const formatUsd = (value: number) => value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+const formatUsd = (value: number) =>
+  value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
 const renderSubtotal = (records: InvoiceLineRecord[]): React.ReactNode => {
   const total = records.reduce((sum, record) => sum + record.amount, 0);
   return (
     <tr>
       <td style={{ padding: '12px 16px', fontWeight: 600 }}>Subtotal</td>
-      <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 600 }}>{records.length}</td>
-      <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 600 }}>{formatUsd(total)}</td>
+      <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 600 }}>
+        {records.length}
+      </td>
+      <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 600 }}>
+        {formatUsd(total)}
+      </td>
     </tr>
   );
 };

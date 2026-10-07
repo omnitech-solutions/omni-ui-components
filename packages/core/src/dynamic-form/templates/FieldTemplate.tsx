@@ -1,4 +1,3 @@
-import * as React from 'react';
 import type { FieldTemplateProps } from '@rjsf/utils';
 import { getTemplate, getUiOptions } from '@rjsf/utils';
 
@@ -43,7 +42,8 @@ export const FieldTemplate = (props: FieldTemplateProps) => {
    * formContext.actions; renders as an anchor when href is set,
    * otherwise as a no-op span. The widget itself owns no business
    * navigation. */
-  const labelActionKey = typeof uiOptions.labelActionKey === 'string' ? uiOptions.labelActionKey : '';
+  const labelActionKey =
+    typeof uiOptions.labelActionKey === 'string' ? uiOptions.labelActionKey : '';
   const formContext = (registry?.formContext ?? {}) as Partial<OmniRjsfFormContext>;
   const labelAction = labelActionKey ? formContext.actions?.[labelActionKey] : undefined;
 
@@ -89,11 +89,18 @@ export const FieldTemplate = (props: FieldTemplateProps) => {
             </label>
             {labelAction ? (
               labelAction.href ? (
-                <a href={labelAction.href} data-testid={`${id}-label-action`} className="text-xs font-medium text-primary hover:underline">
+                <a
+                  href={labelAction.href}
+                  data-testid={`${id}-label-action`}
+                  className="text-xs font-medium text-primary hover:underline"
+                >
                   {labelAction.label}
                 </a>
               ) : (
-                <span data-testid={`${id}-label-action`} className="text-xs font-medium text-primary">
+                <span
+                  data-testid={`${id}-label-action`}
+                  className="text-xs font-medium text-primary"
+                >
                   {labelAction.label}
                 </span>
               )
@@ -102,7 +109,14 @@ export const FieldTemplate = (props: FieldTemplateProps) => {
         )}
         {children}
         {displayLabel && rawDescription && !isCheckbox && (
-          <span className={cn('text-xs font-medium text-muted-foreground', rawErrors.length > 0 && 'text-destructive')}>{description}</span>
+          <span
+            className={cn(
+              'text-xs font-medium text-muted-foreground',
+              rawErrors.length > 0 && 'text-destructive',
+            )}
+          >
+            {description}
+          </span>
         )}
         {errors}
         {help}

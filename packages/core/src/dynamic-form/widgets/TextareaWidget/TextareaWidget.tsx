@@ -1,12 +1,21 @@
-import * as React from 'react';
-import type { WidgetProps } from '@rjsf/utils';
-
 import { TextareaPrimitive } from '@oc-tech/omni-ui-components';
+import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Textarea widget. */
 export const TextareaWidget = (props: WidgetProps) => {
-  const { id, value, required, disabled, readonly, placeholder, rawErrors, options, schema, autofocus } = props;
+  const {
+    id,
+    value,
+    required,
+    disabled,
+    readonly,
+    placeholder,
+    rawErrors,
+    options,
+    schema,
+    autofocus,
+  } = props;
   const { onChange, onBlur, onFocus } = useStableRjsfCallbacks<string>(props);
   const rows = typeof options?.rows === 'number' ? options.rows : 5;
 

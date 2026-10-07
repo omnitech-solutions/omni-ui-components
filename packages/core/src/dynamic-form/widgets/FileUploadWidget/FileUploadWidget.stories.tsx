@@ -1,7 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
-import { imageFileFixture, multipleFileFixture, plainFileFixture } from 'factories/dynamic-form/widgets/FileUploadWidget/FileUploadWidget.factories';
+import {
+  imageFileFixture,
+  multipleFileFixture,
+  plainFileFixture,
+} from 'factories/dynamic-form/widgets/FileUploadWidget/FileUploadWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<Record<string, unknown>>;
 
@@ -12,7 +18,11 @@ const config = defineDynamicFormStories<Record<string, unknown>>({
     image: imageFileFixture as never,
     multiple: multipleFileFixture as never,
   },
-  titles: { plain: 'FileUploadWidget', image: 'FileUploadWidget · image (5MB)', multiple: 'FileUploadWidget · multiple' },
+  titles: {
+    plain: 'FileUploadWidget',
+    image: 'FileUploadWidget · image (5MB)',
+    multiple: 'FileUploadWidget · multiple',
+  },
   defaultArgs: { fixture: 'plain' },
   docs: {
     name: 'FileUploadWidget',
@@ -22,7 +32,11 @@ const config = defineDynamicFormStories<Record<string, unknown>>({
       'For Active Storage flows, override `onChange` at the DynamicForm level to handle DirectUpload.',
     ].join(' '),
   },
-  stories: { Plain: { fixture: 'plain' }, ImageOnly: { fixture: 'image' }, Multiple: { fixture: 'multiple' } },
+  stories: {
+    Plain: { fixture: 'plain' },
+    ImageOnly: { fixture: 'image' },
+    Multiple: { fixture: 'multiple' },
+  },
 });
 
 const meta: Meta<Args> = {

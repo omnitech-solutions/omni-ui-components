@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import type { RJSFSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import type { DynamicFormFixture } from '../DynamicForm/DynamicForm.factories';
 
@@ -25,16 +25,25 @@ const COLLAPSIBLE_SCHEMA: RJSFSchema = {
     additionalFields: {
       type: 'object',
       title: 'Additional Fields',
-      properties: { project: { type: 'string', title: 'Project' }, note: { type: 'string', title: 'Note' } },
+      properties: {
+        project: { type: 'string', title: 'Project' },
+        note: { type: 'string', title: 'Note' },
+      },
     },
   },
 };
 const COLLAPSIBLE_ZOD = z.object({
   name: z.string().optional().default(''),
-  additionalFields: z.object({ project: z.string().optional().default(''), note: z.string().optional().default('') }),
+  additionalFields: z.object({
+    project: z.string().optional().default(''),
+    note: z.string().optional().default(''),
+  }),
 }) as unknown as z.ZodType<CollapsibleFormData>;
 
-export const collapsibleClosedFixture = (): DynamicFormFixture<CollapsibleFormData, Record<string, string>> => ({
+export const collapsibleClosedFixture = (): DynamicFormFixture<
+  CollapsibleFormData,
+  Record<string, string>
+> => ({
   schema: COLLAPSIBLE_SCHEMA,
   uiSchema: {
     additionalFields: {
@@ -48,7 +57,10 @@ export const collapsibleClosedFixture = (): DynamicFormFixture<CollapsibleFormDa
   formContext: { optionSets: {}, actions: {}, locale: 'en-GB' },
 });
 
-export const collapsibleOpenFixture = (): DynamicFormFixture<CollapsibleFormData, Record<string, string>> => ({
+export const collapsibleOpenFixture = (): DynamicFormFixture<
+  CollapsibleFormData,
+  Record<string, string>
+> => ({
   ...collapsibleClosedFixture(),
   uiSchema: {
     additionalFields: {
@@ -65,10 +77,18 @@ export const collapsibleOpenFixture = (): DynamicFormFixture<CollapsibleFormData
 export interface LabelActionFormData {
   taskId: string;
 }
-const LABEL_ACTION_SCHEMA: RJSFSchema = { type: 'object', properties: { taskId: { type: 'string', title: 'Task' } } };
-const LABEL_ACTION_ZOD = z.object({ taskId: z.string().optional().default('') }) as unknown as z.ZodType<LabelActionFormData>;
+const LABEL_ACTION_SCHEMA: RJSFSchema = {
+  type: 'object',
+  properties: { taskId: { type: 'string', title: 'Task' } },
+};
+const LABEL_ACTION_ZOD = z.object({
+  taskId: z.string().optional().default(''),
+}) as unknown as z.ZodType<LabelActionFormData>;
 
-export const labelActionLinkFixture = (): DynamicFormFixture<LabelActionFormData, Record<string, string>> => ({
+export const labelActionLinkFixture = (): DynamicFormFixture<
+  LabelActionFormData,
+  Record<string, string>
+> => ({
   schema: LABEL_ACTION_SCHEMA,
   uiSchema: { taskId: { 'ui:widget': 'text', 'ui:options': { labelActionKey: 'viewTask' } } },
   zodSchema: LABEL_ACTION_ZOD,
@@ -81,7 +101,10 @@ export const labelActionLinkFixture = (): DynamicFormFixture<LabelActionFormData
   },
 });
 
-export const labelActionSpanFixture = (): DynamicFormFixture<LabelActionFormData, Record<string, string>> => ({
+export const labelActionSpanFixture = (): DynamicFormFixture<
+  LabelActionFormData,
+  Record<string, string>
+> => ({
   ...labelActionLinkFixture(),
   formContext: {
     optionSets: {},
@@ -99,9 +122,14 @@ export interface StaticPanelFormData {
 }
 const STATIC_PANEL_SCHEMA: RJSFSchema = {
   type: 'object',
-  properties: { header: { type: 'string', title: '', readOnly: true }, notes: { type: 'string', title: 'Notes' } },
+  properties: {
+    header: { type: 'string', title: '', readOnly: true },
+    notes: { type: 'string', title: 'Notes' },
+  },
 };
-const STATIC_PANEL_ZOD = z.object({ notes: z.string().optional().default('') }) as unknown as z.ZodType<StaticPanelFormData>;
+const STATIC_PANEL_ZOD = z.object({
+  notes: z.string().optional().default(''),
+}) as unknown as z.ZodType<StaticPanelFormData>;
 
 interface StaticPanelDerived {
   durationLabel: string;
@@ -110,15 +138,25 @@ interface StaticPanelDerived {
   [key: string]: string;
 }
 
-export const staticPanelFixture = (): DynamicFormFixture<StaticPanelFormData, StaticPanelDerived> => ({
+export const staticPanelFixture = (): DynamicFormFixture<
+  StaticPanelFormData,
+  StaticPanelDerived
+> => ({
   schema: STATIC_PANEL_SCHEMA,
   uiSchema: {
     'ui:rows': [[{ value: 'header', span: 2 }], [{ value: 'notes', span: 2 }]],
-    header: { 'ui:field': 'staticPanel', 'ui:options': { panelKey: 'durationLabel', lines: ['dateLabel', 'statusLabel'] } },
+    header: {
+      'ui:field': 'staticPanel',
+      'ui:options': { panelKey: 'durationLabel', lines: ['dateLabel', 'statusLabel'] },
+    },
     notes: { 'ui:widget': 'textarea', 'ui:placeholder': 'What are you working on?' },
   },
   zodSchema: STATIC_PANEL_ZOD,
   defaults: { notes: '' },
-  derive: () => ({ durationLabel: '12h 21m 32s', dateLabel: 'Thu, Jun 11, 2026', statusLabel: 'Unbilled' }),
+  derive: () => ({
+    durationLabel: '12h 21m 32s',
+    dateLabel: 'Thu, Jun 11, 2026',
+    statusLabel: 'Unbilled',
+  }),
   formContext: { optionSets: {}, actions: {}, locale: 'en-GB' },
 });

@@ -1,8 +1,9 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
 import { Table } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 import { ComponentWrapper } from './storySupport';
-import { defaultColumns, projects, treeProjects, type ProjectRecord } from './Table.story.fixtures';
+import { defaultColumns, type ProjectRecord, projects, treeProjects } from './Table.story.fixtures';
+
 const meta: Meta = {
   title: 'omni-ui-components/Table/Selection',
   tags: ['autodocs'],
@@ -60,7 +61,13 @@ export const BulkActions: Story = {
       title="Bulk actions"
       description="`rowSelection.selections={true}` reveals the header dropdown with the AntD-parity bulk-selection presets (`SELECTION_ALL`, `SELECTION_INVERT`, `SELECTION_NONE`)."
     >
-      <Table<ProjectRecord> columns={defaultColumns} dataSource={projects} rowKey="id" rowSelection={{ selections: true }} testIdPrefix="selection-bulk" />
+      <Table<ProjectRecord>
+        columns={defaultColumns}
+        dataSource={projects}
+        rowKey="id"
+        rowSelection={{ selections: true }}
+        testIdPrefix="selection-bulk"
+      />
     </ComponentWrapper>
   ),
 };
@@ -75,7 +82,10 @@ export const DisabledRows: Story = {
         columns={defaultColumns}
         dataSource={projects}
         rowKey="id"
-        rowSelection={{ selections: true, getCheckboxProps: (record) => ({ disabled: record.disabled }) }}
+        rowSelection={{
+          selections: true,
+          getCheckboxProps: (record) => ({ disabled: record.disabled }),
+        }}
         testIdPrefix="selection-disabled"
       />
     </ComponentWrapper>
@@ -123,7 +133,9 @@ export const CustomRenderCell: Story = {
           renderCell: (checked, record, _index, originNode) => (
             <label className="inline-flex items-center gap-2">
               {originNode}
-              <span className="text-xs">{checked ? `Selected ${record.name}` : `Choose ${record.name}`}</span>
+              <span className="text-xs">
+                {checked ? `Selected ${record.name}` : `Choose ${record.name}`}
+              </span>
             </label>
           ),
         }}

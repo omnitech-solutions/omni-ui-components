@@ -1,7 +1,11 @@
-import * as React from 'react';
-import { InputOTP as ShadcnInputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from 'components/ui/input-otp';
-
+import {
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+  InputOTP as ShadcnInputOTP,
+} from 'components/ui/input-otp';
 import { cn } from 'lib/utils';
+import * as React from 'react';
 
 export interface InputOTPPrimitiveProps {
   id?: string;
@@ -24,7 +28,23 @@ const SLOT_CLS =
 
 /** Raw OTP grid with no chrome (no label/description/error). */
 export const InputOTPPrimitive = React.forwardRef<HTMLInputElement, InputOTPPrimitiveProps>(
-  ({ id, name, value, defaultValue, onChange, length = 6, separatorIndex, disabled, required, invalid, className, ...rest }, ref) => {
+  (
+    {
+      id,
+      name,
+      value,
+      defaultValue,
+      onChange,
+      length = 6,
+      separatorIndex,
+      disabled,
+      required,
+      invalid,
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
     const sepAt = separatorIndex ?? Math.floor(length / 2) - 1;
     const testId = rest['data-testid'] ?? id;
     return (

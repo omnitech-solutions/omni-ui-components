@@ -1,12 +1,12 @@
-import * as React from 'react';
-
 import type { WizardProps, WizardStep } from '@oc-tech/omni-ui-components/Wizard';
 
 export const SAMPLE_STEPS: WizardStep[] = [
   {
     name: 'basic',
     label: 'Basic info',
-    content: <p className="text-sm text-muted-foreground">Step 1 — basic info form would render here.</p>,
+    content: (
+      <p className="text-sm text-muted-foreground">Step 1 — basic info form would render here.</p>
+    ),
   },
   {
     name: 'payment',

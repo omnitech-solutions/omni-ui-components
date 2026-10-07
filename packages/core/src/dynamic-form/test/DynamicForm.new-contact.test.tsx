@@ -1,16 +1,25 @@
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { DynamicForm } from 'dynamic-form';
 import { buildFormContext } from 'dynamic-form/lib/formContext';
-import { contactScenarioFixture, NEW_COMPANY_OPTION, type ContactScenarioFormData } from 'factories/dynamic-form/DynamicForm/contactScenario.factories';
+import {
+  type ContactScenarioFormData,
+  contactScenarioFixture,
+  NEW_COMPANY_OPTION,
+} from 'factories/dynamic-form/DynamicForm/contactScenario.factories';
+import * as React from 'react';
 
 beforeAll(() => {
   Element.prototype.scrollIntoView = jest.fn();
 });
 
-function Harness({ onSubmit, onError }: { onSubmit: (data: ContactScenarioFormData) => void; onError?: (errs: unknown) => void }) {
+function Harness({
+  onSubmit,
+  onError,
+}: {
+  onSubmit: (data: ContactScenarioFormData) => void;
+  onError?: (errs: unknown) => void;
+}) {
   const fixture = contactScenarioFixture();
   const [formData, setFormData] = React.useState<ContactScenarioFormData>(fixture.defaults);
   return (
@@ -46,7 +55,9 @@ describe('NewContact scenario', () => {
     const user = userEvent.setup();
     render(<Harness onSubmit={jest.fn()} />);
     await user.click(screen.getByRole('button', { name: /^Company$/ }));
-    expect(screen.getByTestId(`root_connectionId-option-${NEW_COMPANY_OPTION}`)).toHaveTextContent('+ New Company');
+    expect(screen.getByTestId(`root_connectionId-option-${NEW_COMPANY_OPTION}`)).toHaveTextContent(
+      '+ New Company',
+    );
   });
 
   it('submits the canonical API payload when an existing company is picked', async () => {

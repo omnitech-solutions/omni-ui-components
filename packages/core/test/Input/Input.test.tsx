@@ -1,11 +1,17 @@
 import '@testing-library/jest-dom';
+
+import {
+  Input,
+  type InputProps,
+  type InputSize,
+  type InputVariant,
+} from '@oc-tech/omni-ui-components/Input';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-import { Input, type InputProps, type InputSize, type InputVariant } from '@oc-tech/omni-ui-components/Input';
 import { runFieldChromeContract } from '../__support__/runFieldChromeContract';
 
-const renderInput = (overrides: Partial<InputProps> = {}) => render(<Input data-testid="i" {...overrides} />);
+const renderInput = (overrides: Partial<InputProps> = {}) =>
+  render(<Input data-testid="i" {...overrides} />);
 
 runFieldChromeContract<InputProps>({
   name: 'Input',

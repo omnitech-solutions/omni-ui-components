@@ -1,10 +1,9 @@
-import * as React from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import * as React from 'react';
 import { Button } from '../Button';
-import { WizardSteps } from './WizardSteps';
 import type { WizardProps, WizardStep } from './Wizard.types';
+import { WizardSteps } from './WizardSteps';
 
 /**
  * Omni Wizard — orchestrates a multi-step flow.
@@ -29,7 +28,19 @@ import type { WizardProps, WizardStep } from './Wizard.types';
  */
 const WizardInner = React.forwardRef<HTMLDivElement, WizardProps>(
   (
-    { steps, currentStep, defaultStep, onStepChange, onComplete, labels, hideActions, className, contentClassName, actionsClassName, 'data-testid': testId },
+    {
+      steps,
+      currentStep,
+      defaultStep,
+      onStepChange,
+      onComplete,
+      labels,
+      hideActions,
+      className,
+      contentClassName,
+      actionsClassName,
+      'data-testid': testId,
+    },
     ref,
   ) => {
     const firstStep: WizardStep | undefined = steps[0];
@@ -69,14 +80,33 @@ const WizardInner = React.forwardRef<HTMLDivElement, WizardProps>(
     };
 
     return (
-      <div ref={ref} data-slot="wizard" data-testid={testId} className={cn('flex w-full flex-col gap-6', className)}>
-        <WizardSteps steps={steps} value={active} onChange={setStep} data-testid={testId ? `${testId}-steps` : undefined} />
+      <div
+        ref={ref}
+        data-slot="wizard"
+        data-testid={testId}
+        className={cn('flex w-full flex-col gap-6', className)}
+      >
+        <WizardSteps
+          steps={steps}
+          value={active}
+          onChange={setStep}
+          data-testid={testId ? `${testId}-steps` : undefined}
+        />
         <div data-slot="wizard-content" className={cn('flex flex-col gap-4', contentClassName)}>
           {activeStep?.content}
         </div>
         {hideActions ? null : (
-          <div data-slot="wizard-actions" className={cn('flex items-center justify-between gap-2', actionsClassName)}>
-            <Button variant="ghost" onClick={handleBack} disabled={isFirst} icon={<ChevronLeft />} data-testid={testId ? `${testId}-back` : undefined}>
+          <div
+            data-slot="wizard-actions"
+            className={cn('flex items-center justify-between gap-2', actionsClassName)}
+          >
+            <Button
+              variant="ghost"
+              onClick={handleBack}
+              disabled={isFirst}
+              icon={<ChevronLeft />}
+              data-testid={testId ? `${testId}-back` : undefined}
+            >
               {labels?.back ?? 'Back'}
             </Button>
             <Button

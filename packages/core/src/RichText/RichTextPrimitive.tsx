@@ -1,33 +1,32 @@
-import * as React from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Placeholder from '@tiptap/extension-placeholder';
-import Underline from '@tiptap/extension-underline';
-import Link from '@tiptap/extension-link';
-import { TextAlign } from '@tiptap/extension-text-align';
 import Highlight from '@tiptap/extension-highlight';
+import Link from '@tiptap/extension-link';
+import Placeholder from '@tiptap/extension-placeholder';
+import { TextAlign } from '@tiptap/extension-text-align';
+import Underline from '@tiptap/extension-underline';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { cn } from 'lib/utils';
 import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
   Bold,
-  Italic,
-  List,
-  ListOrdered,
-  Strikethrough,
-  Underline as UnderlineIcon,
+  Code,
   Heading1,
   Heading2,
   Heading3,
-  Quote,
-  Code,
-  Link as LinkIcon,
   Highlighter,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  Undo2,
+  Italic,
+  Link as LinkIcon,
+  List,
+  ListOrdered,
+  Quote,
   Redo2,
+  Strikethrough,
+  Underline as UnderlineIcon,
+  Undo2,
 } from 'lucide-react';
-
-import { cn } from 'lib/utils';
+import * as React from 'react';
 import { inputVariants } from '../Input/Input.variants';
 
 export interface RichTextPrimitiveProps {
@@ -72,11 +71,27 @@ const ToolbarButton: React.FC<{
   </button>
 );
 
-const Divider: React.FC = () => <span className="mx-1 h-5 w-px bg-[var(--oui-border-field)]" aria-hidden="true" />;
+const Divider: React.FC = () => (
+  <span className="mx-1 h-5 w-px bg-[var(--oui-border-field)]" aria-hidden="true" />
+);
 
 /** Raw TipTap editor + toolbar (no chrome). */
 export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimitiveProps>(
-  ({ id, value = '', onChange, placeholder, disabled, required, invalid, readOnly, className, ...rest }, ref) => {
+  (
+    {
+      id,
+      value = '',
+      onChange,
+      placeholder,
+      disabled,
+      required,
+      invalid,
+      readOnly,
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
     const testId = rest['data-testid'] ?? id;
 
     const editor = useEditor({
@@ -88,7 +103,11 @@ export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimit
           openOnClick: false,
           autolink: false,
           linkOnPaste: true,
-          HTMLAttributes: { class: 'text-blue-400 underline underline-offset-2', rel: 'noopener noreferrer nofollow', target: '_blank' },
+          HTMLAttributes: {
+            class: 'text-blue-400 underline underline-offset-2',
+            rel: 'noopener noreferrer nofollow',
+            target: '_blank',
+          },
         }),
         TextAlign.configure({ types: ['heading', 'paragraph'] }),
         Placeholder.configure({ placeholder: placeholder ?? 'Start writing…' }),
@@ -100,7 +119,8 @@ export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimit
 
     React.useEffect(() => {
       if (!editor) return;
-      if (editor.getHTML() !== value) editor.commands.setContent(value || '', { emitUpdate: false });
+      if (editor.getHTML() !== value)
+        editor.commands.setContent(value || '', { emitUpdate: false });
     }, [editor, value]);
 
     React.useEffect(() => {
@@ -125,7 +145,11 @@ export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimit
         ref={ref}
         data-slot="rich-text"
         data-testid={testId}
-        className={cn(inputVariants({ variant: 'bordered', inputSize: 'default' }), 'h-auto flex-col p-0 gap-0', className)}
+        className={cn(
+          inputVariants({ variant: 'bordered', inputSize: 'default' }),
+          'h-auto flex-col p-0 gap-0',
+          className,
+        )}
       >
         <div className="flex flex-wrap items-center gap-0.5 border-b border-[var(--oui-border-field)] px-2 py-1.5">
           <ToolbarButton
@@ -153,19 +177,44 @@ export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimit
             <Heading3 className="size-4" />
           </ToolbarButton>
           <Divider />
-          <ToolbarButton label="Bold" active={editor?.isActive('bold')} onClick={() => editor?.chain().focus().toggleBold().run()} disabled={rt}>
+          <ToolbarButton
+            label="Bold"
+            active={editor?.isActive('bold')}
+            onClick={() => editor?.chain().focus().toggleBold().run()}
+            disabled={rt}
+          >
             <Bold className="size-4" />
           </ToolbarButton>
-          <ToolbarButton label="Italic" active={editor?.isActive('italic')} onClick={() => editor?.chain().focus().toggleItalic().run()} disabled={rt}>
+          <ToolbarButton
+            label="Italic"
+            active={editor?.isActive('italic')}
+            onClick={() => editor?.chain().focus().toggleItalic().run()}
+            disabled={rt}
+          >
             <Italic className="size-4" />
           </ToolbarButton>
-          <ToolbarButton label="Underline" active={editor?.isActive('underline')} onClick={() => editor?.chain().focus().toggleUnderline().run()} disabled={rt}>
+          <ToolbarButton
+            label="Underline"
+            active={editor?.isActive('underline')}
+            onClick={() => editor?.chain().focus().toggleUnderline().run()}
+            disabled={rt}
+          >
             <UnderlineIcon className="size-4" />
           </ToolbarButton>
-          <ToolbarButton label="Strikethrough" active={editor?.isActive('strike')} onClick={() => editor?.chain().focus().toggleStrike().run()} disabled={rt}>
+          <ToolbarButton
+            label="Strikethrough"
+            active={editor?.isActive('strike')}
+            onClick={() => editor?.chain().focus().toggleStrike().run()}
+            disabled={rt}
+          >
             <Strikethrough className="size-4" />
           </ToolbarButton>
-          <ToolbarButton label="Highlight" active={editor?.isActive('highlight')} onClick={() => editor?.chain().focus().toggleHighlight().run()} disabled={rt}>
+          <ToolbarButton
+            label="Highlight"
+            active={editor?.isActive('highlight')}
+            onClick={() => editor?.chain().focus().toggleHighlight().run()}
+            disabled={rt}
+          >
             <Highlighter className="size-4" />
           </ToolbarButton>
           <Divider />
@@ -227,14 +276,27 @@ export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimit
             <AlignRight className="size-4" />
           </ToolbarButton>
           <Divider />
-          <ToolbarButton label="Link" active={editor?.isActive('link')} onClick={promptLink} disabled={rt}>
+          <ToolbarButton
+            label="Link"
+            active={editor?.isActive('link')}
+            onClick={promptLink}
+            disabled={rt}
+          >
             <LinkIcon className="size-4" />
           </ToolbarButton>
           <div className="ml-auto flex items-center gap-0.5">
-            <ToolbarButton label="Undo" onClick={() => editor?.chain().focus().undo().run()} disabled={rt || !editor?.can().undo()}>
+            <ToolbarButton
+              label="Undo"
+              onClick={() => editor?.chain().focus().undo().run()}
+              disabled={rt || !editor?.can().undo()}
+            >
               <Undo2 className="size-4" />
             </ToolbarButton>
-            <ToolbarButton label="Redo" onClick={() => editor?.chain().focus().redo().run()} disabled={rt || !editor?.can().redo()}>
+            <ToolbarButton
+              label="Redo"
+              onClick={() => editor?.chain().focus().redo().run()}
+              disabled={rt || !editor?.can().redo()}
+            >
               <Redo2 className="size-4" />
             </ToolbarButton>
           </div>

@@ -1,12 +1,15 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
 import { Button } from '../Button';
+import { useControllableState } from '../lib/use-controllable-state';
 import { Popconfirm } from '../Popconfirm';
 import { SegmentedPrimitive } from '../Segmented';
-import { useControllableState } from '../lib/use-controllable-state';
 import { SettingRow } from '../SettingsDialog/SettingRow';
-import type { ActivityLogItem, DataPrivacyPanelLabels, DataPrivacyPanelProps, RetentionOption } from './DataPrivacyPanel.types';
+import type {
+  ActivityLogItem,
+  DataPrivacyPanelLabels,
+  DataPrivacyPanelProps,
+  RetentionOption,
+} from './DataPrivacyPanel.types';
 
 export const DEFAULT_DATA_PRIVACY_LABELS: DataPrivacyPanelLabels = {
   retentionTitle: 'Keep conversations',
@@ -68,8 +71,16 @@ export const DataPrivacyPanel = ({
   className,
 }: DataPrivacyPanelProps) => {
   const labels = { ...DEFAULT_DATA_PRIVACY_LABELS, ...labelOverrides };
-  const [retention, setRetention] = useControllableState<string>(retentionProp, defaultRetention, onRetentionChange);
-  const [activityOpen, setActivityOpen] = useControllableState<boolean>(activityOpenProp, defaultActivityOpen, onShowActivityChange);
+  const [retention, setRetention] = useControllableState<string>(
+    retentionProp,
+    defaultRetention,
+    onRetentionChange,
+  );
+  const [activityOpen, setActivityOpen] = useControllableState<boolean>(
+    activityOpenProp,
+    defaultActivityOpen,
+    onShowActivityChange,
+  );
   return (
     <div data-slot="data-privacy" className={cn('flex flex-col gap-4', className)}>
       {onRetentionChange ? (
@@ -100,7 +111,9 @@ export const DataPrivacyPanel = ({
           </SettingRow>
           {activityOpen ? (
             activityLoading ? (
-              <div className="text-[13px] text-[color:var(--oui-panel-meta-fg)]">{labels.activityLoading}</div>
+              <div className="text-[13px] text-[color:var(--oui-panel-meta-fg)]">
+                {labels.activityLoading}
+              </div>
             ) : (
               <ul
                 aria-label={labels.activityList}
@@ -113,12 +126,23 @@ export const DataPrivacyPanel = ({
                   >
                     <span className="min-w-0 flex-1">
                       {item.summary}
-                      {item.context ? <span className="text-[color:var(--oui-panel-meta-fg)]"> · {item.context}</span> : null}
+                      {item.context ? (
+                        <span className="text-[color:var(--oui-panel-meta-fg)]">
+                          {' '}
+                          · {item.context}
+                        </span>
+                      ) : null}
                     </span>
-                    <span className="whitespace-nowrap text-[12px] text-[color:var(--oui-panel-meta-fg)]">{formatDate(item.at)}</span>
+                    <span className="whitespace-nowrap text-[12px] text-[color:var(--oui-panel-meta-fg)]">
+                      {formatDate(item.at)}
+                    </span>
                   </li>
                 ))}
-                {(activity ?? []).length === 0 ? <li className="px-3 py-3 text-[13px] text-[color:var(--oui-panel-meta-fg)]">{labels.activityEmpty}</li> : null}
+                {(activity ?? []).length === 0 ? (
+                  <li className="px-3 py-3 text-[13px] text-[color:var(--oui-panel-meta-fg)]">
+                    {labels.activityEmpty}
+                  </li>
+                ) : null}
               </ul>
             )
           ) : null}
@@ -137,7 +161,11 @@ export const DataPrivacyPanel = ({
 
       {onDeleteAll ? (
         <div data-slot="data-privacy-delete">
-          <SettingRow tone="danger" title={labels.deleteTitle} description={labels.deleteDescription}>
+          <SettingRow
+            tone="danger"
+            title={labels.deleteTitle}
+            description={labels.deleteDescription}
+          >
             <Popconfirm
               title={labels.deleteConfirmTitle}
               description={labels.deleteConfirmDescription}

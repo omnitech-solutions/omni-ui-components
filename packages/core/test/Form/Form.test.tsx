@@ -1,11 +1,15 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { Form, FormActions, FormField, FormRow } from '@oc-tech/omni-ui-components';
 import type { FormFixture } from '@oc-tech/omni-ui-components/Form/Form.types';
-import { addressFormFactory, contactFormFactory, type AddressFormData } from 'factories/omni-ui-components/Form/Form.factories';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  type AddressFormData,
+  addressFormFactory,
+  contactFormFactory,
+} from 'factories/omni-ui-components/Form/Form.factories';
+import type * as React from 'react';
 import { FormDemo } from 'storybook-helpers/FormDemo';
 import { FormStoryShell } from 'storybook-helpers/FormStoryShell';
 
@@ -20,11 +24,23 @@ const setupContact = (overrides: Partial<React.ComponentProps<typeof Form>> = {}
   const fixture = contactFormFactory();
   const user = userEvent.setup();
   render(
-    <Form zodSchema={fixture.schema as any} formData={fixture.initial} onSubmit={onSubmit} onError={onError} onChange={onChange} {...overrides}>
+    <Form
+      zodSchema={fixture.schema as any}
+      formData={fixture.initial}
+      onSubmit={onSubmit}
+      onError={onError}
+      onChange={onChange}
+      {...overrides}
+    >
       <FormField name="name">
         {({ id, value, onChange: oc, error }) => (
           <>
-            <input data-testid="name" id={id} value={(value as string) ?? ''} onChange={(e) => oc(e.target.value)} />
+            <input
+              data-testid="name"
+              id={id}
+              value={(value as string) ?? ''}
+              onChange={(e) => oc(e.target.value)}
+            />
             {error ? <span data-testid="name-error">{error}</span> : null}
           </>
         )}
@@ -32,7 +48,12 @@ const setupContact = (overrides: Partial<React.ComponentProps<typeof Form>> = {}
       <FormField name="email">
         {({ id, value, onChange: oc, error }) => (
           <>
-            <input data-testid="email" id={id} value={(value as string) ?? ''} onChange={(e) => oc(e.target.value)} />
+            <input
+              data-testid="email"
+              id={id}
+              value={(value as string) ?? ''}
+              onChange={(e) => oc(e.target.value)}
+            />
             {error ? <span data-testid="email-error">{error}</span> : null}
           </>
         )}
@@ -60,7 +81,10 @@ describe('Form — submit contract', () => {
     expect(onSubmit).not.toHaveBeenCalled();
     expect(onError).toHaveBeenCalledTimes(1);
     expect(onError.mock.calls[0][0]).toEqual(
-      expect.arrayContaining([expect.objectContaining({ path: ['name'], source: 'zod' }), expect.objectContaining({ path: ['email'], source: 'zod' })]),
+      expect.arrayContaining([
+        expect.objectContaining({ path: ['name'], source: 'zod' }),
+        expect.objectContaining({ path: ['email'], source: 'zod' }),
+      ]),
     );
     expect(screen.getByTestId('name-error')).toHaveTextContent('Name is required');
   });
@@ -101,7 +125,9 @@ describe('Form — submit contract', () => {
     await user.type(screen.getByTestId('name'), 'Ada');
     await user.type(screen.getByTestId('email'), 'ada@example.com');
     await user.click(screen.getByText('Save'));
-    await waitFor(() => expect(onError).toHaveBeenCalledWith([{ path: [], message: 'boom', source: 'api' }]));
+    await waitFor(() =>
+      expect(onError).toHaveBeenCalledWith([{ path: [], message: 'boom', source: 'api' }]),
+    );
   });
 
   it('does NOT submit while disabled', async () => {
@@ -132,7 +158,13 @@ describe('FormField', () => {
     const fixture = contactFormFactory();
     const seen: { disabled: boolean; readOnly: boolean }[] = [];
     render(
-      <Form zodSchema={fixture.schema as any} formData={fixture.initial} onSubmit={() => undefined} disabled readOnly>
+      <Form
+        zodSchema={fixture.schema as any}
+        formData={fixture.initial}
+        onSubmit={() => undefined}
+        disabled
+        readOnly
+      >
         <FormField name="name">
           {({ disabled, readOnly }) => {
             seen.push({ disabled, readOnly });
@@ -162,7 +194,9 @@ describe('FormField', () => {
 
   it('throws when used outside <Form>', () => {
     const err = jest.spyOn(console, 'error').mockImplementation(() => undefined);
-    expect(() => render(<FormField name="x">{() => <input />}</FormField>)).toThrow(/FormField must be rendered inside <Form>/);
+    expect(() => render(<FormField name="x">{() => <input />}</FormField>)).toThrow(
+      /FormField must be rendered inside <Form>/,
+    );
     err.mockRestore();
   });
 });
@@ -270,8 +304,8 @@ describe('FormDemo — end-to-end', () => {
 
   it('renders all 7 fields with correct labels in 4 rows', () => {
     setupAddressDemo();
-    ['Label', 'Address 1', 'Address 2', 'City', 'Postal Code', 'Country', 'Region / State'].forEach((label) =>
-      expect(screen.getByLabelText(new RegExp(label))).toBeInTheDocument(),
+    ['Label', 'Address 1', 'Address 2', 'City', 'Postal Code', 'Country', 'Region / State'].forEach(
+      (label) => expect(screen.getByLabelText(new RegExp(label))).toBeInTheDocument(),
     );
   });
 
@@ -298,7 +332,15 @@ describe('FormDemo — end-to-end', () => {
     await user.type(screen.getByLabelText(/^Country/), 'US');
     await user.click(screen.getByRole('button', { name: /Save Address/i }));
     await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
-    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ label: 'HQ', address1: '123 Main St', city: 'SF', postal_code: '94105', country: 'US' }));
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        label: 'HQ',
+        address1: '123 Main St',
+        city: 'SF',
+        postal_code: '94105',
+        country: 'US',
+      }),
+    );
   });
 
   it('emits FormError[] with one entry per failed required field on empty submit', async () => {
@@ -308,7 +350,9 @@ describe('FormDemo — end-to-end', () => {
     await waitFor(() => expect(onError).toHaveBeenCalled());
     const errors = onError.mock.calls[0][0];
     const paths = errors.map((e: any) => e.path.join('.'));
-    expect(paths).toEqual(expect.arrayContaining(['label', 'address1', 'city', 'postal_code', 'country']));
+    expect(paths).toEqual(
+      expect.arrayContaining(['label', 'address1', 'city', 'postal_code', 'country']),
+    );
   });
 
   it('passes a custom submit label via fixture override', () => {

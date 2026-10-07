@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import * as React from 'react';
 import { RowDragHandleContext, type SortableHandleBinding } from '../dragHandle';
 
 // Sortable `<tr>`. Publishes the drag binding via RowDragHandleContext
@@ -11,8 +11,22 @@ export interface SortableBodyRowProps extends React.HTMLAttributes<HTMLTableRowE
   children?: React.ReactNode;
 }
 
-export const SortableBodyRow: React.FC<SortableBodyRowProps> = ({ rowKey, onKeyboardMove, children, style, ...rowProps }) => {
-  const { attributes, listeners, setActivatorNodeRef, transform, transition, setNodeRef, isDragging } = useSortable({ id: `row:${rowKey}` });
+export const SortableBodyRow: React.FC<SortableBodyRowProps> = ({
+  rowKey,
+  onKeyboardMove,
+  children,
+  style,
+  ...rowProps
+}) => {
+  const {
+    attributes,
+    listeners,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    setNodeRef,
+    isDragging,
+  } = useSortable({ id: `row:${rowKey}` });
 
   const mergedStyle: React.CSSProperties = {
     ...style,
@@ -35,7 +49,12 @@ export const SortableBodyRow: React.FC<SortableBodyRowProps> = ({ rowKey, onKeyb
 
   return (
     <RowDragHandleContext.Provider value={handleBinding}>
-      <tr {...rowProps} style={mergedStyle} ref={setNodeRef} data-dragging={isDragging ? 'true' : undefined}>
+      <tr
+        {...rowProps}
+        style={mergedStyle}
+        ref={setNodeRef}
+        data-dragging={isDragging ? 'true' : undefined}
+      >
         {children}
       </tr>
     </RowDragHandleContext.Provider>

@@ -1,17 +1,23 @@
-import * as React from 'react';
+import {
+  Table,
+  type TableAppearance,
+  type TableProps,
+  type TableState,
+} from '@oc-tech/omni-ui-components/Table';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Table, type TableAppearance, type TableProps, type TableState } from '@oc-tech/omni-ui-components/Table';
+import * as React from 'react';
 import { ComponentWrapper } from './storySupport';
 import {
   appearanceVariantProjects,
   basicDataSourceTableFactory,
-  matrixRows,
+  type DocCellData,
   defaultColumns,
+  matrixRows,
+  type ProjectRecord,
   registryRows,
   storyTableRegistry,
-  type DocCellData,
-  type ProjectRecord,
 } from './Table.story.fixtures';
+
 interface TableStoryArgs {
   size?: TableProps<ProjectRecord>['size'];
   bordered?: boolean;
@@ -56,7 +62,9 @@ const LOADER_GREEN = '#22ad01';
 const LOADER_GREEN_SOFT = 'rgba(34, 173, 1, 0.28)';
 
 const LoadingStage = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex min-h-[88px] items-center justify-center rounded-md border border-border/60 bg-background px-4 py-3">{children}</div>
+  <div className="flex min-h-[88px] items-center justify-center rounded-md border border-border/60 bg-background px-4 py-3">
+    {children}
+  </div>
 );
 
 const RingLoader = ({ size = 28, thickness = 3 }: { size?: number; thickness?: number }) => (
@@ -242,12 +250,19 @@ export const EmptyAndLoading: Story = {
         title="Empty state"
         description="An empty `dataSource` renders `locale.emptyText` in the body slot. Supply a string or a `ReactNode` for a richer illustration."
       >
-        <Table<ProjectRecord> columns={defaultColumns} dataSource={[]} rowKey="id" locale={{ emptyText: 'No projects yet' }} testIdPrefix="table-empty-state" />
+        <Table<ProjectRecord>
+          columns={defaultColumns}
+          dataSource={[]}
+          rowKey="id"
+          locale={{ emptyText: 'No projects yet' }}
+          testIdPrefix="table-empty-state"
+        />
       </ComponentWrapper>
       {renderBaseTable({
         args,
         title: 'Loading state',
-        description: 'Pass `loading={{ spinning: true }}` to overlay the async spinner. Pass a full `TableLoadingConfig` to swap the spinner, tip, or delay.',
+        description:
+          'Pass `loading={{ spinning: true }}` to overlay the async spinner. Pass a full `TableLoadingConfig` to swap the spinner, tip, or delay.',
         props: { loading: { spinning: true }, testIdPrefix: 'table-loading-state' },
       })}
       <LoadingPatternGallery />
@@ -265,7 +280,12 @@ export const SemanticDomSlots: Story = {
       props: {
         classNames: { root: 'ring-1 ring-border/70', 'header.cell': 'uppercase tracking-wide' },
         styles: {
-          title: { color: 'var(--color-muted-foreground)', fontSize: 14, fontWeight: 500, padding: '10px 12px' },
+          title: {
+            color: 'var(--color-muted-foreground)',
+            fontSize: 14,
+            fontWeight: 500,
+            padding: '10px 12px',
+          },
           footer: { color: 'var(--color-muted-foreground)', fontSize: 13, padding: '10px 12px' },
         },
         title: () => 'Semantic DOM slots',

@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { z } from 'zod';
 import type { RJSFSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 beforeAll(() => {
   if (!('hasPointerCapture' in Element.prototype)) {
@@ -30,7 +29,8 @@ const planSchema = (required = false): RJSFSchema => ({
 });
 
 const getGroup = () => document.querySelector<HTMLDivElement>('[data-slot="radio-group"]')!;
-const getItem = (value: string) => document.querySelector<HTMLButtonElement>(`[data-testid="root_plan-option-${value}"]`)!;
+const getItem = (value: string) =>
+  document.querySelector<HTMLButtonElement>(`[data-testid="root_plan-option-${value}"]`)!;
 
 describe('DynamicForm — RadioWidget integration', () => {
   describe('render shape', () => {
@@ -53,13 +53,18 @@ describe('DynamicForm — RadioWidget integration', () => {
         formData: { plan: '' },
       });
       ['free', 'pro', 'team'].forEach((v) => expect(getItem(v)).toBeInTheDocument());
-      ['Free', 'Pro', 'Team'].forEach((label) => expect(screen.getByText(label)).toBeInTheDocument());
+      ['Free', 'Pro', 'Team'].forEach((label) =>
+        expect(screen.getByText(label)).toBeInTheDocument(),
+      );
     });
 
     it('lays out horizontally when ui:options.inline=true', () => {
       renderDynamicForm({
         schema: planSchema(),
-        uiSchema: buildSingleFieldUiSchema('plan', { 'ui:widget': 'radio', 'ui:options': { inline: true } }),
+        uiSchema: buildSingleFieldUiSchema('plan', {
+          'ui:widget': 'radio',
+          'ui:options': { inline: true },
+        }),
         zodSchema: z.object({ plan: z.string() }),
         formData: { plan: '' },
       });
@@ -103,7 +108,11 @@ describe('DynamicForm — RadioWidget integration', () => {
       });
       await submit();
       expect(onSubmit).not.toHaveBeenCalled();
-      expect(onError).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({ path: ['plan'], source: 'zod', message: 'pick a plan' })]));
+      expect(onError).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({ path: ['plan'], source: 'zod', message: 'pick a plan' }),
+        ]),
+      );
     });
   });
 
@@ -145,7 +154,10 @@ describe('DynamicForm — RadioWidget integration', () => {
     it('honors ui:enumDisabled for specific values', () => {
       renderDynamicForm({
         schema: planSchema(),
-        uiSchema: buildSingleFieldUiSchema('plan', { 'ui:widget': 'radio', 'ui:enumDisabled': ['team'] }),
+        uiSchema: buildSingleFieldUiSchema('plan', {
+          'ui:widget': 'radio',
+          'ui:enumDisabled': ['team'],
+        }),
         zodSchema: z.object({ plan: z.string() }),
         formData: { plan: '' },
       });

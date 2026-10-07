@@ -56,19 +56,104 @@ export interface ExpenseCategoryEntity {
 }
 
 export const SHOWCASE_COMPANIES: CompanyEntity[] = [
-  { id: 'northstar', name: 'Northstar', domain: 'northstar.com', initials: 'N', color: '#5fd3a6', avatarUrl: null, description: '', industry: '' },
-  { id: 'mixpanel', name: 'Mixpanel', domain: 'mixpanel.com', initials: 'M', color: '#7b59d6', avatarUrl: null, description: '', industry: '' },
-  { id: 'doppler', name: 'Doppler', domain: 'doppler.com', initials: 'D', color: '#d35fd1', avatarUrl: null, description: '', industry: '' },
-  { id: 'cursor', name: 'Cursor', domain: 'cursor.com', initials: 'C', color: '#888', avatarUrl: null, description: '', industry: '' },
-  { id: 'mermaid', name: 'Mermaid Chart', domain: 'mermaidchart.com', initials: 'M', color: '#ff007a', avatarUrl: null, description: '', industry: '' },
+  {
+    id: 'northstar',
+    name: 'Northstar',
+    domain: 'northstar.com',
+    initials: 'N',
+    color: '#5fd3a6',
+    avatarUrl: null,
+    description: '',
+    industry: '',
+  },
+  {
+    id: 'mixpanel',
+    name: 'Mixpanel',
+    domain: 'mixpanel.com',
+    initials: 'M',
+    color: '#7b59d6',
+    avatarUrl: null,
+    description: '',
+    industry: '',
+  },
+  {
+    id: 'doppler',
+    name: 'Doppler',
+    domain: 'doppler.com',
+    initials: 'D',
+    color: '#d35fd1',
+    avatarUrl: null,
+    description: '',
+    industry: '',
+  },
+  {
+    id: 'cursor',
+    name: 'Cursor',
+    domain: 'cursor.com',
+    initials: 'C',
+    color: '#888',
+    avatarUrl: null,
+    description: '',
+    industry: '',
+  },
+  {
+    id: 'mermaid',
+    name: 'Mermaid Chart',
+    domain: 'mermaidchart.com',
+    initials: 'M',
+    color: '#ff007a',
+    avatarUrl: null,
+    description: '',
+    industry: '',
+  },
 ];
 
 export const SHOWCASE_CONTACTS: ContactEntity[] = [
-  { id: 'academyemanabdo', name: 'Academyemanabdo', email: 'academyemanabdo@gmail.com', phoneNumber: '', initials: 'AC', avatarUrl: null, jobTitle: '' },
-  { id: 'adrienne', name: 'Adrienne', email: 'adrienne@anicolebydesign.com', phoneNumber: '', initials: 'AD', avatarUrl: null, jobTitle: '' },
-  { id: 'amanda', name: 'Amanda', email: 'amanda@abf-coaching.com', phoneNumber: '', initials: 'AM', avatarUrl: null, jobTitle: '' },
-  { id: 'amy-gonzalez', name: 'Amy Gonzalez', email: 'amy.gonzalez@cbtcampus.it.com', phoneNumber: '', initials: 'AG', avatarUrl: null, jobTitle: '' },
-  { id: 'andrew-daniels', name: 'Andrew Daniels', email: 'adaniels@stripe.com', phoneNumber: '', initials: 'AD', avatarUrl: null, jobTitle: '' },
+  {
+    id: 'academyemanabdo',
+    name: 'Academyemanabdo',
+    email: 'academyemanabdo@gmail.com',
+    phoneNumber: '',
+    initials: 'AC',
+    avatarUrl: null,
+    jobTitle: '',
+  },
+  {
+    id: 'adrienne',
+    name: 'Adrienne',
+    email: 'adrienne@anicolebydesign.com',
+    phoneNumber: '',
+    initials: 'AD',
+    avatarUrl: null,
+    jobTitle: '',
+  },
+  {
+    id: 'amanda',
+    name: 'Amanda',
+    email: 'amanda@abf-coaching.com',
+    phoneNumber: '',
+    initials: 'AM',
+    avatarUrl: null,
+    jobTitle: '',
+  },
+  {
+    id: 'amy-gonzalez',
+    name: 'Amy Gonzalez',
+    email: 'amy.gonzalez@cbtcampus.it.com',
+    phoneNumber: '',
+    initials: 'AG',
+    avatarUrl: null,
+    jobTitle: '',
+  },
+  {
+    id: 'andrew-daniels',
+    name: 'Andrew Daniels',
+    email: 'adaniels@stripe.com',
+    phoneNumber: '',
+    initials: 'AD',
+    avatarUrl: null,
+    jobTitle: '',
+  },
 ];
 
 export const SHOWCASE_MEMBERS: MemberEntity[] = [
@@ -80,10 +165,34 @@ export const SHOWCASE_MEMBERS: MemberEntity[] = [
 ];
 
 export const SHOWCASE_PROJECTS: ProjectEntity[] = [
-  { id: 'bugs-w27', name: 'Bugs - Week 27', organization: 'Omni Product Development', color: '#e07a5f', icon: 'bug' },
-  { id: 'bugs-w30', name: 'Bugs - Week 30', organization: 'Omni Product Development', color: '#e07a5f', icon: 'bug' },
-  { id: 'bugs-w31', name: 'Bugs - Week 31', organization: 'Omni Product Development', color: '#e07a5f', icon: 'bug' },
-  { id: 'security', name: 'Security Items', organization: 'Omni Product Development', color: '#808080', icon: 'lock' },
+  {
+    id: 'bugs-w27',
+    name: 'Bugs - Week 27',
+    organization: 'Omni Product Development',
+    color: '#e07a5f',
+    icon: 'bug',
+  },
+  {
+    id: 'bugs-w30',
+    name: 'Bugs - Week 30',
+    organization: 'Omni Product Development',
+    color: '#e07a5f',
+    icon: 'bug',
+  },
+  {
+    id: 'bugs-w31',
+    name: 'Bugs - Week 31',
+    organization: 'Omni Product Development',
+    color: '#e07a5f',
+    icon: 'bug',
+  },
+  {
+    id: 'security',
+    name: 'Security Items',
+    organization: 'Omni Product Development',
+    color: '#808080',
+    icon: 'lock',
+  },
 ];
 
 export const SHOWCASE_TASKS: TaskEntity[] = [

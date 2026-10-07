@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import * as React from 'react';
 
 export interface MenuItem {
   key: React.Key;
@@ -16,10 +15,20 @@ export interface MenuProps extends React.HTMLAttributes<HTMLUListElement> {
   selectedKeys?: React.Key[];
 }
 
-function MenuBranch({ item, selectedKeys, depth = 0 }: { item: MenuItem; selectedKeys: React.Key[]; depth?: number }) {
+function MenuBranch({
+  item,
+  selectedKeys,
+  depth = 0,
+}: {
+  item: MenuItem;
+  selectedKeys: React.Key[];
+  depth?: number;
+}) {
   const hasChildren = Boolean(item.children?.length);
   const isSelected = selectedKeys.includes(item.key);
-  const hasSelectedDescendant = Boolean(item.children?.some((child) => selectedKeys.includes(child.key)));
+  const hasSelectedDescendant = Boolean(
+    item.children?.some((child) => selectedKeys.includes(child.key)),
+  );
   const [open, setOpen] = React.useState(hasSelectedDescendant || isSelected);
 
   React.useEffect(() => {
@@ -43,17 +52,39 @@ function MenuBranch({ item, selectedKeys, depth = 0 }: { item: MenuItem; selecte
         style={{ paddingLeft: `${12 + depth * 14}px` }}
         aria-expanded={hasChildren ? open : undefined}
       >
-        {item.icon ? <span className="shrink-0 text-[var(--oui-foreground-muted)]">{item.icon}</span> : null}
+        {item.icon ? (
+          <span className="shrink-0 text-[var(--oui-foreground-muted)]">{item.icon}</span>
+        ) : null}
         {!item.icon && hasChildren ? (
-          open ? <ChevronDown className="h-4 w-4 shrink-0 text-[var(--oui-foreground-muted)]" aria-hidden="true" /> : <ChevronRight className="h-4 w-4 shrink-0 text-[var(--oui-foreground-muted)]" aria-hidden="true" />
+          open ? (
+            <ChevronDown
+              className="h-4 w-4 shrink-0 text-[var(--oui-foreground-muted)]"
+              aria-hidden="true"
+            />
+          ) : (
+            <ChevronRight
+              className="h-4 w-4 shrink-0 text-[var(--oui-foreground-muted)]"
+              aria-hidden="true"
+            />
+          )
         ) : null}
         {!item.icon && !hasChildren ? <span className="w-4 shrink-0" aria-hidden="true" /> : null}
         <span className="min-w-0 flex-1 truncate">{item.label}</span>
       </button>
       {hasChildren && open ? (
-        <ul className={cn('mt-1 list-none space-y-1 rounded-xl border border-[var(--oui-border-field)] bg-background/60 p-2', depth > 0 && 'ml-4')}>
+        <ul
+          className={cn(
+            'mt-1 list-none space-y-1 rounded-xl border border-[var(--oui-border-field)] bg-background/60 p-2',
+            depth > 0 && 'ml-4',
+          )}
+        >
           {item.children!.map((child) => (
-            <MenuBranch key={child.key} item={child} selectedKeys={selectedKeys} depth={depth + 1} />
+            <MenuBranch
+              key={child.key}
+              item={child}
+              selectedKeys={selectedKeys}
+              depth={depth + 1}
+            />
           ))}
         </ul>
       ) : null}

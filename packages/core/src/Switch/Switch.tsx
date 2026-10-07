@@ -1,10 +1,9 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { useStableId } from '../lib';
+import * as React from 'react';
 import { fieldGroupVariants } from '../Input/Input.variants';
-import { SwitchPrimitive } from './SwitchPrimitive';
+import { useStableId } from '../lib';
 import type { SwitchProps } from './Switch.types';
+import { SwitchPrimitive } from './SwitchPrimitive';
 
 /**
  * Chrome-wrapped Omni Switch. The full row is a `<label>` so clicking
@@ -65,7 +64,10 @@ const SwitchInner = React.forwardRef<HTMLButtonElement, SwitchProps>(
           </span>
         ) : null}
         {description && !error ? (
-          <span id={descriptionId} className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]">
+          <span
+            id={descriptionId}
+            className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]"
+          >
             {description}
           </span>
         ) : null}
@@ -73,7 +75,11 @@ const SwitchInner = React.forwardRef<HTMLButtonElement, SwitchProps>(
     );
 
     const errorNode = error ? (
-      <p id={errorId} role="alert" className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-border-invalid)]">
+      <p
+        id={errorId}
+        role="alert"
+        className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-border-invalid)]"
+      >
         {error}
       </p>
     ) : null;

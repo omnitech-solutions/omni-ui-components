@@ -1,8 +1,7 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { textareaVariants } from './Textarea.variants';
+import * as React from 'react';
 import type { TextareaPrimitiveProps } from './Textarea.types';
+import { textareaVariants } from './Textarea.variants';
 
 /**
  * Raw Omni textarea primitive. Renders a styled `<textarea>` and nothing
@@ -26,7 +25,22 @@ import type { TextareaPrimitiveProps } from './Textarea.types';
  * />
  */
 const TextareaPrimitiveInner = React.forwardRef<HTMLTextAreaElement, TextareaPrimitiveProps>(
-  ({ id, className, variant, textareaSize, invalid, rows = 5, value, onChange, disabled, readOnly, ...rest }, ref) => {
+  (
+    {
+      id,
+      className,
+      variant,
+      textareaSize,
+      invalid,
+      rows = 5,
+      value,
+      onChange,
+      disabled,
+      readOnly,
+      ...rest
+    },
+    ref,
+  ) => {
     const isInvalid = Boolean(invalid);
     const state = disabled ? 'disabled' : readOnly ? 'readonly' : isInvalid ? 'invalid' : 'idle';
 
@@ -38,7 +52,10 @@ const TextareaPrimitiveInner = React.forwardRef<HTMLTextAreaElement, TextareaPri
     );
 
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
     return (
       <textarea
         ref={ref}
@@ -62,4 +79,6 @@ const TextareaPrimitiveInner = React.forwardRef<HTMLTextAreaElement, TextareaPri
 );
 TextareaPrimitiveInner.displayName = 'TextareaPrimitive';
 
-export const TextareaPrimitive = React.memo(TextareaPrimitiveInner) as typeof TextareaPrimitiveInner;
+export const TextareaPrimitive = React.memo(
+  TextareaPrimitiveInner,
+) as typeof TextareaPrimitiveInner;

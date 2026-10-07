@@ -1,9 +1,9 @@
-import * as React from 'react';
+import { inputVariants } from '@oc-tech/omni-ui-components/Input/Input.variants';
 import type { WrapIfAdditionalTemplateProps } from '@rjsf/utils';
 import { ADDITIONAL_PROPERTY_FLAG, buttonId, TranslatableString } from '@rjsf/utils';
 
 import { cn } from 'lib/utils';
-import { inputVariants } from '@oc-tech/omni-ui-components/Input/Input.variants';
+import type * as React from 'react';
 
 /**
  * Omni override of `@rjsf/shadcn`'s WrapIfAdditional template. RJSF
@@ -72,10 +72,16 @@ export const WrapIfAdditionalTemplate = (props: WrapIfAdditionalTemplateProps) =
             required={required}
             defaultValue={label}
             disabled={disabled || readonly}
-            onBlur={!readonly ? (onKeyRenameBlur as React.FocusEventHandler<HTMLInputElement>) : undefined}
+            onBlur={
+              !readonly ? (onKeyRenameBlur as React.FocusEventHandler<HTMLInputElement>) : undefined
+            }
             className={cn(inputVariants({ variant: 'bordered', inputSize: 'default' }), 'px-3')}
           />
-          {rawDescription ? <span className="text-xs font-medium text-[var(--oui-foreground-muted)]">{rawDescription}</span> : null}
+          {rawDescription ? (
+            <span className="text-xs font-medium text-[var(--oui-foreground-muted)]">
+              {rawDescription}
+            </span>
+          ) : null}
         </div>
         <div className="min-w-0 flex-1">{children}</div>
         <div className="flex shrink-0 items-end pb-1">

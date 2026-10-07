@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
 import type { ErrorCardProps, ErrorItem } from './ErrorCard.types';
@@ -50,7 +49,9 @@ const ErrorCardImpl = React.forwardRef<HTMLDivElement, ErrorCardProps>(
         aria-hidden="true"
         className={cn(
           'inline-flex flex-none',
-          variant === 'error' ? 'mt-px text-[color:var(--oui-tone-danger-fg)] [&_svg]:size-5' : '[&_svg]:size-4',
+          variant === 'error'
+            ? 'mt-px text-[color:var(--oui-tone-danger-fg)] [&_svg]:size-5'
+            : '[&_svg]:size-4',
         )}
       >
         {icon}
@@ -85,7 +86,14 @@ const ErrorCardImpl = React.forwardRef<HTMLDivElement, ErrorCardProps>(
     }
 
     return (
-      <div ref={ref} role="alert" data-slot="error-card" data-variant="error" className={cn(errorCardVariants({ variant }), className)} {...rest}>
+      <div
+        ref={ref}
+        role="alert"
+        data-slot="error-card"
+        data-variant="error"
+        className={cn(errorCardVariants({ variant }), className)}
+        {...rest}
+      >
         {iconNode}
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div data-slot="error-card-title" className="text-sm font-semibold">
@@ -101,7 +109,13 @@ const ErrorCardImpl = React.forwardRef<HTMLDivElement, ErrorCardProps>(
           {onRetry || actions ? (
             <div data-slot="error-card-actions" className="mt-2 flex flex-wrap gap-2">
               {onRetry ? (
-                <Button buttonSize="sm" icon={retryIcon} disabled={retryDisabled} data-slot="error-card-retry" onClick={() => onRetry(item)}>
+                <Button
+                  buttonSize="sm"
+                  icon={retryIcon}
+                  disabled={retryDisabled}
+                  data-slot="error-card-retry"
+                  onClick={() => onRetry(item)}
+                >
                   {retryLabel}
                 </Button>
               ) : null}

@@ -1,9 +1,13 @@
-import * as React from 'react';
+import { useControllableState } from 'lib/use-controllable-state';
 
 import { cn } from 'lib/utils';
-import { useControllableState } from 'lib/use-controllable-state';
+import * as React from 'react';
 import { Button } from '../Button';
-import type { FeedbackPanelLabels, FeedbackPanelProps, FeedbackReason } from './FeedbackPanel.types';
+import type {
+  FeedbackPanelLabels,
+  FeedbackPanelProps,
+  FeedbackReason,
+} from './FeedbackPanel.types';
 import { feedbackChipVariants, feedbackPanelClasses } from './FeedbackPanel.variants';
 
 /** English strings of {@link FeedbackPanel}. */
@@ -46,7 +50,9 @@ const FeedbackPanelImpl = React.forwardRef<HTMLDivElement, FeedbackPanelProps>(
     const labels = { ...DEFAULT_FEEDBACK_LABELS, ...labelOverrides };
     const [chosenIds, setChosenIds] = useControllableState<string[]>(selected, defaultSelected);
     // Items in the order chosen, by reference.
-    const chosen = chosenIds.map((id) => reasons.find((reason) => reason.id === id)).filter((reason) => reason !== undefined);
+    const chosen = chosenIds
+      .map((id) => reasons.find((reason) => reason.id === id))
+      .filter((reason) => reason !== undefined);
     const titleId = React.useId();
     const firstChip = React.useRef<HTMLButtonElement | null>(null);
     // [SAFETY] Focus moves only on mount and only when asked: a panel that re-renders never steals focus again.
@@ -60,10 +66,21 @@ const FeedbackPanelImpl = React.forwardRef<HTMLDivElement, FeedbackPanelProps>(
       const nextIds = on ? [...chosenIds, reason.id] : chosenIds.filter((id) => id !== reason.id);
       setChosenIds(nextIds);
       onToggle?.(reason, on);
-      onSelectedChange?.(nextIds.map((id) => reasons.find((item) => item.id === id)).filter((item) => item !== undefined));
+      onSelectedChange?.(
+        nextIds
+          .map((id) => reasons.find((item) => item.id === id))
+          .filter((item) => item !== undefined),
+      );
     };
     return (
-      <div ref={ref} role="group" aria-labelledby={titleId} data-slot="feedback-panel" className={cn(feedbackPanelClasses, className)} {...rest}>
+      <div
+        ref={ref}
+        role="group"
+        aria-labelledby={titleId}
+        data-slot="feedback-panel"
+        className={cn(feedbackPanelClasses, className)}
+        {...rest}
+      >
         <div id={titleId} className="text-[13px] font-medium">
           {labels.title}
         </div>
@@ -96,7 +113,12 @@ const FeedbackPanelImpl = React.forwardRef<HTMLDivElement, FeedbackPanelProps>(
         {onSubmit || onCancel ? (
           <div className="flex justify-end gap-2">
             {onCancel ? (
-              <Button variant="outline" buttonSize="sm" data-slot="feedback-cancel" onClick={onCancel}>
+              <Button
+                variant="outline"
+                buttonSize="sm"
+                data-slot="feedback-cancel"
+                onClick={onCancel}
+              >
                 {labels.cancel}
               </Button>
             ) : null}
@@ -105,7 +127,12 @@ const FeedbackPanelImpl = React.forwardRef<HTMLDivElement, FeedbackPanelProps>(
                 buttonSize="sm"
                 disabled={submitDisabled}
                 data-slot="feedback-submit"
-                onClick={() => onSubmit({ reasons: chosen, ...(withNote && note.trim() ? { note: note.trim() } : {}) })}
+                onClick={() =>
+                  onSubmit({
+                    reasons: chosen,
+                    ...(withNote && note.trim() ? { note: note.trim() } : {}),
+                  })
+                }
               >
                 {labels.submit}
               </Button>
@@ -119,6 +146,8 @@ const FeedbackPanelImpl = React.forwardRef<HTMLDivElement, FeedbackPanelProps>(
 FeedbackPanelImpl.displayName = 'FeedbackPanel';
 
 /** Generic over the reason item type: an extended reason reaches every callback by reference. */
-export const FeedbackPanel = FeedbackPanelImpl as unknown as <T extends FeedbackReason = FeedbackReason>(
+export const FeedbackPanel = FeedbackPanelImpl as unknown as <
+  T extends FeedbackReason = FeedbackReason,
+>(
   props: FeedbackPanelProps<T> & React.RefAttributes<HTMLDivElement>,
 ) => React.ReactElement | null;

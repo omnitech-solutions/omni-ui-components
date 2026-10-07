@@ -128,11 +128,20 @@ describe('buildZodSchema', () => {
   it('builds a Zod object from FieldDef[] with required + type', () => {
     const schema = buildZodSchema([
       { name: 'email', label: 'Email', type: 'email', required: true },
-      { name: 'age', label: 'Age', type: 'number', required: true, validate: validators.number({ min: 18 }) },
+      {
+        name: 'age',
+        label: 'Age',
+        type: 'number',
+        required: true,
+        validate: validators.number({ min: 18 }),
+      },
       { name: 'website', label: 'Website', type: 'url' },
     ]);
     // Valid input
-    expect(schema.safeParse({ email: 'ada@example.com', age: 30, website: 'https://example.com' }).success).toBe(true);
+    expect(
+      schema.safeParse({ email: 'ada@example.com', age: 30, website: 'https://example.com' })
+        .success,
+    ).toBe(true);
     // Bad email
     expect(schema.safeParse({ email: 'nope', age: 30 }).success).toBe(false);
     // Below min age
@@ -140,7 +149,14 @@ describe('buildZodSchema', () => {
   });
 
   it('honors per-field `validate` override over the default type validator', () => {
-    const schema = buildZodSchema([{ name: 'name', label: 'Name', required: true, validate: validators.text({ min: 5, label: 'Name' }) }]);
+    const schema = buildZodSchema([
+      {
+        name: 'name',
+        label: 'Name',
+        required: true,
+        validate: validators.text({ min: 5, label: 'Name' }),
+      },
+    ]);
     expect(schema.safeParse({ name: 'Hi' }).success).toBe(false);
     expect(schema.safeParse({ name: 'Hello' }).success).toBe(true);
   });

@@ -1,4 +1,10 @@
 export { Textarea } from './Textarea';
-export { TextareaPrimitive } from './TextareaPrimitive';
+export type {
+  TextareaPrimitiveProps,
+  TextareaProps,
+  TextareaSize,
+  TextareaVariant,
+  TextareaVariantProps,
+} from './Textarea.types';
 export { textareaVariants } from './Textarea.variants';
-export type { TextareaProps, TextareaPrimitiveProps, TextareaVariant, TextareaSize, TextareaVariantProps } from './Textarea.types';
+export { TextareaPrimitive } from './TextareaPrimitive';

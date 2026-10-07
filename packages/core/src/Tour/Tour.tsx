@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import { Button } from '../Button';
 import { Popover, PopoverContent } from '../Popover';
@@ -30,11 +30,24 @@ export const Tour = ({ open = false, current = 0, steps, onCurrentChange, onClos
               <div className="text-xs font-medium uppercase tracking-[0.14em] text-[var(--oui-foreground-muted)]">
                 Step {current + 1} of {steps.length}
               </div>
-              {step.title ? <div className="mt-2 text-base font-semibold text-[var(--oui-foreground)]">{step.title}</div> : null}
-              {step.description ? <div className="mt-2 text-sm leading-6 text-[var(--oui-foreground-muted)]">{step.description}</div> : null}
+              {step.title ? (
+                <div className="mt-2 text-base font-semibold text-[var(--oui-foreground)]">
+                  {step.title}
+                </div>
+              ) : null}
+              {step.description ? (
+                <div className="mt-2 text-sm leading-6 text-[var(--oui-foreground-muted)]">
+                  {step.description}
+                </div>
+              ) : null}
             </div>
             <div className="flex items-center justify-between px-5 pb-5">
-              <Button buttonSize="sm" variant="secondary" disabled={current <= 0} onClick={() => onCurrentChange?.(current - 1)}>
+              <Button
+                buttonSize="sm"
+                variant="secondary"
+                disabled={current <= 0}
+                onClick={() => onCurrentChange?.(current - 1)}
+              >
                 Back
               </Button>
               <div className="flex items-center gap-1.5" aria-hidden="true">
@@ -60,7 +73,11 @@ export const Tour = ({ open = false, current = 0, steps, onCurrentChange, onClos
               )}
             </div>
             <div className="border-t border-[var(--oui-border-field)] px-5 pb-4 pt-3">
-              <button type="button" className="text-sm text-[var(--oui-foreground-muted)] transition-colors hover:text-[var(--oui-foreground)]" onClick={onClose}>
+              <button
+                type="button"
+                className="text-sm text-[var(--oui-foreground-muted)] transition-colors hover:text-[var(--oui-foreground)]"
+                onClick={onClose}
+              >
                 Skip tour
               </button>
             </div>

@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { X } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { X } from 'lucide-react';
+import * as React from 'react';
 import { inputVariants } from '../Input/Input.variants';
 
 export interface TagInputPrimitiveProps {

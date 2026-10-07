@@ -1,14 +1,19 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { PanelShell } from '@oc-tech/omni-ui-components/PanelShell';
-import { ChatShellDemo, panelShellPropsFactory, panelShellVariants } from 'factories/omni-ui-components/PanelShell/PanelShell.factories';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  ChatShellDemo,
+  panelShellPropsFactory,
+  panelShellVariants,
+} from 'factories/omni-ui-components/PanelShell/PanelShell.factories';
 
 describe('omni-ui-components/PanelShell', () => {
   it('panel mode: a 440px region beside the host', () => {
-    render(<PanelShell {...panelShellPropsFactory({ host: <p>host</p>, children: <p>body</p> })} />);
+    render(
+      <PanelShell {...panelShellPropsFactory({ host: <p>host</p>, children: <p>body</p> })} />,
+    );
     const panel = screen.getByRole('region', { name: 'Chat' });
     expect(panel).toHaveStyle({ flex: '0 0 440px' });
     expect(screen.getByText('host')).toBeInTheDocument();
@@ -23,10 +28,14 @@ describe('omni-ui-components/PanelShell', () => {
   });
 
   it('full mode fills the area and hides the host while open', () => {
-    const { rerender } = render(<PanelShell {...panelShellPropsFactory({ mode: 'full', host: <p>host</p> })} />);
+    const { rerender } = render(
+      <PanelShell {...panelShellPropsFactory({ mode: 'full', host: <p>host</p> })} />,
+    );
     expect(screen.queryByText('host')).not.toBeInTheDocument();
     expect(screen.getByRole('region').style.flex).toBe('');
-    rerender(<PanelShell {...panelShellPropsFactory({ mode: 'full', host: <p>host</p>, open: false })} />);
+    rerender(
+      <PanelShell {...panelShellPropsFactory({ mode: 'full', host: <p>host</p>, open: false })} />,
+    );
     expect(screen.getByText('host')).toBeInTheDocument();
   });
 
@@ -37,35 +46,95 @@ describe('omni-ui-components/PanelShell', () => {
   });
 
   it('lays out header, body and footer slots, and the overlay slot', () => {
-    render(<PanelShell {...panelShellPropsFactory({ header: <p>head</p>, footer: <p>foot</p>, overlay: <p>over</p>, children: <p>body</p> })} />);
+    render(
+      <PanelShell
+        {...panelShellPropsFactory({
+          header: <p>head</p>,
+          footer: <p>foot</p>,
+          overlay: <p>over</p>,
+          children: <p>body</p>,
+        })}
+      />,
+    );
     const panel = screen.getByRole('region');
-    ['head', 'body', 'foot', 'over'].forEach((text) => expect(within(panel).getByText(text)).toBeInTheDocument());
+    ['head', 'body', 'foot', 'over'].forEach((text) =>
+      expect(within(panel).getByText(text)).toBeInTheDocument(),
+    );
     expect(panel.querySelector('[data-slot="panel-shell-body"]')).toHaveClass('overflow-y-auto');
   });
 
   it('a docked sidebar is always shown beside the body, an overlay one only while open', () => {
-    const { rerender } = render(<PanelShell {...panelShellPropsFactory({ sidebar: <p>list</p>, sidebarMode: 'docked', sidebarOpen: false })} />);
-    expect(screen.getByText('list').closest('[data-slot="panel-shell-sidebar"]')).toHaveAttribute('data-mode', 'docked');
-    rerender(<PanelShell {...panelShellPropsFactory({ sidebar: <p>list</p>, sidebarMode: 'overlay', sidebarOpen: false })} />);
+    const { rerender } = render(
+      <PanelShell
+        {...panelShellPropsFactory({
+          sidebar: <p>list</p>,
+          sidebarMode: 'docked',
+          sidebarOpen: false,
+        })}
+      />,
+    );
+    expect(screen.getByText('list').closest('[data-slot="panel-shell-sidebar"]')).toHaveAttribute(
+      'data-mode',
+      'docked',
+    );
+    rerender(
+      <PanelShell
+        {...panelShellPropsFactory({
+          sidebar: <p>list</p>,
+          sidebarMode: 'overlay',
+          sidebarOpen: false,
+        })}
+      />,
+    );
     expect(screen.queryByText('list')).not.toBeInTheDocument();
-    rerender(<PanelShell {...panelShellPropsFactory({ sidebar: <p>list</p>, sidebarMode: 'overlay', sidebarOpen: true })} />);
-    expect(screen.getByText('list').closest('[data-slot="panel-shell-sidebar"]')).toHaveAttribute('data-mode', 'overlay');
+    rerender(
+      <PanelShell
+        {...panelShellPropsFactory({
+          sidebar: <p>list</p>,
+          sidebarMode: 'overlay',
+          sidebarOpen: true,
+        })}
+      />,
+    );
+    expect(screen.getByText('list').closest('[data-slot="panel-shell-sidebar"]')).toHaveAttribute(
+      'data-mode',
+      'overlay',
+    );
   });
 
   it('Escape closes an open overlay sidebar first, then the panel only with closeOnEscape', () => {
     const onSidebarOpenChange = jest.fn();
     const onOpenChange = jest.fn();
     const { rerender } = render(
-      <PanelShell {...panelShellPropsFactory({ sidebar: <button>list</button>, sidebarMode: 'overlay', sidebarOpen: true, onSidebarOpenChange, onOpenChange, closeOnEscape: true })} />,
+      <PanelShell
+        {...panelShellPropsFactory({
+          sidebar: <button>list</button>,
+          sidebarMode: 'overlay',
+          sidebarOpen: true,
+          onSidebarOpenChange,
+          onOpenChange,
+          closeOnEscape: true,
+        })}
+      />,
     );
     fireEvent.keyDown(screen.getByText('list'), { key: 'Escape' });
     expect(onSidebarOpenChange).toHaveBeenCalledWith(false);
     expect(onOpenChange).not.toHaveBeenCalled();
-    rerender(<PanelShell {...panelShellPropsFactory({ children: <button>body</button>, onOpenChange, closeOnEscape: true })} />);
+    rerender(
+      <PanelShell
+        {...panelShellPropsFactory({
+          children: <button>body</button>,
+          onOpenChange,
+          closeOnEscape: true,
+        })}
+      />,
+    );
     fireEvent.keyDown(screen.getByText('body'), { key: 'Escape' });
     expect(onOpenChange).toHaveBeenCalledWith(false);
     onOpenChange.mockClear();
-    rerender(<PanelShell {...panelShellPropsFactory({ children: <button>body</button>, onOpenChange })} />);
+    rerender(
+      <PanelShell {...panelShellPropsFactory({ children: <button>body</button>, onOpenChange })} />,
+    );
     fireEvent.keyDown(screen.getByText('body'), { key: 'Escape' });
     expect(onOpenChange).not.toHaveBeenCalled();
   });
@@ -77,7 +146,9 @@ describe('omni-ui-components/PanelShell', () => {
 
   it('renders every factory variant', () => {
     panelShellVariants.forEach((variant) => {
-      const { container, unmount } = render(<PanelShell {...panelShellPropsFactory(variant.args)} />);
+      const { container, unmount } = render(
+        <PanelShell {...panelShellPropsFactory(variant.args)} />,
+      );
       expect(container.querySelector('[data-slot="panel-shell"]')).toBeInTheDocument();
       unmount();
     });
@@ -91,7 +162,9 @@ describe('ChatShell (composed)', () => {
     await userEvent.click(screen.getByRole('button', { name: /Conversations/ }));
     expect(await screen.findByRole('navigation', { name: 'Conversations' })).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Debounce vs throttle' }));
-    await waitFor(() => expect(screen.queryByRole('navigation', { name: 'Conversations' })).not.toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.queryByRole('navigation', { name: 'Conversations' })).not.toBeInTheDocument(),
+    );
     expect(screen.getByRole('button', { name: /Debounce vs throttle/ })).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Settings' }));
     expect(await screen.findByRole('dialog', { name: 'Settings' })).toBeInTheDocument();
@@ -104,7 +177,9 @@ describe('ChatShell (composed)', () => {
 
   it('deleting a conversation raises a toast with Undo that brings it back', async () => {
     render(<ChatShellDemo mode="full" empty />);
-    const row = screen.getByRole('button', { name: 'Design a rate limiter' }).closest('[data-slot="conversation-row"]') as HTMLElement;
+    const row = screen
+      .getByRole('button', { name: 'Design a rate limiter' })
+      .closest('[data-slot="conversation-row"]') as HTMLElement;
     await userEvent.click(within(row).getByRole('button', { name: 'Delete' }));
     expect(screen.queryByRole('button', { name: 'Design a rate limiter' })).not.toBeInTheDocument();
     expect(screen.getByRole('status')).toHaveTextContent('Conversation deleted');

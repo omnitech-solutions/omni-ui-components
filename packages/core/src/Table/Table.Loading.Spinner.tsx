@@ -3,8 +3,6 @@
  * spinner. Real body rows keep rendering underneath.
  */
 
-import * as React from 'react';
-
 import type { TableLoadingVariant } from './Table.Loading';
 
 export const TableLoadingSpinnerVariant: TableLoadingVariant = {

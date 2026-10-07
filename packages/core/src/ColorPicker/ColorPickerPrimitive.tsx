@@ -1,10 +1,21 @@
-import * as React from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { inputVariants } from '../Input/Input.variants';
 
-const PRESETS = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899', '#64748b', '#0f172a', '#ffffff'];
+const PRESETS = [
+  '#ef4444',
+  '#f97316',
+  '#eab308',
+  '#22c55e',
+  '#06b6d4',
+  '#3b82f6',
+  '#8b5cf6',
+  '#ec4899',
+  '#64748b',
+  '#0f172a',
+  '#ffffff',
+];
 
 const normalizeHex = (s: string): string => {
   const t = s.trim().replace(/^#/, '');
@@ -31,7 +42,22 @@ export interface ColorPickerPrimitiveProps {
 
 /** Raw color picker control: popover trigger + hex input + preset palette. */
 export const ColorPickerPrimitive = React.forwardRef<HTMLButtonElement, ColorPickerPrimitiveProps>(
-  ({ id, value, defaultValue, onChange, presets = PRESETS, disabled, required, invalid, readOnly, className, ...rest }, ref) => {
+  (
+    {
+      id,
+      value,
+      defaultValue,
+      onChange,
+      presets = PRESETS,
+      disabled,
+      required,
+      invalid,
+      readOnly,
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
     const testId = rest['data-testid'] ?? id;
     const [open, setOpen] = React.useState(false);
     const [internal, setInternal] = React.useState<string>(defaultValue ?? '#3b82f6');
@@ -108,10 +134,17 @@ export const ColorPickerPrimitive = React.forwardRef<HTMLButtonElement, ColorPic
                 }}
                 disabled={disabled || readOnly}
                 placeholder="#000000"
-                className={cn(inputVariants({ variant: 'bordered', inputSize: 'default' }), 'flex-1 px-3 text-sm tabular-nums uppercase')}
+                className={cn(
+                  inputVariants({ variant: 'bordered', inputSize: 'default' }),
+                  'flex-1 px-3 text-sm tabular-nums uppercase',
+                )}
               />
             </div>
-            <div className="mt-3 grid grid-cols-7 gap-1.5" role="listbox" aria-label="Preset colors">
+            <div
+              className="mt-3 grid grid-cols-7 gap-1.5"
+              role="listbox"
+              aria-label="Preset colors"
+            >
               {presets.map((p) => (
                 <button
                   key={p}

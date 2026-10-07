@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { act, fireEvent, render, screen } from '@testing-library/react';
 
 import type { AttachmentItem } from '@oc-tech/omni-ui-components/Attachment';
 import { MENTION_PATTERN, SLASH_PATTERN } from '@oc-tech/omni-ui-components/CommandPopover';
 import { Composer, type ComposerDraft } from '@oc-tech/omni-ui-components/Composer';
 import type { QueuedItem } from '@oc-tech/omni-ui-components/QueuedList';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { composerPropsFactory } from 'factories/omni-ui-components/Composer/Composer.factories';
+import * as React from 'react';
 
 interface MyAttachment extends AttachmentItem {
   uploadId: string;
@@ -23,10 +23,16 @@ const file = (name: string, type = 'text/plain', size = 5) => {
 };
 
 /** Controlled host so typing works. */
-const Host: React.FC<Partial<React.ComponentProps<typeof Composer<MyAttachment, MyQueued>>>> = (props) => {
+const Host: React.FC<Partial<React.ComponentProps<typeof Composer<MyAttachment, MyQueued>>>> = (
+  props,
+) => {
   const [value, setValue] = React.useState(props.value ?? '');
-  const base = composerPropsFactory() as unknown as React.ComponentProps<typeof Composer<MyAttachment, MyQueued>>;
-  return <Composer<MyAttachment, MyQueued> {...base} {...props} value={value} onChange={setValue} />;
+  const base = composerPropsFactory() as unknown as React.ComponentProps<
+    typeof Composer<MyAttachment, MyQueued>
+  >;
+  return (
+    <Composer<MyAttachment, MyQueued> {...base} {...props} value={value} onChange={setValue} />
+  );
 };
 
 describe('omni-ui-components/Composer callbacks', () => {
@@ -35,7 +41,9 @@ describe('omni-ui-components/Composer callbacks', () => {
 
   it('onChange fires with the new text in controlled and uncontrolled mode', async () => {
     const onChange = vi.fn();
-    const { unmount } = render(<Composer {...composerPropsFactory({ value: undefined, onChange })} />);
+    const { unmount } = render(
+      <Composer {...composerPropsFactory({ value: undefined, onChange })} />,
+    );
     await userEvent.type(screen.getByRole('textbox'), 'hi');
     expect(onChange).toHaveBeenLastCalledWith('hi');
     expect(screen.getByRole('textbox')).toHaveValue('hi');
@@ -49,7 +57,9 @@ describe('omni-ui-components/Composer callbacks', () => {
 
   it('onSubmit gets { value, attachments } with the SAME attachment objects, and nothing clears the draft', async () => {
     const seen: string[] = [];
-    const onSubmit = vi.fn((draft: ComposerDraft<MyAttachment>): void => void seen.push(draft.attachments[0].uploadId));
+    const onSubmit = vi.fn(
+      (draft: ComposerDraft<MyAttachment>): void => void seen.push(draft.attachments[0].uploadId),
+    );
     render(<Host value="send me" attachmentItems={attachments} onSubmit={onSubmit} />);
     await userEvent.type(screen.getByRole('textbox'), '{Enter}');
     expect(onSubmit.mock.calls[0][0].attachments[0]).toBe(attachments[0]);
@@ -70,7 +80,15 @@ describe('omni-ui-components/Composer callbacks', () => {
     const onFocus = vi.fn();
     const onBlur = vi.fn();
     const onRecallPrevious = vi.fn(() => 'older');
-    render(<Host streaming onStop={onStop} onFocus={onFocus} onBlur={onBlur} onRecallPrevious={onRecallPrevious} />);
+    render(
+      <Host
+        streaming
+        onStop={onStop}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onRecallPrevious={onRecallPrevious}
+      />,
+    );
     const box = screen.getByRole('textbox');
     await userEvent.click(box);
     expect(onFocus).toHaveBeenCalledTimes(1);
@@ -87,7 +105,13 @@ describe('omni-ui-components/Composer callbacks', () => {
   it('onRemoveAttachment and onAttachmentClick get the same item; absent callbacks draw no buttons', async () => {
     const onRemoveAttachment = vi.fn();
     const onAttachmentClick = vi.fn();
-    const { rerender } = render(<Host attachmentItems={attachments} onRemoveAttachment={onRemoveAttachment} onAttachmentClick={onAttachmentClick} />);
+    const { rerender } = render(
+      <Host
+        attachmentItems={attachments}
+        onRemoveAttachment={onRemoveAttachment}
+        onAttachmentClick={onAttachmentClick}
+      />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Remove a.pdf' }));
     await userEvent.click(screen.getByRole('button', { name: /^a\.pdf$/ }));
     expect(onRemoveAttachment.mock.calls[0][0]).toBe(attachments[0]);
@@ -137,7 +161,9 @@ describe('omni-ui-components/Composer callbacks', () => {
     const root = document.querySelector('[data-slot="composer"]') as HTMLElement;
     fireEvent.dragEnter(root, { dataTransfer: { types: ['Files'], files: [] } });
     expect(screen.getByText('Drop files here…')).toBeInTheDocument();
-    fireEvent.drop(root, { dataTransfer: { types: ['Files'], files: [file('x.zip', 'application/zip')] } });
+    fireEvent.drop(root, {
+      dataTransfer: { types: ['Files'], files: [file('x.zip', 'application/zip')] },
+    });
     expect(onReject).toHaveBeenCalledWith(expect.objectContaining({ code: 'type' }));
     rerender(<Host />);
     expect(screen.queryByLabelText('Attach files')).toBeNull();
@@ -149,7 +175,14 @@ describe('omni-ui-components/Composer callbacks', () => {
     const onDictationStart = vi.fn();
     const onDictationFinish = vi.fn();
     const onDictationCancel = vi.fn();
-    const { rerender } = render(<Host dictationText="walk me" onDictationStart={onDictationStart} onDictationFinish={onDictationFinish} onDictationCancel={onDictationCancel} />);
+    const { rerender } = render(
+      <Host
+        dictationText="walk me"
+        onDictationStart={onDictationStart}
+        onDictationFinish={onDictationFinish}
+        onDictationCancel={onDictationCancel}
+      />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Dictate' }));
     expect(onDictationStart).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('textbox')).toBeNull();
@@ -158,7 +191,13 @@ describe('omni-ui-components/Composer callbacks', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Dictate' }));
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(onDictationCancel).toHaveBeenCalledTimes(1);
-    rerender(<Host dictationKey="AltRight" onDictationStart={onDictationStart} onDictationFinish={onDictationFinish} />);
+    rerender(
+      <Host
+        dictationKey="AltRight"
+        onDictationStart={onDictationStart}
+        onDictationFinish={onDictationFinish}
+      />,
+    );
     act(() => {
       fireEvent.keyDown(window, { code: 'AltRight' });
       fireEvent.keyUp(window, { code: 'AltRight' });

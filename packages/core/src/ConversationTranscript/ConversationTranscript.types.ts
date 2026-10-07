@@ -1,6 +1,12 @@
-import * as React from 'react';
+import type * as React from 'react';
 
-import type { ApprovalDecision, ApprovalIcons, ApprovalItem, ApprovalLabels, ApprovalStatus } from '../ApprovalCard';
+import type {
+  ApprovalDecision,
+  ApprovalIcons,
+  ApprovalItem,
+  ApprovalLabels,
+  ApprovalStatus,
+} from '../ApprovalCard';
 import type { FeedbackPanelLabels, FeedbackReason, FeedbackSubmission } from '../FeedbackPanel';
 import type { HighlightFn } from '../Highlight';
 import type { MarkdownLabels } from '../Markdown';
@@ -9,7 +15,6 @@ import type { SourcesLabels } from '../Sources';
 import type { StepTimelineLabels } from '../StepTimeline';
 import type { SummaryDividerLabels } from '../SummaryDivider';
 import type { ThinkingLabels } from '../Thinking';
-import type { VersionPagerLabels } from '../VersionPager';
 import type {
   ChatAttachmentPart,
   ChatSource,
@@ -19,6 +24,7 @@ import type {
   TranscriptConversationProps,
   TranscriptLabels,
 } from '../Transcript';
+import type { VersionPagerLabels } from '../VersionPager';
 
 /** A thumbs choice on a reply; `null` is "cleared". */
 export type ConversationRating = 'up' | 'down' | null;
@@ -114,8 +120,7 @@ export interface ConversationTranscriptProps<
   S extends ChatSource = ChatSource,
   P extends ApprovalItem = ApprovalItem,
   R extends FeedbackReason = FeedbackReason,
-> extends
-    Omit<TranscriptConversationProps<U, V, A>, 'slots' | 'renderMarkdown' | 'labels'>,
+> extends Omit<TranscriptConversationProps<U, V, A>, 'slots' | 'renderMarkdown' | 'labels'>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onCopy'> {
   icons?: ConversationTranscriptIcons;
   /** Icon node of the copy buttons (the question's and the reply's). */

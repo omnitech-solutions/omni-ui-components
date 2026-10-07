@@ -1,10 +1,9 @@
 'use client';
 
-import * as React from 'react';
-import { Root, Indicator, Item } from '@radix-ui/react-radio-group';
-import { CircleIcon } from 'lucide-react';
-
+import { Indicator, Item, Root } from '@radix-ui/react-radio-group';
 import { cn } from 'lib/utils';
+import { CircleIcon } from 'lucide-react';
+import type * as React from 'react';
 
 /**
  * Shadcn-style RadioGroup root + item primitives. Omni wraps these in
@@ -31,7 +30,10 @@ function RadioGroupItem({ className, ...props }: React.ComponentProps<typeof Ite
       )}
       {...props}
     >
-      <Indicator data-slot="radio-group-indicator" className="relative flex items-center justify-center">
+      <Indicator
+        data-slot="radio-group-indicator"
+        className="relative flex items-center justify-center"
+      >
         <CircleIcon className="fill-primary text-primary absolute top-1/2 left-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2" />
       </Indicator>
     </Item>

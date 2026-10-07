@@ -1,12 +1,14 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { inputVariants } from '../Input/Input.variants';
 import type { NumberInputPrimitiveProps } from './NumberInput.types';
 
 const stripFormatting = (s: string): string => s.replace(/[^\d.-]/g, '');
 
-const formatNumber = (n: number | null, opts: { decimals?: number; thousandSeparator?: boolean; locale?: string }): string => {
+const formatNumber = (
+  n: number | null,
+  opts: { decimals?: number; thousandSeparator?: boolean; locale?: string },
+): string => {
   if (n === null || Number.isNaN(n)) return '';
   if (opts.thousandSeparator) {
     return new Intl.NumberFormat(opts.locale, {
@@ -59,12 +61,20 @@ const NumberInputPrimitiveInner = React.forwardRef<HTMLInputElement, NumberInput
     ref,
   ) => {
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
 
-    const fmtOpts = React.useMemo(() => ({ decimals, thousandSeparator, locale }), [decimals, thousandSeparator, locale]);
+    const fmtOpts = React.useMemo(
+      () => ({ decimals, thousandSeparator, locale }),
+      [decimals, thousandSeparator, locale],
+    );
     const externalValue = value !== undefined ? value : defaultValue;
 
-    const [draft, setDraft] = React.useState<string>(() => formatNumber(externalValue ?? null, fmtOpts));
+    const [draft, setDraft] = React.useState<string>(() =>
+      formatNumber(externalValue ?? null, fmtOpts),
+    );
     const [focused, setFocused] = React.useState(false);
 
     React.useEffect(() => {
@@ -95,7 +105,8 @@ const NumberInputPrimitiveInner = React.forwardRef<HTMLInputElement, NumberInput
        * preserve trailing `.` / `.0…` so decimal entry isn't clobbered. */
       const endsWithDot = raw.endsWith('.');
       const trailingZeros = raw.match(/\.\d*?(0+)$/);
-      let formatted = parsed === null ? raw : formatNumber(parsed, { ...fmtOpts, decimals: undefined });
+      let formatted =
+        parsed === null ? raw : formatNumber(parsed, { ...fmtOpts, decimals: undefined });
       if (endsWithDot && !formatted.includes('.')) formatted += '.';
       else if (trailingZeros && formatted.includes('.')) {
         formatted = `${formatted}${trailingZeros[1]}`;
@@ -117,9 +128,15 @@ const NumberInputPrimitiveInner = React.forwardRef<HTMLInputElement, NumberInput
     };
 
     return (
-      <div className={cn('relative flex w-full items-center', className)} data-slot="number-input-wrapper">
+      <div
+        className={cn('relative flex w-full items-center', className)}
+        data-slot="number-input-wrapper"
+      >
         {prefix ? (
-          <span aria-hidden="true" className="pointer-events-none absolute left-3 text-sm text-[var(--oui-foreground-muted)]">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute left-3 text-sm text-[var(--oui-foreground-muted)]"
+          >
             {prefix}
           </span>
         ) : null}
@@ -143,10 +160,18 @@ const NumberInputPrimitiveInner = React.forwardRef<HTMLInputElement, NumberInput
           onChange={handleChange}
           onBlur={handleBlur}
           onFocus={handleFocus}
-          className={cn(inputVariants({ variant: 'bordered', inputSize: 'default' }), prefix && 'pl-7', suffix && 'pr-10', 'text-right tabular-nums')}
+          className={cn(
+            inputVariants({ variant: 'bordered', inputSize: 'default' }),
+            prefix && 'pl-7',
+            suffix && 'pr-10',
+            'text-right tabular-nums',
+          )}
         />
         {suffix ? (
-          <span aria-hidden="true" className="pointer-events-none absolute right-3 text-sm text-[var(--oui-foreground-muted)]">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute right-3 text-sm text-[var(--oui-foreground-muted)]"
+          >
             {suffix}
           </span>
         ) : null}
@@ -156,4 +181,6 @@ const NumberInputPrimitiveInner = React.forwardRef<HTMLInputElement, NumberInput
 );
 NumberInputPrimitiveInner.displayName = 'NumberInputPrimitive';
 
-export const NumberInputPrimitive = React.memo(NumberInputPrimitiveInner) as typeof NumberInputPrimitiveInner;
+export const NumberInputPrimitive = React.memo(
+  NumberInputPrimitiveInner,
+) as typeof NumberInputPrimitiveInner;

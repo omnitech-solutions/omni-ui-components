@@ -1,11 +1,14 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { expectTypeOf } from 'vitest';
-import userEvent from '@testing-library/user-event';
-import { render, screen, waitFor } from '@testing-library/react';
 
-import { MessageMenu, type MessageItem } from '@oc-tech/omni-ui-components/MessageMenu';
-import { messageMenuPropsFactory, sampleConversation } from 'factories/omni-ui-components/MessageMenu/MessageMenu.factories';
+import { type MessageItem, MessageMenu } from '@oc-tech/omni-ui-components/MessageMenu';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  messageMenuPropsFactory,
+  sampleConversation,
+} from 'factories/omni-ui-components/MessageMenu/MessageMenu.factories';
+import type * as React from 'react';
+import { expectTypeOf } from 'vitest';
 
 interface RichMessage extends MessageItem {
   author: string;
@@ -73,7 +76,9 @@ describe('omni-ui-components/MessageMenu', () => {
     await user.keyboard('{Escape}');
     expect(screen.queryByText('This cannot be undone.')).toBeNull();
     expect(screen.getByRole('menu', { name: 'Message options' })).toBeInTheDocument();
-    await waitFor(() => expect(screen.getByRole('menuitem', { name: 'Delete message' })).toHaveFocus());
+    await waitFor(() =>
+      expect(screen.getByRole('menuitem', { name: 'Delete message' })).toHaveFocus(),
+    );
     expect(screen.getByRole('menuitem', { name: 'Delete message' })).toBeInTheDocument();
     await user.keyboard('{Escape}');
     await waitFor(() => expect(screen.queryByRole('menu')).toBeNull());
@@ -88,7 +93,11 @@ describe('omni-ui-components/MessageMenu', () => {
   });
 
   it('renders just the trigger when no callback and no conversation is given', () => {
-    render(<MessageMenu {...messageMenuPropsFactory({ onCopy: undefined, onHide: undefined, onDelete: undefined })} />);
+    render(
+      <MessageMenu
+        {...messageMenuPropsFactory({ onCopy: undefined, onHide: undefined, onDelete: undefined })}
+      />,
+    );
     expect(screen.getByRole('button', { name: 'More' })).toBeInTheDocument();
     expect(screen.queryByRole('menu')).toBeNull();
   });
@@ -96,7 +105,9 @@ describe('omni-ui-components/MessageMenu', () => {
   it('Download conversation appears with `conversation` and saves a Markdown file', async () => {
     const createObjectURL = vi.fn(() => 'blob:x');
     Object.assign(URL, { createObjectURL, revokeObjectURL: vi.fn() });
-    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => undefined);
     const { user } = await setup({ conversation: sampleConversation });
     await user.click(screen.getByRole('menuitem', { name: 'Download conversation' }));
     expect(createObjectURL).toHaveBeenCalledTimes(1);
@@ -107,7 +118,9 @@ describe('omni-ui-components/MessageMenu', () => {
 
   it('labels override the defaults and the open change callback fires', async () => {
     const onOpenChange = vi.fn();
-    render(<MessageMenu {...messageMenuPropsFactory({ labels: { copy: 'Kopieer' }, onOpenChange })} />);
+    render(
+      <MessageMenu {...messageMenuPropsFactory({ labels: { copy: 'Kopieer' }, onOpenChange })} />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'More' }));
     expect(screen.getByRole('menuitem', { name: 'Kopieer' })).toBeInTheDocument();
     expect(onOpenChange).toHaveBeenCalledWith(true);

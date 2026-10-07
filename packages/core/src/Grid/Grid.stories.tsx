@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Col, Row } from '@oc-tech/omni-ui-components/Grid';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Row> = {
   title: 'omni-ui-components/Grid',
@@ -21,9 +20,15 @@ type Story = StoryObj<typeof Row>;
 export const Default: Story = {
   render: () => (
     <Row gutter={12}>
-      <Col span={8}><div className="rounded border p-3">8</div></Col>
-      <Col span={8}><div className="rounded border p-3">8</div></Col>
-      <Col span={8}><div className="rounded border p-3">8</div></Col>
+      <Col span={8}>
+        <div className="rounded border p-3">8</div>
+      </Col>
+      <Col span={8}>
+        <div className="rounded border p-3">8</div>
+      </Col>
+      <Col span={8}>
+        <div className="rounded border p-3">8</div>
+      </Col>
     </Row>
   ),
 };
@@ -31,9 +36,15 @@ export const Default: Story = {
 export const MixedSpans: Story = {
   render: () => (
     <Row gutter={12}>
-      <Col span={6}><div className="rounded border p-3">6</div></Col>
-      <Col span={12}><div className="rounded border p-3">12</div></Col>
-      <Col span={6}><div className="rounded border p-3">6</div></Col>
+      <Col span={6}>
+        <div className="rounded border p-3">6</div>
+      </Col>
+      <Col span={12}>
+        <div className="rounded border p-3">12</div>
+      </Col>
+      <Col span={6}>
+        <div className="rounded border p-3">6</div>
+      </Col>
     </Row>
   ),
 };

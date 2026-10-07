@@ -1,10 +1,13 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { Toast, useToast } from '@oc-tech/omni-ui-components/Toast';
-import { ToastDemo, toastPropsFactory, toastVariants } from 'factories/omni-ui-components/Toast/Toast.factories';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  ToastDemo,
+  toastPropsFactory,
+  toastVariants,
+} from 'factories/omni-ui-components/Toast/Toast.factories';
 
 describe('omni-ui-components/Toast', () => {
   afterEach(() => jest.useRealTimers());
@@ -39,12 +42,16 @@ describe('omni-ui-components/Toast', () => {
     const toast = { text: 'Hi' };
     const onTimeout = jest.fn();
     const onDismiss = jest.fn();
-    const { rerender } = render(<Toast {...toastPropsFactory({ toast, duration: 500, onTimeout, onDismiss })} />);
+    const { rerender } = render(
+      <Toast {...toastPropsFactory({ toast, duration: 500, onTimeout, onDismiss })} />,
+    );
     act(() => jest.advanceTimersByTime(500));
     expect(onTimeout).toHaveBeenCalledTimes(1);
     expect(onTimeout.mock.calls[0][0]).toBe(toast);
     expect(onDismiss).not.toHaveBeenCalled();
-    rerender(<Toast {...toastPropsFactory({ toast, duration: 0, onTimeout, onDismiss, open: true })} />);
+    rerender(
+      <Toast {...toastPropsFactory({ toast, duration: 0, onTimeout, onDismiss, open: true })} />,
+    );
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(onDismiss).toHaveBeenCalledTimes(1);
     expect(onDismiss.mock.calls[0][0]).toBe(toast);
@@ -98,7 +105,9 @@ describe('omni-ui-components/Toast', () => {
   });
 
   it('applies placement and position classes', () => {
-    const { rerender } = render(<Toast {...toastPropsFactory({ placement: 'top-right', position: 'fixed' })} />);
+    const { rerender } = render(
+      <Toast {...toastPropsFactory({ placement: 'top-right', position: 'fixed' })} />,
+    );
     expect(screen.getByRole('status')).toHaveClass('fixed', 'top-4', 'right-4');
     rerender(<Toast {...toastPropsFactory({ placement: 'bottom-left', position: 'absolute' })} />);
     expect(screen.getByRole('status')).toHaveClass('absolute', 'bottom-4', 'left-4');

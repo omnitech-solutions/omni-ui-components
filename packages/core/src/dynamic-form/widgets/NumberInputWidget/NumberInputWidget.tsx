@@ -1,13 +1,12 @@
-import * as React from 'react';
+import { NumberInputPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { rangeSpec } from '@rjsf/utils';
-
-import { NumberInputPrimitive } from '@oc-tech/omni-ui-components';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF NumberInput widget — formatted numeric input. */
 export const NumberInputWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, required, placeholder, options, schema } = props;
+  const { id, value, disabled, readonly, rawErrors, required, placeholder, options, schema } =
+    props;
   const { onChange } = useStableRjsfCallbacks<number | null>(props, (next) => next ?? undefined);
   const { min, max, step } = rangeSpec(schema);
   return (

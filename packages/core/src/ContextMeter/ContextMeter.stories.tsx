@@ -1,11 +1,16 @@
-import * as React from 'react';
+import { ContextMeter, type ContextMeterProps } from '@oc-tech/omni-ui-components/ContextMeter';
 import type { Meta, StoryObj } from '@storybook/react';
+import {
+  contextMeterPropsFactory,
+  contextMeterVariants,
+} from 'factories/omni-ui-components/ContextMeter/ContextMeter.factories';
+import type * as React from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
-import { ContextMeter, type ContextMeterProps } from '@oc-tech/omni-ui-components/ContextMeter';
-import { contextMeterPropsFactory, contextMeterVariants } from 'factories/omni-ui-components/ContextMeter/ContextMeter.factories';
-
-const Stage: React.FC<React.PropsWithChildren<{ minHeight?: number }>> = ({ minHeight = 360, children }) => (
+const Stage: React.FC<React.PropsWithChildren<{ minHeight?: number }>> = ({
+  minHeight = 360,
+  children,
+}) => (
   <div className="flex items-end justify-end p-6" style={{ minHeight }}>
     {children}
   </div>
@@ -26,8 +31,14 @@ const meta: Meta<ContextMeterProps> = {
   },
   args: { ...contextMeterPropsFactory() },
   argTypes: {
-    used: { control: { type: 'number', min: 0, max: 400000, step: 1000 }, description: 'Estimated tokens in context.' },
-    window: { control: 'number', description: 'The model window in tokens. Unset: empty ring, no percent.' },
+    used: {
+      control: { type: 'number', min: 0, max: 400000, step: 1000 },
+      description: 'Estimated tokens in context.',
+    },
+    window: {
+      control: 'number',
+      description: 'The model window in tokens. Unset: empty ring, no percent.',
+    },
     sections: { control: 'object', description: 'Breakdown rows `{ label, tokens }`.' },
     thresholds: { control: 'object', description: '`{ warn: 60, danger: 80 }` (exclusive).' },
     open: { control: 'boolean', description: 'Controlled open state.' },
@@ -35,7 +46,11 @@ const meta: Meta<ContextMeterProps> = {
     ringSize: { control: { type: 'number', min: 14, max: 40 } },
     align: { control: 'inline-radio', options: ['start', 'center', 'end'] },
     side: { control: 'inline-radio', options: ['top', 'bottom'] },
-    labels: { control: 'object', description: 'Every string (partial): title, titleNoWindow, dialog, heading, approx, summary, note, summarise.' },
+    labels: {
+      control: 'object',
+      description:
+        'Every string (partial): title, titleNoWindow, dialog, heading, approx, summary, note, summarise.',
+    },
     onSummarise: { action: 'summarise', description: 'Shows the Summarise now button when given.' },
     onOpenChange: { action: 'open change' },
   },
@@ -77,14 +92,24 @@ export const Full: Story = { args: { used: 300000, defaultOpen: true } };
 export const NoWindow: Story = { args: { window: undefined, used: 1200, defaultOpen: true } };
 
 /** Custom thresholds 30 / 50 and no Summarise button. */
-export const CustomThresholds: Story = { args: { used: 100000, thresholds: { warn: 30, danger: 50 }, onSummarise: undefined, defaultOpen: true } };
+export const CustomThresholds: Story = {
+  args: {
+    used: 100000,
+    thresholds: { warn: 30, danger: 50 },
+    onSummarise: undefined,
+    defaultOpen: true,
+  },
+};
 
 /** The ring at every level, closed. */
 export const RingLevels: Story = {
   render: (args) => (
     <div className="flex flex-wrap items-center gap-6 p-6">
       {contextMeterVariants
-        .filter((variant) => !variant.name.startsWith('Custom') && !variant.name.startsWith('No summarise'))
+        .filter(
+          (variant) =>
+            !variant.name.startsWith('Custom') && !variant.name.startsWith('No summarise'),
+        )
         .map((variant) => (
           <div key={variant.name} className="flex flex-col items-center gap-1">
             <ContextMeter {...args} {...variant.args} />

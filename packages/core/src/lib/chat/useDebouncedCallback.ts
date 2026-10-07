@@ -12,7 +12,10 @@ export interface DebouncedCallback<A extends unknown[]> {
  * A debounced version of `callback`: it runs `delay` ms after the last call, always with the latest `callback`.
  * A pending call is flushed when the component unmounts, so the last edit of an autosaved field is never lost.
  */
-export const useDebouncedCallback = <A extends unknown[]>(callback: (...args: A) => void, delay: number): DebouncedCallback<A> => {
+export const useDebouncedCallback = <A extends unknown[]>(
+  callback: (...args: A) => void,
+  delay: number,
+): DebouncedCallback<A> => {
   const latest = React.useRef(callback);
   latest.current = callback;
   const timer = React.useRef<ReturnType<typeof setTimeout>>(undefined);

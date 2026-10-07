@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** One source a reply cites. `n` is the number the reply's `[n]` pills use. */
 export interface SourceItem {
@@ -18,7 +18,8 @@ export interface SourcesLabels {
   close: string;
 }
 
-export interface SourcesProps<T extends SourceItem = SourceItem> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface SourcesProps<T extends SourceItem = SourceItem>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   items: T[];
   /** The source whose card is open (controlled). `null` is controlled and closed. */
   openN?: number | null;

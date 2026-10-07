@@ -19,8 +19,16 @@ import type { FormFieldProps, FormFieldRenderProps } from './Form.types';
  *   )}
  * </FormField>
  */
-export function FormField<TValue = unknown>({ name, required = false, children }: FormFieldProps<TValue>) {
-  const ctx = React.useContext(FormContext) as { form: any; disabled: boolean; readOnly: boolean } | null;
+export function FormField<TValue = unknown>({
+  name,
+  required = false,
+  children,
+}: FormFieldProps<TValue>) {
+  const ctx = React.useContext(FormContext) as {
+    form: any;
+    disabled: boolean;
+    readOnly: boolean;
+  } | null;
   if (!ctx) throw new Error('FormField must be rendered inside <Form>.');
   const { form, disabled, readOnly } = ctx;
   const fallbackId = useStableId('oui-field');
@@ -29,7 +37,9 @@ export function FormField<TValue = unknown>({ name, required = false, children }
     <form.Field name={name as any}>
       {(field: any) => {
         const meta = field.state.meta;
-        const errorMessages: string[] = (meta?.errors ?? []).map((e: unknown) => (typeof e === 'string' ? e : (e as any)?.message)).filter(Boolean);
+        const errorMessages: string[] = (meta?.errors ?? [])
+          .map((e: unknown) => (typeof e === 'string' ? e : (e as any)?.message))
+          .filter(Boolean);
         const error = errorMessages[0];
         const render: FormFieldRenderProps<TValue> = {
           id: `${fallbackId}-${name}`,

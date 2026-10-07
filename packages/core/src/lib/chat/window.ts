@@ -17,7 +17,8 @@ export interface ScrollBox {
 }
 
 /** Distance in px between the bottom of the viewport and the end of the content. */
-export const offsetFromBottom = (box: ScrollBox): number => box.scrollHeight - box.scrollTop - box.clientHeight;
+export const offsetFromBottom = (box: ScrollBox): number =>
+  box.scrollHeight - box.scrollTop - box.clientHeight;
 
 /** Scrolls so the viewport sits `offset` px above the end of the content again (after content was added above it). */
 export const restoreFromBottom = (box: ScrollBox, offset: number): void => {
@@ -25,7 +26,8 @@ export const restoreFromBottom = (box: ScrollBox, offset: number): void => {
 };
 
 /** Index of the first item to draw when `size` newest items are wanted and nothing is pinned. */
-export const defaultWindowStart = (length: number, size: number): number => Math.max(0, length - Math.max(1, Math.floor(size)));
+export const defaultWindowStart = (length: number, size: number): number =>
+  Math.max(0, length - Math.max(1, Math.floor(size)));
 
 export interface HistoryWindowOptions {
   /** How many of the newest items to draw at first. `undefined` or `Infinity`: all of them (no windowing). */
@@ -45,7 +47,8 @@ export interface HistoryWindow<T> {
   showEarlier: (container?: HTMLElement | null) => void;
 }
 
-const useIsomorphicLayoutEffect = typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
+const useIsomorphicLayoutEffect =
+  typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
 
 /**
  * Draws only the newest `size` items of a long history and reveals `step` more on demand, keeping what the person is reading
@@ -58,7 +61,11 @@ const useIsomorphicLayoutEffect = typeof window === 'undefined' ? React.useEffec
  * const view = useHistoryWindow(turns, (turn) => turn.id, { size: 40 });
  * view.items.map(draw); {view.hidden > 0 && <button onClick={(e) => view.showEarlier(e.currentTarget)}>Earlier</button>}
  */
-export function useHistoryWindow<T>(items: readonly T[], getId: (item: T) => string, { size, step }: HistoryWindowOptions = {}): HistoryWindow<T> {
+export function useHistoryWindow<T>(
+  items: readonly T[],
+  getId: (item: T) => string,
+  { size, step }: HistoryWindowOptions = {},
+): HistoryWindow<T> {
   const windowed = size !== undefined && Number.isFinite(size);
   const [pin, setPin] = React.useState<string | null>(null);
   const latestId = React.useRef(getId);
@@ -93,6 +100,9 @@ export function useHistoryWindow<T>(items: readonly T[], getId: (item: T) => str
     setPin(latestId.current(all[next]));
   }, []);
 
-  const visible = React.useMemo(() => (start === 0 ? (items as T[]) : items.slice(start)), [items, start]);
+  const visible = React.useMemo(
+    () => (start === 0 ? (items as T[]) : items.slice(start)),
+    [items, start],
+  );
   return { items: visible, start, hidden: start, showEarlier };
 }

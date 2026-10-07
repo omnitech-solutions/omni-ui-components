@@ -1,5 +1,5 @@
-import * as React from 'react';
 import type { ExpandedState } from '@tanstack/react-table';
+import * as React from 'react';
 import { expandedStateFromKeys } from '../../internal';
 import type { TableProps } from '../../Table.types';
 
@@ -12,7 +12,9 @@ export function useExpandedState<TRecord, TRowData>(
     propsState?.expanded ??
     (expandable?.expandedRowKeys ? expandedStateFromKeys(expandable.expandedRowKeys) : undefined) ??
     defaultStateExpanded ??
-    (expandable?.defaultExpandAllRows ? true : expandedStateFromKeys(expandable?.defaultExpandedRowKeys));
+    (expandable?.defaultExpandAllRows
+      ? true
+      : expandedStateFromKeys(expandable?.defaultExpandedRowKeys));
 
   const [expanded, setExpanded] = React.useState<ExpandedState>(initial);
 

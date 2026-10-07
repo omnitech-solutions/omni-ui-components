@@ -1,13 +1,13 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
+import type { InputProps } from '../Input';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
 import { PhoneInputPrimitive } from './PhoneInputPrimitive';
-import type { InputProps } from '../Input';
 
 export { formatPhone } from './formatPhone';
 
-export interface PhoneInputProps extends Omit<InputProps, 'type' | 'inputMode' | 'value' | 'onChange'> {
+export interface PhoneInputProps
+  extends Omit<InputProps, 'type' | 'inputMode' | 'value' | 'onChange'> {
   value?: string;
   onChange?: (next: string) => void;
   /** Default dial code (e.g. `+1`). When set, formats as `+CC XXX XXX XXXX`. */
@@ -21,7 +21,22 @@ export interface PhoneInputProps extends Omit<InputProps, 'type' | 'inputMode' |
  * <PhoneInput label="Phone" value={phone} onChange={setPhone} />
  */
 const PhoneInputInner = React.forwardRef<HTMLInputElement, PhoneInputProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

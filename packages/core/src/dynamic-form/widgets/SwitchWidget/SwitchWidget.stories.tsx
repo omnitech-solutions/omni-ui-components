@@ -1,25 +1,41 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
   disabledNotifyFixture,
+  type NotifyFormData,
   plainNotifyFixture,
   prefilledNotifyFixture,
-  type NotifyFormData,
 } from 'factories/dynamic-form/widgets/SwitchWidget/SwitchWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<NotifyFormData>;
 
 const config = defineDynamicFormStories<NotifyFormData>({
   title: 'dynamic-form/widgets/SwitchWidget',
-  fixtures: { plain: plainNotifyFixture, prefilled: prefilledNotifyFixture, disabled: disabledNotifyFixture },
-  titles: { plain: 'SwitchWidget', prefilled: 'SwitchWidget · prefilled', disabled: 'SwitchWidget · disabled' },
+  fixtures: {
+    plain: plainNotifyFixture,
+    prefilled: prefilledNotifyFixture,
+    disabled: disabledNotifyFixture,
+  },
+  titles: {
+    plain: 'SwitchWidget',
+    prefilled: 'SwitchWidget · prefilled',
+    disabled: 'SwitchWidget · disabled',
+  },
   defaultArgs: { fixture: 'plain' },
   docs: {
     name: 'SwitchWidget',
-    whenToUse: ['Toggle for boolean settings. Same data contract as `checkbox` but a distinct UX.'].join(' '),
+    whenToUse: [
+      'Toggle for boolean settings. Same data contract as `checkbox` but a distinct UX.',
+    ].join(' '),
   },
-  stories: { Plain: { fixture: 'plain' }, Prefilled: { fixture: 'prefilled' }, Disabled: { fixture: 'disabled' } },
+  stories: {
+    Plain: { fixture: 'plain' },
+    Prefilled: { fixture: 'prefilled' },
+    Disabled: { fixture: 'disabled' },
+  },
 });
 
 const meta: Meta<Args> = {

@@ -1,2 +1,2 @@
-export { DerivedTextWidget } from './DerivedTextWidget';
 export type { DerivedTextTone } from './DerivedTextWidget';
+export { DerivedTextWidget } from './DerivedTextWidget';

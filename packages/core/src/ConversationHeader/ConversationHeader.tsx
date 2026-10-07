@@ -1,12 +1,16 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { useControllableState } from '../lib/use-controllable-state';
+import * as React from 'react';
 import { ActionMenu, type ActionMenuSection } from '../ActionMenu';
-import { IconAction } from '../internal/support/IconAction';
-import { Toolbar } from '../Toolbar';
 import type { ConversationItem } from '../ConversationList/ConversationList.types';
-import type { ConversationHeaderAction, ConversationHeaderLabels, ConversationHeaderProps, ConversationMenuItem } from './ConversationHeader.types';
+import { IconAction } from '../internal/support/IconAction';
+import { useControllableState } from '../lib/use-controllable-state';
+import { Toolbar } from '../Toolbar';
+import type {
+  ConversationHeaderAction,
+  ConversationHeaderLabels,
+  ConversationHeaderProps,
+  ConversationMenuItem,
+} from './ConversationHeader.types';
 
 /** English defaults of every string. Pass `labels` to translate any of them. */
 export const DEFAULT_CONVERSATION_HEADER_LABELS: ConversationHeaderLabels = {
@@ -39,10 +43,19 @@ const Actions = <A extends ConversationHeaderAction<A>>({ actions }: { actions: 
 );
 
 /** Split the flat menu rows into ActionMenu sections wherever a row asks for a divider. */
-const toSections = <M extends ConversationMenuItem<M>>(items: M[], onRename: (item: M) => void): ActionMenuSection[] => {
+const toSections = <M extends ConversationMenuItem<M>>(
+  items: M[],
+  onRename: (item: M) => void,
+): ActionMenuSection[] => {
   const sections: ActionMenuSection[] = [];
   items.forEach((item, index) => {
-    if (index === 0 || item.separated) sections.push({ id: `section-${sections.length}`, selection: 'none', divider: index > 0, items: [] });
+    if (index === 0 || item.separated)
+      sections.push({
+        id: `section-${sections.length}`,
+        selection: 'none',
+        divider: index > 0,
+        items: [],
+      });
     sections[sections.length - 1].items.push({
       id: item.id,
       label: item.label,
@@ -71,7 +84,11 @@ const toSections = <M extends ConversationMenuItem<M>>(items: M[], onRename: (it
  *   menuItems={[{ id: 'rename', label: 'Rename', startsRename: true }, { id: 'delete', label: 'Delete', danger: true, separated: true, onClick: remove }]}
  *   actions={[{ key: 'close', label: 'Close', shortcut: '⌘ J', icon: <X />, onClick: close }]} />
  */
-export const ConversationHeader = <C extends ConversationItem = ConversationItem, M extends ConversationMenuItem<M> = ConversationMenuItem, A extends ConversationHeaderAction<A> = ConversationHeaderAction>({
+export const ConversationHeader = <
+  C extends ConversationItem = ConversationItem,
+  M extends ConversationMenuItem<M> = ConversationMenuItem,
+  A extends ConversationHeaderAction<A> = ConversationHeaderAction,
+>({
   conversation,
   menuItems = [],
   menuIcon,
@@ -167,10 +184,18 @@ export const ConversationHeader = <C extends ConversationItem = ConversationItem
         if (conversation) onRenameStart?.(conversation);
       })}
       trigger={
-        <button type="button" data-slot="conversation-title" aria-haspopup="menu" className={cn(titleClass, 'hover:bg-[color:var(--oui-tone-neutral-bg)]')}>
+        <button
+          type="button"
+          data-slot="conversation-title"
+          aria-haspopup="menu"
+          className={cn(titleClass, 'hover:bg-[color:var(--oui-tone-neutral-bg)]')}
+        >
           <span className="truncate">{titleText}</span>
           {menuIcon ? (
-            <span aria-hidden="true" className="flex-none text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-4">
+            <span
+              aria-hidden="true"
+              className="flex-none text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-4"
+            >
               {menuIcon}
             </span>
           ) : null}
@@ -195,12 +220,21 @@ export const ConversationHeader = <C extends ConversationItem = ConversationItem
       label={labels.toolbar}
       variant="bar"
       separators={false}
-      className={cn('flex-nowrap px-2 py-1.5 [&>[data-group-id=trailing]]:min-w-0 [&>[data-group-id=trailing]]:flex-[0_1_auto] [&>[data-group-id=trailing]]:flex-nowrap', className)}
+      className={cn(
+        'flex-nowrap px-2 py-1.5 [&>[data-group-id=trailing]]:min-w-0 [&>[data-group-id=trailing]]:flex-[0_1_auto] [&>[data-group-id=trailing]]:flex-nowrap',
+        className,
+      )}
       data-testid={testId}
       leading={
         <div data-slot="conversation-header" className="flex min-w-0 flex-1 items-center gap-1">
           {onHistoryToggle ? (
-            <IconAction data-action="history" icon={historyIcon} label={labels.history} shortcut={historyShortcut} onClick={() => onHistoryToggle()} />
+            <IconAction
+              data-action="history"
+              icon={historyIcon}
+              label={labels.history}
+              shortcut={historyShortcut}
+              onClick={() => onHistoryToggle()}
+            />
           ) : null}
           {leading}
           {titleNode}
@@ -209,11 +243,17 @@ export const ConversationHeader = <C extends ConversationItem = ConversationItem
       trailing={
         <>
           {modelControl ? (
-            <div data-slot="conversation-model" className="mr-2 min-w-0 shrink [&>*]:block [&>*]:max-w-full [&>*]:min-w-0 [&>*]:overflow-hidden [&>*]:text-ellipsis [&>*]:whitespace-nowrap [&_button]:max-w-full [&_button]:min-w-0 [&_button]:overflow-hidden [&_button]:text-ellipsis [&_button]:whitespace-nowrap">
+            <div
+              data-slot="conversation-model"
+              className="mr-2 min-w-0 shrink [&>*]:block [&>*]:max-w-full [&>*]:min-w-0 [&>*]:overflow-hidden [&>*]:text-ellipsis [&>*]:whitespace-nowrap [&_button]:max-w-full [&_button]:min-w-0 [&_button]:overflow-hidden [&_button]:text-ellipsis [&_button]:whitespace-nowrap"
+            >
               {modelControl}
             </div>
           ) : null}
-          <div data-slot="conversation-actions" className="flex flex-none items-center gap-[var(--oui-control-gap)]">
+          <div
+            data-slot="conversation-actions"
+            className="flex flex-none items-center gap-[var(--oui-control-gap)]"
+          >
             <Actions actions={actions} />
             {trailing}
           </div>

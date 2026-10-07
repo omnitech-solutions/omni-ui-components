@@ -1,15 +1,24 @@
-import * as React from 'react';
-import { ChevronDown, GraduationCap, Keyboard } from 'lucide-react';
-
 import { ActionMenu } from '@oc-tech/omni-ui-components/ActionMenu';
 import { Button } from '@oc-tech/omni-ui-components/Button';
 import { IconButton } from '@oc-tech/omni-ui-components/IconButton';
 import { SegmentedPrimitive } from '@oc-tech/omni-ui-components/Segmented';
 import { Toolbar, type ToolbarProps, type ToolbarSize } from '@oc-tech/omni-ui-components/Toolbar';
-import { answerStyleMenuSpec, answerStyleOptions, shortcutsMenu } from '../ActionMenu/ActionMenu.factories';
-import { SAMPLE_PANELS } from '../Segmented/Segmented.factories';
-import { CaptureSplitButtonDemo, MicSplitButtonDemo, type CaptureState, type MicState, type OnAction } from '../SplitButton/SplitButton.factories';
+import { ChevronDown, GraduationCap, Keyboard } from 'lucide-react';
+import * as React from 'react';
 import type { Variant } from '../../internal/support/makeFactory';
+import {
+  answerStyleMenuSpec,
+  answerStyleOptions,
+  shortcutsMenu,
+} from '../ActionMenu/ActionMenu.factories';
+import { SAMPLE_PANELS } from '../Segmented/Segmented.factories';
+import {
+  CaptureSplitButtonDemo,
+  type CaptureState,
+  MicSplitButtonDemo,
+  type MicState,
+  type OnAction,
+} from '../SplitButton/SplitButton.factories';
 
 /** The three window dots of the Native App window: story-only chrome, passed through the `leading` slot. */
 export const WindowDotsSample: React.FC = () => (
@@ -107,7 +116,9 @@ export const NativeToolbarDemo: React.FC<NativeToolbarDemoProps> = ({
                   buttonSize={size}
                   tone="neutral"
                   icon={<GraduationCap className="text-[color:var(--oui-foreground-muted)]" />}
-                  iconAfter={<ChevronDown className="size-4 text-[color:var(--oui-foreground-muted)]" />}
+                  iconAfter={
+                    <ChevronDown className="size-4 text-[color:var(--oui-foreground-muted)]" />
+                  }
                   labelMaxWidth="var(--oui-control-label-max)"
                   data-testid="answer-style-trigger"
                 >
@@ -175,22 +186,46 @@ export const NativeToolbarDemo: React.FC<NativeToolbarDemoProps> = ({
 /** The seven states of board 1a, in design order. */
 export const toolbarVariants: Variant<NativeToolbarDemoProps>[] = [
   { name: 'Live · manual', args: { capture: { mode: 'manual' }, mic: { status: 'listening' } } },
-  { name: 'Live · auto (blue tint)', args: { capture: { mode: 'auto' }, mic: { status: 'listening' } } },
-  { name: 'Analysing (ring)', args: { capture: { mode: 'manual', analysing: true }, mic: { status: 'listening' } } },
+  {
+    name: 'Live · auto (blue tint)',
+    args: { capture: { mode: 'auto' }, mic: { status: 'listening' } },
+  },
+  {
+    name: 'Analysing (ring)',
+    args: { capture: { mode: 'manual', analysing: true }, mic: { status: 'listening' } },
+  },
   { name: 'Mic lost · retrying', args: { capture: { mode: 'manual' }, mic: { status: 'lost' } } },
-  { name: 'Screen permission lost', args: { capture: { mode: 'manual', problem: true }, mic: { status: 'listening' } } },
+  {
+    name: 'Screen permission lost',
+    args: { capture: { mode: 'manual', problem: true }, mic: { status: 'listening' } },
+  },
   { name: 'Mic muted by you', args: { capture: { mode: 'manual' }, mic: { status: 'muted' } } },
-  { name: 'Paused · code hidden', args: { capture: { mode: 'manual', paused: true }, mic: { status: 'paused' }, panels: ['chat', 'answer'] } },
+  {
+    name: 'Paused · code hidden',
+    args: {
+      capture: { mode: 'manual', paused: true },
+      mic: { status: 'paused' },
+      panels: ['chat', 'answer'],
+    },
+  },
 ];
 
 /** Labelled (52px) rows: icon with a caption underneath. */
 export const toolbarLabelledVariants: Variant<NativeToolbarDemoProps>[] = [
-  { name: 'Labelled · live manual', args: { capture: { mode: 'manual' }, mic: { status: 'listening' }, size: 'control-labelled' } },
-  { name: 'Labelled · mic lost', args: { capture: { mode: 'manual' }, mic: { status: 'lost' }, size: 'control-labelled' } },
+  {
+    name: 'Labelled · live manual',
+    args: { capture: { mode: 'manual' }, mic: { status: 'listening' }, size: 'control-labelled' },
+  },
+  {
+    name: 'Labelled · mic lost',
+    args: { capture: { mode: 'manual' }, mic: { status: 'lost' }, size: 'control-labelled' },
+  },
 ];
 
 /** Build `<NativeToolbarDemo>` props for standalone stories and tests. */
-export const nativeToolbarDemoPropsFactory = (overrides: Partial<NativeToolbarDemoProps> = {}): NativeToolbarDemoProps => ({
+export const nativeToolbarDemoPropsFactory = (
+  overrides: Partial<NativeToolbarDemoProps> = {},
+): NativeToolbarDemoProps => ({
   ...toolbarVariants[0].args,
   ...overrides,
   capture: { ...toolbarVariants[0].args.capture, ...overrides.capture } as CaptureState,

@@ -6,7 +6,11 @@ type NotificationApi = {
 };
 
 const notify = ({ message, description }: { message: string; description?: string }) => {
-  if (typeof window !== 'undefined') window.setTimeout(() => window.alert(description ? `${message}\n\n${description}` : message), 0);
+  if (typeof window !== 'undefined')
+    window.setTimeout(
+      () => window.alert(description ? `${message}\n\n${description}` : message),
+      0,
+    );
 };
 
 export const notification: NotificationApi = {

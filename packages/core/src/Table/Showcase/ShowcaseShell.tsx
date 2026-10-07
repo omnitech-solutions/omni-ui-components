@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 import { SegmentedPill, ShowCodePanel } from '../storySupport';
 
 export interface ShowcaseShellProps {
@@ -15,7 +15,13 @@ export interface ShowcaseShellProps {
  * header explaining what the composition is, the live Table, and a Show
  * code panel with the JSX a consumer would paste into an app view.
  */
-export const ShowcaseShell = ({ title, scenario, code, language = 'tsx', children }: ShowcaseShellProps) => (
+export const ShowcaseShell = ({
+  title,
+  scenario,
+  code,
+  language = 'tsx',
+  children,
+}: ShowcaseShellProps) => (
   <div className="pb-shell">
     <div className="pb-shell-header">
       <h2>

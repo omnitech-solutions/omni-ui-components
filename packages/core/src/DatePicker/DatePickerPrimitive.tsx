@@ -1,9 +1,8 @@
-import * as React from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-import { Calendar as CalendarIcon, X } from 'lucide-react';
 import { Calendar } from 'components/ui/calendar';
-
 import { cn } from 'lib/utils';
+import { Calendar as CalendarIcon, X } from 'lucide-react';
+import * as React from 'react';
 import { inputVariants } from '../Input/Input.variants';
 import type { DatePickerPrimitiveProps, DateRange } from './DatePicker.types';
 
@@ -15,7 +14,10 @@ const formatDate = (d: Date | undefined | null, opts: Intl.DateTimeFormatOptions
 };
 
 const isRange = (v: unknown): v is DateRange =>
-  Boolean(v) && typeof v === 'object' && !(v instanceof Date) && ('from' in (v as object) || 'to' in (v as object));
+  Boolean(v) &&
+  typeof v === 'object' &&
+  !(v instanceof Date) &&
+  ('from' in (v as object) || 'to' in (v as object));
 
 /**
  * Raw Omni DatePicker primitive — Popover-triggered Calendar.
@@ -49,7 +51,10 @@ const DatePickerPrimitiveInner = React.forwardRef<HTMLButtonElement, DatePickerP
   ) => {
     const [open, setOpen] = React.useState(false);
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
 
     const [internal, setInternal] = React.useState<Date | DateRange | null>(defaultValue ?? null);
     const isControlled = value !== undefined;
@@ -121,7 +126,10 @@ const DatePickerPrimitiveInner = React.forwardRef<HTMLButtonElement, DatePickerP
                 <X className="size-3.5" aria-hidden="true" />
               </span>
             ) : (
-              <CalendarIcon className="size-4 shrink-0 text-[var(--oui-foreground-muted)]" aria-hidden="true" />
+              <CalendarIcon
+                className="size-4 shrink-0 text-[var(--oui-foreground-muted)]"
+                aria-hidden="true"
+              />
             )}
           </button>
         </PopoverPrimitive.Trigger>
@@ -195,4 +203,6 @@ const DatePickerPrimitiveInner = React.forwardRef<HTMLButtonElement, DatePickerP
 );
 DatePickerPrimitiveInner.displayName = 'DatePickerPrimitive';
 
-export const DatePickerPrimitive = React.memo(DatePickerPrimitiveInner) as typeof DatePickerPrimitiveInner;
+export const DatePickerPrimitive = React.memo(
+  DatePickerPrimitiveInner,
+) as typeof DatePickerPrimitiveInner;

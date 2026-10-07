@@ -1,9 +1,8 @@
 import * as React from 'react';
-
-import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { InputOTPPrimitive } from './InputOTPPrimitive';
 import type { FieldLayoutProps } from '../Input/Input.variants';
 import type { RootProps } from '../lib';
+import { FieldShell, useFieldChrome } from '../lib/FieldShell';
+import { InputOTPPrimitive } from './InputOTPPrimitive';
 
 export interface InputOTPProps extends RootProps, FieldLayoutProps {
   id?: string;
@@ -33,7 +32,19 @@ export interface InputOTPProps extends RootProps, FieldLayoutProps {
 export const InputOTP = React.memo(
   React.forwardRef<HTMLInputElement, InputOTPProps>(
     (
-      { id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps },
+      {
+        id: idProp,
+        wrapperClassName,
+        labelClassName,
+        layout = 'vertical',
+        label,
+        description,
+        error,
+        required,
+        invalid,
+        className,
+        ...primitiveProps
+      },
       ref,
     ) => {
       const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({

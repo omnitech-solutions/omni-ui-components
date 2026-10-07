@@ -1,10 +1,13 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 
 export interface LayoutSectionProps extends React.HTMLAttributes<HTMLElement> {}
 
-const makeSection = <T extends HTMLElement>(displayName: string, tag: keyof JSX.IntrinsicElements, baseClassName: string) => {
+const makeSection = <T extends HTMLElement>(
+  displayName: string,
+  tag: keyof JSX.IntrinsicElements,
+  baseClassName: string,
+) => {
   const Component = React.forwardRef<T, LayoutSectionProps>(({ className, ...props }, ref) =>
     React.createElement(tag, { ref, className: cn(baseClassName, className), ...props }),
   );

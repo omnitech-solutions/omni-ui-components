@@ -1,8 +1,7 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { CheckboxPrimitive } from './CheckboxPrimitive';
+import * as React from 'react';
 import type { CheckboxGroupPrimitiveProps } from './Checkbox.types';
+import { CheckboxPrimitive } from './CheckboxPrimitive';
 
 /**
  * Raw Omni checkbox group primitive — a list of {@link CheckboxPrimitive}
@@ -34,7 +33,10 @@ const CheckboxGroupPrimitiveInner = React.forwardRef<HTMLDivElement, CheckboxGro
     ref,
   ) => {
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
 
     const [internal, setInternal] = React.useState<string[]>(defaultValue ?? []);
     const isControlled = value !== undefined;
@@ -55,7 +57,12 @@ const CheckboxGroupPrimitiveInner = React.forwardRef<HTMLDivElement, CheckboxGro
         data-testid={testId}
         data-slot="checkbox-group"
         data-orientation={orientation}
-        className={cn(orientation === 'horizontal' ? 'flex flex-row flex-wrap items-center gap-x-6 gap-y-3' : 'flex flex-col gap-4', className)}
+        className={cn(
+          orientation === 'horizontal'
+            ? 'flex flex-row flex-wrap items-center gap-x-6 gap-y-3'
+            : 'flex flex-col gap-4',
+          className,
+        )}
       >
         {options.map((opt, idx) => {
           const itemId = id ? `${id}-${opt.value}` : `oui-checkbox-${idx}-${opt.value}`;
@@ -68,7 +75,9 @@ const CheckboxGroupPrimitiveInner = React.forwardRef<HTMLDivElement, CheckboxGro
               htmlFor={itemId}
               className={cn(
                 'flex items-start gap-3 rounded-md p-2 -m-2',
-                isItemDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-muted/40',
+                isItemDisabled
+                  ? 'cursor-not-allowed opacity-50'
+                  : 'cursor-pointer hover:bg-muted/40',
               )}
             >
               <CheckboxPrimitive
@@ -85,9 +94,14 @@ const CheckboxGroupPrimitiveInner = React.forwardRef<HTMLDivElement, CheckboxGro
                 className="mt-0.5"
               />
               <div className="flex min-w-0 flex-col gap-0.5">
-                <span className="font-[family-name:var(--oui-font-sans)] text-sm font-semibold leading-tight text-[var(--oui-foreground)]">{opt.label}</span>
+                <span className="font-[family-name:var(--oui-font-sans)] text-sm font-semibold leading-tight text-[var(--oui-foreground)]">
+                  {opt.label}
+                </span>
                 {opt.description ? (
-                  <span id={descriptionId} className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]">
+                  <span
+                    id={descriptionId}
+                    className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]"
+                  >
                     {opt.description}
                   </span>
                 ) : null}
@@ -101,4 +115,6 @@ const CheckboxGroupPrimitiveInner = React.forwardRef<HTMLDivElement, CheckboxGro
 );
 CheckboxGroupPrimitiveInner.displayName = 'CheckboxGroupPrimitive';
 
-export const CheckboxGroupPrimitive = React.memo(CheckboxGroupPrimitiveInner) as typeof CheckboxGroupPrimitiveInner;
+export const CheckboxGroupPrimitive = React.memo(
+  CheckboxGroupPrimitiveInner,
+) as typeof CheckboxGroupPrimitiveInner;

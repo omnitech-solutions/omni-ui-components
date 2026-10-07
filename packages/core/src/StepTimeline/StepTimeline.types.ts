@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** Where one step is. `pending` has not started, `running` is in progress, `done` finished, `failed` finished with an error. */
 export type StepTimelineState = 'pending' | 'running' | 'done' | 'failed';
@@ -49,7 +49,8 @@ export interface StepTimelineIcons {
   spinner?: React.ReactNode;
 }
 
-export interface StepTimelineProps<T extends StepTimelineStep = StepTimelineStep> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface StepTimelineProps<T extends StepTimelineStep = StepTimelineStep>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   steps: T[];
   /** `summary` (default): a collapsible summary button and a list. `rail`: a vertical dotted timeline shown while working or open. */
   variant?: 'summary' | 'rail';

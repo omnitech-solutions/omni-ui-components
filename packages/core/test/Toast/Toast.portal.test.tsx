@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Toast } from '@oc-tech/omni-ui-components/Toast';
+import { render, screen } from '@testing-library/react';
 import { toastPropsFactory } from 'factories/omni-ui-components/Toast/Toast.factories';
 
 describe('omni-ui-components/Toast portal', () => {

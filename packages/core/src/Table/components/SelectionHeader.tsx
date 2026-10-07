@@ -1,6 +1,6 @@
-import * as React from 'react';
 import classNames from 'classnames';
 import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
 import { useTable } from '../hooks/useTable';
 import { headerCellClass } from '../internal';
 import type { TableProps, TableSelectionAction } from '../Table.types';
@@ -106,7 +106,10 @@ export function SelectionHeader<TRecord, TRowData>({
               <ChevronDown className="bui-table-icon" aria-hidden="true" />
             </button>
             {menuOpen && (
-              <span className="bui-table-selection-menu-dropdown" data-testid={`${testIdPrefix}-selection-menu`}>
+              <span
+                className="bui-table-selection-menu-dropdown"
+                data-testid={`${testIdPrefix}-selection-menu`}
+              >
                 {actions.map((selection) => (
                   <button
                     key={selection.key}

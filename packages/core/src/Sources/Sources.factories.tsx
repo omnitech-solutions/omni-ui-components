@@ -1,7 +1,5 @@
-import * as React from 'react';
-import { FileText, X } from 'lucide-react';
-
 import type { SourceItem, SourcesProps } from '@oc-tech/omni-ui-components/Sources';
+import { FileText, X } from 'lucide-react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const sampleSources = (): SourceItem[] => [

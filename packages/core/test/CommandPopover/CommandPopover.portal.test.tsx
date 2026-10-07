@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render } from '@testing-library/react';
 
 import { CommandPopover } from '@oc-tech/omni-ui-components/CommandPopover';
+import { render } from '@testing-library/react';
 import { commandPopoverPropsFactory } from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
 
 describe('omni-ui-components/CommandPopover portal', () => {
@@ -20,7 +20,9 @@ describe('omni-ui-components/CommandPopover portal', () => {
   it('with an anchor and no container, mounts in body', () => {
     const anchor = document.createElement('div');
     document.body.appendChild(anchor);
-    const { container } = render(<CommandPopover {...commandPopoverPropsFactory()} anchor={anchor} />);
+    const { container } = render(
+      <CommandPopover {...commandPopoverPropsFactory()} anchor={anchor} />,
+    );
     const surface = document.querySelector('[data-slot="command-popover"]') as HTMLElement;
     expect(container).not.toContainElement(surface);
     expect(surface.parentElement).toBe(document.body);

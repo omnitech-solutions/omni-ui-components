@@ -1,5 +1,4 @@
-import * as React from 'react';
-import type { TableCellOverride, TableCellRenderContext } from '../Table.types';
+import type * as React from 'react';
 import { createRowDataTypeMap, type RowDataType } from '../Table.RowData';
 import { RowDataActionsType } from '../Table.RowDataActions';
 import { RowDataAvatarType } from '../Table.RowDataAvatar';
@@ -10,6 +9,7 @@ import { RowDataLinkType } from '../Table.RowDataLink';
 import { RowDataMoneyType } from '../Table.RowDataMoney';
 import { RowDataNumberType } from '../Table.RowDataNumber';
 import { RowDataTextType } from '../Table.RowDataText';
+import type { TableCellOverride, TableCellRenderContext } from '../Table.types';
 
 export const BUILT_IN_ROW_DATA_TYPES = createRowDataTypeMap(
   RowDataActionsType,

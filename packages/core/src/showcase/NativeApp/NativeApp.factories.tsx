@@ -1,26 +1,22 @@
-import * as React from "react";
-import { Eye, Monitor } from "lucide-react";
-
-import {
-  SplitButton,
-  type SplitButtonProps,
-} from "@oc-tech/omni-ui-components/SplitButton";
-import { captureMenuSpec } from "factories/omni-ui-components/ActionMenu/ActionMenu.factories";
+import { SplitButton, type SplitButtonProps } from '@oc-tech/omni-ui-components/SplitButton';
+import { captureMenuSpec } from 'factories/omni-ui-components/ActionMenu/ActionMenu.factories';
 import {
   NativePanelsDemo,
-  PANEL_BACKDROP,
   type NativePanelsState,
-} from "factories/omni-ui-components/Panel/Panel.factories";
-import {
-  TranscriptPanel,
-  readyEntries,
-} from "factories/omni-ui-components/Transcript/Transcript.factories";
-import { SessionBarDemo } from "factories/omni-ui-components/SessionBar/SessionBar.factories";
-import { NativeToolbarDemo } from "factories/omni-ui-components/Toolbar/Toolbar.factories";
+  PANEL_BACKDROP,
+} from 'factories/omni-ui-components/Panel/Panel.factories';
+import { SessionBarDemo } from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
 import type {
   MicStatus,
   OnAction,
-} from "factories/omni-ui-components/SplitButton/SplitButton.factories";
+} from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
+import { NativeToolbarDemo } from 'factories/omni-ui-components/Toolbar/Toolbar.factories';
+import {
+  readyEntries,
+  TranscriptPanel,
+} from 'factories/omni-ui-components/Transcript/Transcript.factories';
+import { Eye, Monitor } from 'lucide-react';
+import * as React from 'react';
 
 /** Everything the Native App showcase stories are driven by (the Storybook controls). */
 export interface NativeAppArgs {
@@ -31,67 +27,66 @@ export interface NativeAppArgs {
   paused: boolean;
   /** Development build: the footer shows the `<short sha> · <branch>` tag. */
   devBuild: boolean;
-  mic: Exclude<MicStatus, "paused">;
-  screen: "ok" | "problem";
-  mode: "manual" | "auto";
+  mic: Exclude<MicStatus, 'paused'>;
+  screen: 'ok' | 'problem';
+  mode: 'manual' | 'auto';
   analysing: boolean;
   onAction?: OnAction;
 }
 
-export const nativeAppDefaults: Omit<NativeAppArgs, "onAction"> = {
+export const nativeAppDefaults: Omit<NativeAppArgs, 'onAction'> = {
   seeThrough: 1,
   width: 1180,
   paused: false,
   devBuild: true,
-  mic: "listening",
-  screen: "ok",
-  mode: "manual",
+  mic: 'listening',
+  screen: 'ok',
+  mode: 'manual',
   analysing: false,
 };
 
 /** The controls shared by every story; each story shows only the ones it reads. */
 export const nativeAppArgTypes = {
   seeThrough: {
-    control: { type: "range", min: 0.22, max: 1, step: 0.01 },
-    description: "Panel and footer background opacity (M11).",
+    control: { type: 'range', min: 0.22, max: 1, step: 0.01 },
+    description: 'Panel and footer background opacity (M11).',
   },
   width: {
-    control: "inline-radio",
+    control: 'inline-radio',
     options: [900, 1180, 330],
-    description: "Window width in px (330 = the transcript alone).",
+    description: 'Window width in px (330 = the transcript alone).',
   },
   paused: {
-    control: "boolean",
-    description:
-      "Paused session: dimmed capture and mic (T8), Resume in the footer (F3).",
+    control: 'boolean',
+    description: 'Paused session: dimmed capture and mic (T8), Resume in the footer (F3).',
   },
   devBuild: {
-    control: "boolean",
-    description: "Development build: show the build tag in the footer (F2).",
+    control: 'boolean',
+    description: 'Development build: show the build tag in the footer (F2).',
   },
   mic: {
-    control: "inline-radio",
-    options: ["listening", "muted", "lost"],
-    description: "Microphone state (T3).",
+    control: 'inline-radio',
+    options: ['listening', 'muted', 'lost'],
+    description: 'Microphone state (T3).',
   },
   screen: {
-    control: "inline-radio",
-    options: ["ok", "problem"],
-    description: "Screen state (T4).",
+    control: 'inline-radio',
+    options: ['ok', 'problem'],
+    description: 'Screen state (T4).',
   },
   mode: {
-    control: "inline-radio",
-    options: ["manual", "auto"],
-    description: "When to analyse (T1).",
+    control: 'inline-radio',
+    options: ['manual', 'auto'],
+    description: 'When to analyse (T1).',
   },
   analysing: {
-    control: "boolean",
+    control: 'boolean',
     description:
-      "A run is active: ring on the capture button (T2), steps and Stop in the Answer panel (M3).",
+      'A run is active: ring on the capture button (T2), steps and Stop in the Answer panel (M3).',
   },
   onAction: {
-    action: "native-app",
-    description: "Story-only: reports presses, menu choices and panel changes.",
+    action: 'native-app',
+    description: 'Story-only: reports presses, menu choices and panel changes.',
   },
 } as const;
 
@@ -116,9 +111,9 @@ export const NativeFooter: React.FC<NativeFooterProps> = ({
   seeThrough = 1,
   onAction,
 }) => (
-  <div style={{ ["--oui-panel-see-through" as string]: seeThrough }}>
+  <div style={{ ['--oui-panel-see-through' as string]: seeThrough }}>
     <SessionBarDemo
-      initial={paused ? "paused" : "live"}
+      initial={paused ? 'paused' : 'live'}
       devBuild={devBuild}
       confirmEnd
       onAction={onAction}
@@ -131,7 +126,7 @@ export const Backdrop: React.FC<
   React.PropsWithChildren<{ width?: number; className?: string }>
 > = ({ children, width, className }) => (
   <div
-    className={`box-border rounded-xl p-3.5 ${className ?? ""}`}
+    className={`box-border rounded-xl p-3.5 ${className ?? ''}`}
     style={{ background: PANEL_BACKDROP, width }}
   >
     {children}
@@ -140,9 +135,7 @@ export const Backdrop: React.FC<
 
 /** A mono caption above a board state, as in the gallery. */
 export const StateLabel: React.FC<React.PropsWithChildren> = ({ children }) => (
-  <span className="font-mono text-[11.5px] text-[var(--oui-foreground-muted)]">
-    {children}
-  </span>
+  <span className="font-mono text-[11.5px] text-[var(--oui-foreground-muted)]">{children}</span>
 );
 
 /**
@@ -163,24 +156,24 @@ export const NativeAppWindow: React.FC<NativeAppArgs> = ({
 }) => {
   const [analysing, setAnalysing] = React.useState(analysingProp);
   const [paused, setPaused] = React.useState(pausedProp);
-  const [panels, setPanels] = React.useState(["chat", "answer", "code"]);
+  const [panels, setPanels] = React.useState(['chat', 'answer', 'code']);
   React.useEffect(() => setAnalysing(analysingProp), [analysingProp]);
   React.useEffect(() => setPaused(pausedProp), [pausedProp]);
 
   const report: OnAction = (name, detail) => {
     onAction?.(name, detail);
-    if (name === "capture:press" || name === "stop")
-      setAnalysing((current) => (name === "stop" ? false : !current));
-    if (name === "pause" || name === "resume") setPaused(name === "pause");
-    if (name === "panels:change") setPanels(detail as string[]);
+    if (name === 'capture:press' || name === 'stop')
+      setAnalysing((current) => (name === 'stop' ? false : !current));
+    if (name === 'pause' || name === 'resume') setPaused(name === 'pause');
+    if (name === 'panels:change') setPanels(detail as string[]);
   };
 
   const visible = {
-    chat: panels.includes("chat"),
-    answer: panels.includes("answer"),
-    code: panels.includes("code"),
+    chat: panels.includes('chat'),
+    answer: panels.includes('answer'),
+    code: panels.includes('code'),
   };
-  const panelState: NativePanelsState = analysing ? "analysing" : "ready";
+  const panelState: NativePanelsState = analysing ? 'analysing' : 'ready';
 
   if (width <= 400) {
     return (
@@ -200,13 +193,13 @@ export const NativeAppWindow: React.FC<NativeAppArgs> = ({
       style={{
         background: PANEL_BACKDROP,
         width,
-        ["--oui-panel-see-through" as string]: seeThrough,
+        ['--oui-panel-see-through' as string]: seeThrough,
       }}
     >
       <div className="flex justify-center px-3.5 pt-3.5">
         <NativeToolbarDemo
-          capture={{ mode, analysing, problem: screen === "problem", paused }}
-          mic={{ status: paused ? "paused" : mic }}
+          capture={{ mode, analysing, problem: screen === 'problem', paused }}
+          mic={{ status: paused ? 'paused' : mic }}
           panels={panels}
           onAction={report}
         />
@@ -238,64 +231,64 @@ export const captureOptions = (): Array<{
   picked?: boolean;
   controls: SplitButtonProps[];
 }> => {
-  const menu = captureMenuSpec("manual");
-  const main = { label: "Capture", icon: <Monitor /> };
+  const menu = captureMenuSpec('manual');
+  const main = { label: 'Capture', icon: <Monitor /> };
   return [
     {
-      id: "c1",
-      title: "C1 · Mode in the menu, tint shows Auto",
+      id: 'c1',
+      title: 'C1 · Mode in the menu, tint shows Auto',
       description:
         'The narrowest option. Neutral means Manual and blue means Auto (watching). Clicking always means "analyse now". The tooltip names the mode.',
       picked: true,
       controls: [
-        { main: { ...main, tooltip: "Manual · click to analyse" }, menu },
+        { main: { ...main, tooltip: 'Manual · click to analyse' }, menu },
         {
-          tone: "accent",
+          tone: 'accent',
           main: {
             ...main,
-            tooltip: "Auto · re-analyses when the screen changes",
+            tooltip: 'Auto · re-analyses when the screen changes',
           },
-          menu: captureMenuSpec("auto"),
+          menu: captureMenuSpec('auto'),
         },
       ],
     },
     {
-      id: "c2",
-      title: "C2 · Mode word on the button",
+      id: 'c2',
+      title: 'C2 · Mode word on the button',
       description:
         "The mode is always readable, which is closest to today's toolbar. But it's the icon-plus-text pairing you disliked, and it's about 60px wider.",
       controls: [
         {
           main: {
-            label: "Capture, Manual",
-            caption: "Manual",
+            label: 'Capture, Manual',
+            caption: 'Manual',
             labelInline: true,
             icon: <Monitor />,
-            tooltip: "Manual · click to analyse",
+            tooltip: 'Manual · click to analyse',
           },
           menu,
         },
       ],
     },
     {
-      id: "c3",
-      title: "C3 · Capture + Auto toggle (eye)",
+      id: 'c3',
+      title: 'C3 · Capture + Auto toggle (eye)',
       description:
         "Auto is one click away, like ⌥⇧U. It's explicit, but it adds a third segment that people may confuse with see-through.",
       controls: [
         {
-          main: { ...main, tooltip: "Analyse now" },
+          main: { ...main, tooltip: 'Analyse now' },
           segments: [
             {
-              id: "auto",
-              label: "Auto",
+              id: 'auto',
+              label: 'Auto',
               icon: <Eye />,
               pressed: true,
-              tooltip: "Auto · re-analyses when the screen changes",
-              shortcut: ["⌥", "⇧", "U"],
+              tooltip: 'Auto · re-analyses when the screen changes',
+              shortcut: ['⌥', '⇧', 'U'],
             },
           ],
-          menu: captureMenuSpec("auto"),
+          menu: captureMenuSpec('auto'),
         },
       ],
     },
@@ -303,9 +296,7 @@ export const captureOptions = (): Array<{
 };
 
 /** `SplitButton` row used by the 1c cards. */
-export const CaptureOption: React.FC<{ controls: SplitButtonProps[] }> = ({
-  controls,
-}) => (
+export const CaptureOption: React.FC<{ controls: SplitButtonProps[] }> = ({ controls }) => (
   <div className="flex items-center justify-center gap-3">
     {controls.map((props, index) => (
       <SplitButton key={index} {...props} />

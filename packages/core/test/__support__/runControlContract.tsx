@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { act, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type * as React from 'react';
 
 type AnyProps = Record<string, unknown>;
 
@@ -10,7 +10,11 @@ export interface ControlContractArgs<P extends AnyProps> {
   baseProps: P;
   controlSelector: string;
   readValue?: (control: Element) => string | undefined;
-  typeValue?: (user: ReturnType<typeof userEvent.setup>, control: Element, next: string) => Promise<void>;
+  typeValue?: (
+    user: ReturnType<typeof userEvent.setup>,
+    control: Element,
+    next: string,
+  ) => Promise<void>;
   sampleValue?: string;
   supports?: Partial<{
     typing: boolean;
@@ -42,7 +46,8 @@ export function runControlContract<P extends AnyProps>({
     ...supports,
   };
 
-  const renderWith = (extra: Partial<P>) => render(<Component {...(baseProps as P)} {...(extra as P)} />);
+  const renderWith = (extra: Partial<P>) =>
+    render(<Component {...(baseProps as P)} {...(extra as P)} />);
 
   const getControl = (container?: HTMLElement): Element => {
     const root: ParentNode = container ?? document.body;
@@ -94,14 +99,19 @@ export function runControlContract<P extends AnyProps>({
       it('reflects readOnly to the control', () => {
         const { container } = renderWith({ readOnly: true } as Partial<P>);
         const ctrl = getControl(container);
-        const readOnly = (ctrl as HTMLInputElement).readOnly === true || ctrl.getAttribute('aria-readonly') === 'true' || ctrl.hasAttribute('readonly');
+        const readOnly =
+          (ctrl as HTMLInputElement).readOnly === true ||
+          ctrl.getAttribute('aria-readonly') === 'true' ||
+          ctrl.hasAttribute('readonly');
         expect(readOnly).toBe(true);
       });
     }
 
     if (features.typing) {
-      if (!typeValue) throw new Error(`runControlContract(${name}): typing enabled but no typeValue adapter`);
-      if (!sampleValue) throw new Error(`runControlContract(${name}): typing enabled but no sampleValue`);
+      if (!typeValue)
+        throw new Error(`runControlContract(${name}): typing enabled but no typeValue adapter`);
+      if (!sampleValue)
+        throw new Error(`runControlContract(${name}): typing enabled but no sampleValue`);
 
       it('calls onChange with the raw value on user input', async () => {
         const user = userEvent.setup();
@@ -115,7 +125,9 @@ export function runControlContract<P extends AnyProps>({
 
       if (features.controlled) {
         it('is controlled by the value prop', () => {
-          const { rerender, container } = render(<Component {...(baseProps as P)} value={sampleValue} />);
+          const { rerender, container } = render(
+            <Component {...(baseProps as P)} value={sampleValue} />,
+          );
           if (readValue) expect(readValue(getControl(container))).toBe(sampleValue);
           act(() => {
             rerender(<Component {...(baseProps as P)} value={`${sampleValue}!`} />);

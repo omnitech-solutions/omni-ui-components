@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Breadcrumb } from '@oc-tech/omni-ui-components/Breadcrumb';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/Breadcrumb', () => {
   it('renders breadcrumb navigation', () => {

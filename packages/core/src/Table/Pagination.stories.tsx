@@ -1,8 +1,9 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
 import { Table } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 import { ComponentWrapper } from './storySupport';
-import { defaultColumns, projects, type ProjectRecord } from './Table.story.fixtures';
+import { defaultColumns, type ProjectRecord, projects } from './Table.story.fixtures';
+
 const meta: Meta = {
   title: 'omni-ui-components/Table/Pagination',
   tags: ['autodocs'],
@@ -20,7 +21,14 @@ export default meta;
 
 type Story = StoryObj;
 
-const paginatedProjects = [...projects, ...projects.map((project, index) => ({ ...project, id: `${project.id}-copy-${index}`, name: `${project.name} copy` }))];
+const paginatedProjects = [
+  ...projects,
+  ...projects.map((project, index) => ({
+    ...project,
+    id: `${project.id}-copy-${index}`,
+    name: `${project.name} copy`,
+  })),
+];
 
 export const ControlledCurrentAndPageSize: Story = {
   render: () => {

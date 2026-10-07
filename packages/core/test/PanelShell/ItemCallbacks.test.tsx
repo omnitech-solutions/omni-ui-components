@@ -1,17 +1,24 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
+
+import {
+  ConversationHeader,
+  type ConversationHeaderAction,
+  type ConversationMenuItem,
+} from '@oc-tech/omni-ui-components/ConversationHeader';
+import {
+  type ConversationItem,
+  ConversationList,
+  type ConversationRowAction,
+} from '@oc-tech/omni-ui-components/ConversationList';
+import { EmptyStarters, type StarterItem } from '@oc-tech/omni-ui-components/EmptyStarters';
+import { type IntegrationItem, IntegrationList } from '@oc-tech/omni-ui-components/IntegrationList';
+import { groupByRecency } from '@oc-tech/omni-ui-components/lib/chat';
+import { type MemoryItem, PreferencesForm } from '@oc-tech/omni-ui-components/PreferencesForm';
+import { SettingsDialog, type SettingsTab } from '@oc-tech/omni-ui-components/SettingsDialog';
+import { type ShortcutItem, ShortcutList } from '@oc-tech/omni-ui-components/ShortcutList';
+import { Toast, type ToastItem } from '@oc-tech/omni-ui-components/Toast';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-import { ConversationHeader, type ConversationMenuItem, type ConversationHeaderAction } from '@oc-tech/omni-ui-components/ConversationHeader';
-import { ConversationList, type ConversationItem, type ConversationRowAction } from '@oc-tech/omni-ui-components/ConversationList';
-import { EmptyStarters, type StarterItem } from '@oc-tech/omni-ui-components/EmptyStarters';
-import { IntegrationList, type IntegrationItem } from '@oc-tech/omni-ui-components/IntegrationList';
-import { PreferencesForm, type MemoryItem } from '@oc-tech/omni-ui-components/PreferencesForm';
-import { SettingsDialog, type SettingsTab } from '@oc-tech/omni-ui-components/SettingsDialog';
-import { ShortcutList, type ShortcutItem } from '@oc-tech/omni-ui-components/ShortcutList';
-import { Toast, type ToastItem } from '@oc-tech/omni-ui-components/Toast';
-import { groupByRecency } from '@oc-tech/omni-ui-components/lib/chat';
 
 // Every item type below is extended with a field the library does not know. Each callback must hand back the very
 // same object (toBe), and the extra field must be visible to TypeScript inside the callback (compile-time check).
@@ -83,17 +90,38 @@ describe('callbacks receive the full item, by reference', () => {
   });
 
   it('ConversationHeader: menu item, action, rename and rename lifecycle', async () => {
-    const menu: Menu = { id: 'm', label: 'Pick', analytics: 'a', onClick: (item) => void item.analytics };
+    const menu: Menu = {
+      id: 'm',
+      label: 'Pick',
+      analytics: 'a',
+      onClick: (item) => void item.analytics,
+    };
     const onMenu = jest.fn((item: Menu) => void item.analytics);
     menu.onClick = onMenu;
-    const act: Act = { key: 'a', label: 'Do', analytics: 'b', onClick: (action) => void action.analytics };
+    const act: Act = {
+      key: 'a',
+      label: 'Do',
+      analytics: 'b',
+      onClick: (action) => void action.analytics,
+    };
     const onAct = jest.fn((action: Act) => void action.analytics);
     act.onClick = onAct;
     const rename: Menu = { id: 'r', label: 'Rename', analytics: 'c', startsRename: true };
-    const onRename = jest.fn((conversation: Chat, title: string) => void (conversation.workspace + title));
+    const onRename = jest.fn(
+      (conversation: Chat, title: string) => void (conversation.workspace + title),
+    );
     const onStart = jest.fn((conversation: Chat) => void conversation.workspace);
     const onCancel = jest.fn((conversation: Chat) => void conversation.workspace);
-    render(<ConversationHeader<Chat, Menu, Act> conversation={chat} menuItems={[rename, menu]} actions={[act]} onRename={onRename} onRenameStart={onStart} onRenameCancel={onCancel} />);
+    render(
+      <ConversationHeader<Chat, Menu, Act>
+        conversation={chat}
+        menuItems={[rename, menu]}
+        actions={[act]}
+        onRename={onRename}
+        onRenameStart={onStart}
+        onRenameCancel={onCancel}
+      />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Do' }));
     expect(onAct.mock.calls[0][0]).toBe(act);
     await userEvent.click(screen.getByRole('button', { name: /One/ }));
@@ -123,9 +151,17 @@ describe('callbacks receive the full item, by reference', () => {
 
   it('IntegrationList: onToggle and onRemove get the integration', async () => {
     const integration: Integration = { id: 'i', name: 'Docs', enabled: false, scopes: ['read'] };
-    const onToggle = jest.fn((i: Integration, enabled: boolean) => void (i.scopes.length && enabled));
+    const onToggle = jest.fn(
+      (i: Integration, enabled: boolean) => void (i.scopes.length && enabled),
+    );
     const onRemove = jest.fn((i: Integration) => void i.scopes);
-    render(<IntegrationList<Integration> items={[integration]} onToggle={onToggle} onRemove={onRemove} />);
+    render(
+      <IntegrationList<Integration>
+        items={[integration]}
+        onToggle={onToggle}
+        onRemove={onRemove}
+      />,
+    );
     await userEvent.click(screen.getByRole('switch', { name: 'Docs' }));
     await userEvent.click(screen.getByRole('button', { name: 'Remove Docs' }));
     expect(onToggle.mock.calls[0][0]).toBe(integration);
@@ -143,10 +179,27 @@ describe('callbacks receive the full item, by reference', () => {
 
   it('SettingsDialog: onTabChange and render get the tab', async () => {
     const rendered: Tab[] = [];
-    const a: Tab = { id: 'a', label: 'A', badge: 1, render: (tab) => (rendered.push(tab), void tab.badge, (<span>panel a</span>)) };
-    const b: Tab = { id: 'b', label: 'B', badge: 2, render: (tab) => <span>panel b {tab.badge}</span> };
+    const a: Tab = {
+      id: 'a',
+      label: 'A',
+      badge: 1,
+      render: (tab) => (rendered.push(tab), void tab.badge, (<span>panel a</span>)),
+    };
+    const b: Tab = {
+      id: 'b',
+      label: 'B',
+      badge: 2,
+      render: (tab) => <span>panel b {tab.badge}</span>,
+    };
     const onTabChange = jest.fn((tab: Tab) => void tab.badge);
-    render(<SettingsDialog<Tab> open tabs={[a, b]} onTabChange={onTabChange} onClose={() => undefined} />);
+    render(
+      <SettingsDialog<Tab>
+        open
+        tabs={[a, b]}
+        onTabChange={onTabChange}
+        onClose={() => undefined}
+      />,
+    );
     expect(rendered[0]).toBe(a);
     await userEvent.click(screen.getByRole('tab', { name: 'B' }));
     expect(onTabChange.mock.calls[0][0]).toBe(b);

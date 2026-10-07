@@ -1,5 +1,5 @@
-import * as React from 'react';
 import classNames from 'classnames';
+import type * as React from 'react';
 import { useTable } from '../hooks/useTable';
 import { bodyCellClass, pathValue } from '../internal';
 import type { TableColumn, TableProps, TableResolvedRow } from '../Table.types';
@@ -79,7 +79,9 @@ export function SelectionCell<TRecord, TRowData>({
       onClick={handleClick}
       {...rowSelection.onCell?.(resolved.record, rowIndex, resolved.row)}
     >
-      {rowSelection.renderCell ? rowSelection.renderCell(checked, resolved.record, rowIndex, originNode, resolved.row) : originNode}
+      {rowSelection.renderCell
+        ? rowSelection.renderCell(checked, resolved.record, rowIndex, originNode, resolved.row)
+        : originNode}
     </registry.components.SelectionCell>
   );
 }

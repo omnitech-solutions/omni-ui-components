@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { ArrowUp, Check, ChevronDown, Plus } from 'lucide-react';
+import * as React from 'react';
 
 import { ContextMeter } from '../ContextMeter';
 import { SAMPLE_SECTIONS } from '../ContextMeter/ContextMeter.factories';
@@ -9,7 +9,11 @@ import { makeFactory, type Variant } from '../internal/support/makeFactory';
 import { ModelPicker } from './ModelPicker';
 import type { ModelIcons, ModelInfo, ModelPickerProps, ModelProvider } from './ModelPicker.types';
 
-export const LOCAL_PROVIDER: ModelProvider = { name: 'LM Studio', endpoint: 'http://localhost:1234/v1', local: true };
+export const LOCAL_PROVIDER: ModelProvider = {
+  name: 'LM Studio',
+  endpoint: 'http://localhost:1234/v1',
+  local: true,
+};
 export const CLOUD_PROVIDER: ModelProvider = { name: 'OpenRouter', endpoint: 'openrouter.ai' };
 
 export const QWEN: ModelInfo = {
@@ -49,7 +53,12 @@ export const SONNET: ModelInfo = {
   strengths: ['coding', 'research'],
 };
 
-export const MINI: ModelInfo = { id: 'openrouter/mini', name: 'Mini', provider: CLOUD_PROVIDER, tools: true };
+export const MINI: ModelInfo = {
+  id: 'openrouter/mini',
+  name: 'Mini',
+  provider: CLOUD_PROVIDER,
+  tools: true,
+};
 
 /** A local listing followed by a hosted one: two groups. */
 export const sampleModels = (): ModelInfo[] => [QWEN, GEMMA, SONNET, MINI];
@@ -82,7 +91,12 @@ export interface ModelPickerDemoProps extends Partial<ModelPickerProps> {
 }
 
 /** Holds the selected model and effort the way an app would. */
-export const ModelPickerDemo: React.FC<ModelPickerDemoProps> = ({ onAction, selectedId, effort, ...props }) => {
+export const ModelPickerDemo: React.FC<ModelPickerDemoProps> = ({
+  onAction,
+  selectedId,
+  effort,
+  ...props
+}) => {
   const [id, setId] = React.useState(selectedId ?? QWEN.id);
   const [level, setLevel] = React.useState(effort ?? 'medium');
   React.useEffect(() => setId(selectedId ?? QWEN.id), [selectedId]);
@@ -118,7 +132,11 @@ export interface ComposerToolbarDemoProps {
 }
 
 /** `Input` (panel field) whose `actions` slot holds the model chip, the context meter and Send. State lives here. */
-export const ComposerToolbarDemo: React.FC<ComposerToolbarDemoProps> = ({ used = 183400, window = 262000, onAction }) => {
+export const ComposerToolbarDemo: React.FC<ComposerToolbarDemoProps> = ({
+  used = 183400,
+  window = 262000,
+  onAction,
+}) => {
   const [value, setValue] = React.useState('');
   const send = () => {
     if (!value.trim()) return;
@@ -140,8 +158,20 @@ export const ComposerToolbarDemo: React.FC<ComposerToolbarDemoProps> = ({ used =
         actions={
           <>
             <ModelPickerDemo onAction={onAction} />
-            <ContextMeter used={used} window={window} sections={SAMPLE_SECTIONS} onSummarise={() => onAction?.('summarise')} />
-            <IconButton variant="ghost" iconSize="md" icon={<ArrowUp />} label="Send" disabled={!value.trim()} onClick={send} />
+            <ContextMeter
+              used={used}
+              window={window}
+              sections={SAMPLE_SECTIONS}
+              onSummarise={() => onAction?.('summarise')}
+            />
+            <IconButton
+              variant="ghost"
+              iconSize="md"
+              icon={<ArrowUp />}
+              label="Send"
+              disabled={!value.trim()}
+              onClick={send}
+            />
           </>
         }
       />

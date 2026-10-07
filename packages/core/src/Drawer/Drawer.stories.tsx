@@ -1,7 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Button } from '@oc-tech/omni-ui-components/Button';
-import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@oc-tech/omni-ui-components/Drawer';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@oc-tech/omni-ui-components/Drawer';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Drawer> = {
   title: 'omni-ui-components/Drawer',
@@ -31,16 +38,22 @@ export const Default: Story = {
       <DrawerContent side="right">
         <DrawerHeader>
           <DrawerTitle>Project settings</DrawerTitle>
-          <DrawerDescription>Adjust access, notifications, and workflow preferences.</DrawerDescription>
+          <DrawerDescription>
+            Adjust access, notifications, and workflow preferences.
+          </DrawerDescription>
         </DrawerHeader>
         <div className="flex-1 space-y-4 px-6 py-5">
           <div className="rounded-lg border border-[var(--oui-border-field)] bg-background/70 p-4">
             <div className="text-sm font-semibold">Visibility</div>
-            <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">Control who can access this project and how changes are reviewed.</div>
+            <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">
+              Control who can access this project and how changes are reviewed.
+            </div>
           </div>
           <div className="rounded-lg border border-[var(--oui-border-field)] bg-background/70 p-4">
             <div className="text-sm font-semibold">Notifications</div>
-            <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">Choose who receives updates for edits, approvals, and escalations.</div>
+            <div className="mt-1 text-sm text-[var(--oui-foreground-muted)]">
+              Choose who receives updates for edits, approvals, and escalations.
+            </div>
           </div>
         </div>
         <DrawerFooter>
@@ -88,15 +101,21 @@ export const DetailInspector: Story = {
       <DrawerContent side="right">
         <DrawerHeader>
           <DrawerTitle>Account details</DrawerTitle>
-          <DrawerDescription>Inspect key metadata without leaving the current screen.</DrawerDescription>
+          <DrawerDescription>
+            Inspect key metadata without leaving the current screen.
+          </DrawerDescription>
         </DrawerHeader>
         <div className="flex-1 space-y-4 px-6 py-5">
           <div className="rounded-lg border border-[var(--oui-border-field)] bg-background/70 p-4">
-            <div className="text-xs uppercase tracking-wide text-[var(--oui-foreground-muted)]">Owner</div>
+            <div className="text-xs uppercase tracking-wide text-[var(--oui-foreground-muted)]">
+              Owner
+            </div>
             <div className="mt-1 text-sm font-medium">Alex Morgan</div>
           </div>
           <div className="rounded-lg border border-[var(--oui-border-field)] bg-background/70 p-4">
-            <div className="text-xs uppercase tracking-wide text-[var(--oui-foreground-muted)]">Plan</div>
+            <div className="text-xs uppercase tracking-wide text-[var(--oui-foreground-muted)]">
+              Plan
+            </div>
             <div className="mt-1 text-sm font-medium">Enterprise</div>
           </div>
         </div>

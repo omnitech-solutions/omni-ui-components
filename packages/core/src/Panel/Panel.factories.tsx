@@ -1,14 +1,18 @@
-import * as React from 'react';
-import { Check, Code, Copy, Hourglass, MonitorUp, Plus } from 'lucide-react';
-
 import { Button } from '@oc-tech/omni-ui-components/Button';
 import { Panel, type PanelProps, type PanelScroll } from '@oc-tech/omni-ui-components/Panel';
 import { Steps } from '@oc-tech/omni-ui-components/Steps';
 import { Tag } from '@oc-tech/omni-ui-components/Tag';
 import { Transcript, type TranscriptEntry } from '@oc-tech/omni-ui-components/Transcript';
-import { analysingEntries, answeredEntries, ComposerExample, readyEntries } from 'factories/omni-ui-components/Transcript/Transcript.factories';
-import type { OnAction } from '../SplitButton/SplitButton.factories';
+import {
+  analysingEntries,
+  answeredEntries,
+  ComposerExample,
+  readyEntries,
+} from 'factories/omni-ui-components/Transcript/Transcript.factories';
+import { Check, Code, Copy, Hourglass, MonitorUp, Plus } from 'lucide-react';
+import * as React from 'react';
 import type { Variant } from '../../internal/support/makeFactory';
+import type { OnAction } from '../SplitButton/SplitButton.factories';
 
 /** Build `<Panel>` props for standalone stories and tests. */
 export const panelPropsFactory = (overrides: Partial<PanelProps> = {}): PanelProps => ({
@@ -64,10 +68,20 @@ export const ToApplyDock: React.FC<{
     >
       Add screenshot
     </Button>
-    <Button buttonSize="sm" variant="ghost" className="ml-auto h-7 px-1.5 text-[12.5px] text-[color:var(--oui-panel-meta-fg)]" onClick={onClear}>
+    <Button
+      buttonSize="sm"
+      variant="ghost"
+      className="ml-auto h-7 px-1.5 text-[12.5px] text-[color:var(--oui-panel-meta-fg)]"
+      onClick={onClear}
+    >
       Clear
     </Button>
-    <Button buttonSize="sm" tone="accent" className="h-7 rounded-[7px] px-2.5 text-[12.5px]" onClick={onApply}>
+    <Button
+      buttonSize="sm"
+      tone="accent"
+      className="h-7 rounded-[7px] px-2.5 text-[12.5px]"
+      onClick={onApply}
+    >
       Apply
     </Button>
   </>
@@ -92,14 +106,19 @@ export const ComplexityChips: React.FC = () => (
 );
 
 const Heading: React.FC<React.PropsWithChildren> = ({ children }) => (
-  <span className="mt-1 text-xs tracking-[0.05em] text-[color:var(--oui-panel-meta-fg)] uppercase first:mt-0">{children}</span>
+  <span className="mt-1 text-xs tracking-[0.05em] text-[color:var(--oui-panel-meta-fg)] uppercase first:mt-0">
+    {children}
+  </span>
 );
 
 /** The reading body of a ready answer. */
 export const AnswerBody: React.FC = () => (
   <>
     <Heading>Say this first</Heading>
-    <span>"I'll scan once and keep a hash map from value to index, so each lookup for the complement is constant time."</span>
+    <span>
+      "I'll scan once and keep a hash map from value to index, so each lookup for the complement is
+      constant time."
+    </span>
     <Heading>Approach</Heading>
     <span>
       1. For each number, compute target − n.
@@ -121,7 +140,8 @@ export const panelVariants: Variant<PanelProps>[] = [
       empty: {
         icon: <MonitorUp />,
         title: 'Nothing analysed yet',
-        description: 'Open the problem in your browser and capture it. Spoken questions are answered automatically.',
+        description:
+          'Open the problem in your browser and capture it. Spoken questions are answered automatically.',
         action: {
           label: 'Capture screen',
           icon: <MonitorUp />,
@@ -250,7 +270,10 @@ export const TranscriptDemo: React.FC<TranscriptDemoProps> = ({
           3 arrive
         </Button>
       </div>
-      <div className="box-border flex rounded-xl p-3.5" style={{ background: PANEL_BACKDROP, height }}>
+      <div
+        className="box-border flex rounded-xl p-3.5"
+        style={{ background: PANEL_BACKDROP, height }}
+      >
         <Panel
           title="Transcript & chat"
           width={width}
@@ -309,7 +332,13 @@ const TRANSCRIPT = {
  * The three panels of board 1d in a row: transcript 330px (min 300), the others share the rest equally.
  * All content is passed to the library Panel as configuration; the row is a plain flex container.
  */
-export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({ state = 'ready', visible, seeThrough = 1, width = 1180, onAction }) => {
+export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({
+  state = 'ready',
+  visible,
+  seeThrough = 1,
+  width = 1180,
+  onAction,
+}) => {
   const act = (name: string) => () => onAction?.(name);
   const transcript = TRANSCRIPT[state]();
   const shown: NativePanelsVisible = {
@@ -371,7 +400,13 @@ export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({ state = 'rea
           title="Answer"
           subtitle="S2 · 10:57"
           actions={<StopAction onStop={act('stop')} />}
-          dock={<ToApplyDock onAdd={act('add-screenshot')} onClear={act('clear')} onApply={act('apply')} />}
+          dock={
+            <ToApplyDock
+              onAdd={act('add-screenshot')}
+              onClear={act('clear')}
+              onApply={act('apply')}
+            />
+          }
           dockClassName="gap-x-1.5 px-2"
           bodyPadding="md"
           bodyClassName="justify-center px-7"
@@ -380,11 +415,22 @@ export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({ state = 'rea
         </Panel>
       ) : null}
       {shown.answer && state === 'answer' ? (
-        <Panel title="Answer" subtitle="S2 · Two Sum" meta={<ComplexityChips />} bodyPadding="md" bodyClassName="gap-2.5 text-sm leading-[1.55]">
+        <Panel
+          title="Answer"
+          subtitle="S2 · Two Sum"
+          meta={<ComplexityChips />}
+          bodyPadding="md"
+          bodyClassName="gap-2.5 text-sm leading-[1.55]"
+        >
           <AnswerBody />
         </Panel>
       ) : null}
-      {shown.code ? <Panel {...(state === 'ready' ? panelVariants[4].args : panelVariants[1].args)} title="Code" /> : null}
+      {shown.code ? (
+        <Panel
+          {...(state === 'ready' ? panelVariants[4].args : panelVariants[1].args)}
+          title="Code"
+        />
+      ) : null}
     </div>
   );
 };

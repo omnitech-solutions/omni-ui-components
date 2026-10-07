@@ -27,11 +27,21 @@ interface AutoFlipDropdownProps extends React.HTMLAttributes<HTMLSpanElement> {
  * present, inside the nearest `.pb-overview-row-preview` /
  * `[data-dropdown-boundary]` ancestor of the trigger.
  */
-export const AutoFlipDropdown: React.FC<AutoFlipDropdownProps> = ({ children, className, style, ...rest }) => {
+export const AutoFlipDropdown: React.FC<AutoFlipDropdownProps> = ({
+  children,
+  className,
+  style,
+  ...rest
+}) => {
   // Anchor stays in the original DOM tree so we can find the trigger + boundary.
   const anchorRef = React.useRef<HTMLSpanElement | null>(null);
   const dropdownRef = React.useRef<HTMLDivElement | null>(null);
-  const [pos, setPos] = React.useState<{ top: number; left: number; alignX: 'left' | 'right'; alignY: 'top' | 'bottom' } | null>(null);
+  const [pos, setPos] = React.useState<{
+    top: number;
+    left: number;
+    alignX: 'left' | 'right';
+    alignY: 'top' | 'bottom';
+  } | null>(null);
 
   React.useLayoutEffect(() => {
     const anchor = anchorRef.current;
@@ -45,7 +55,9 @@ export const AutoFlipDropdown: React.FC<AutoFlipDropdownProps> = ({ children, cl
       const dropdownRect = dropdown.getBoundingClientRect();
       const viewportW = document.documentElement.clientWidth;
       const viewportH = document.documentElement.clientHeight;
-      const boundaryEl = trigger.closest<HTMLElement>('.pb-overview-row-preview, [data-dropdown-boundary]');
+      const boundaryEl = trigger.closest<HTMLElement>(
+        '.pb-overview-row-preview, [data-dropdown-boundary]',
+      );
       const boundary = boundaryEl?.getBoundingClientRect();
       const rightLimit = boundary ? Math.min(boundary.right, viewportW) : viewportW;
       const bottomLimit = boundary ? Math.min(boundary.bottom, viewportH) : viewportH;
@@ -54,19 +66,26 @@ export const AutoFlipDropdown: React.FC<AutoFlipDropdownProps> = ({ children, cl
 
       const spaceBelow = bottomLimit - triggerRect.bottom;
       const spaceAbove = triggerRect.top - topLimit;
-      const alignY: 'top' | 'bottom' = dropdownRect.height > spaceBelow && spaceAbove > spaceBelow ? 'top' : 'bottom';
+      const alignY: 'top' | 'bottom' =
+        dropdownRect.height > spaceBelow && spaceAbove > spaceBelow ? 'top' : 'bottom';
 
       const openLeftFits = triggerRect.left + dropdownRect.width <= rightLimit;
       const alignX: 'left' | 'right' = openLeftFits ? 'left' : 'right';
 
       const top =
         alignY === 'top'
-          ? Math.max(topLimit, Math.min(triggerRect.top - dropdownRect.height, bottomLimit - dropdownRect.height))
+          ? Math.max(
+              topLimit,
+              Math.min(triggerRect.top - dropdownRect.height, bottomLimit - dropdownRect.height),
+            )
           : Math.max(topLimit, Math.min(triggerRect.bottom, bottomLimit - dropdownRect.height));
       const left =
         alignX === 'left'
           ? Math.max(leftLimit, Math.min(triggerRect.left, rightLimit - dropdownRect.width))
-          : Math.max(leftLimit, Math.min(triggerRect.right - dropdownRect.width, rightLimit - dropdownRect.width));
+          : Math.max(
+              leftLimit,
+              Math.min(triggerRect.right - dropdownRect.width, rightLimit - dropdownRect.width),
+            );
       setPos({ top, left, alignX, alignY });
     };
 
@@ -96,7 +115,14 @@ export const AutoFlipDropdown: React.FC<AutoFlipDropdownProps> = ({ children, cl
       <span ref={anchorRef} style={{ display: 'none' }} aria-hidden />
       {portalTarget &&
         createPortal(
-          <div ref={dropdownRef} className={className} style={dropdownStyle} data-align-x={pos?.alignX} data-align-y={pos?.alignY} {...rest}>
+          <div
+            ref={dropdownRef}
+            className={className}
+            style={dropdownStyle}
+            data-align-x={pos?.alignX}
+            data-align-y={pos?.alignY}
+            {...rest}
+          >
             {children}
           </div>,
           portalTarget,

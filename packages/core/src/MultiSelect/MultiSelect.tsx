@@ -1,10 +1,9 @@
 import * as React from 'react';
-
-import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { MultiSelectPrimitive } from './MultiSelectPrimitive';
-import type { SelectOption } from '../Select';
 import type { FieldLayoutProps } from '../Input/Input.variants';
 import type { RootProps } from '../lib';
+import { FieldShell, useFieldChrome } from '../lib/FieldShell';
+import type { SelectOption } from '../Select';
+import { MultiSelectPrimitive } from './MultiSelectPrimitive';
 
 export interface MultiSelectProps extends RootProps, FieldLayoutProps {
   id?: string;
@@ -31,7 +30,19 @@ export interface MultiSelectProps extends RootProps, FieldLayoutProps {
 export const MultiSelect = React.memo(
   React.forwardRef<HTMLButtonElement, MultiSelectProps>(
     (
-      { id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps },
+      {
+        id: idProp,
+        wrapperClassName,
+        labelClassName,
+        layout = 'vertical',
+        label,
+        description,
+        error,
+        required,
+        invalid,
+        className,
+        ...primitiveProps
+      },
       ref,
     ) => {
       const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({

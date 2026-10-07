@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
 import { SummaryDivider } from '@oc-tech/omni-ui-components/SummaryDivider';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { summaryDividerPropsFactory } from 'factories/omni-ui-components/SummaryDivider/SummaryDivider.factories';
 
 describe('omni-ui-components/SummaryDivider', () => {
@@ -18,7 +17,9 @@ describe('omni-ui-components/SummaryDivider', () => {
 
   it('uses the singular for one message', () => {
     render(<SummaryDivider {...summaryDividerPropsFactory({ count: 1 })} />);
-    expect(screen.getByRole('button', { name: '1 earlier message summarised' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: '1 earlier message summarised' }),
+    ).toBeInTheDocument();
   });
 
   it('opens to the summary text and the stored-history note, and closes again', async () => {
@@ -47,8 +48,13 @@ describe('omni-ui-components/SummaryDivider', () => {
         })}
       />,
     );
-    expect(screen.getByRole('button', { name: '12 zusammengefasst' })).toHaveAttribute('aria-expanded', 'true');
-    expect(document.querySelector('[data-slot="summary-divider-body"]')).toHaveTextContent('Hinweis.');
+    expect(screen.getByRole('button', { name: '12 zusammengefasst' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
+    expect(document.querySelector('[data-slot="summary-divider-body"]')).toHaveTextContent(
+      'Hinweis.',
+    );
   });
 
   it('onOpenChange fires in controlled mode with the requested state', async () => {
@@ -56,6 +62,9 @@ describe('omni-ui-components/SummaryDivider', () => {
     render(<SummaryDivider {...summaryDividerPropsFactory({ open: false, onOpenChange })} />);
     await userEvent.click(screen.getByRole('button', { name: '12 earlier messages summarised' }));
     expect(onOpenChange).toHaveBeenCalledWith(true);
-    expect(screen.getByRole('button', { name: '12 earlier messages summarised' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('button', { name: '12 earlier messages summarised' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
   });
 });

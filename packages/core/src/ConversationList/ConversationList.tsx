@@ -1,20 +1,33 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
+import { IconAction } from '../internal/support/IconAction';
 import { useControllableState } from '../lib/use-controllable-state';
 import { useRovingTabindex } from '../lib/use-roving-tabindex';
-import { IconAction } from '../internal/support/IconAction';
-import { conversationListVariants, conversationRowVariants, ROW_ACTIONS_CLASS } from './ConversationList.variants';
-import type { ConversationItem, ConversationListLabels, ConversationListProps, ConversationRowAction, PerItem } from './ConversationList.types';
+import type {
+  ConversationItem,
+  ConversationListLabels,
+  ConversationListProps,
+  ConversationRowAction,
+  PerItem,
+} from './ConversationList.types';
+import {
+  conversationListVariants,
+  conversationRowVariants,
+  ROW_ACTIONS_CLASS,
+} from './ConversationList.variants';
 
 const ROW_SELECTOR = '[data-slot="conversation-row"]';
 const ROW_STOPS = 'button:not(:disabled)';
 
 /** Every focusable stop inside the rows (the title button, then the row's actions), in DOM order. */
-const rowStops = (root: HTMLElement) => Array.from(root.querySelectorAll<HTMLElement>(ROW_SELECTOR)).flatMap((row) => Array.from(row.querySelectorAll<HTMLElement>(ROW_STOPS)));
+const rowStops = (root: HTMLElement) =>
+  Array.from(root.querySelectorAll<HTMLElement>(ROW_SELECTOR)).flatMap((row) =>
+    Array.from(row.querySelectorAll<HTMLElement>(ROW_STOPS)),
+  );
 
 /** With no stop yet, the tab stop is the open row's title; else the first row's. */
-const preferActiveRow = (items: HTMLElement[]) => items.find((item) => item.closest(`${ROW_SELECTOR}[aria-current="true"]`));
+const preferActiveRow = (items: HTMLElement[]) =>
+  items.find((item) => item.closest(`${ROW_SELECTOR}[aria-current="true"]`));
 
 /**
  * Rows are a small grid with one tab stop: Up and Down move between rows (keeping the column: title, then each
@@ -58,7 +71,13 @@ export const DEFAULT_CONVERSATION_LIST_LABELS: ConversationListLabels = {
 const resolve = <T, R>(value: PerItem<T, R> | undefined, item: T): R | undefined =>
   typeof value === 'function' ? (value as (item: T) => R)(item) : value;
 
-const RowAction = <T extends ConversationItem>({ action, item }: { action: ConversationRowAction<T>; item: T }) => {
+const RowAction = <T extends ConversationItem>({
+  action,
+  item,
+}: {
+  action: ConversationRowAction<T>;
+  item: T;
+}) => {
   if (resolve(action.visible, item) === false) return null;
   const pressed = resolve(action.pressed, item);
   return (
@@ -67,7 +86,10 @@ const RowAction = <T extends ConversationItem>({ action, item }: { action: Conve
       icon={resolve(action.icon, item)}
       label={resolve(action.label, item) ?? action.key}
       pressed={pressed}
-      className={cn('size-7', action.tone === 'danger' && 'hover:text-[color:var(--oui-tone-danger-fg)]')}
+      className={cn(
+        'size-7',
+        action.tone === 'danger' && 'hover:text-[color:var(--oui-tone-danger-fg)]',
+      )}
       onClick={() => void action.onClick(item)}
     />
   );
@@ -120,10 +142,18 @@ export function ConversationList<T extends ConversationItem = ConversationItem>(
   const [value, setValue] = useControllableState(queryProp, defaultQuery, onSearchChange);
   const visibleGroups = groups.filter((group) => group.items.length > 0);
   const navRef = React.useRef<HTMLElement | null>(null);
-  const roving = useRovingTabindex(navRef, { getItems: rowStops, navigate: navigateRows, preferred: preferActiveRow });
+  const roving = useRovingTabindex(navRef, {
+    getItems: rowStops,
+    navigate: navigateRows,
+    preferred: preferActiveRow,
+  });
   const showSearch = Boolean(onSearchChange) && !archived;
 
-  const emptyMessage = archived ? labels.noneArchived : value.trim() ? labels.noMatch(value.trim()) : labels.none;
+  const emptyMessage = archived
+    ? labels.noneArchived
+    : value.trim()
+      ? labels.noMatch(value.trim())
+      : labels.none;
 
   return (
     <nav
@@ -136,23 +166,38 @@ export function ConversationList<T extends ConversationItem = ConversationItem>(
       data-testid={testId}
       className={cn(conversationListVariants({ docked }), className)}
     >
-      <div data-slot="conversation-list-head" className="flex flex-none items-center gap-1 px-3 pt-3 pb-2">
+      <div
+        data-slot="conversation-list-head"
+        className="flex flex-none items-center gap-1 px-3 pt-3 pb-2"
+      >
         <span id={headingId} className="flex-1 truncate text-[13px] font-semibold">
           {archived ? labels.archivedTitle : labels.title}
         </span>
         {archived ? (
-          onBack ? <IconAction icon={icons?.back} label={labels.back} onClick={() => void onBack()} /> : null
+          onBack ? (
+            <IconAction icon={icons?.back} label={labels.back} onClick={() => void onBack()} />
+          ) : null
         ) : onNewChat ? (
-          <IconAction icon={icons?.newChat} label={labels.newChat} shortcut={newChatShortcut} onClick={() => void onNewChat()} />
+          <IconAction
+            icon={icons?.newChat}
+            label={labels.newChat}
+            shortcut={newChatShortcut}
+            onClick={() => void onNewChat()}
+          />
         ) : null}
-        {!docked && onClose ? <IconAction icon={icons?.close} label={labels.close} onClick={() => void onClose()} /> : null}
+        {!docked && onClose ? (
+          <IconAction icon={icons?.close} label={labels.close} onClick={() => void onClose()} />
+        ) : null}
       </div>
 
       {showSearch ? (
         <div data-slot="conversation-list-search" className="flex-none px-2.5 pb-1.5">
           <label className="flex h-8 items-center gap-2 rounded-lg border border-solid border-[color:var(--oui-panel-border)] bg-[color:var(--oui-panel-bg)] px-2.5 text-[13px] focus-within:ring-2 focus-within:ring-ring/50">
             {icons?.search ? (
-              <span aria-hidden="true" className="flex-none text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-4">
+              <span
+                aria-hidden="true"
+                className="flex-none text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-4"
+              >
                 {icons.search}
               </span>
             ) : null}
@@ -168,7 +213,10 @@ export function ConversationList<T extends ConversationItem = ConversationItem>(
               className="min-w-0 flex-1 appearance-none bg-transparent outline-none placeholder:text-[color:var(--oui-panel-meta-fg)] [&::-webkit-search-cancel-button]:hidden"
             />
             {searchShortcut ? (
-              <kbd aria-hidden="true" className="flex-none rounded border border-solid border-[color:var(--oui-panel-border)] px-1 font-mono text-[11px] text-[color:var(--oui-panel-meta-fg)]">
+              <kbd
+                aria-hidden="true"
+                className="flex-none rounded border border-solid border-[color:var(--oui-panel-border)] px-1 font-mono text-[11px] text-[color:var(--oui-panel-meta-fg)]"
+              >
                 {searchShortcut}
               </kbd>
             ) : null}
@@ -178,8 +226,17 @@ export function ConversationList<T extends ConversationItem = ConversationItem>(
 
       <div data-slot="conversation-list-body" className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
         {visibleGroups.map((group) => (
-          <div key={group.key} role="group" aria-label={group.label} data-slot="conversation-group" data-group={group.key}>
-            <div aria-hidden="true" className="px-2 pt-2.5 pb-1 text-[11px] font-medium tracking-wide text-[color:var(--oui-panel-meta-fg)]">
+          <div
+            key={group.key}
+            role="group"
+            aria-label={group.label}
+            data-slot="conversation-group"
+            data-group={group.key}
+          >
+            <div
+              aria-hidden="true"
+              className="px-2 pt-2.5 pb-1 text-[11px] font-medium tracking-wide text-[color:var(--oui-panel-meta-fg)]"
+            >
               {group.label}
             </div>
             {group.items.map((item) => (
@@ -198,7 +255,9 @@ export function ConversationList<T extends ConversationItem = ConversationItem>(
                     {item.title}
                   </button>
                 ) : (
-                  <span className="min-w-0 flex-1 truncate px-2 py-1.5 text-[13px]">{item.title}</span>
+                  <span className="min-w-0 flex-1 truncate px-2 py-1.5 text-[13px]">
+                    {item.title}
+                  </span>
                 )}
                 {rowActions.length ? (
                   <span data-slot="conversation-row-actions" className={ROW_ACTIONS_CLASS}>
@@ -213,7 +272,10 @@ export function ConversationList<T extends ConversationItem = ConversationItem>(
         ))}
 
         {visibleGroups.length === 0 ? (
-          <div data-slot="conversation-list-empty" className="px-3 py-6 text-center text-[13px] text-[color:var(--oui-panel-meta-fg)]">
+          <div
+            data-slot="conversation-list-empty"
+            className="px-3 py-6 text-center text-[13px] text-[color:var(--oui-panel-meta-fg)]"
+          >
             {empty ?? emptyMessage}
           </div>
         ) : null}
@@ -231,7 +293,14 @@ export function ConversationList<T extends ConversationItem = ConversationItem>(
         ) : null}
       </div>
 
-      {footer ? <div data-slot="conversation-list-footer" className="flex-none border-t border-solid border-[color:var(--oui-panel-divider)]">{footer}</div> : null}
+      {footer ? (
+        <div
+          data-slot="conversation-list-footer"
+          className="flex-none border-t border-solid border-[color:var(--oui-panel-divider)]"
+        >
+          {footer}
+        </div>
+      ) : null}
     </nav>
   );
 }

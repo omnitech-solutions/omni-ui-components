@@ -1,10 +1,15 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
-
 import { StatusClock, type StatusClockProps } from '@oc-tech/omni-ui-components/StatusClock';
-import { SessionBarDemo, type SessionBarDemoProps } from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
-import { SAMPLE_BUILD_TAG, statusClockPropsFactory } from 'factories/omni-ui-components/StatusClock/StatusClock.factories';
+import type { Meta, StoryObj } from '@storybook/react';
+import {
+  SessionBarDemo,
+  type SessionBarDemoProps,
+} from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
+import {
+  SAMPLE_BUILD_TAG,
+  statusClockPropsFactory,
+} from 'factories/omni-ui-components/StatusClock/StatusClock.factories';
+import type * as React from 'react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 /** The designer gallery's backdrop and bar surface (story-only chrome), so the clock reads as on the board. */
 const OnBar: React.FC<React.PropsWithChildren> = ({ children }) => (
@@ -60,7 +65,8 @@ const meta: Meta<StatusClockProps> = {
     },
     buildTag: {
       control: 'object',
-      description: '{ sha, branch, commitIcon, branchIcon, title, onCopy, copied, copiedLabel }. Omit in production builds.',
+      description:
+        '{ sha, branch, commitIcon, branchIcon, title, onCopy, copied, copiedLabel }. Omit in production builds.',
     },
     label: { control: 'text', description: 'aria-label of the group.' },
   },
@@ -100,7 +106,8 @@ export const WithDevBuildTag: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Development builds only: the tag after a divider, full SHA in the tooltip, click to copy.',
+        story:
+          'Development builds only: the tag after a divider, full SHA in the tooltip, click to copy.',
       },
     },
   },
@@ -121,7 +128,9 @@ export const Copied: Story = {
     },
   },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByRole('button', { name: 'Copied' })).toHaveTextContent('Copied');
+    await expect(within(canvasElement).getByRole('button', { name: 'Copied' })).toHaveTextContent(
+      'Copied',
+    );
   },
 };
 
@@ -137,7 +146,8 @@ export const SeeThrough: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'See-through lowers only the surface behind the clock; the icon, timer and label stay at full opacity.',
+        story:
+          'See-through lowers only the surface behind the clock; the icon, timer and label stay at full opacity.',
       },
     },
   },

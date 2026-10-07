@@ -1,8 +1,7 @@
-import * as React from 'react';
 import type { ObjectFieldTemplateProps } from '@rjsf/utils';
-import { ChevronDown } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
 
 /**
  * Single row cell — bare field name, or an object that opts into layout
@@ -38,17 +37,26 @@ interface CollapsibleOption {
 export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
   const { properties, schema, uiSchema } = props;
   const rows = (uiSchema as unknown as { 'ui:rows'?: RowSpec[] } | undefined)?.['ui:rows'];
-  const uiOptions = (uiSchema as unknown as { 'ui:options'?: Record<string, unknown> } | undefined)?.['ui:options'] ?? {};
+  const uiOptions =
+    (uiSchema as unknown as { 'ui:options'?: Record<string, unknown> } | undefined)?.[
+      'ui:options'
+    ] ?? {};
   const rawCollapsible = uiOptions['collapsible'];
   const collapsible: CollapsibleOption | null =
-    rawCollapsible === true ? {} : rawCollapsible && typeof rawCollapsible === 'object' ? (rawCollapsible as CollapsibleOption) : null;
+    rawCollapsible === true
+      ? {}
+      : rawCollapsible && typeof rawCollapsible === 'object'
+        ? (rawCollapsible as CollapsibleOption)
+        : null;
   const [open, setOpen] = React.useState<boolean>(collapsible?.defaultOpen ?? true);
   const byName = new Map(properties.map((p) => [p.name, p] as const));
 
   /* No ui:rows ⇒ pair flat scalars into 2-per-row; stack rows of object
    * subschemas (e.g. contact_info / address) so each section keeps its
    * own ObjectFieldTemplate. */
-  const childIsObject = (name: string) => (schema?.properties as Record<string, { type?: string }> | undefined)?.[name]?.type === 'object';
+  const childIsObject = (name: string) =>
+    (schema?.properties as Record<string, { type?: string }> | undefined)?.[name]?.type ===
+    'object';
   const pairScalars = (names: string[]): RowSpec[] => {
     const out: RowSpec[] = [];
     let pair: string[] = [];
@@ -72,7 +80,9 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
   };
   const declared: RowSpec[] = rows ?? pairScalars(properties.map((p) => p.name));
   const declaredNames = new Set(declared.flat().map(cellName));
-  const trailing: RowSpec[] = properties.filter((p) => !declaredNames.has(p.name)).map((p) => [p.name]);
+  const trailing: RowSpec[] = properties
+    .filter((p) => !declaredNames.has(p.name))
+    .map((p) => [p.name]);
   const allRows: RowSpec[] = [...declared, ...trailing];
   const maxCols = allRows.reduce(
     (max, r) =>
@@ -122,9 +132,16 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
         className="flex w-fit items-center gap-1.5 text-sm font-semibold text-foreground hover:text-primary"
       >
         {title}
-        <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', !open && '-rotate-90')} aria-hidden="true" />
+        <ChevronDown
+          className={cn('h-3.5 w-3.5 transition-transform', !open && '-rotate-90')}
+          aria-hidden="true"
+        />
       </button>
-      <div data-testid="oui-collapsible-content" hidden={!open} style={open ? undefined : { display: 'none' }}>
+      <div
+        data-testid="oui-collapsible-content"
+        hidden={!open}
+        style={open ? undefined : { display: 'none' }}
+      >
         {grid}
       </div>
     </div>

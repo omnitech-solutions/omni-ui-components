@@ -1,8 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { CurrencyInput, type CurrencyInputProps } from '@oc-tech/omni-ui-components/CurrencyInput';
+import type { Meta, StoryObj } from '@storybook/react';
 import { currencyInputPropsFactory } from 'factories/omni-ui-components/CurrencyInput/CurrencyInput.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<CurrencyInputProps> = (args) => {
   const [value, setValue] = React.useState<number | null>(args.value ?? null);

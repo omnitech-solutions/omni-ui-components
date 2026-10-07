@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** `control`: 36px compact row. `control-labelled`: 52px row, icon with a caption under it. */
 export type ToolbarSize = 'control' | 'control-labelled';

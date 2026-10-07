@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { z } from 'zod';
 import type { RJSFSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import { buildSingleFieldUiSchema, renderDynamicForm } from './testing/renderDynamicForm';
 
@@ -20,7 +20,8 @@ const toneSchema = (required = false): RJSFSchema => ({
   },
 });
 
-const getItem = (value: string) => document.querySelector<HTMLButtonElement>(`[data-testid="root_tone-option-${value}"]`)!;
+const getItem = (value: string) =>
+  document.querySelector<HTMLButtonElement>(`[data-testid="root_tone-option-${value}"]`)!;
 
 describe('DynamicForm — SegmentedWidget integration', () => {
   it('renders a Omni segmented for ui:widget=segmented', () => {
@@ -56,6 +57,10 @@ describe('DynamicForm — SegmentedWidget integration', () => {
     });
     await submit();
     expect(onSubmit).not.toHaveBeenCalled();
-    expect(onError).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({ path: ['tone'], source: 'zod', message: 'Pick a tone' })]));
+    expect(onError).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ path: ['tone'], source: 'zod', message: 'Pick a tone' }),
+      ]),
+    );
   });
 });

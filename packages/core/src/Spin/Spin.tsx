@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { Loader2 } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Loader2 } from 'lucide-react';
+import type * as React from 'react';
 
 export interface SpinProps extends React.HTMLAttributes<HTMLDivElement> {
   spinning?: boolean;

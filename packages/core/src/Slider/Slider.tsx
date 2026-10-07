@@ -1,9 +1,8 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { SliderPrimitive } from './SliderPrimitive';
 import type { SliderProps } from './Slider.types';
+import { SliderPrimitive } from './SliderPrimitive';
 
 /**
  * Chrome-wrapped Omni Slider. Composes {@link SliderPrimitive} with a

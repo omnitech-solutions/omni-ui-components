@@ -37,7 +37,8 @@ export const attachmentMetaClasses = 'truncate text-[11px] text-[color:var(--oui
 export const attachmentErrorClasses = 'truncate text-[11px] text-[color:var(--oui-tone-danger-fg)]';
 
 /** Progress track under the card; the bar width is inline (`progress`). Never animates when motion is reduced. */
-export const attachmentProgressTrackClasses = 'absolute inset-x-1.5 bottom-0 h-0.5 overflow-hidden rounded-full bg-[color:var(--oui-panel-divider)]';
+export const attachmentProgressTrackClasses =
+  'absolute inset-x-1.5 bottom-0 h-0.5 overflow-hidden rounded-full bg-[color:var(--oui-panel-divider)]';
 export const attachmentProgressBarClasses =
   'block h-full bg-[color:var(--oui-tone-accent-solid-bg)] transition-[width] duration-200 motion-reduce:transition-none';
 /** An upload with no known progress: a sliding bar. */

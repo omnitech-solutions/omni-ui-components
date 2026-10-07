@@ -36,7 +36,9 @@ export interface OmniCollapsibleOptions {
   defaultOpen: boolean;
 }
 
-export interface OmniRjsfFormContext<TDerived extends Record<string, unknown> = Record<string, unknown>> {
+export interface OmniRjsfFormContext<
+  TDerived extends Record<string, unknown> = Record<string, unknown>,
+> {
   derived: TDerived;
   optionSets: Record<string, OmniSelectOption[]>;
   actions: Record<string, OmniRjsfAction>;
@@ -56,7 +58,10 @@ export const buildFormContext = <TDerived extends Record<string, unknown>>(
   derived,
 });
 
-export const EMPTY_FORM_CONTEXT_BASE: Omit<OmniRjsfFormContext<Record<string, unknown>>, 'derived'> = {
+export const EMPTY_FORM_CONTEXT_BASE: Omit<
+  OmniRjsfFormContext<Record<string, unknown>>,
+  'derived'
+> = {
   optionSets: {},
   actions: {},
   locale: 'en',

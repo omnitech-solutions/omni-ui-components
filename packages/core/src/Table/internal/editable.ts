@@ -49,9 +49,12 @@ export const resolvedCellEditableConfig = <TRecord, TRowData>(
   return { mode: columnConfig.mode, source: 'column', columnConfig };
 };
 
-export const normalizeEditableInputValue = (value: unknown): string => (value == null ? '' : String(value));
+export const normalizeEditableInputValue = (value: unknown): string =>
+  value == null ? '' : String(value);
 
-export const tableEditableConfig = <TRecord, TRowData>(editable: TableProps<TRecord, TRowData>['editable']): TableEditableConfig<TRecord, TRowData> | null => {
+export const tableEditableConfig = <TRecord, TRowData>(
+  editable: TableProps<TRecord, TRowData>['editable'],
+): TableEditableConfig<TRecord, TRowData> | null => {
   if (!editable) return null;
   return editable === true
     ? {

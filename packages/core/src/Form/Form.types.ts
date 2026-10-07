@@ -146,7 +146,11 @@ export interface FormToolbarAction {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
 }
 
-export type FormRow<TName extends string = string> = FieldDef<TName>[] | FormRowDef<TName> | FormSectionHeading | FormToolbarRow;
+export type FormRow<TName extends string = string> =
+  | FieldDef<TName>[]
+  | FormRowDef<TName>
+  | FormSectionHeading
+  | FormToolbarRow;
 
 /** Reusable fixture passed into `<FormDemo>` and tests. */
 export interface FormFixture<TFormData> {

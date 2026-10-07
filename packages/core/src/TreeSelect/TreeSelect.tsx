@@ -1,7 +1,6 @@
-import * as React from 'react';
-
-import { Select } from '../Select';
+import type * as React from 'react';
 import type { SelectOption } from '../Select';
+import { Select } from '../Select';
 
 export interface TreeSelectNode {
   value: string;
@@ -20,4 +19,6 @@ function flatten(nodes: TreeSelectNode[], depth = 0): SelectOption[] {
   ]);
 }
 
-export const TreeSelect = ({ treeData, ...props }: TreeSelectProps) => <Select {...props} options={flatten(treeData)} />;
+export const TreeSelect = ({ treeData, ...props }: TreeSelectProps) => (
+  <Select {...props} options={flatten(treeData)} />
+);

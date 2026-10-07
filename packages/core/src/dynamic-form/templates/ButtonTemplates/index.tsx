@@ -1,11 +1,9 @@
-import * as React from 'react';
-import type { IconButtonProps, SubmitButtonProps } from '@rjsf/utils';
-import { TranslatableString, getSubmitButtonOptions } from '@rjsf/utils';
-import { ChevronDown, ChevronUp, Copy, Trash2, X } from 'lucide-react';
-
-import { cn } from 'lib/utils';
-
 import { Button, IconButton } from '@oc-tech/omni-ui-components';
+import type { IconButtonProps, SubmitButtonProps } from '@rjsf/utils';
+import { getSubmitButtonOptions, TranslatableString } from '@rjsf/utils';
+import { cn } from 'lib/utils';
+import { ChevronDown, ChevronUp, Copy, Trash2, X } from 'lucide-react';
+import type * as React from 'react';
 
 /**
  * RJSF IconButton bridge — RJSF's array / object toolbars look up named
@@ -24,7 +22,12 @@ import { Button, IconButton } from '@oc-tech/omni-ui-components';
  * - `ClearButton`    — clear a multi-schema selection (X icon).
  */
 
-const stripRjsfProps = ({ uiSchema: _uiSchema, registry: _registry, iconType: _iconType, ...rest }: IconButtonProps) => rest;
+const stripRjsfProps = ({
+  uiSchema: _uiSchema,
+  registry: _registry,
+  iconType: _iconType,
+  ...rest
+}: IconButtonProps) => rest;
 
 const useTranslate = (props: IconButtonProps) => props.registry?.translateString;
 
@@ -34,13 +37,24 @@ const useTranslate = (props: IconButtonProps) => props.registry?.translateString
  */
 export const RjsfIconButton = (props: IconButtonProps & { icon?: React.ReactNode }) => {
   const { icon, ...rest } = stripRjsfProps(props);
-  return <IconButton {...(rest as React.ComponentProps<typeof IconButton>)} icon={icon} variant="outline" />;
+  return (
+    <IconButton
+      {...(rest as React.ComponentProps<typeof IconButton>)}
+      icon={icon}
+      variant="outline"
+    />
+  );
 };
 
 export const CopyButton = (props: IconButtonProps) => {
   const translate = useTranslate(props);
   return (
-    <RjsfIconButton {...props} title={translate?.(TranslatableString.CopyButton)} aria-label={translate?.(TranslatableString.CopyButton)} icon={<Copy />} />
+    <RjsfIconButton
+      {...props}
+      title={translate?.(TranslatableString.CopyButton)}
+      aria-label={translate?.(TranslatableString.CopyButton)}
+      icon={<Copy />}
+    />
   );
 };
 
@@ -85,7 +99,12 @@ export const RemoveButton = (props: IconButtonProps) => {
 export const ClearButton = (props: IconButtonProps) => {
   const translate = useTranslate(props);
   return (
-    <RjsfIconButton {...props} title={translate?.(TranslatableString.ClearButton)} aria-label={translate?.(TranslatableString.ClearButton)} icon={<X />} />
+    <RjsfIconButton
+      {...props}
+      title={translate?.(TranslatableString.ClearButton)}
+      aria-label={translate?.(TranslatableString.ClearButton)}
+      icon={<X />}
+    />
   );
 };
 

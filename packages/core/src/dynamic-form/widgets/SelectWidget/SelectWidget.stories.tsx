@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
+  type CountryFormData,
   descriptionCountryFixture,
   groupedSelectFixture,
   placeholderCountryFixture,
@@ -10,8 +9,11 @@ import {
   searchableCountryFixture,
   validationCountryFixture,
   withFooterActionSelectFixture,
-  type CountryFormData,
 } from 'factories/dynamic-form/widgets/SelectWidget/SelectWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<Record<string, unknown>>;
 type _UseImport = CountryFormData;

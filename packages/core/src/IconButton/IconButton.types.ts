@@ -1,9 +1,14 @@
-import * as React from 'react';
-
-import type { RootProps } from '../lib';
+import type * as React from 'react';
 import type { ControlTone } from '../internal/support/controlTone';
+import type { RootProps } from '../lib';
 
-export type IconButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+export type IconButtonVariant =
+  | 'default'
+  | 'destructive'
+  | 'outline'
+  | 'secondary'
+  | 'ghost'
+  | 'link';
 export type IconButtonSize = 'sm' | 'default' | 'md' | 'lg' | 'control' | 'control-labelled';
 export type IconButtonTone = ControlTone;
 
@@ -24,7 +29,9 @@ export interface IconButtonBadge {
  * @example
  * <IconButton aria-label="Remove" icon={<Trash2 />} onClick={() => …} />
  */
-export interface IconButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'>, RootProps {
+export interface IconButtonProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'>,
+    RootProps {
   /** The icon node. Sized by the size variant; receives `pointer-events-none`. */
   icon: React.ReactNode;
   variant?: IconButtonVariant;

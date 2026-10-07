@@ -1,16 +1,20 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { useControllableState } from '../lib/use-controllable-state';
-import { panelShellSurfaceVariants } from './PanelShell.variants';
 import type { PanelShellLabels, PanelShellProps } from './PanelShell.types';
+import { panelShellSurfaceVariants } from './PanelShell.variants';
 
 /** English strings of {@link PanelShell}. */
-export const DEFAULT_PANEL_SHELL_LABELS: PanelShellLabels = { closeSidebar: 'Close conversations', sidebar: 'Conversations' };
+export const DEFAULT_PANEL_SHELL_LABELS: PanelShellLabels = {
+  closeSidebar: 'Close conversations',
+  sidebar: 'Conversations',
+};
 
-const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+const FOCUSABLE =
+  'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
-const toCss = (value: number | string | undefined) => (typeof value === 'number' ? `${value}px` : value);
+const toCss = (value: number | string | undefined) =>
+  typeof value === 'number' ? `${value}px` : value;
 
 /**
  * Omni PanelShell: the shell of an assistant. In `panel` mode it is a side panel (default 440px) beside the
@@ -52,7 +56,11 @@ export const PanelShell = ({
   'data-testid': testId,
 }: PanelShellProps) => {
   const [open, setOpen] = useControllableState(openProp, defaultOpen, onOpenChange);
-  const [sidebarOpen, setSidebarOpen] = useControllableState(sidebarOpenProp, defaultSidebarOpen, onSidebarOpenChange);
+  const [sidebarOpen, setSidebarOpen] = useControllableState(
+    sidebarOpenProp,
+    defaultSidebarOpen,
+    onSidebarOpenChange,
+  );
   const labels = { ...DEFAULT_PANEL_SHELL_LABELS, ...labelOverrides };
   const full = mode === 'full';
   const showHost = host !== undefined && !(full && open);
@@ -103,7 +111,12 @@ export const PanelShell = ({
   };
 
   return (
-    <div data-slot="panel-shell" data-mode={mode} data-testid={testId} className={cn('flex h-full min-h-0 w-full min-w-0 gap-3', className)}>
+    <div
+      data-slot="panel-shell"
+      data-mode={mode}
+      data-testid={testId}
+      className={cn('flex h-full min-h-0 w-full min-w-0 gap-3', className)}
+    >
       {showHost ? (
         <div data-slot="panel-shell-host" className="flex min-h-0 min-w-0 flex-1 flex-col">
           {host}
@@ -118,16 +131,35 @@ export const PanelShell = ({
           className={cn(panelShellSurfaceVariants({ mode }), panelClassName)}
         >
           {showSidebar && sidebarMode === 'docked' ? (
-            <div data-slot="panel-shell-sidebar" data-mode="docked" style={{ width: toCss(sidebarWidth) }} className="flex min-h-0 flex-none flex-col">
+            <div
+              data-slot="panel-shell-sidebar"
+              data-mode="docked"
+              style={{ width: toCss(sidebarWidth) }}
+              className="flex min-h-0 flex-none flex-col"
+            >
               {sidebar}
             </div>
           ) : null}
           <div data-slot="panel-shell-main" className="flex min-h-0 min-w-0 flex-1 flex-col">
-            {header ? <div data-slot="panel-shell-header" className="flex-none border-b border-solid border-[color:var(--oui-panel-divider)]">{header}</div> : null}
-            <div data-slot="panel-shell-body" className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+            {header ? (
+              <div
+                data-slot="panel-shell-header"
+                className="flex-none border-b border-solid border-[color:var(--oui-panel-divider)]"
+              >
+                {header}
+              </div>
+            ) : null}
+            <div
+              data-slot="panel-shell-body"
+              className="flex min-h-0 flex-1 flex-col overflow-y-auto"
+            >
               {children}
             </div>
-            {footer ? <div data-slot="panel-shell-footer" className="flex-none">{footer}</div> : null}
+            {footer ? (
+              <div data-slot="panel-shell-footer" className="flex-none">
+                {footer}
+              </div>
+            ) : null}
           </div>
           {showSidebar && sidebarMode === 'overlay' ? (
             <>

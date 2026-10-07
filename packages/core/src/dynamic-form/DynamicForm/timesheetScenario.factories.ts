@@ -1,12 +1,12 @@
-import type { DynamicFormFixture } from './DynamicForm.factories';
-import { SHOWCASE_MEMBERS, SHOWCASE_PROJECTS, SHOWCASE_TASKS } from '../../../showcase/entities';
 import { selectOptions } from '../../../helpers/optionMappers';
+import { SHOWCASE_MEMBERS, SHOWCASE_PROJECTS, SHOWCASE_TASKS } from '../../../showcase/entities';
 import {
   TIMESHEET_HEADER,
+  type TimesheetScenarioFormData,
   timesheetScenarioInitial,
   timesheetScenarioZod,
-  type TimesheetScenarioFormData,
 } from '../../Form/timesheetScenario.factories';
+import type { DynamicFormFixture } from './DynamicForm.factories';
 
 export type { TimesheetScenarioFormData };
 
@@ -17,17 +17,33 @@ export interface TimesheetScenarioDerived {
   [key: string]: string;
 }
 
-const PROJECT_OPTIONS = selectOptions(SHOWCASE_PROJECTS, { value: 'id', label: (p) => `${p.icon} ${p.name}`, description: 'organization', color: 'color' });
-const MEMBER_OPTIONS = selectOptions(SHOWCASE_MEMBERS, { value: 'id', label: 'name', group: 'group', color: 'color', initials: 'initials' });
+const PROJECT_OPTIONS = selectOptions(SHOWCASE_PROJECTS, {
+  value: 'id',
+  label: (p) => `${p.icon} ${p.name}`,
+  description: 'organization',
+  color: 'color',
+});
+const MEMBER_OPTIONS = selectOptions(SHOWCASE_MEMBERS, {
+  value: 'id',
+  label: 'name',
+  group: 'group',
+  color: 'color',
+  initials: 'initials',
+});
 const TASK_OPTIONS = selectOptions(SHOWCASE_TASKS, { value: 'id', label: 'name' });
 
-const deriveTimesheet = (_formData: Readonly<Partial<TimesheetScenarioFormData>>): TimesheetScenarioDerived => ({
+const deriveTimesheet = (
+  _formData: Readonly<Partial<TimesheetScenarioFormData>>,
+): TimesheetScenarioDerived => ({
   durationLabel: TIMESHEET_HEADER.durationLabel,
   dateLabel: TIMESHEET_HEADER.dateLabel,
   statusLabel: TIMESHEET_HEADER.statusLabel,
 });
 
-export const timesheetScenarioFixture = (): DynamicFormFixture<TimesheetScenarioFormData, TimesheetScenarioDerived> => ({
+export const timesheetScenarioFixture = (): DynamicFormFixture<
+  TimesheetScenarioFormData,
+  TimesheetScenarioDerived
+> => ({
   schema: {
     type: 'object',
     required: ['date'],
@@ -62,12 +78,28 @@ export const timesheetScenarioFixture = (): DynamicFormFixture<TimesheetScenario
       [{ value: 'companyTagIds', span: 2 }],
       ['nonBillable', 'rate'],
     ],
-    header: { 'ui:field': 'staticPanel', 'ui:options': { panelKey: 'durationLabel', lines: ['dateLabel', 'statusLabel'] } },
+    header: {
+      'ui:field': 'staticPanel',
+      'ui:options': { panelKey: 'durationLabel', lines: ['dateLabel', 'statusLabel'] },
+    },
     seconds: { 'ui:widget': 'hidden' },
     date: { 'ui:widget': 'hidden' },
-    clientOrganizationId: { 'ui:widget': 'combobox', 'ui:options': { optionSetKey: 'projects', placeholder: 'Add project' } },
-    ownerId: { 'ui:widget': 'combobox', 'ui:options': { optionSetKey: 'members', placeholder: 'Select…' } },
-    taskUuid: { 'ui:widget': 'combobox', 'ui:options': { optionSetKey: 'tasks', placeholder: 'Select a task or type a new one', labelActionKey: 'viewTask' } },
+    clientOrganizationId: {
+      'ui:widget': 'combobox',
+      'ui:options': { optionSetKey: 'projects', placeholder: 'Add project' },
+    },
+    ownerId: {
+      'ui:widget': 'combobox',
+      'ui:options': { optionSetKey: 'members', placeholder: 'Select…' },
+    },
+    taskUuid: {
+      'ui:widget': 'combobox',
+      'ui:options': {
+        optionSetKey: 'tasks',
+        placeholder: 'Select a task or type a new one',
+        labelActionKey: 'viewTask',
+      },
+    },
     notes: { 'ui:widget': 'textarea', 'ui:placeholder': 'What are you working on?' },
     companyTagIds: { 'ui:widget': 'tags', 'ui:placeholder': 'Add tags' },
     nonBillable: { 'ui:widget': 'switch' },
@@ -87,7 +119,9 @@ export const timesheetScenarioFixture = (): DynamicFormFixture<TimesheetScenario
   derive: deriveTimesheet,
   formContext: {
     optionSets: { projects: PROJECT_OPTIONS, members: MEMBER_OPTIONS, tasks: TASK_OPTIONS },
-    actions: { viewTask: { label: 'View Task', href: '/tasks/resourcing-evaluation', actionId: 'viewTask' } },
+    actions: {
+      viewTask: { label: 'View Task', href: '/tasks/resourcing-evaluation', actionId: 'viewTask' },
+    },
     locale: 'en-GB',
   },
 });

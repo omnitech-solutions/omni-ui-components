@@ -1,22 +1,40 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
   plainMultiSelectFixture,
   prefilledMultiSelectFixture,
-  searchableMultiSelectFixture,
   type StackFormData,
+  searchableMultiSelectFixture,
 } from 'factories/dynamic-form/widgets/MultiSelectWidget/MultiSelectWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<StackFormData>;
 
 const config = defineDynamicFormStories<StackFormData>({
   title: 'dynamic-form/widgets/MultiSelectWidget',
-  fixtures: { plain: plainMultiSelectFixture, searchable: searchableMultiSelectFixture, prefilled: prefilledMultiSelectFixture },
-  titles: { plain: 'MultiSelectWidget', searchable: 'MultiSelectWidget · searchable', prefilled: 'MultiSelectWidget · prefilled' },
+  fixtures: {
+    plain: plainMultiSelectFixture,
+    searchable: searchableMultiSelectFixture,
+    prefilled: prefilledMultiSelectFixture,
+  },
+  titles: {
+    plain: 'MultiSelectWidget',
+    searchable: 'MultiSelectWidget · searchable',
+    prefilled: 'MultiSelectWidget · prefilled',
+  },
   defaultArgs: { fixture: 'plain' },
-  docs: { name: 'MultiSelectWidget', whenToUse: 'Popover + chip multi-pick for `type: "array"` + `items.oneOf`. Compact alternative to `checkboxes`.' },
-  stories: { Plain: { fixture: 'plain' }, Searchable: { fixture: 'searchable' }, Prefilled: { fixture: 'prefilled' } },
+  docs: {
+    name: 'MultiSelectWidget',
+    whenToUse:
+      'Popover + chip multi-pick for `type: "array"` + `items.oneOf`. Compact alternative to `checkboxes`.',
+  },
+  stories: {
+    Plain: { fixture: 'plain' },
+    Searchable: { fixture: 'searchable' },
+    Prefilled: { fixture: 'prefilled' },
+  },
 });
 
 const meta: Meta<Args> = {

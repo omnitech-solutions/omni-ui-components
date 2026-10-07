@@ -1,10 +1,9 @@
-import * as React from 'react';
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { z } from 'zod';
-import type { RJSFSchema, UiSchema } from '@rjsf/utils';
-
 import { DynamicForm } from 'dynamic-form';
+import * as React from 'react';
+import { z } from 'zod';
 
 /**
  * Proves the controlled bridge: when the parent updates `formData`
@@ -25,10 +24,21 @@ describe('DynamicForm — controlled formData bridge', () => {
     const [formData, setFormData] = React.useState({ subject: initial });
     return (
       <>
-        <button type="button" data-testid="parent-reset" onClick={() => setFormData({ subject: 'from-parent' })}>
+        <button
+          type="button"
+          data-testid="parent-reset"
+          onClick={() => setFormData({ subject: 'from-parent' })}
+        >
           reset
         </button>
-        <DynamicForm schema={schema} uiSchema={uiSchema} zodSchema={zodSchema} formData={formData} onChange={setFormData} onSubmit={jest.fn()} />
+        <DynamicForm
+          schema={schema}
+          uiSchema={uiSchema}
+          zodSchema={zodSchema}
+          formData={formData}
+          onChange={setFormData}
+          onSubmit={jest.fn()}
+        />
       </>
     );
   }
@@ -44,7 +54,9 @@ describe('DynamicForm — controlled formData bridge', () => {
       await user.click(screen.getByTestId('parent-reset'));
     });
 
-    expect((screen.getByRole('textbox', { name: /subject/i }) as HTMLInputElement).value).toBe('from-parent');
+    expect((screen.getByRole('textbox', { name: /subject/i }) as HTMLInputElement).value).toBe(
+      'from-parent',
+    );
   });
 
   it('still flows user keystrokes back through onChange', async () => {

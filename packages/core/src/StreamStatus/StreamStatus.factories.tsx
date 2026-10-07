@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Loader2 } from 'lucide-react';
 
 import { makeFactory, type Variant } from '../internal/support/makeFactory';

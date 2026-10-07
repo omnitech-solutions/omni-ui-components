@@ -1,6 +1,3 @@
-import * as React from 'react';
-
-import { ChevronDown, ChevronUp, Copy, FileText, Trash2, X } from 'lucide-react';
 import {
   Checkbox,
   CheckboxGroup,
@@ -9,34 +6,36 @@ import {
   DatePicker,
   EmailInput,
   FileUpload,
-  InputOTP,
-  PasswordInput,
-  PhoneInput,
-  TagInput,
-  TimePicker,
   Form,
   FormActions,
   FormField,
   FormRow,
   IconButton,
   Input,
+  InputOTP,
+  PasswordInput,
+  PhoneInput,
   Radio,
   Segmented,
   Select,
   Slider,
   Stepper,
+  TagInput,
   Textarea,
+  TimePicker,
 } from '@oc-tech/omni-ui-components';
 import type {
   FieldDef,
   FormFixture,
-  FormRow as FormRowEntry,
+  FormProps,
   FormRowDef,
+  FormRow as FormRowEntry,
   FormSectionHeading,
   FormToolbarAction,
   FormToolbarRow,
 } from '@oc-tech/omni-ui-components/Form/Form.types';
-import type { FormProps } from '@oc-tech/omni-ui-components/Form/Form.types';
+import { ChevronDown, ChevronUp, Copy, FileText, Trash2, X } from 'lucide-react';
+import type * as React from 'react';
 
 const TOOLBAR_ICONS = {
   trash: Trash2,
@@ -48,15 +47,27 @@ const TOOLBAR_ICONS = {
 
 const renderToolbarAction = (action: FormToolbarAction, idx: number) => {
   const Icon = TOOLBAR_ICONS[action.icon];
-  return <IconButton key={`${action.icon}-${idx}`} aria-label={action.label} title={action.label} variant={action.variant} icon={<Icon />} />;
+  return (
+    <IconButton
+      key={`${action.icon}-${idx}`}
+      aria-label={action.label}
+      title={action.label}
+      variant={action.variant}
+      icon={<Icon />}
+    />
+  );
 };
 
-const isSectionHeading = (r: FormRowEntry): r is FormSectionHeading => !Array.isArray(r) && (r as FormSectionHeading).kind === 'heading';
-const isToolbarRow = (r: FormRowEntry): r is FormToolbarRow => !Array.isArray(r) && (r as FormToolbarRow).kind === 'toolbar';
+const isSectionHeading = (r: FormRowEntry): r is FormSectionHeading =>
+  !Array.isArray(r) && (r as FormSectionHeading).kind === 'heading';
+const isToolbarRow = (r: FormRowEntry): r is FormToolbarRow =>
+  !Array.isArray(r) && (r as FormToolbarRow).kind === 'toolbar';
 
-const normalizeRow = <T extends string>(row: FieldDef<T>[] | FormRowDef<T>): FormRowDef<T> => (Array.isArray(row) ? { fields: row } : row);
+const normalizeRow = <T extends string>(row: FieldDef<T>[] | FormRowDef<T>): FormRowDef<T> =>
+  Array.isArray(row) ? { fields: row } : row;
 
-export interface FormDemoProps<TFormData> extends Partial<Omit<FormProps<TFormData>, 'zodSchema' | 'children' | 'formData' | 'onSubmit'>> {
+export interface FormDemoProps<TFormData>
+  extends Partial<Omit<FormProps<TFormData>, 'zodSchema' | 'children' | 'formData' | 'onSubmit'>> {
   fixture: FormFixture<TFormData>;
   formData?: TFormData;
   onSubmit?: FormProps<TFormData>['onSubmit'];
@@ -103,15 +114,21 @@ export function FormDemo<TFormData>({
           return (
             <div key={`heading-${rowIndex}`} className={rowIndex === 0 ? '' : 'mt-2'}>
               <h3 className="text-base font-semibold text-foreground">{rawRow.title}</h3>
-              {rawRow.description ? <p className="mt-1 text-sm text-muted-foreground">{rawRow.description}</p> : null}
+              {rawRow.description ? (
+                <p className="mt-1 text-sm text-muted-foreground">{rawRow.description}</p>
+              ) : null}
             </div>
           );
         }
         if (isToolbarRow(rawRow)) {
           return (
             <div key={`toolbar-${rowIndex}`} className="flex flex-col gap-2">
-              {rawRow.label ? <span className="text-sm font-medium text-foreground">{rawRow.label}</span> : null}
-              {rawRow.description ? <p className="text-xs text-muted-foreground">{rawRow.description}</p> : null}
+              {rawRow.label ? (
+                <span className="text-sm font-medium text-foreground">{rawRow.label}</span>
+              ) : null}
+              {rawRow.description ? (
+                <p className="text-xs text-muted-foreground">{rawRow.description}</p>
+              ) : null}
               <div className="inline-flex items-center gap-1 self-start rounded-md border border-[var(--oui-border-field)] p-1">
                 {rawRow.actions.map((action, idx) => renderToolbarAction(action, idx))}
               </div>
@@ -123,7 +140,16 @@ export function FormDemo<TFormData>({
           <FormRow key={rowIndex} cols={row.cols}>
             {row.fields.map((field) => (
               <FormField key={field.name} name={field.name} required={field.required}>
-                {({ id, value, onChange: oc, onBlur, error, required, disabled: d, readOnly: r }) => {
+                {({
+                  id,
+                  value,
+                  onChange: oc,
+                  onBlur,
+                  error,
+                  required,
+                  disabled: d,
+                  readOnly: r,
+                }) => {
                   if (field.type === 'textarea') {
                     return (
                       <Textarea

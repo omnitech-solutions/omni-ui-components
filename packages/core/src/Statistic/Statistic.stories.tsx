@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Statistic } from '@oc-tech/omni-ui-components/Statistic';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Statistic> = {
   title: 'omni-ui-components/Statistic',

@@ -1,13 +1,23 @@
-import * as React from 'react';
-import classNames from 'classnames';
 import { closestCenter, DndContext, type DragEndEvent, type DragStartEvent } from '@dnd-kit/core';
-import { horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  horizontalListSortingStrategy,
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import type { Row } from '@tanstack/react-table';
-import type { Virtualizer, VirtualItem } from '@tanstack/react-virtual';
+import type { VirtualItem, Virtualizer } from '@tanstack/react-virtual';
+import classNames from 'classnames';
+import type * as React from 'react';
 import { useTable } from '../hooks/useTable';
-import type { TableLoadingVariant } from '../Table.Loading';
 import { tableClass } from '../internal';
-import type { TableColumn, TableDataRow, TableLoadingProps, TableProps, TableResolvedRow } from '../Table.types';
+import type { TableLoadingVariant } from '../Table.Loading';
+import type {
+  TableColumn,
+  TableDataRow,
+  TableLoadingProps,
+  TableProps,
+  TableResolvedRow,
+} from '../Table.types';
 import { BodyRow } from './BodyRow';
 
 export interface TableStructureProps<TRecord, TRowData> {
@@ -44,8 +54,15 @@ export interface TableStructureProps<TRecord, TRowData> {
   loadingVariant: TableLoadingVariant;
   renderHeaderRows: () => React.ReactNode;
   renderRowDragCell: (resolved: TableResolvedRow<TRecord, TRowData>) => React.ReactNode;
-  renderSelectionCell: (resolved: TableResolvedRow<TRecord, TRowData>, rowIndex: number) => React.ReactNode;
-  renderExpandCell: (resolved: TableResolvedRow<TRecord, TRowData>, rowIndex: number, indent: number) => React.ReactNode;
+  renderSelectionCell: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    rowIndex: number,
+  ) => React.ReactNode;
+  renderExpandCell: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    rowIndex: number,
+    indent: number,
+  ) => React.ReactNode;
   renderBodyCell: (
     resolved: TableResolvedRow<TRecord, TRowData>,
     col: TableColumn<TRecord, TRowData>,
@@ -93,11 +110,17 @@ export function TableStructure<TRecord, TRowData>({
   renderExpandCell,
   renderBodyCell,
 }: TableStructureProps<TRecord, TRowData>) {
-  const { table, props, registry, testIdPrefix, classMap, styleMap, renderedLeafColumns } = useTable<TRecord, TRowData>();
+  const { table, props, registry, testIdPrefix, classMap, styleMap, renderedLeafColumns } =
+    useTable<TRecord, TRowData>();
   const { HeaderWrapper, BodyWrapper, Summary, Loading } = registry.components;
 
-  const expandColumnCount = !treeMode && expandable && expandable.showExpandColumn !== false ? 1 : 0;
-  const bodyColumnCount = renderedLeafColumns.length + (hasDraggableRows ? 1 : 0) + (rowSelection ? 1 : 0) + expandColumnCount;
+  const expandColumnCount =
+    !treeMode && expandable && expandable.showExpandColumn !== false ? 1 : 0;
+  const bodyColumnCount =
+    renderedLeafColumns.length +
+    (hasDraggableRows ? 1 : 0) +
+    (rowSelection ? 1 : 0) +
+    expandColumnCount;
   const virtualPadColSpan = bodyColumnCount;
 
   const virtualBottomPad = (() => {
@@ -128,7 +151,10 @@ export function TableStructure<TRecord, TRowData>({
       <table
         ref={tableRef}
         className={tableClass}
-        style={{ tableLayout: resolvedTableLayout, minWidth: scroll?.x === true ? '100%' : scroll?.x || undefined }}
+        style={{
+          tableLayout: resolvedTableLayout,
+          minWidth: scroll?.x === true ? '100%' : scroll?.x || undefined,
+        }}
         data-testid={`${testIdPrefix}-table`}
       >
         {beforeTableContent}
@@ -139,7 +165,12 @@ export function TableStructure<TRecord, TRowData>({
             registry={registry}
             className={classNames(sticky && 'sticky top-0 z-[3]', classMap['header.wrapper'])}
             style={{
-              ...(sticky ? { position: 'sticky', top: typeof sticky === 'object' ? (sticky.offsetHeader ?? 0) : 0 } : {}),
+              ...(sticky
+                ? {
+                    position: 'sticky',
+                    top: typeof sticky === 'object' ? (sticky.offsetHeader ?? 0) : 0,
+                  }
+                : {}),
               ...styleMap['header.wrapper'],
             }}
             data-testid={`${testIdPrefix}-header-wrapper`}
@@ -169,7 +200,11 @@ export function TableStructure<TRecord, TRowData>({
               })}
             {!(loadingState.active && loadingVariant.replacesBody) && renderRows.length === 0 && (
               <tr>
-                <td className="bui-table-empty-cell" colSpan={bodyColumnCount} data-testid={`${testIdPrefix}-empty`}>
+                <td
+                  className="bui-table-empty-cell"
+                  colSpan={bodyColumnCount}
+                  data-testid={`${testIdPrefix}-empty`}
+                >
                   {registry.renderers.empty({ children: locale?.emptyText })}
                 </td>
               </tr>
@@ -182,14 +217,26 @@ export function TableStructure<TRecord, TRowData>({
             {!(loadingState.active && loadingVariant.replacesBody) &&
               renderRows.map((tanRow, renderIndex) => {
                 const resolved = tanRow.original;
-                const rowIndex = enableVirtualRows ? (virtualItems[renderIndex]?.index ?? renderIndex) : renderIndex;
+                const rowIndex = enableVirtualRows
+                  ? (virtualItems[renderIndex]?.index ?? renderIndex)
+                  : renderIndex;
                 const indent = tanRow.depth ?? 0;
-                const rowProps = { ...onRow?.(resolved.record, rowIndex, resolved.row), ...resolved.row.onRow?.(resolved.record, rowIndex) };
-                const rowClass = typeof rowClassName === 'function' ? rowClassName(resolved.record, rowIndex, resolved.row) : rowClassName;
-                const selected = selectedKeys.includes(String(resolved.key)) || resolved.row.selected;
+                const rowProps = {
+                  ...onRow?.(resolved.record, rowIndex, resolved.row),
+                  ...resolved.row.onRow?.(resolved.record, rowIndex),
+                };
+                const rowClass =
+                  typeof rowClassName === 'function'
+                    ? rowClassName(resolved.record, rowIndex, resolved.row)
+                    : rowClassName;
+                const selected =
+                  selectedKeys.includes(String(resolved.key)) || resolved.row.selected;
                 const disabled = resolved.row.disabled || isSelectionDisabled(resolved);
                 const canClickExpand = Boolean(
-                  expandable?.expandRowByClick && (expandable.rowExpandable ? expandable.rowExpandable(resolved.record, resolved.row) : true),
+                  expandable?.expandRowByClick &&
+                    (expandable.rowExpandable
+                      ? expandable.rowExpandable(resolved.record, resolved.row)
+                      : true),
                 );
                 const expandedRowClass =
                   typeof expandable?.expandedRowClassName === 'function'

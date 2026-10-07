@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { Button } from '../Button';
 import { Tag } from '../Tag';
 import type { ApprovalCardProps, ApprovalItem, ApprovalLabels } from './ApprovalCard.types';
@@ -13,7 +12,10 @@ export const DEFAULT_APPROVAL_LABELS: ApprovalLabels = {
   always: 'Always allow in this chat',
   once: 'Allow once',
   allowedOnce: 'Allowed once',
-  alwaysAllowed: (tool) => (tool ? `Always allowed for ${tool} in this conversation` : 'Always allowed in this conversation'),
+  alwaysAllowed: (tool) =>
+    tool
+      ? `Always allowed for ${tool} in this conversation`
+      : 'Always allowed in this conversation',
   denied: 'Denied · nothing was run',
 };
 
@@ -84,7 +86,9 @@ const ApprovalCardImpl = React.forwardRef<HTMLElement, ApprovalCardProps>(
           ) : null}
           <div className="flex min-w-0 flex-col gap-0.5">
             <div className="text-sm font-semibold">{title}</div>
-            {description ? <div className="text-[13px] text-[color:var(--oui-panel-meta-fg)]">{description}</div> : null}
+            {description ? (
+              <div className="text-[13px] text-[color:var(--oui-panel-meta-fg)]">{description}</div>
+            ) : null}
             {tags && tags.length > 0 ? (
               <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {tags.map((tag, index) => (
@@ -103,13 +107,31 @@ const ApprovalCardImpl = React.forwardRef<HTMLElement, ApprovalCardProps>(
         {status === 'pending' ? (
           onDecide ? (
             <div className="flex flex-wrap justify-end gap-2">
-              <Button ref={denyButton} variant="outline" buttonSize="sm" disabled={waiting} data-slot="approval-deny" onClick={() => onDecide('deny', item)}>
+              <Button
+                ref={denyButton}
+                variant="outline"
+                buttonSize="sm"
+                disabled={waiting}
+                data-slot="approval-deny"
+                onClick={() => onDecide('deny', item)}
+              >
                 {labels.deny}
               </Button>
-              <Button variant="outline" buttonSize="sm" disabled={waiting} data-slot="approval-always" onClick={() => onDecide('always', item)}>
+              <Button
+                variant="outline"
+                buttonSize="sm"
+                disabled={waiting}
+                data-slot="approval-always"
+                onClick={() => onDecide('always', item)}
+              >
                 {labels.always}
               </Button>
-              <Button buttonSize="sm" disabled={waiting} data-slot="approval-once" onClick={() => onDecide('once', item)}>
+              <Button
+                buttonSize="sm"
+                disabled={waiting}
+                data-slot="approval-once"
+                onClick={() => onDecide('once', item)}
+              >
                 {labels.once}
               </Button>
             </div>

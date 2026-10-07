@@ -1,21 +1,26 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { ConversationList } from '@oc-tech/omni-ui-components/ConversationList';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { conversationListPropsFactory } from 'factories/omni-ui-components/ConversationList/ConversationList.factories';
 
 const nav = () => screen.getByRole('navigation', { name: 'Conversations' });
-const rows = () => Array.from(nav().querySelectorAll<HTMLElement>('[data-slot="conversation-row"]'));
+const rows = () =>
+  Array.from(nav().querySelectorAll<HTMLElement>('[data-slot="conversation-row"]'));
 const titleOf = (row: HTMLElement) => row.querySelector('button') as HTMLButtonElement;
-const stops = () => Array.from(nav().querySelectorAll<HTMLElement>('[data-slot="conversation-row"] button')).filter((b) => b.getAttribute('tabindex') === '0');
+const stops = () =>
+  Array.from(nav().querySelectorAll<HTMLElement>('[data-slot="conversation-row"] button')).filter(
+    (b) => b.getAttribute('tabindex') === '0',
+  );
 
 const setup = () =>
   render(
     <>
       <button type="button">before</button>
-      <ConversationList {...conversationListPropsFactory({ onOpen: vi.fn(), onSearchChange: undefined })} />
+      <ConversationList
+        {...conversationListPropsFactory({ onOpen: vi.fn(), onSearchChange: undefined })}
+      />
       <button type="button">after</button>
     </>,
   );
@@ -53,7 +58,9 @@ describe('omni-ui-components/ConversationList roving tabindex', () => {
     const row = rows()[0];
     titleOf(row).focus();
     await userEvent.keyboard('{ArrowRight}');
-    const actions = Array.from(row.querySelectorAll<HTMLElement>('[data-slot="conversation-row-actions"] button'));
+    const actions = Array.from(
+      row.querySelectorAll<HTMLElement>('[data-slot="conversation-row-actions"] button'),
+    );
     expect(actions.length).toBeGreaterThan(0);
     expect(actions[0]).toHaveFocus();
     expect(actions[0]).toHaveAttribute('tabindex', '0');
@@ -65,7 +72,10 @@ describe('omni-ui-components/ConversationList roving tabindex', () => {
 
   it('Down from an action lands on the same action of the next row', async () => {
     setup();
-    const actionOf = (row: HTMLElement) => row.querySelector<HTMLElement>('[data-slot="conversation-row-actions"] button') as HTMLElement;
+    const actionOf = (row: HTMLElement) =>
+      row.querySelector<HTMLElement>(
+        '[data-slot="conversation-row-actions"] button',
+      ) as HTMLElement;
     actionOf(rows()[0]).focus();
     await userEvent.keyboard('{ArrowDown}');
     expect(actionOf(rows()[1])).toHaveFocus();

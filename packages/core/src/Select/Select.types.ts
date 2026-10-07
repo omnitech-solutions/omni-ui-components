@@ -1,7 +1,6 @@
-import * as React from 'react';
-
-import type { RootProps } from '../lib';
+import type * as React from 'react';
 import type { FieldLayoutProps } from '../Input/Input.variants';
+import type { RootProps } from '../lib';
 import type { SelectVariantProps } from './Select.variants';
 
 export interface SelectOption {
@@ -41,7 +40,10 @@ export interface SelectFooterAction {
  *   onChange={setCountry}
  * />
  */
-export interface SelectPrimitiveProps extends Omit<React.ComponentProps<'select'>, 'onChange' | 'size'>, SelectVariantProps, RootProps {
+export interface SelectPrimitiveProps
+  extends Omit<React.ComponentProps<'select'>, 'onChange' | 'size'>,
+    SelectVariantProps,
+    RootProps {
   invalid?: boolean;
   options: SelectOption[];
   /** Placeholder rendered as a disabled option when value is empty. */
@@ -68,4 +70,4 @@ export interface SelectProps extends SelectPrimitiveProps, FieldLayoutProps {
   labelClassName?: string;
 }
 
-export type { SelectVariant, SelectSize, SelectVariantProps } from './Select.variants';
+export type { SelectSize, SelectVariant, SelectVariantProps } from './Select.variants';

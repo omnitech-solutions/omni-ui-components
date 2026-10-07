@@ -1,9 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
-
 import { Suggestions, type SuggestionsProps } from '@oc-tech/omni-ui-components/Suggestions';
+import type { Meta, StoryObj } from '@storybook/react';
 import { suggestionsPropsFactory } from 'factories/omni-ui-components/Suggestions/Suggestions.factories';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 const meta: Meta<SuggestionsProps> = {
   title: 'omni-ui-components/Suggestions',
@@ -20,7 +18,10 @@ const meta: Meta<SuggestionsProps> = {
   },
   args: { ...suggestionsPropsFactory(), onSelect: fn() },
   argTypes: {
-    items: { control: 'object', description: '{ id, label } items; extra fields reach onSelect and renderItem.' },
+    items: {
+      control: 'object',
+      description: '{ id, label } items; extra fields reach onSelect and renderItem.',
+    },
     layout: {
       control: 'inline-radio',
       options: ['column', 'wrap'],

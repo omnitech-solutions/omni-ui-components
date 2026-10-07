@@ -1,10 +1,20 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
 import { Table, type TableColumn, type TableState } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 import { ComponentWrapper } from './storySupport';
-import { clientFilters, groupedProjectColumns, phaseTreeFilters, defaultColumns, projects, spanRows, type ProjectRecord } from './Table.story.fixtures';
+import {
+  clientFilters,
+  defaultColumns,
+  groupedProjectColumns,
+  type ProjectRecord,
+  phaseTreeFilters,
+  projects,
+  spanRows,
+} from './Table.story.fixtures';
+
 const formatBudget = (value: unknown) => {
-  const parsed = typeof value === 'number' ? value : Number(String(value ?? '').replace(/[^0-9+-.]/g, ''));
+  const parsed =
+    typeof value === 'number' ? value : Number(String(value ?? '').replace(/[^0-9+-.]/g, ''));
   return Number.isFinite(parsed) ? `$${parsed.toLocaleString()}` : String(value ?? '');
 };
 
@@ -34,8 +44,19 @@ export const RenderAndDataIndex: Story = {
       <Table<ProjectRecord>
         columns={[
           { key: 'name', title: 'Project name', dataIndex: 'name' },
-          { key: 'client', title: 'Nested-ish render', dataIndex: 'client', render: (value, record) => `${value} / ${record.owner}` },
-          { key: 'budget', title: 'Formatted budget', dataIndex: 'budget', align: 'right', render: formatBudget },
+          {
+            key: 'client',
+            title: 'Nested-ish render',
+            dataIndex: 'client',
+            render: (value, record) => `${value} / ${record.owner}`,
+          },
+          {
+            key: 'budget',
+            title: 'Formatted budget',
+            dataIndex: 'budget',
+            align: 'right',
+            render: formatBudget,
+          },
         ]}
         dataSource={projects}
         rowKey="id"
@@ -51,7 +72,12 @@ export const GroupedColumns: Story = {
       title="Grouped columns"
       description="A column can nest `children` to build a two-row header. The parent contributes a title spanning its children; leaf children drive the actual data columns (their `dataIndex`, `render`, sort, and filter still apply)."
     >
-      <Table<ProjectRecord> columns={groupedProjectColumns} dataSource={projects} rowKey="id" testIdPrefix="column-grouped" />
+      <Table<ProjectRecord>
+        columns={groupedProjectColumns}
+        dataSource={projects}
+        rowKey="id"
+        testIdPrefix="column-grouped"
+      />
     </ComponentWrapper>
   ),
 };
@@ -64,14 +90,22 @@ export const Sorting: Story = {
     >
       <Table<ProjectRecord>
         columns={[
-          { ...defaultColumns[0], defaultSortOrder: 'ascend', sortDirections: ['ascend', 'descend'] },
+          {
+            ...defaultColumns[0],
+            defaultSortOrder: 'ascend',
+            sortDirections: ['ascend', 'descend'],
+          },
           { ...defaultColumns[4], sorter: { compare: (a, b) => a.budget - b.budget, multiple: 2 } },
           {
             key: 'margin',
             title: 'Margin',
             dataIndex: 'margin',
             sorter: true,
-            sortIcon: ({ sortOrder }) => <span aria-label="Custom sort icon">{sortOrder === 'ascend' ? '↑' : sortOrder === 'descend' ? '↓' : '↕'}</span>,
+            sortIcon: ({ sortOrder }) => (
+              <span aria-label="Custom sort icon">
+                {sortOrder === 'ascend' ? '↑' : sortOrder === 'descend' ? '↓' : '↕'}
+              </span>
+            ),
             render: (value) => `${Math.round(Number(value) * 100)}%`,
           },
         ]}
@@ -115,7 +149,11 @@ export const Filtering: Story = {
               const owners = ['Nora Nunes', 'Mae Cooper', 'Iris Chen'];
               const selected = selectedKeys as string[];
               const toggle = (owner: string) => {
-                setSelectedKeys(selected.includes(owner) ? selected.filter((k) => k !== owner) : [...selected, owner]);
+                setSelectedKeys(
+                  selected.includes(owner)
+                    ? selected.filter((k) => k !== owner)
+                    : [...selected, owner],
+                );
               };
               interface WindowSpec {
                 owner: string;
@@ -126,16 +164,44 @@ export const Filtering: Story = {
                 cols: number;
                 rows: number;
               }
-              const drawWindow = ({ owner, x, y, w, h, cols, rows }: WindowSpec): React.ReactNode => {
+              const drawWindow = ({
+                owner,
+                x,
+                y,
+                w,
+                h,
+                cols,
+                rows,
+              }: WindowSpec): React.ReactNode => {
                 const active = selected.includes(owner);
                 const dividerColor = active ? 'rgba(0,0,0,0.35)' : 'var(--color-border)';
                 const verticals = Array.from({ length: cols - 1 }, (_, i) => {
                   const vx = x + ((i + 1) * w) / cols;
-                  return <line key={`v${i}`} x1={vx} y1={y} x2={vx} y2={y + h} stroke={dividerColor} strokeWidth={1} />;
+                  return (
+                    <line
+                      key={`v${i}`}
+                      x1={vx}
+                      y1={y}
+                      x2={vx}
+                      y2={y + h}
+                      stroke={dividerColor}
+                      strokeWidth={1}
+                    />
+                  );
                 });
                 const horizontals = Array.from({ length: rows - 1 }, (_, i) => {
                   const hy = y + ((i + 1) * h) / rows;
-                  return <line key={`h${i}`} x1={x} y1={hy} x2={x + w} y2={hy} stroke={dividerColor} strokeWidth={1} />;
+                  return (
+                    <line
+                      key={`h${i}`}
+                      x1={x}
+                      y1={hy}
+                      x2={x + w}
+                      y2={hy}
+                      stroke={dividerColor}
+                      strokeWidth={1}
+                    />
+                  );
                 });
                 return (
                   <g key={owner} style={{ cursor: 'pointer' }} onClick={() => toggle(owner)}>
@@ -165,16 +231,58 @@ export const Filtering: Story = {
                 );
               };
               return (
-                <div style={{ padding: 10, userSelect: 'none' }} onMouseDown={(e) => e.preventDefault()} onClick={(e) => e.stopPropagation()}>
+                <div
+                  style={{ padding: 10, userSelect: 'none' }}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <svg width={220} height={220} viewBox="0 0 220 220" aria-label="Owner filter">
                     {/* Roof */}
-                    <polygon points="15,80 110,15 205,80" fill="rgba(34, 173, 1, 0.14)" stroke="#22ad01" strokeWidth={1.5} strokeLinejoin="round" />
+                    <polygon
+                      points="15,80 110,15 205,80"
+                      fill="rgba(34, 173, 1, 0.14)"
+                      stroke="#22ad01"
+                      strokeWidth={1.5}
+                      strokeLinejoin="round"
+                    />
                     {/* Body */}
-                    <rect x={25} y={80} width={170} height={130} fill="rgba(255,255,255,0.02)" stroke="var(--color-border)" strokeWidth={1.5} />
+                    <rect
+                      x={25}
+                      y={80}
+                      width={170}
+                      height={130}
+                      fill="rgba(255,255,255,0.02)"
+                      stroke="var(--color-border)"
+                      strokeWidth={1.5}
+                    />
                     {/* Windows — all bottoms aligned at y=170 */}
-                    {drawWindow({ owner: owners[0], x: 40, y: 108, w: 40, h: 62, cols: 2, rows: 4 })}
-                    {drawWindow({ owner: owners[1], x: 90, y: 108, w: 40, h: 62, cols: 2, rows: 2 })}
-                    {drawWindow({ owner: owners[2], x: 140, y: 108, w: 40, h: 62, cols: 2, rows: 4 })}
+                    {drawWindow({
+                      owner: owners[0],
+                      x: 40,
+                      y: 108,
+                      w: 40,
+                      h: 62,
+                      cols: 2,
+                      rows: 4,
+                    })}
+                    {drawWindow({
+                      owner: owners[1],
+                      x: 90,
+                      y: 108,
+                      w: 40,
+                      h: 62,
+                      cols: 2,
+                      rows: 2,
+                    })}
+                    {drawWindow({
+                      owner: owners[2],
+                      x: 140,
+                      y: 108,
+                      w: 40,
+                      h: 62,
+                      cols: 2,
+                      rows: 4,
+                    })}
                     {/* Door (reset) */}
                     <g
                       style={{ cursor: 'pointer' }}
@@ -184,8 +292,24 @@ export const Filtering: Story = {
                       }}
                     >
                       <title>Reset filter</title>
-                      <rect x={94} y={186} width={32} height={24} rx={2} fill="rgba(34, 173, 1, 0.22)" stroke="#22ad01" strokeWidth={1.5} />
-                      <text x={110} y={202} textAnchor="middle" fontSize={8.5} fontWeight={700} fill="#22ad01">
+                      <rect
+                        x={94}
+                        y={186}
+                        width={32}
+                        height={24}
+                        rx={2}
+                        fill="rgba(34, 173, 1, 0.22)"
+                        stroke="#22ad01"
+                        strokeWidth={1.5}
+                      />
+                      <text
+                        x={110}
+                        y={202}
+                        textAnchor="middle"
+                        fontSize={8.5}
+                        fontWeight={700}
+                        fill="#22ad01"
+                      >
                         reset
                       </text>
                     </g>
@@ -270,9 +394,17 @@ export const ShowAndHideHeader: Story = {
             <button type="button" className="pb-nav-btn" onClick={() => setShowHeader((v) => !v)}>
               {showHeader ? 'Hide header' : 'Show header'}
             </button>
-            <span className="text-sm text-[var(--color-muted-foreground)]">showHeader = {String(showHeader)}</span>
+            <span className="text-sm text-[var(--color-muted-foreground)]">
+              showHeader = {String(showHeader)}
+            </span>
           </div>
-          <Table<ProjectRecord> columns={defaultColumns} dataSource={projects} rowKey="id" showHeader={showHeader} testIdPrefix="column-show-hide-header" />
+          <Table<ProjectRecord>
+            columns={defaultColumns}
+            dataSource={projects}
+            rowKey="id"
+            showHeader={showHeader}
+            testIdPrefix="column-show-hide-header"
+          />
         </div>
       </ComponentWrapper>
     );
@@ -286,7 +418,9 @@ export const ColumnDragReorder: Story = {
       description="Mark each column `draggable: true` to enable header-based drag reordering. Seed the initial order with `defaultState.columnOrder`; the Table emits the new order through `onStateChange` (or updates it internally in uncontrolled mode)."
     >
       <Table<ProjectRecord>
-        columns={defaultColumns.map((column) => ({ ...column, draggable: true }) satisfies TableColumn<ProjectRecord>)}
+        columns={defaultColumns.map(
+          (column) => ({ ...column, draggable: true }) satisfies TableColumn<ProjectRecord>,
+        )}
         dataSource={projects}
         rowKey="id"
         defaultState={{ columnOrder: ['name', 'client', 'status', 'owner', 'budget'] }}

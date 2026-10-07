@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { ColorPicker, type ColorPickerProps } from '@oc-tech/omni-ui-components/ColorPicker';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const Renderer: React.FC<ColorPickerProps> = (args) => {
   const [value, setValue] = React.useState<string>(args.value ?? '#3b82f6');
@@ -22,7 +21,12 @@ const meta: Meta<typeof ColorPicker> = {
   title: 'omni-ui-components/ColorPicker',
   component: ColorPicker,
   tags: ['autodocs'],
-  args: { id: 'demo-color', label: 'Brand color', value: '#22c55e', wrapperClassName: 'mx-auto max-w-md' },
+  args: {
+    id: 'demo-color',
+    label: 'Brand color',
+    value: '#22c55e',
+    wrapperClassName: 'mx-auto max-w-md',
+  },
   argTypes: { onChange: { action: 'changed' } },
   render: (args) => <Renderer {...(args as ColorPickerProps)} />,
 };

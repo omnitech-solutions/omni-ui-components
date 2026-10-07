@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { Button } from '../Button';
 import { Popconfirm } from '../Popconfirm';
 import { Toolbar } from '../Toolbar';
@@ -20,7 +19,20 @@ import { SESSION_BAR_SURFACE } from './SessionBar.variants';
  *   end={{ onClick: end, confirm: { title: 'End the session?' } }} />
  */
 export const SessionBar = React.forwardRef<HTMLDivElement, SessionBarProps>(
-  ({ label = 'Session controls', status = 'live', leading, pause, resume, end, actions, className, 'data-testid': testId }, ref) => {
+  (
+    {
+      label = 'Session controls',
+      status = 'live',
+      leading,
+      pause,
+      resume,
+      end,
+      actions,
+      className,
+      'data-testid': testId,
+    },
+    ref,
+  ) => {
     const endButton =
       end === null || end === undefined ? null : (
         <Button

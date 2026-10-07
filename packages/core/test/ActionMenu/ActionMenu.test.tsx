@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { ActionMenu, type ActionMenuProps } from '@oc-tech/omni-ui-components/ActionMenu';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   actionMenuPropsFactory,
   actionMenuVariants,
@@ -13,10 +12,13 @@ import {
   screenPermissionMenu,
   shortcutsMenu,
 } from 'factories/omni-ui-components/ActionMenu/ActionMenu.factories';
+import * as React from 'react';
 
 const open = async (props: Partial<ActionMenuProps> = {}) => {
   const user = userEvent.setup();
-  const view = render(<ActionMenu {...actionMenuPropsFactory(props)} trigger={<button>Open</button>} />);
+  const view = render(
+    <ActionMenu {...actionMenuPropsFactory(props)} trigger={<button>Open</button>} />,
+  );
   await user.click(screen.getByRole('button', { name: 'Open' }));
   return { user, ...view };
 };
@@ -26,8 +28,14 @@ describe('omni-ui-components/ActionMenu', () => {
     it('opens a labelled menu with radio rows and aria-checked from `checked`', async () => {
       await open();
       expect(screen.getByRole('menu', { name: 'Capture options' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitemradio', { name: /^Manual/ })).toHaveAttribute('aria-checked', 'true');
-      expect(screen.getByRole('menuitemradio', { name: /^Auto/ })).toHaveAttribute('aria-checked', 'false');
+      expect(screen.getByRole('menuitemradio', { name: /^Manual/ })).toHaveAttribute(
+        'aria-checked',
+        'true',
+      );
+      expect(screen.getByRole('menuitemradio', { name: /^Auto/ })).toHaveAttribute(
+        'aria-checked',
+        'false',
+      );
     });
 
     it('groups rows under their section labels and divides sections', async () => {
@@ -49,7 +57,10 @@ describe('omni-ui-components/ActionMenu', () => {
         ],
       });
       expect(screen.getByRole('menuitem', { name: 'One' })).toBeInTheDocument();
-      expect(screen.getByRole('menuitemcheckbox', { name: 'Two' })).toHaveAttribute('aria-checked', 'true');
+      expect(screen.getByRole('menuitemcheckbox', { name: 'Two' })).toHaveAttribute(
+        'aria-checked',
+        'true',
+      );
     });
 
     it('renders the title and the Technical / Conversation group labels of the answer-style menu', async () => {
@@ -70,7 +81,9 @@ describe('omni-ui-components/ActionMenu', () => {
       await open({ ...answerStyleMenu });
       const rows = Array.from(document.querySelectorAll('[data-slot="action-menu-item"]'));
       expect(rows.length).toBe(9);
-      rows.forEach((row) => expect(row.querySelector('[data-slot="action-menu-column"]')).not.toBeNull());
+      rows.forEach((row) =>
+        expect(row.querySelector('[data-slot="action-menu-column"]')).not.toBeNull(),
+      );
       expect(document.querySelectorAll('[data-slot="action-menu-check"]').length).toBe(1);
     });
 
@@ -121,9 +134,17 @@ describe('omni-ui-components/ActionMenu', () => {
 
     it('colours a danger row with the destructive tone', async () => {
       const user = userEvent.setup();
-      render(<ActionMenu {...actionMenuPropsFactory({ ...shortcutsMenu })} defaultOpen trigger={<button>Open</button>} />);
+      render(
+        <ActionMenu
+          {...actionMenuPropsFactory({ ...shortcutsMenu })}
+          defaultOpen
+          trigger={<button>Open</button>}
+        />,
+      );
       expect(user).toBeDefined();
-      const row = screen.getByText('Clear session memory').closest('[data-slot="action-menu-item"]');
+      const row = screen
+        .getByText('Clear session memory')
+        .closest('[data-slot="action-menu-item"]');
       expect(row).toHaveAttribute('data-tone', 'danger');
       expect(row).toHaveClass('text-[color:var(--oui-tone-danger-fg)]');
     });
@@ -170,7 +191,9 @@ describe('omni-ui-components/ActionMenu', () => {
     it('moves with the arrow keys, selects with Enter and closes with Escape', async () => {
       const onSelect = vi.fn();
       const user = userEvent.setup();
-      render(<ActionMenu {...actionMenuPropsFactory({ onSelect })} trigger={<button>Open</button>} />);
+      render(
+        <ActionMenu {...actionMenuPropsFactory({ onSelect })} trigger={<button>Open</button>} />,
+      );
       screen.getByRole('button', { name: 'Open' }).focus();
       await user.keyboard('{Enter}');
       expect(screen.getByRole('menu')).toBeInTheDocument();
@@ -253,7 +276,9 @@ describe('omni-ui-components/ActionMenu', () => {
       const hint = document.querySelector('[data-slot="action-menu-hint"]') as HTMLElement;
       expect(within(hint).getByText('Previous / next')).toBeInTheDocument();
       expect(within(hint).getByText('⌘↑ ⌘↓')).toBeInTheDocument();
-      expect(document.querySelector('[data-slot="action-menu-scroll"]')?.contains(hint)).toBe(false);
+      expect(document.querySelector('[data-slot="action-menu-scroll"]')?.contains(hint)).toBe(
+        false,
+      );
     });
   });
 
@@ -262,12 +287,16 @@ describe('omni-ui-components/ActionMenu', () => {
       await open({ ...answerStyleMenu });
       const menu = screen.getByRole('menu');
       expect(menu.style.maxHeight).toBe('var(--radix-dropdown-menu-content-available-height)');
-      expect(document.querySelector('[data-slot="action-menu-scroll"]')).toHaveClass('overflow-y-auto');
+      expect(document.querySelector('[data-slot="action-menu-scroll"]')).toHaveClass(
+        'overflow-y-auto',
+      );
     });
 
     it('applies an explicit maxHeight as a cap that still respects the viewport', async () => {
       await open({ ...answerStyleMenu, maxHeight: 160 });
-      expect(screen.getByRole('menu').style.maxHeight).toBe('min(160px, var(--radix-dropdown-menu-content-available-height))');
+      expect(screen.getByRole('menu').style.maxHeight).toBe(
+        'min(160px, var(--radix-dropdown-menu-content-available-height))',
+      );
     });
 
     it('is border-box and capped with the viewport collision padding so it never extends past a short window', async () => {
@@ -307,7 +336,12 @@ describe('omni-ui-components/ActionMenu', () => {
   describe('kind="list"', () => {
     it('renders a read-only grouped reference list in a dialog, not a menu', async () => {
       const user = userEvent.setup();
-      render(<ActionMenu {...actionMenuPropsFactory({ ...shortcutsMenu })} trigger={<button>Shortcuts</button>} />);
+      render(
+        <ActionMenu
+          {...actionMenuPropsFactory({ ...shortcutsMenu })}
+          trigger={<button>Shortcuts</button>}
+        />,
+      );
       await user.click(screen.getByRole('button', { name: 'Shortcuts' }));
       expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
       expect(screen.queryByRole('menu')).not.toBeInTheDocument();
@@ -317,7 +351,13 @@ describe('omni-ui-components/ActionMenu', () => {
     });
 
     it('lists glyph chords and puts the destructive row last', async () => {
-      render(<ActionMenu {...actionMenuPropsFactory({ ...shortcutsMenu })} defaultOpen trigger={<button>Shortcuts</button>} />);
+      render(
+        <ActionMenu
+          {...actionMenuPropsFactory({ ...shortcutsMenu })}
+          defaultOpen
+          trigger={<button>Shortcuts</button>}
+        />,
+      );
       expect(screen.getByText('⌘⇧S')).toBeInTheDocument();
       expect(screen.getByText('⌥R')).toBeInTheDocument();
       expect(screen.getByText('⌘↑ ⌘↓')).toBeInTheDocument();
@@ -329,7 +369,13 @@ describe('omni-ui-components/ActionMenu', () => {
 
   it('every factory variant renders when open', () => {
     actionMenuVariants.forEach((variant) => {
-      const { unmount } = render(<ActionMenu {...actionMenuPropsFactory(variant.args)} defaultOpen trigger={<button>Open</button>} />);
+      const { unmount } = render(
+        <ActionMenu
+          {...actionMenuPropsFactory(variant.args)}
+          defaultOpen
+          trigger={<button>Open</button>}
+        />,
+      );
       expect(document.querySelector('[data-slot="action-menu"]')).not.toBeNull();
       unmount();
     });
@@ -349,7 +395,13 @@ describe('omni-ui-components/ActionMenu select mode and focus', () => {
     },
   ];
 
-  const Controlled = ({ onValueChange, onSelect }: { onValueChange?: (s: string, i: string) => void; onSelect?: (id: string) => void }) => {
+  const Controlled = ({
+    onValueChange,
+    onSelect,
+  }: {
+    onValueChange?: (s: string, i: string) => void;
+    onSelect?: (id: string) => void;
+  }) => {
     const [value, setValue] = React.useState('manual');
     return (
       <ActionMenu
@@ -370,8 +422,14 @@ describe('omni-ui-components/ActionMenu select mode and focus', () => {
     const user = userEvent.setup();
     render(<Controlled />);
     await user.click(screen.getByRole('button', { name: 'Open' }));
-    expect(screen.getByRole('menuitemradio', { name: 'Manual' })).toHaveAttribute('aria-checked', 'true');
-    expect(screen.getByRole('menuitemradio', { name: 'Auto' })).toHaveAttribute('aria-checked', 'false');
+    expect(screen.getByRole('menuitemradio', { name: 'Manual' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    expect(screen.getByRole('menuitemradio', { name: 'Auto' })).toHaveAttribute(
+      'aria-checked',
+      'false',
+    );
   });
 
   it('calls onValueChange(sectionId, itemId) and onSelect exactly once per choice, and the controlled value moves the check', async () => {
@@ -386,8 +444,14 @@ describe('omni-ui-components/ActionMenu select mode and focus', () => {
     expect(onSelect).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Open' }));
-    expect(screen.getByRole('menuitemradio', { name: 'Auto' })).toHaveAttribute('aria-checked', 'true');
-    expect(screen.getByRole('menuitemradio', { name: 'Manual' })).toHaveAttribute('aria-checked', 'false');
+    expect(screen.getByRole('menuitemradio', { name: 'Auto' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    expect(screen.getByRole('menuitemradio', { name: 'Manual' })).toHaveAttribute(
+      'aria-checked',
+      'false',
+    );
   });
 
   it('a select across several groups (answer style) checks only the chosen row', async () => {
@@ -407,7 +471,9 @@ describe('omni-ui-components/ActionMenu select mode and focus', () => {
     await user.click(screen.getByRole('button', { name: 'Style' }));
     await user.click(screen.getByRole('menuitemradio', { name: 'Negotiation' }));
     await user.click(screen.getByRole('button', { name: 'Style' }));
-    const checked = screen.getAllByRole('menuitemradio').filter((el) => el.getAttribute('aria-checked') === 'true');
+    const checked = screen
+      .getAllByRole('menuitemradio')
+      .filter((el) => el.getAttribute('aria-checked') === 'true');
     expect(checked.map((el) => el.textContent)).toEqual(['Negotiation']);
   });
 
@@ -452,7 +518,12 @@ describe('omni-ui-components/ActionMenu select mode and focus', () => {
 
     it('returnFocus="always" restores focus even after a pointer selection', async () => {
       const user = userEvent.setup();
-      render(<ActionMenu {...actionMenuPropsFactory({ returnFocus: 'always' })} trigger={<button>Open</button>} />);
+      render(
+        <ActionMenu
+          {...actionMenuPropsFactory({ returnFocus: 'always' })}
+          trigger={<button>Open</button>}
+        />,
+      );
       const trigger = screen.getByRole('button', { name: 'Open' });
       await user.click(trigger);
       await user.click(screen.getByRole('menuitemradio', { name: /^Auto/ }));
@@ -463,7 +534,10 @@ describe('omni-ui-components/ActionMenu select mode and focus', () => {
       const user = userEvent.setup();
       render(
         <div>
-          <ActionMenu {...actionMenuPropsFactory({ ...shortcutsMenu })} trigger={<button>Shortcuts</button>} />
+          <ActionMenu
+            {...actionMenuPropsFactory({ ...shortcutsMenu })}
+            trigger={<button>Shortcuts</button>}
+          />
           <p data-testid="outside">x</p>
         </div>,
       );

@@ -1,8 +1,6 @@
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within } from 'storybook/test';
-
 import { ThemedSet } from 'factories/omni-ui-components/Theming/Theming.factories';
+import { expect, within } from 'storybook/test';
 
 const meta: Meta = {
   title: 'omni-ui-components/Theming',
@@ -48,7 +46,11 @@ export const TokenOverrides: Story = {
   render: () => (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, alignItems: 'start' }}>
       <ThemedSet title="stock" theme="dark" />
-      <ThemedSet title="branded" theme="dark" tokens={{ '--oui-panel-bg': 'rgb(10, 80, 60)', '--oui-primary': '#ff00aa' }} />
+      <ThemedSet
+        title="branded"
+        theme="dark"
+        tokens={{ '--oui-panel-bg': 'rgb(10, 80, 60)', '--oui-primary': '#ff00aa' }}
+      />
     </div>
   ),
   play: async ({ canvasElement }) => {
@@ -68,7 +70,16 @@ export const TokenOverrides: Story = {
 /** The see-through contract: `--oui-panel-see-through` mixes backgrounds only (panel, header, dock); text and borders stay opaque. */
 export const SeeThrough: Story = {
   render: () => (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, alignItems: 'start', background: 'linear-gradient(135deg, #ff7a18, #af002d 60%, #319197)', padding: 16 }}>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: 16,
+        alignItems: 'start',
+        background: 'linear-gradient(135deg, #ff7a18, #af002d 60%, #319197)',
+        padding: 16,
+      }}
+    >
       <ThemedSet title="opaque" theme="dark" tokens={{ '--oui-panel-see-through': '1' }} />
       <ThemedSet title="see-through" theme="dark" tokens={{ '--oui-panel-see-through': '0.22' }} />
     </div>
@@ -77,6 +88,8 @@ export const SeeThrough: Story = {
     const canvas = within(canvasElement);
     const panel = panelOf(canvas.getByTestId('see-through'));
     await expect(bg(panel)).not.toBe(bg(panelOf(canvas.getByTestId('opaque'))));
-    await expect(getComputedStyle(panel).color).toBe(getComputedStyle(panelOf(canvas.getByTestId('opaque'))).color);
+    await expect(getComputedStyle(panel).color).toBe(
+      getComputedStyle(panelOf(canvas.getByTestId('opaque'))).color,
+    );
   },
 };

@@ -1,11 +1,10 @@
+import { cn } from 'lib/utils';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-
-import { cn } from 'lib/utils';
 import { surfaceProps } from '../internal/support/PortalContainer';
 import { useControllableState } from '../lib/use-controllable-state';
-import { toastVariants } from './Toast.variants';
 import type { ToastController, ToastItem, ToastProps } from './Toast.types';
+import { toastVariants } from './Toast.variants';
 
 export const DEFAULT_TOAST_DURATION = 3800;
 
@@ -103,7 +102,11 @@ export const Toast = <T extends ToastItem = ToastItem>({
 
 /** State for one toast: `notify(item)` shows it (replacing any on screen), `dismiss` hides it. */
 export const useToast = <T extends ToastItem = ToastItem>(
-  defaults: { duration?: number; placement?: ToastProps['placement']; position?: ToastProps['position'] } = {},
+  defaults: {
+    duration?: number;
+    placement?: ToastProps['placement'];
+    position?: ToastProps['position'];
+  } = {},
 ): ToastController<T> => {
   const [toast, setToast] = React.useState<T | null>(null);
   const notify = React.useCallback((next: T) => setToast(next), []);

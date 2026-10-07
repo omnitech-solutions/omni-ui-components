@@ -1,16 +1,52 @@
-import * as React from 'react';
-import { ArrowUp, AtSign, Bookmark, Check, Clock, EyeOff, Image as ImageIcon, ListPlus, Mic, Paperclip, Plus, Square, X } from 'lucide-react';
-
+import {
+  type AttachmentItem,
+  type FileRejection,
+  useFilePreviews,
+} from '@oc-tech/omni-ui-components/Attachment';
 import type { CommandItem } from '@oc-tech/omni-ui-components/CommandPopover';
-import { MENTION_PATTERN, SAVED_PROMPTS_PATTERN, SLASH_PATTERN } from '@oc-tech/omni-ui-components/CommandPopover';
-import { useFilePreviews, type AttachmentItem, type FileRejection } from '@oc-tech/omni-ui-components/Attachment';
-import { CommandPopover, mentionTrigger, savedPromptsTrigger, slashTrigger, useCommandTrigger, DEFAULT_COMMAND_HINT } from '@oc-tech/omni-ui-components/CommandPopover';
-import { Composer, ComposerNotice, PlusMenu, type ComposerProps } from '@oc-tech/omni-ui-components/Composer';
+import {
+  CommandPopover,
+  DEFAULT_COMMAND_HINT,
+  MENTION_PATTERN,
+  mentionTrigger,
+  SAVED_PROMPTS_PATTERN,
+  SLASH_PATTERN,
+  savedPromptsTrigger,
+  slashTrigger,
+  useCommandTrigger,
+} from '@oc-tech/omni-ui-components/CommandPopover';
+import {
+  Composer,
+  ComposerNotice,
+  type ComposerProps,
+  PlusMenu,
+} from '@oc-tech/omni-ui-components/Composer';
 import type { QueuedItem } from '@oc-tech/omni-ui-components/QueuedList';
-import { attachmentIcons } from '../Attachment/Attachment.factories';
-import { savedPrompts, slashCommands, surfaceItems, type SavedPrompt } from '../CommandPopover/CommandPopover.factories';
-import type { OnAction } from '../SplitButton/SplitButton.factories';
+import {
+  ArrowUp,
+  AtSign,
+  Bookmark,
+  Check,
+  Clock,
+  EyeOff,
+  Image as ImageIcon,
+  ListPlus,
+  Mic,
+  Paperclip,
+  Plus,
+  Square,
+  X,
+} from 'lucide-react';
+import * as React from 'react';
 import type { Variant } from '../../internal/support/makeFactory';
+import { attachmentIcons } from '../Attachment/Attachment.factories';
+import {
+  type SavedPrompt,
+  savedPrompts,
+  slashCommands,
+  surfaceItems,
+} from '../CommandPopover/CommandPopover.factories';
+import type { OnAction } from '../SplitButton/SplitButton.factories';
 
 /** Composer props with the icons and strings a story needs (icons are nodes, so the factory supplies them). */
 export const composerPropsFactory = (overrides: Partial<ComposerProps> = {}): ComposerProps => ({
@@ -137,7 +173,8 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
   ];
   const removeItem = (item: AttachmentItem) => {
     if (item.id.startsWith('s:')) setSurfaces((all) => all.filter((surface) => surface !== item));
-    else if (item.id.startsWith('f:')) setFiles((all) => all.filter((file, at) => `f:${at}:${file.name}` !== item.id));
+    else if (item.id.startsWith('f:'))
+      setFiles((all) => all.filter((file, at) => `f:${at}:${file.name}` !== item.id));
     else setExtra((all) => all.filter((candidate) => candidate !== item));
     onAction?.('remove-attachment', item.id);
   };
@@ -172,13 +209,27 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
               // Async on purpose, like a library searched on a server.
               source: (query) =>
                 new Promise<SavedPrompt[]>((resolve) =>
-                  setTimeout(() => resolve(savedPrompts().filter((item) => `${item.label} ${item.description}`.toLowerCase().includes(query.trim().toLowerCase()))), 60),
+                  setTimeout(
+                    () =>
+                      resolve(
+                        savedPrompts().filter((item) =>
+                          `${item.label} ${item.description}`
+                            .toLowerCase()
+                            .includes(query.trim().toLowerCase()),
+                        ),
+                      ),
+                    60,
+                  ),
                 ),
               onPick: (item) => {
                 setValue(item.text);
                 onAction?.('saved-prompt', item.id);
               },
-              popover: { label: 'Saved prompts', title: 'Saved prompts', hint: DEFAULT_COMMAND_HINT },
+              popover: {
+                label: 'Saved prompts',
+                title: 'Saved prompts',
+                hint: DEFAULT_COMMAND_HINT,
+              },
             }),
           ]
         : []),
@@ -189,13 +240,23 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
               source: (query) =>
                 new Promise<CommandItem[]>((resolve) =>
                   setTimeout(
-                    () => resolve(surfaceItems().filter((item) => item.label.toLowerCase().includes(query.toLowerCase()) && !surfaces.some((s) => s.id === `s:${item.id}`))),
+                    () =>
+                      resolve(
+                        surfaceItems().filter(
+                          (item) =>
+                            item.label.toLowerCase().includes(query.toLowerCase()) &&
+                            !surfaces.some((s) => s.id === `s:${item.id}`),
+                        ),
+                      ),
                     80,
                   ),
                 ),
               onPick: (item, { draft }) => {
                 setValue(draft.replace(/@[^\s@]*$/, ''));
-                setSurfaces((all) => [...all, { id: `s:${item.id}`, name: item.label, kind: 'surface', meta: 'From Studio' }]);
+                setSurfaces((all) => [
+                  ...all,
+                  { id: `s:${item.id}`, name: item.label, kind: 'surface', meta: 'From Studio' },
+                ]);
                 onAction?.('mention', item.id);
               },
               popover: { label: 'Add from Studio', title: 'Add from Studio' },
@@ -265,7 +326,10 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
           ? (next) => {
               setProblem(null);
               setFiles((all) => [...all, ...next]);
-              onAction?.('files', next.map((file) => file.name));
+              onAction?.(
+                'files',
+                next.map((file) => file.name),
+              );
             }
           : undefined
       }
@@ -316,8 +380,20 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
           items={[
             ...(attachments
               ? [
-                  { id: 'file', icon: <Paperclip />, label: 'Upload a file', description: 'Text, Markdown or PDF', onClick: api.openPicker },
-                  { id: 'image', icon: <ImageIcon />, label: 'Add an image', description: 'Or paste a screenshot', onClick: api.openPicker },
+                  {
+                    id: 'file',
+                    icon: <Paperclip />,
+                    label: 'Upload a file',
+                    description: 'Text, Markdown or PDF',
+                    onClick: api.openPicker,
+                  },
+                  {
+                    id: 'image',
+                    icon: <ImageIcon />,
+                    label: 'Add an image',
+                    description: 'Or paste a screenshot',
+                    onClick: api.openPicker,
+                  },
                 ]
               : []),
             ...(mentions
@@ -328,30 +404,50 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
                     label: 'Add from Studio',
                     description: 'Point the assistant at something on screen',
                     onClick: () => {
-                      setValue((current) => `${current}${current && !current.endsWith(' ') ? ' @' : '@'}`);
+                      setValue(
+                        (current) => `${current}${current && !current.endsWith(' ') ? ' @' : '@'}`,
+                      );
                       setTimeout(api.focus, 0);
                     },
                   },
                 ]
               : []),
-            { id: 'prompts', icon: <Bookmark />, label: 'Saved prompts', description: 'Your prompt library', separated: true, onClick: () => {
-              setValue('/prompts ');
-              setTimeout(api.focus, 0);
-              onAction?.('prompts');
-            } },
+            {
+              id: 'prompts',
+              icon: <Bookmark />,
+              label: 'Saved prompts',
+              description: 'Your prompt library',
+              separated: true,
+              onClick: () => {
+                setValue('/prompts ');
+                setTimeout(api.focus, 0);
+                onAction?.('prompts');
+              },
+            },
           ]}
         />
       )}
       above={
         <>
           {warning || hasImage ? (
-            <ComposerNotice icon={<EyeOff />} message="Haiku can’t see images. Switch to Sonnet?" action={{ label: 'Switch', onClick: () => onAction?.('switch-model') }} />
+            <ComposerNotice
+              icon={<EyeOff />}
+              message="Haiku can’t see images. Switch to Sonnet?"
+              action={{ label: 'Switch', onClick: () => onAction?.('switch-model') }}
+            />
           ) : null}
           {problem ? <ComposerNotice tone="danger" message={problem} /> : null}
         </>
       }
-      popover={({ anchor }) => (command.open ? <CommandPopover {...command.popoverProps} anchor={anchor} /> : null)}
-      hint={hint ?? (streaming ? 'Replying… keep typing to queue your next message · Esc to stop' : '⌘J to show or hide · / for commands · @ to add context')}
+      popover={({ anchor }) =>
+        command.open ? <CommandPopover {...command.popoverProps} anchor={anchor} /> : null
+      }
+      hint={
+        hint ??
+        (streaming
+          ? 'Replying… keep typing to queue your next message · Esc to stop'
+          : '⌘J to show or hide · / for commands · @ to add context')
+      }
     />
   );
 };
@@ -360,5 +456,12 @@ export const composerVariants: Variant<ComposerDemoProps>[] = [
   { name: 'Stacked', args: {} },
   { name: 'Pill', args: { variant: 'pill' } },
   { name: 'Replying (stop)', args: { streaming: true } },
-  { name: 'Queued', args: { streaming: true, initialValue: 'Also check the O(n log n) version', queued: [{ id: 'q', text: 'And the space trade-off?' }] } },
+  {
+    name: 'Queued',
+    args: {
+      streaming: true,
+      initialValue: 'Also check the O(n log n) version',
+      queued: [{ id: 'q', text: 'And the space trade-off?' }],
+    },
+  },
 ];

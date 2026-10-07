@@ -1,8 +1,7 @@
-import * as React from 'react';
+import type { StatusClockProps } from '@oc-tech/omni-ui-components/StatusClock';
 
 import { GitBranch, GitCommitHorizontal } from 'lucide-react';
-
-import type { StatusClockProps } from '@oc-tech/omni-ui-components/StatusClock';
+import type * as React from 'react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Story-only icon nodes (the library takes icons from the caller). Recording: a ring with a solid centre. */
@@ -31,7 +30,9 @@ export const SAMPLE_BUILD_TAG = {
 };
 
 /** Build `<StatusClock>` props for stories and tests. */
-export const statusClockPropsFactory = (overrides: Partial<StatusClockProps> = {}): StatusClockProps => ({
+export const statusClockPropsFactory = (
+  overrides: Partial<StatusClockProps> = {},
+): StatusClockProps => ({
   state: 'live',
   elapsed: '2:18:20',
   icon: <RecordIcon />,

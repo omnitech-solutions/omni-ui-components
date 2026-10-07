@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Tag, type TagProps } from '@oc-tech/omni-ui-components/Tag';
+import type { Meta, StoryObj } from '@storybook/react';
 import { tagVariants } from 'factories/omni-ui-components/Tag/Tag.factories';
 
 const meta: Meta<typeof Tag> = {
@@ -19,7 +18,10 @@ const meta: Meta<typeof Tag> = {
   args: { children: 'In review' },
   argTypes: {
     mono: { control: 'boolean', description: 'Monospace face.' },
-    copyValue: { control: 'text', description: 'Makes the tag a button that copies this text and briefly confirms.' },
+    copyValue: {
+      control: 'text',
+      description: 'Makes the tag a button that copies this text and briefly confirms.',
+    },
     tooltip: { control: 'text', description: 'Hover and focus tooltip.' },
     onCopy: { action: 'copied' },
     onClose: { action: 'closed' },
@@ -46,11 +48,20 @@ export const StatusSet: Story = {
 
 export const Mono: Story = { args: { children: 'O(n) time', mono: true } };
 export const MonoWithTooltip: Story = {
-  args: { children: '3f9a1c2 · main', mono: true, tooltip: '3f9a1c2d4e5b6a7f8091a2b3c4d5e6f708192a3b' },
+  args: {
+    children: '3f9a1c2 · main',
+    mono: true,
+    tooltip: '3f9a1c2d4e5b6a7f8091a2b3c4d5e6f708192a3b',
+  },
 };
 export const CopyOnClick: Story = {
   name: 'Build tag, copy on click',
-  args: { children: '3f9a1c2 · main', mono: true, copyValue: '3f9a1c2d4e5b6a7f8091a2b3c4d5e6f708192a3b', tooltip: 'Click to copy the full SHA' },
+  args: {
+    children: '3f9a1c2 · main',
+    mono: true,
+    copyValue: '3f9a1c2d4e5b6a7f8091a2b3c4d5e6f708192a3b',
+    tooltip: 'Click to copy the full SHA',
+  },
 };
 
 export const VariantMatrix: Story = {

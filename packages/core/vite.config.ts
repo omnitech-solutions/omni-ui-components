@@ -1,9 +1,9 @@
-import { resolve } from 'node:path';
 import { createRequire } from 'node:module';
-import { defineConfig, type Plugin } from 'vite';
-import react from '@vitejs/plugin-react';
-import dts from 'vite-plugin-dts';
+import { resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
+import { defineConfig, type Plugin } from 'vite';
+import dts from 'vite-plugin-dts';
 
 const require = createRequire(import.meta.url);
 const packageJson = require('./package.json') as {
@@ -16,7 +16,8 @@ const externalPackages = [
 ];
 
 /** The library's layer order, from lowest to highest; the sublayers of `omni-ui-components`. */
-const layerOrder = '@layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base, omni-ui-components.utilities, omni-ui-components.classes;';
+const layerOrder =
+  '@layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base, omni-ui-components.utilities, omni-ui-components.classes;';
 
 /**
  * Tailwind emits its `@property` fallback as a top-level `@layer properties`: nest it under the library layer so every layer the
@@ -29,10 +30,19 @@ const nestTailwindLayers = (): Plugin => ({
   enforce: 'post',
   generateBundle(_options, bundle) {
     for (const asset of Object.values(bundle)) {
-      if (asset.type !== 'asset' || !asset.fileName.endsWith('.css') || typeof asset.source !== 'string') continue;
-      const nested = asset.source.replace(/@layer properties(?=[{;,])/g, '@layer omni-ui-components.properties');
+      if (
+        asset.type !== 'asset' ||
+        !asset.fileName.endsWith('.css') ||
+        typeof asset.source !== 'string'
+      )
+        continue;
+      const nested = asset.source.replace(
+        /@layer properties(?=[{;,])/g,
+        '@layer omni-ui-components.properties',
+      );
       // `@charset` and `@import` must stay first; the shipped stylesheet has neither, but a future one might.
-      const head = nested.match(/^(?:\s*(?:\/\*[\s\S]*?\*\/|@charset[^;]*;|@import[^;]*;))*/)?.[0] ?? '';
+      const head =
+        nested.match(/^(?:\s*(?:\/\*[\s\S]*?\*\/|@charset[^;]*;|@import[^;]*;))*/)?.[0] ?? '';
       asset.source = `${head}${layerOrder}${nested.slice(head.length)}`;
     }
   },
@@ -68,7 +78,9 @@ export default defineConfig({
     },
     rollupOptions: {
       external: (id) =>
-        externalPackages.some((packageName) => id === packageName || id.startsWith(`${packageName}/`)),
+        externalPackages.some(
+          (packageName) => id === packageName || id.startsWith(`${packageName}/`),
+        ),
     },
   },
 });

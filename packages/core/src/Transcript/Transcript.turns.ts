@@ -31,7 +31,10 @@ const proposalId = (output: unknown): string | undefined => {
  * @example
  * const turns = buildTurns(messages, runs); // [{ id, user, answer?, run? }]
  */
-export function buildTurns(messages: readonly ChatMessage[], runs: readonly ChatRun[] = []): ConversationTurn[] {
+export function buildTurns(
+  messages: readonly ChatMessage[],
+  runs: readonly ChatRun[] = [],
+): ConversationTurn[] {
   const turns: ConversationTurn[] = [];
   const latestRun = new Map<string, ChatRun>();
   for (const run of runs) if (run.userMessageId) latestRun.set(run.userMessageId, run);
@@ -48,7 +51,15 @@ export function buildTurns(messages: readonly ChatMessage[], runs: readonly Chat
     const turn = turns.at(-1);
     if (!turn) continue;
     if (!turn.answer) {
-      turn.answer = { first: message, text: '', steps: [], sources: [], suggestions: [], partial: false, proposalIds: [] };
+      turn.answer = {
+        first: message,
+        text: '',
+        steps: [],
+        sources: [],
+        suggestions: [],
+        partial: false,
+        proposalIds: [],
+      };
     }
     const answer = turn.answer;
     if (message.role === 'tool') {
@@ -59,7 +70,9 @@ export function buildTurns(messages: readonly ChatMessage[], runs: readonly Chat
         if (!step) continue;
         step.output = part.output;
         step.done = true;
-        step.failed = Boolean(part.output && typeof part.output === 'object' && 'error' in part.output);
+        step.failed = Boolean(
+          part.output && typeof part.output === 'object' && 'error' in part.output,
+        );
         const id = proposalId(part.output);
         if (id && !answer.proposalIds.includes(id)) answer.proposalIds.push(id);
       }
@@ -68,7 +81,15 @@ export function buildTurns(messages: readonly ChatMessage[], runs: readonly Chat
     const calls = message.parts.flatMap((part) => (part.type === 'tool-call' ? [part] : []));
     if (calls.length) {
       group++;
-      for (const call of calls) answer.steps.push({ id: call.id, name: call.name, input: call.input, done: false, failed: false, group });
+      for (const call of calls)
+        answer.steps.push({
+          id: call.id,
+          name: call.name,
+          input: call.input,
+          done: false,
+          failed: false,
+          group,
+        });
     } else {
       answer.final = message;
       answer.text = promptOf(message);
@@ -78,7 +99,8 @@ export function buildTurns(messages: readonly ChatMessage[], runs: readonly Chat
       if (!calls.length) answer.text = promptOf(message);
     }
     for (const part of message.parts) {
-      if (part.type === 'reasoning' && part.seconds !== undefined) answer.reasoning = { text: part.text, seconds: part.seconds };
+      if (part.type === 'reasoning' && part.seconds !== undefined)
+        answer.reasoning = { text: part.text, seconds: part.seconds };
       else if (part.type === 'sources') answer.sources = [...part.items];
       else if (part.type === 'suggestions') answer.suggestions = [...part.items];
       else if (part.type === 'usage') answer.usage = part.usage;

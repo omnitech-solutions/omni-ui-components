@@ -1,8 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Switch, type SwitchProps } from '@oc-tech/omni-ui-components/Switch';
+import type { Meta, StoryObj } from '@storybook/react';
 import { switchPropsFactory } from 'factories/omni-ui-components/Switch/Switch.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<SwitchProps> = (args) => {
   const [checked, setChecked] = React.useState<boolean>(Boolean(args.checked));

@@ -13,5 +13,11 @@ runControlContract({
     await user.type(ctrl, next);
   },
   sampleValue: '+15550100',
-  supports: { typing: true, controlled: true, disabled: true, ariaInvalid: true, idLabelLink: true },
+  supports: {
+    typing: true,
+    controlled: true,
+    disabled: true,
+    ariaInvalid: true,
+    idLabelLink: true,
+  },
 });

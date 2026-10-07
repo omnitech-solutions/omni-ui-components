@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 export interface ThinkingLabels {
   /** Header while the model is still thinking. Default `Thinking…`. */

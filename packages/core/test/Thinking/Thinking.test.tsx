@@ -1,10 +1,12 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
 import { Thinking } from '@oc-tech/omni-ui-components/Thinking';
-import { SAMPLE_REASONING, thinkingPropsFactory } from 'factories/omni-ui-components/Thinking/Thinking.factories';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  SAMPLE_REASONING,
+  thinkingPropsFactory,
+} from 'factories/omni-ui-components/Thinking/Thinking.factories';
 
 describe('omni-ui-components/Thinking', () => {
   it('streaming: spinner and Thinking…, collapsed', () => {
@@ -46,7 +48,10 @@ describe('omni-ui-components/Thinking', () => {
         })}
       />,
     );
-    expect(screen.getByRole('button', { name: 'Gedacht 4s' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: 'Gedacht 4s' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
   });
 
   it('onOpenChange fires in controlled mode with the requested state', async () => {
@@ -54,6 +59,9 @@ describe('omni-ui-components/Thinking', () => {
     render(<Thinking {...thinkingPropsFactory({ open: false, onOpenChange })} />);
     await userEvent.click(screen.getByRole('button', { name: 'Thought for 4s' }));
     expect(onOpenChange).toHaveBeenCalledWith(true);
-    expect(screen.getByRole('button', { name: 'Thought for 4s' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('button', { name: 'Thought for 4s' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
   });
 });

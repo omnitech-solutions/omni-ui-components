@@ -1,13 +1,14 @@
-import * as React from 'react';
+import {
+  ModelsSettings,
+  type ModelsSettingsProps,
+} from '@oc-tech/omni-ui-components/ModelsSettings';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
-
-import { ModelsSettings, type ModelsSettingsProps } from '@oc-tech/omni-ui-components/ModelsSettings';
 import {
   ModelsSettingsDialogDemo,
   modelsSettingsPropsFactory,
   modelsSettingsVariants,
 } from 'factories/omni-ui-components/ModelsSettings/ModelsSettings.factories';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 const meta: Meta<ModelsSettingsProps> = {
   title: 'omni-ui-components/ModelsSettings',

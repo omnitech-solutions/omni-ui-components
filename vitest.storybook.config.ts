@@ -1,7 +1,7 @@
 import path from 'node:path';
-import { defineConfig, mergeConfig } from 'vitest/config';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
+import { defineConfig, mergeConfig } from 'vitest/config';
 import viteConfig from './vite.config';
 
 // Runs the Storybook tests (every story, including its `play` function) in real Chromium (see `pnpm test:storybook`).

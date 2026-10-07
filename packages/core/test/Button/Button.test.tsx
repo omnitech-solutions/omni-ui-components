@@ -1,10 +1,11 @@
 import '@testing-library/jest-dom';
+
+import { Button, type ButtonProps } from '@oc-tech/omni-ui-components/Button';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Button, type ButtonProps } from '@oc-tech/omni-ui-components/Button';
-
-const renderButton = (overrides: Partial<ButtonProps> = {}) => render(<Button {...overrides}>Save</Button>);
+const renderButton = (overrides: Partial<ButtonProps> = {}) =>
+  render(<Button {...overrides}>Save</Button>);
 
 describe('omni-ui-components/Button', () => {
   describe('shape', () => {
@@ -27,7 +28,10 @@ describe('omni-ui-components/Button', () => {
 
     it('renders leading + trailing icons', () => {
       render(
-        <Button icon={<span data-testid="lead">L</span>} iconAfter={<span data-testid="trail">T</span>}>
+        <Button
+          icon={<span data-testid="lead">L</span>}
+          iconAfter={<span data-testid="trail">T</span>}
+        >
           Go
         </Button>,
       );
@@ -37,12 +41,14 @@ describe('omni-ui-components/Button', () => {
   });
 
   describe('variants + sizes', () => {
-    (['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'] as const).forEach((variant) => {
-      it(`renders variant=${variant}`, () => {
-        renderButton({ variant });
-        expect(screen.getByRole('button')).toHaveAttribute('data-variant', variant);
-      });
-    });
+    (['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'] as const).forEach(
+      (variant) => {
+        it(`renders variant=${variant}`, () => {
+          renderButton({ variant });
+          expect(screen.getByRole('button')).toHaveAttribute('data-variant', variant);
+        });
+      },
+    );
 
     (['sm', 'default', 'md', 'lg', 'icon'] as const).forEach((buttonSize) => {
       it(`renders buttonSize=${buttonSize}`, () => {

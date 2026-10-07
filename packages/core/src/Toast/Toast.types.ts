@@ -1,6 +1,12 @@
-import * as React from 'react';
+import type * as React from 'react';
 
-export type ToastPlacement = 'bottom-center' | 'bottom-left' | 'bottom-right' | 'top-center' | 'top-left' | 'top-right';
+export type ToastPlacement =
+  | 'bottom-center'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'top-center'
+  | 'top-left'
+  | 'top-right';
 
 /** The minimum a toast needs. Extend it with your own fields (an `undo` function, an id); callbacks get the full item back. */
 export interface ToastItem {
@@ -41,7 +47,10 @@ export interface ToastProps<T extends ToastItem = ToastItem> {
 
 export interface ToastController<T extends ToastItem = ToastItem> {
   /** Spread onto `<Toast {...toast.props} onAction={...} />`. */
-  props: Pick<ToastProps<T>, 'toast' | 'open' | 'onOpenChange' | 'placement' | 'position' | 'duration'>;
+  props: Pick<
+    ToastProps<T>,
+    'toast' | 'open' | 'onOpenChange' | 'placement' | 'position' | 'duration'
+  >;
   /** The toast on screen, if any. */
   toast: T | null;
   /** Show a toast (replacing the one on screen and restarting its timer). */

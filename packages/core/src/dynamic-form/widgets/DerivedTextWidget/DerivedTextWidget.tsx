@@ -1,4 +1,3 @@
-import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
 
 import type { OmniRjsfFormContext } from '../../lib/formContext';
@@ -23,7 +22,8 @@ interface DerivedTextWidgetOptions {
 
 const readOptions = (raw: WidgetProps['options']): DerivedTextWidgetOptions => ({
   derivedKey: typeof raw.derivedKey === 'string' ? raw.derivedKey : '',
-  tone: raw.tone === 'muted' || raw.tone === 'success' || raw.tone === 'danger' ? raw.tone : 'default',
+  tone:
+    raw.tone === 'muted' || raw.tone === 'success' || raw.tone === 'danger' ? raw.tone : 'default',
 });
 
 const TONE_CLASS: Record<DerivedTextTone, string> = {
@@ -36,13 +36,18 @@ const TONE_CLASS: Record<DerivedTextTone, string> = {
 export const DerivedTextWidget = (props: WidgetProps) => {
   const { id, options, registry } = props;
   const parsed = readOptions(options);
-  const context = (registry?.formContext ?? {}) as Partial<OmniRjsfFormContext<Record<string, unknown>>>;
+  const context = (registry?.formContext ?? {}) as Partial<
+    OmniRjsfFormContext<Record<string, unknown>>
+  >;
   const derived = context.derived ?? {};
   const rawValue = parsed.derivedKey ? derived[parsed.derivedKey] : '';
   const text = typeof rawValue === 'string' ? rawValue : '';
 
   return (
-    <div data-testid={`${id}-derived`} className={`text-sm font-semibold ${TONE_CLASS[parsed.tone]}`}>
+    <div
+      data-testid={`${id}-derived`}
+      className={`text-sm font-semibold ${TONE_CLASS[parsed.tone]}`}
+    >
       {text}
     </div>
   );

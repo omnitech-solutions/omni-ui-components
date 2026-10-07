@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { z } from 'zod';
 import type { RJSFSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import { renderDynamicForm } from './testing/renderDynamicForm';
 
@@ -46,7 +46,9 @@ describe('DynamicForm — WrapIfAdditionalTemplate', () => {
       zodSchema: z.object({ metadata: z.record(z.string()).optional() }),
       formData: { metadata: { env: 'prod', team: 'platform' } },
     });
-    const removeButtons = document.querySelectorAll('[data-slot="wrap-if-additional"] button[data-slot="icon-button"][data-variant="destructive"]');
+    const removeButtons = document.querySelectorAll(
+      '[data-slot="wrap-if-additional"] button[data-slot="icon-button"][data-variant="destructive"]',
+    );
     expect(removeButtons.length).toBe(2);
   });
 

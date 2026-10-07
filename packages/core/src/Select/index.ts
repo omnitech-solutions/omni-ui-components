@@ -1,4 +1,12 @@
 export { Select } from './Select';
-export { SelectPrimitive } from './SelectPrimitive';
+export type {
+  SelectFooterAction,
+  SelectOption,
+  SelectPrimitiveProps,
+  SelectProps,
+  SelectSize,
+  SelectVariant,
+  SelectVariantProps,
+} from './Select.types';
 export { selectVariants } from './Select.variants';
-export type { SelectFooterAction, SelectOption, SelectProps, SelectPrimitiveProps, SelectVariant, SelectSize, SelectVariantProps } from './Select.types';
+export { SelectPrimitive } from './SelectPrimitive';

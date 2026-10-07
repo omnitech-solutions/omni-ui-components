@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { TagInput, type TagInputProps } from '@oc-tech/omni-ui-components/TagInput';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const Renderer: React.FC<TagInputProps> = (args) => {
   const [value, setValue] = React.useState<string[]>(args.value ?? []);
@@ -22,7 +21,13 @@ const meta: Meta<typeof TagInput> = {
   title: 'omni-ui-components/TagInput',
   component: TagInput,
   tags: ['autodocs'],
-  args: { id: 'demo-tags', label: 'Tags', placeholder: 'Add a tag…', value: [], wrapperClassName: 'mx-auto max-w-md' },
+  args: {
+    id: 'demo-tags',
+    label: 'Tags',
+    placeholder: 'Add a tag…',
+    value: [],
+    wrapperClassName: 'mx-auto max-w-md',
+  },
   argTypes: { onChange: { action: 'changed' } },
   render: (args) => <Renderer {...(args as TagInputProps)} />,
 };

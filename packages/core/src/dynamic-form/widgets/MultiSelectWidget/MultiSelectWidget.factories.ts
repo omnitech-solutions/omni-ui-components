@@ -1,5 +1,5 @@
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { z } from 'zod';
-import type { UiSchema, RJSFSchema } from '@rjsf/utils';
 
 import type { FormFixture } from '../../DynamicForm/DynamicForm.factories';
 
@@ -38,7 +38,9 @@ const fixtureFor = (uiSchema: UiSchema, initial: string[] = []): FormFixture<Sta
   defaults: { stack: initial },
 });
 
-export const plainMultiSelectFixture = (): FormFixture<StackFormData> => fixtureFor({ stack: { 'ui:widget': 'multiSelect' } });
+export const plainMultiSelectFixture = (): FormFixture<StackFormData> =>
+  fixtureFor({ stack: { 'ui:widget': 'multiSelect' } });
 export const searchableMultiSelectFixture = (): FormFixture<StackFormData> =>
   fixtureFor({ stack: { 'ui:widget': 'multiSelect', 'ui:options': { searchable: true } } });
-export const prefilledMultiSelectFixture = (): FormFixture<StackFormData> => fixtureFor({ stack: { 'ui:widget': 'multiSelect' } }, ['react', 'typescript']);
+export const prefilledMultiSelectFixture = (): FormFixture<StackFormData> =>
+  fixtureFor({ stack: { 'ui:widget': 'multiSelect' } }, ['react', 'typescript']);

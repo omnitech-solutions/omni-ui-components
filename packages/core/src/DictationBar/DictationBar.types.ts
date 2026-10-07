@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 export interface DictationBarLabels {
   /** Shown while nothing has been heard yet. Default `Listening…`. */
@@ -15,7 +15,8 @@ export const DEFAULT_DICTATION_LABELS: DictationBarLabels = {
   done: 'Done',
 };
 
-export interface DictationBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onCancel'> {
+export interface DictationBarProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onCancel'> {
   /** Dictation is running. Not active: nothing is rendered, so the composer's own field shows. Default true. */
   active?: boolean;
   /** The words heard so far (live transcript). Empty shows `labels.listening`. */

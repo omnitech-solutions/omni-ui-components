@@ -1,21 +1,37 @@
-import * as React from 'react';
-import { ImagePlus, MicOff } from 'lucide-react';
+import type {
+  ActionMenuNotice,
+  ActionMenuProps,
+  ActionMenuSection,
+} from '@oc-tech/omni-ui-components/ActionMenu';
 
 import { Button } from '@oc-tech/omni-ui-components/Button';
-import type { ActionMenuNotice, ActionMenuProps, ActionMenuSection } from '@oc-tech/omni-ui-components/ActionMenu';
+import { ImagePlus, MicOff } from 'lucide-react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export type CaptureMode = 'manual' | 'auto';
 
 /** "When to analyse" + "Display" sections of the capture caret menu (board 1c), controlled by `mode` and `display`. */
-export const captureMenuSections = (mode: CaptureMode = 'manual', display = 'follow'): ActionMenuSection[] => [
+export const captureMenuSections = (
+  mode: CaptureMode = 'manual',
+  display = 'follow',
+): ActionMenuSection[] => [
   {
     id: 'mode',
     label: 'When to analyse',
     value: mode,
     items: [
-      { id: 'manual', label: 'Manual', description: 'Analyse only when you press it', shortcut: ['⌘', '⇧', 'S'] },
-      { id: 'auto', label: 'Auto', description: 'When the screen changes · every 8 s, up to 120 per session', shortcut: ['⌥', '⇧', 'U'] },
+      {
+        id: 'manual',
+        label: 'Manual',
+        description: 'Analyse only when you press it',
+        shortcut: ['⌘', '⇧', 'S'],
+      },
+      {
+        id: 'auto',
+        label: 'Auto',
+        description: 'When the screen changes · every 8 s, up to 120 per session',
+        shortcut: ['⌥', '⇧', 'U'],
+      },
     ],
   },
   {
@@ -24,13 +40,24 @@ export const captureMenuSections = (mode: CaptureMode = 'manual', display = 'fol
     highlightChecked: false,
     value: display,
     items: [
-      { id: 'follow', label: 'Follow my browser', description: 'Built-in Retina Display right now' },
+      {
+        id: 'follow',
+        label: 'Follow my browser',
+        description: 'Built-in Retina Display right now',
+      },
       { id: 'builtin', label: 'Built-in Retina Display' },
     ],
   },
   {
     id: 'extra',
-    items: [{ id: 'add-screen', label: 'Add screen to this problem', icon: <ImagePlus />, disabledReason: 'Available once a problem is open' }],
+    items: [
+      {
+        id: 'add-screen',
+        label: 'Add screen to this problem',
+        icon: <ImagePlus />,
+        disabledReason: 'Available once a problem is open',
+      },
+    ],
   },
 ];
 
@@ -83,16 +110,26 @@ export const answerStyleSections = (value = 'dsa'): ActionMenuSection[] => [
 ];
 
 /** Every answer-style row as `{ id, label }`, in menu order (for the trigger label of a select-style menu). */
-export const answerStyleOptions = answerStyleSections().flatMap((section) => section.items.map((item) => ({ id: item.id, label: item.label })));
+export const answerStyleOptions = answerStyleSections().flatMap((section) =>
+  section.items.map((item) => ({ id: item.id, label: item.label })),
+);
 
-const shortcutRow = (id: string, label: string, shortcut: string[], tone?: 'danger') => ({ id, label, shortcut, tone });
+const shortcutRow = (id: string, label: string, shortcut: string[], tone?: 'danger') => ({
+  id,
+  label,
+  shortcut,
+  tone,
+});
 
 export const shortcutSections: ActionMenuSection[] = [
   {
     id: 'capture',
     label: 'Capture',
     labelStyle: 'caps',
-    items: [shortcutRow('analyse', 'Analyse / stop', ['⌘', '⇧', 'S']), shortcutRow('auto', 'Auto on or off', ['⌥', '⇧', 'U'])],
+    items: [
+      shortcutRow('analyse', 'Analyse / stop', ['⌘', '⇧', 'S']),
+      shortcutRow('auto', 'Auto on or off', ['⌥', '⇧', 'U']),
+    ],
   },
   {
     id: 'listening',
@@ -120,7 +157,10 @@ export const shortcutSections: ActionMenuSection[] = [
     id: 'app',
     label: 'App',
     labelStyle: 'caps',
-    items: [shortcutRow('settings', 'Settings', ['⌘', ',']), shortcutRow('clear', 'Clear session memory', ['⌘', '⇧', '\\'], 'danger')],
+    items: [
+      shortcutRow('settings', 'Settings', ['⌘', ',']),
+      shortcutRow('clear', 'Clear session memory', ['⌘', '⇧', '\\'], 'danger'),
+    ],
   },
 ];
 
@@ -144,7 +184,11 @@ export const micLostNotice = (onSelect: () => void = noop, attempt = 2): ActionM
 });
 
 /** Capture caret menu (When to analyse + Display), optionally leading with the permission notice. */
-export const captureMenuSpec = (mode: CaptureMode = 'manual', display = 'follow', notice?: ActionMenuNotice): ActionMenuSpec => ({
+export const captureMenuSpec = (
+  mode: CaptureMode = 'manual',
+  display = 'follow',
+  notice?: ActionMenuNotice,
+): ActionMenuSpec => ({
   label: 'Capture options',
   width: 320,
   notice,
@@ -173,10 +217,17 @@ export const screenPermissionMenu = captureMenuSpec('manual', 'follow', screenPe
 export const micMenu = micMenuSpec();
 export const micLostMenu = micMenuSpec('macbook', micLostNotice());
 export const answerStyleMenu = answerStyleMenuSpec();
-export const shortcutsMenu: ActionMenuSpec = { label: 'Keyboard shortcuts', kind: 'list', width: 300, sections: shortcutSections };
+export const shortcutsMenu: ActionMenuSpec = {
+  label: 'Keyboard shortcuts',
+  kind: 'list',
+  width: 300,
+  sections: shortcutSections,
+};
 
 /** Build `<ActionMenu>` props for standalone stories and tests (a plain button is the default trigger). */
-export const actionMenuPropsFactory = (overrides: Partial<ActionMenuProps> = {}): ActionMenuProps => ({
+export const actionMenuPropsFactory = (
+  overrides: Partial<ActionMenuProps> = {},
+): ActionMenuProps => ({
   trigger: <Button variant="outline">Open menu</Button>,
   ...captureModeMenu,
   ...overrides,

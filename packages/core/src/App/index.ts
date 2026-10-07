@@ -1,2 +1,2 @@
-export { App } from './App';
 export type { AppProps } from './App';
+export { App } from './App';

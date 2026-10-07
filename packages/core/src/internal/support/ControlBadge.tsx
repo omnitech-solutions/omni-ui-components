@@ -1,7 +1,6 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { toneBadgeClasses, type ControlTone } from './controlTone';
+import type * as React from 'react';
+import { type ControlTone, toneBadgeClasses } from './controlTone';
 
 export interface ControlBadgeProps {
   tone: ControlTone;
@@ -21,7 +20,14 @@ export interface ControlBadgeProps {
  * absolutely positioned, so the owning control must be `relative`. The ring cuts
  * it out of the surface behind (`--oui-badge-ring`).
  */
-export const ControlBadge: React.FC<ControlBadgeProps> = ({ tone, label, description, descriptionId, slot, className }) => (
+export const ControlBadge: React.FC<ControlBadgeProps> = ({
+  tone,
+  label,
+  description,
+  descriptionId,
+  slot,
+  className,
+}) => (
   <>
     <span
       data-slot={slot}

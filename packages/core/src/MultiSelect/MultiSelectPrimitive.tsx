@@ -1,9 +1,15 @@
-import * as React from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from 'components/ui/command';
-import { Check, ChevronDown, X } from 'lucide-react';
-
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from 'components/ui/command';
 import { cn } from 'lib/utils';
+import { Check, ChevronDown, X } from 'lucide-react';
+import * as React from 'react';
 import { inputVariants } from '../Input/Input.variants';
 import type { SelectOption } from '../Select';
 
@@ -26,7 +32,23 @@ export interface MultiSelectPrimitiveProps {
 
 /** Raw multi-select: popover trigger + command + chips. */
 export const MultiSelectPrimitive = React.forwardRef<HTMLButtonElement, MultiSelectPrimitiveProps>(
-  ({ id, options, value = [], onChange, placeholder = 'Select…', searchable = false, maxItems, disabled, required, invalid, className, ...rest }, ref) => {
+  (
+    {
+      id,
+      options,
+      value = [],
+      onChange,
+      placeholder = 'Select…',
+      searchable = false,
+      maxItems,
+      disabled,
+      required,
+      invalid,
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
     const testId = rest['data-testid'] ?? id;
     const [open, setOpen] = React.useState(false);
 
@@ -60,11 +82,19 @@ export const MultiSelectPrimitive = React.forwardRef<HTMLButtonElement, MultiSel
               className,
             )}
           >
-            <span className={cn('flex flex-1 flex-wrap items-center gap-1', isPlaceholder && 'text-[var(--oui-foreground-placeholder)]')}>
+            <span
+              className={cn(
+                'flex flex-1 flex-wrap items-center gap-1',
+                isPlaceholder && 'text-[var(--oui-foreground-placeholder)]',
+              )}
+            >
               {isPlaceholder
                 ? placeholder
                 : selected.map((opt) => (
-                    <span key={opt.value} className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
+                    <span
+                      key={opt.value}
+                      className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary"
+                    >
                       {opt.label}
                       <span
                         role="button"
@@ -82,7 +112,10 @@ export const MultiSelectPrimitive = React.forwardRef<HTMLButtonElement, MultiSel
                   ))}
             </span>
             <ChevronDown
-              className={cn('h-3.5 w-3.5 shrink-0 text-[var(--oui-foreground-muted)] transition-transform', open && 'rotate-180')}
+              className={cn(
+                'h-3.5 w-3.5 shrink-0 text-[var(--oui-foreground-muted)] transition-transform',
+                open && 'rotate-180',
+              )}
               aria-hidden="true"
             />
           </button>
@@ -112,10 +145,14 @@ export const MultiSelectPrimitive = React.forwardRef<HTMLButtonElement, MultiSel
                         className={cn(
                           'cursor-pointer',
                           'data-[selected=true]:bg-muted/60 data-[selected=true]:text-foreground',
-                          isSelected && 'bg-muted font-medium text-foreground data-[selected=true]:bg-muted',
+                          isSelected &&
+                            'bg-muted font-medium text-foreground data-[selected=true]:bg-muted',
                         )}
                       >
-                        <Check className={cn('mr-2 h-4 w-4', isSelected ? 'opacity-100' : 'opacity-0')} aria-hidden="true" />
+                        <Check
+                          className={cn('mr-2 h-4 w-4', isSelected ? 'opacity-100' : 'opacity-0')}
+                          aria-hidden="true"
+                        />
                         {opt.label}
                       </CommandItem>
                     );

@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { DataPrivacyPanel } from '@oc-tech/omni-ui-components/DataPrivacyPanel';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   DataPrivacyPanelDemo,
   dataPrivacyPanelPropsFactory,
@@ -16,7 +15,11 @@ describe('omni-ui-components/DataPrivacyPanel', () => {
     const onRetentionChange = jest.fn();
     render(<DataPrivacyPanel {...dataPrivacyPanelPropsFactory({ onRetentionChange })} />);
     const group = screen.getByRole('group', { name: 'Keep conversations' });
-    expect(within(group).getAllByRole('radio').map((r) => r.textContent)).toEqual(['Forever', '90 days', '30 days']);
+    expect(
+      within(group)
+        .getAllByRole('radio')
+        .map((r) => r.textContent),
+    ).toEqual(['Forever', '90 days', '30 days']);
     expect(within(group).getByRole('radio', { name: 'Forever' })).toBeChecked();
     await userEvent.click(within(group).getByRole('radio', { name: '30 days' }));
     expect(onRetentionChange).toHaveBeenCalledWith('30d');
@@ -24,19 +27,36 @@ describe('omni-ui-components/DataPrivacyPanel', () => {
 
   it('the log button toggles aria-expanded and asks the caller to open or close', async () => {
     const onShowActivityChange = jest.fn();
-    const { rerender } = render(<DataPrivacyPanel {...dataPrivacyPanelPropsFactory({ onShowActivityChange })} />);
+    const { rerender } = render(
+      <DataPrivacyPanel {...dataPrivacyPanelPropsFactory({ onShowActivityChange })} />,
+    );
     const button = screen.getByRole('button', { name: 'View log' });
     expect(button).toHaveAttribute('aria-expanded', 'false');
     await userEvent.click(button);
     expect(onShowActivityChange).toHaveBeenCalledWith(true);
-    rerender(<DataPrivacyPanel {...dataPrivacyPanelPropsFactory({ onShowActivityChange, activityOpen: true, activity: sampleActivity() })} />);
-    expect(screen.getByRole('button', { name: 'Hide log' })).toHaveAttribute('aria-expanded', 'true');
+    rerender(
+      <DataPrivacyPanel
+        {...dataPrivacyPanelPropsFactory({
+          onShowActivityChange,
+          activityOpen: true,
+          activity: sampleActivity(),
+        })}
+      />,
+    );
+    expect(screen.getByRole('button', { name: 'Hide log' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Hide log' }));
     expect(onShowActivityChange).toHaveBeenLastCalledWith(false);
   });
 
   it('lists the activity with summary, context and a formatted date, capped at 220px', () => {
-    render(<DataPrivacyPanel {...dataPrivacyPanelPropsFactory({ activityOpen: true, activity: sampleActivity(3) })} />);
+    render(
+      <DataPrivacyPanel
+        {...dataPrivacyPanelPropsFactory({ activityOpen: true, activity: sampleActivity(3) })}
+      />,
+    );
     const list = screen.getByRole('list', { name: 'Activity log' });
     expect(list).toHaveClass('max-h-[220px]', 'overflow-auto');
     const items = within(list).getAllByRole('listitem');
@@ -47,9 +67,15 @@ describe('omni-ui-components/DataPrivacyPanel', () => {
   });
 
   it('shows Nothing yet. for an empty log and Loading… while loading', () => {
-    const { rerender } = render(<DataPrivacyPanel {...dataPrivacyPanelPropsFactory({ activityOpen: true, activity: [] })} />);
+    const { rerender } = render(
+      <DataPrivacyPanel {...dataPrivacyPanelPropsFactory({ activityOpen: true, activity: [] })} />,
+    );
     expect(screen.getByText('Nothing yet.')).toBeInTheDocument();
-    rerender(<DataPrivacyPanel {...dataPrivacyPanelPropsFactory({ activityOpen: true, activityLoading: true })} />);
+    rerender(
+      <DataPrivacyPanel
+        {...dataPrivacyPanelPropsFactory({ activityOpen: true, activityLoading: true })}
+      />,
+    );
     expect(screen.getByText('Loading…')).toBeInTheDocument();
     expect(screen.queryByRole('list', { name: 'Activity log' })).not.toBeInTheDocument();
   });
@@ -76,7 +102,9 @@ describe('omni-ui-components/DataPrivacyPanel', () => {
   });
 
   it('a section appears only when its callback is given', () => {
-    render(<DataPrivacyPanel {...dataPrivacyPanelPropsFactory(dataPrivacyPanelVariants[5].args)} />);
+    render(
+      <DataPrivacyPanel {...dataPrivacyPanelPropsFactory(dataPrivacyPanelVariants[5].args)} />,
+    );
     expect(screen.getByRole('group', { name: 'Keep conversations' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'View log' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Export' })).not.toBeInTheDocument();
@@ -84,7 +112,13 @@ describe('omni-ui-components/DataPrivacyPanel', () => {
   });
 
   it('translates labels', () => {
-    render(<DataPrivacyPanel {...dataPrivacyPanelPropsFactory({ labels: { viewLog: 'Ver registro', exportButton: 'Exportar' } })} />);
+    render(
+      <DataPrivacyPanel
+        {...dataPrivacyPanelPropsFactory({
+          labels: { viewLog: 'Ver registro', exportButton: 'Exportar' },
+        })}
+      />,
+    );
     expect(screen.getByRole('button', { name: 'Ver registro' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Exportar' })).toBeInTheDocument();
   });
@@ -99,7 +133,9 @@ describe('omni-ui-components/DataPrivacyPanel', () => {
 
   it('renders every factory variant', () => {
     dataPrivacyPanelVariants.forEach((variant) => {
-      const { container, unmount } = render(<DataPrivacyPanel {...dataPrivacyPanelPropsFactory(variant.args)} />);
+      const { container, unmount } = render(
+        <DataPrivacyPanel {...dataPrivacyPanelPropsFactory(variant.args)} />,
+      );
       expect(container.querySelector('[data-slot="data-privacy"]')).toBeInTheDocument();
       unmount();
     });

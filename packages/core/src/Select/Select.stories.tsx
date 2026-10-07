@@ -1,11 +1,12 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Select, type SelectProps } from '@oc-tech/omni-ui-components/Select';
+import type { Meta, StoryObj } from '@storybook/react';
 import { selectPropsFactory } from 'factories/omni-ui-components/Select/Select.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<SelectProps> = (args) => {
-  const [value, setValue] = React.useState<string>(typeof args.value === 'string' ? args.value : '');
+  const [value, setValue] = React.useState<string>(
+    typeof args.value === 'string' ? args.value : '',
+  );
   React.useEffect(() => {
     setValue(typeof args.value === 'string' ? args.value : '');
   }, [args.value]);
@@ -99,8 +100,18 @@ export const WithDescriptionAndColor: Story = {
     label: 'Project',
     placeholder: 'Select project…',
     options: [
-      { value: 'bugs-w27', label: '🐛 Bugs - Week 27', description: 'Omni Product Development', color: '#e07a5f' },
-      { value: 'security', label: '🔒 Security Items', description: 'Omni Product Development', color: '#808080' },
+      {
+        value: 'bugs-w27',
+        label: '🐛 Bugs - Week 27',
+        description: 'Omni Product Development',
+        color: '#e07a5f',
+      },
+      {
+        value: 'security',
+        label: '🔒 Security Items',
+        description: 'Omni Product Development',
+        color: '#808080',
+      },
     ],
   },
 };

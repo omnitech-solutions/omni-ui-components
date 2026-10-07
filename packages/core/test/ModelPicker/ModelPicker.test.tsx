@@ -1,17 +1,24 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen, within } from '@testing-library/react';
 
-import { capabilitiesOf, groupModels, modelLabel, ModelMenu, ModelPicker, shortName, type ModelInfo } from '@oc-tech/omni-ui-components';
+import {
+  capabilitiesOf,
+  groupModels,
+  type ModelInfo,
+  ModelMenu,
+  ModelPicker,
+  modelLabel,
+  shortName,
+} from '@oc-tech/omni-ui-components';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   CLOUD_PROVIDER,
   GEMMA,
   LOCAL_PROVIDER,
   MINI,
+  ModelPickerDemo,
   modelPickerPropsFactory,
   modelPickerVariants,
-  ModelPickerDemo,
   QWEN,
   SONNET,
 } from 'factories/omni-ui-components/ModelPicker/ModelPicker.factories';
@@ -21,14 +28,29 @@ const chip = () => document.querySelector('[data-slot="model-chip"]') as HTMLEle
 describe('omni-ui-components/ModelPicker', () => {
   describe('utilities', () => {
     it('builds the capability line in a fixed order and skips what does not apply', () => {
-      expect(capabilitiesOf({ id: 'x', name: 'X', contextWindow: 262144, tools: true, vision: true, reasoning: true, parameters: '30B' })).toBe(
-        '256k context · tools · vision · reasoning · 30B',
-      );
+      expect(
+        capabilitiesOf({
+          id: 'x',
+          name: 'X',
+          contextWindow: 262144,
+          tools: true,
+          vision: true,
+          reasoning: true,
+          parameters: '30B',
+        }),
+      ).toBe('256k context · tools · vision · reasoning · 30B');
       expect(capabilitiesOf({ id: 'x', name: 'X', contextWindow: 2_000_000 })).toBe('2M context');
       expect(capabilitiesOf({ id: 'x', name: 'X' })).toBe('');
     });
     it('takes capability words from labels', () => {
-      expect(capabilitiesOf(QWEN, { context: '{n} de contexto', tools: 'herramientas', vision: 'visión', reasoning: 'razonamiento' })).toContain('256k de contexto · herramientas');
+      expect(
+        capabilitiesOf(QWEN, {
+          context: '{n} de contexto',
+          tools: 'herramientas',
+          vision: 'visión',
+          reasoning: 'razonamiento',
+        }),
+      ).toContain('256k de contexto · herramientas');
     });
     it('labels the chip with the effort only for a reasoning model', () => {
       expect(modelLabel(QWEN, 'medium')).toBe('Qwen3 Coder · Medium');
@@ -38,7 +60,10 @@ describe('omni-ui-components/ModelPicker', () => {
       expect(shortName(GEMMA)).toBe('Gemma 3 12B');
     });
     it('groups only consecutive models of one provider, inheriting the list provider', () => {
-      const groups = groupModels([QWEN, GEMMA, SONNET, MINI, { ...GEMMA, id: 'again' }], LOCAL_PROVIDER);
+      const groups = groupModels(
+        [QWEN, GEMMA, SONNET, MINI, { ...GEMMA, id: 'again' }],
+        LOCAL_PROVIDER,
+      );
       expect(groups.map((group) => [group.provider?.name, group.models.length])).toEqual([
         ['LM Studio', 2],
         ['OpenRouter', 2],
@@ -68,43 +93,80 @@ describe('omni-ui-components/ModelPicker', () => {
       expect(row).toHaveTextContent('Local');
       expect(row).toHaveTextContent('256k context · tools · vision · reasoning · 30B');
       expect(row).toHaveTextContent('Good for coding, agents');
-      expect(screen.getByRole('button', { name: /Gemma 3 12B/ })).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.getByRole('button', { name: /Gemma 3 12B/ })).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
     });
 
     it('changes the effort note when the model does not reason', () => {
       const { rerender } = render(<ModelMenu {...modelPickerPropsFactory()} />);
       expect(screen.getByText('Higher effort is slower but more careful.')).toBeInTheDocument();
       rerender(<ModelMenu {...modelPickerPropsFactory({ selectedId: GEMMA.id })} />);
-      expect(screen.getByText('Gemma 3 12B doesn’t reason step by step — effort is ignored.')).toBeInTheDocument();
+      expect(
+        screen.getByText('Gemma 3 12B doesn’t reason step by step — effort is ignored.'),
+      ).toBeInTheDocument();
     });
 
     it('offers Off, Low, Medium and High and reports the pick', async () => {
       const onEffortChange = vi.fn();
       render(<ModelMenu {...modelPickerPropsFactory({ onEffortChange })} />);
       const group = screen.getByRole('group', { name: 'Reasoning effort' });
-      expect(within(group).getAllByRole('radio').map((radio) => radio.textContent)).toEqual(['Off', 'Low', 'Medium', 'High']);
+      expect(
+        within(group)
+          .getAllByRole('radio')
+          .map((radio) => radio.textContent),
+      ).toEqual(['Off', 'Low', 'Medium', 'High']);
       expect(within(group).getByRole('radio', { name: 'Medium' })).toBeChecked();
       await userEvent.click(within(group).getByRole('radio', { name: 'High' }));
-      expect(onEffortChange).toHaveBeenCalledWith('high', expect.objectContaining({ id: expect.any(String) }));
+      expect(onEffortChange).toHaveBeenCalledWith(
+        'high',
+        expect.objectContaining({ id: expect.any(String) }),
+      );
     });
 
     it('hides the effort control and the add-provider action when asked, and takes a custom scale', async () => {
-      const { rerender } = render(<ModelMenu {...modelPickerPropsFactory({ showEffort: false, onAddProvider: undefined })} />);
+      const { rerender } = render(
+        <ModelMenu {...modelPickerPropsFactory({ showEffort: false, onAddProvider: undefined })} />,
+      );
       expect(screen.queryByText('Reasoning effort')).toBeNull();
       expect(screen.queryByText('Add a cloud provider (optional)')).toBeNull();
-      rerender(<ModelMenu {...modelPickerPropsFactory({ efforts: [{ value: 'fast', label: 'Fast' }, { value: 'deep', label: 'Deep' }], effort: 'deep' })} />);
+      rerender(
+        <ModelMenu
+          {...modelPickerPropsFactory({
+            efforts: [
+              { value: 'fast', label: 'Fast' },
+              { value: 'deep', label: 'Deep' },
+            ],
+            effort: 'deep',
+          })}
+        />,
+      );
       expect(screen.getByRole('radio', { name: 'Deep' })).toBeChecked();
     });
 
     it('shows the add-provider action and calls it', async () => {
       const onAddProvider = vi.fn();
       render(<ModelMenu {...modelPickerPropsFactory({ onAddProvider })} />);
-      await userEvent.click(screen.getByRole('button', { name: 'Add a cloud provider (optional)' }));
+      await userEvent.click(
+        screen.getByRole('button', { name: 'Add a cloud provider (optional)' }),
+      );
       expect(onAddProvider).toHaveBeenCalled();
     });
 
     it('takes every string from labels', () => {
-      render(<ModelMenu {...modelPickerPropsFactory({ labels: { dialog: 'Modelo', effortTitle: 'Esfuerzo', local: 'Local - ', goodFor: 'Bueno para {strengths}' } })} />);
+      render(
+        <ModelMenu
+          {...modelPickerPropsFactory({
+            labels: {
+              dialog: 'Modelo',
+              effortTitle: 'Esfuerzo',
+              local: 'Local - ',
+              goodFor: 'Bueno para {strengths}',
+            },
+          })}
+        />,
+      );
       expect(screen.getByRole('dialog', { name: 'Modelo' })).toBeInTheDocument();
       expect(screen.getByText('Esfuerzo')).toBeInTheDocument();
       expect(screen.getByText(/Local - LM Studio/)).toBeInTheDocument();
@@ -165,7 +227,9 @@ describe('omni-ui-components/ModelPicker', () => {
     });
 
     it('invites a choice when nothing is selected and can be disabled', () => {
-      const { rerender } = render(<ModelPicker {...modelPickerPropsFactory({ selectedId: undefined })} />);
+      const { rerender } = render(
+        <ModelPicker {...modelPickerPropsFactory({ selectedId: undefined })} />,
+      );
       expect(chip()).toHaveTextContent('Choose a model');
       rerender(<ModelPicker {...modelPickerPropsFactory({ disabled: true })} />);
       expect(chip()).toBeDisabled();
@@ -176,12 +240,25 @@ describe('omni-ui-components/ModelPicker', () => {
     it('fires onPick and onEffortChange uncontrolled too, and renders no add-provider row without its callback', async () => {
       const onPick = vi.fn();
       const onEffortChange = vi.fn();
-      render(<ModelMenu models={[QWEN, GEMMA]} defaultSelectedId={QWEN.id} onPick={onPick} onEffortChange={onEffortChange} />);
+      render(
+        <ModelMenu
+          models={[QWEN, GEMMA]}
+          defaultSelectedId={QWEN.id}
+          onPick={onPick}
+          onEffortChange={onEffortChange}
+        />,
+      );
       await userEvent.click(screen.getByRole('button', { name: /Gemma 3 12B/ }));
-      expect(screen.getByRole('button', { name: /Gemma 3 12B/ })).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByRole('button', { name: /Gemma 3 12B/ })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
       await userEvent.click(screen.getByRole('radio', { name: 'High' }));
       expect(onPick).toHaveBeenCalledWith(GEMMA);
-      expect(onEffortChange).toHaveBeenCalledWith('high', expect.objectContaining({ id: expect.any(String) }));
+      expect(onEffortChange).toHaveBeenCalledWith(
+        'high',
+        expect.objectContaining({ id: expect.any(String) }),
+      );
       expect(screen.queryByText('Add a cloud provider (optional)')).toBeNull();
     });
   });
@@ -191,7 +268,9 @@ describe('omni-ui-components/ModelPicker', () => {
       const onPick = vi.fn();
       const onEffortChange = vi.fn();
       const onOpenChange = vi.fn();
-      render(<ModelPicker {...modelPickerPropsFactory({ onPick, onEffortChange, onOpenChange })} />);
+      render(
+        <ModelPicker {...modelPickerPropsFactory({ onPick, onEffortChange, onOpenChange })} />,
+      );
       await userEvent.click(chip());
       expect(onOpenChange).toHaveBeenLastCalledWith(true);
       await userEvent.click(screen.getByRole('radio', { name: 'Low' }));
@@ -202,13 +281,22 @@ describe('omni-ui-components/ModelPicker', () => {
     });
   });
 
-
-  it('passes the caller\'s own model objects to callbacks, extra fields intact (generic over the item)', async () => {
+  it("passes the caller's own model objects to callbacks, extra fields intact (generic over the item)", async () => {
     type Mine = ModelInfo & { vendorId: number };
-    const models: Mine[] = [{ ...QWEN, vendorId: 1 }, { ...GEMMA, vendorId: 2 }];
+    const models: Mine[] = [
+      { ...QWEN, vendorId: 1 },
+      { ...GEMMA, vendorId: 2 },
+    ];
     const onPick = vi.fn((model: Mine) => model.vendorId);
     const onEffortChange = vi.fn((_effort: string, model: Mine | undefined) => model?.vendorId);
-    render(<ModelMenu<Mine> models={models} defaultSelectedId={QWEN.id} onPick={onPick} onEffortChange={onEffortChange} />);
+    render(
+      <ModelMenu<Mine>
+        models={models}
+        defaultSelectedId={QWEN.id}
+        onPick={onPick}
+        onEffortChange={onEffortChange}
+      />,
+    );
     await userEvent.click(screen.getByRole('radio', { name: 'High' }));
     expect(onEffortChange.mock.calls[0]![1]).toBe(models[0]);
     await userEvent.click(screen.getByRole('button', { name: /Gemma 3 12B/ }));

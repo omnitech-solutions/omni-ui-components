@@ -1,14 +1,16 @@
-import * as React from 'react';
 import { Inbox } from 'lucide-react';
+import * as React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 
 import type {
   TableBodyCellProps,
   TableBodyRowProps,
   TableBodyWrapperProps,
+  TableCellRenderContext,
   TableComponents,
   TableContentProps,
   TableEmptyProps,
+  TableExpandCellProps,
   TableFooterProps,
   TableHeaderCellProps,
   TableHeaderRowProps,
@@ -16,14 +18,12 @@ import type {
   TableLoadingProps,
   TablePaginationItemProps,
   TablePaginationRootProps,
-  TableSelectionCellProps,
   TableRegistry,
   TableRootProps,
   TableSectionProps,
+  TableSelectionCellProps,
   TableSummaryProps,
   TableTitleProps,
-  TableExpandCellProps,
-  TableCellRenderContext,
 } from './Table.types';
 
 type FieldValue = unknown;
@@ -37,9 +37,11 @@ const formatCurrency = (amount: number, currency: string, options: Intl.NumberFo
     ...options,
   }).format(amount);
 
-const isRecord = (value: FieldValue): value is Record<string, unknown> => typeof value === 'object' && value !== null;
+const isRecord = (value: FieldValue): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
 
-const firstPresent = (...values: unknown[]): unknown => values.find((value) => value !== null && value !== undefined && value !== '');
+const firstPresent = (...values: unknown[]): unknown =>
+  values.find((value) => value !== null && value !== undefined && value !== '');
 
 const textFromValue = (value: FieldValue): string => {
   if (value === null || value === undefined) return '';
@@ -57,7 +59,9 @@ const textFromValue = (value: FieldValue): string => {
   );
 };
 
-const valuePayload = <TRecord, TRowData>(ctx: TableCellRenderContext<TRecord, TRowData>): FieldValue => ctx.row.cells?.[ctx.column.key]?.value;
+const valuePayload = <TRecord, TRowData>(
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+): FieldValue => ctx.row.cells?.[ctx.column.key]?.value;
 
 const numberCandidate = (value: FieldValue): unknown => {
   if (!isRecord(value)) return value;
@@ -93,25 +97,40 @@ const parseDateValue = (value: unknown): Date | null => {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
-export const renderStringField = <TRecord, TRowData>(ctx: TableCellRenderContext<TRecord, TRowData>) => renderOriginalValue(valuePayload(ctx));
+export const renderStringField = <TRecord, TRowData>(
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+) => renderOriginalValue(valuePayload(ctx));
 
-export const renderNumberField = <TRecord, TRowData>(ctx: TableCellRenderContext<TRecord, TRowData>) => {
+export const renderNumberField = <TRecord, TRowData>(
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+) => {
   const value = valuePayload(ctx);
   const parsed = parseFiniteNumber(value);
   if (parsed === null) return renderOriginalValue(value);
-  const options = isRecord(value) && isRecord(value.formatOptions) ? (value.formatOptions as Intl.NumberFormatOptions) : undefined;
+  const options =
+    isRecord(value) && isRecord(value.formatOptions)
+      ? (value.formatOptions as Intl.NumberFormatOptions)
+      : undefined;
   return new Intl.NumberFormat('en-US', options).format(parsed);
 };
 
-export const renderMoneyField = <TRecord, TRowData>(ctx: TableCellRenderContext<TRecord, TRowData>) => {
+export const renderMoneyField = <TRecord, TRowData>(
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+) => {
   const value = valuePayload(ctx);
   const parsed = parseFiniteNumber(value);
   if (parsed === null) return renderOriginalValue(value);
   const currency = isRecord(value) && typeof value.currency === 'string' ? value.currency : 'USD';
-  return formatCurrency(parsed, currency, isRecord(value) && isRecord(value.formatOptions) ? value.formatOptions : {});
+  return formatCurrency(
+    parsed,
+    currency,
+    isRecord(value) && isRecord(value.formatOptions) ? value.formatOptions : {},
+  );
 };
 
-export const renderDateField = <TRecord, TRowData>(ctx: TableCellRenderContext<TRecord, TRowData>) => {
+export const renderDateField = <TRecord, TRowData>(
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+) => {
   const value = valuePayload(ctx);
   const candidate = isRecord(value) ? firstPresent(value.date, value.value, value.text) : value;
   const date = parseDateValue(candidate);
@@ -123,10 +142,14 @@ export const renderDateField = <TRecord, TRowData>(ctx: TableCellRenderContext<T
   return new Intl.DateTimeFormat('en-US', options).format(date);
 };
 
-export const renderIconField = <TRecord, TRowData>(ctx: TableCellRenderContext<TRecord, TRowData>) => {
+export const renderIconField = <TRecord, TRowData>(
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+) => {
   const value = valuePayload(ctx);
   if (React.isValidElement(value)) return value;
-  const icon = isRecord(value) ? firstPresent(value.icon, value.symbol, value.text, value.label) : value;
+  const icon = isRecord(value)
+    ? firstPresent(value.icon, value.symbol, value.text, value.label)
+    : value;
   const label = isRecord(value) ? textFromValue(value) : '';
   return (
     <span className="inline-flex items-center gap-1.5">
@@ -136,7 +159,9 @@ export const renderIconField = <TRecord, TRowData>(ctx: TableCellRenderContext<T
   );
 };
 
-export const renderAvatarField = <TRecord, TRowData>(ctx: TableCellRenderContext<TRecord, TRowData>) => {
+export const renderAvatarField = <TRecord, TRowData>(
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+) => {
   const value = valuePayload(ctx);
   const data = isRecord(value) ? value : { name: textFromValue(value) };
   const url = firstPresent(data.url, data.src, data.avatarUrl, data.avatar_url);
@@ -158,20 +183,28 @@ export const renderAvatarField = <TRecord, TRowData>(ctx: TableCellRenderContext
   );
 };
 
-export const renderLinkField = <TRecord, TRowData>(ctx: TableCellRenderContext<TRecord, TRowData>) => {
+export const renderLinkField = <TRecord, TRowData>(
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+) => {
   const value = valuePayload(ctx);
   const data = isRecord(value) ? value : { label: textFromValue(value) };
   const href = firstPresent(data.href, data.url);
   const label = textFromValue(data) || (typeof href === 'string' ? href : '');
   if (typeof href !== 'string' || href.trim() === '') return label;
   return (
-    <a href={href} target={data.target === '_blank' ? '_blank' : undefined} rel={data.target === '_blank' ? 'noreferrer' : undefined}>
+    <a
+      href={href}
+      target={data.target === '_blank' ? '_blank' : undefined}
+      rel={data.target === '_blank' ? 'noreferrer' : undefined}
+    >
       {label}
     </a>
   );
 };
 
-export const renderFileField = <TRecord, TRowData>(ctx: TableCellRenderContext<TRecord, TRowData>) => {
+export const renderFileField = <TRecord, TRowData>(
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+) => {
   const value = valuePayload(ctx);
   const data = isRecord(value) ? value : { name: textFromValue(value) };
   const href = firstPresent(data.href, data.url, data.downloadUrl, data.download_url);
@@ -180,19 +213,26 @@ export const renderFileField = <TRecord, TRowData>(ctx: TableCellRenderContext<T
   return <a href={href}>{label}</a>;
 };
 
-export const renderActionsField = <TRecord, TRowData>(ctx: TableCellRenderContext<TRecord, TRowData>) => {
+export const renderActionsField = <TRecord, TRowData>(
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+) => {
   const value = valuePayload(ctx);
   if (Array.isArray(value)) {
     return (
       <span className="inline-flex items-center gap-2">
         {value.map((action, index) => {
-          if (React.isValidElement(action)) return React.cloneElement(action, { key: action.key ?? index } as React.Attributes);
+          if (React.isValidElement(action))
+            return React.cloneElement(action, { key: action.key ?? index } as React.Attributes);
           const data = isRecord(action) ? action : { label: String(action) };
           return (
             <button
               key={String(firstPresent(data.key, data.id, index))}
               type="button"
-              onClick={typeof data.onClick === 'function' ? (data.onClick as React.MouseEventHandler<HTMLButtonElement>) : undefined}
+              onClick={
+                typeof data.onClick === 'function'
+                  ? (data.onClick as React.MouseEventHandler<HTMLButtonElement>)
+                  : undefined
+              }
             >
               {textFromValue(data)}
             </button>
@@ -206,14 +246,19 @@ export const renderActionsField = <TRecord, TRowData>(ctx: TableCellRenderContex
 };
 
 const RootBase = React.forwardRef<HTMLDivElement, TableRootProps<unknown, unknown>>(
-  ({ children, className, style, table: _table, props: _props, registry: _registry, ...rest }, ref) => (
+  (
+    { children, className, style, table: _table, props: _props, registry: _registry, ...rest },
+    ref,
+  ) => (
     <div ref={ref} data-bui-table-root className={className} style={style} {...rest}>
       {children}
     </div>
   ),
 );
 RootBase.displayName = 'TableRoot';
-const Root = RootBase as <TRecord, TRowData = unknown>(props: TableRootProps<TRecord, TRowData>) => React.ReactElement;
+const Root = RootBase as <TRecord, TRowData = unknown>(
+  props: TableRootProps<TRecord, TRowData>,
+) => React.ReactElement;
 
 const Title = <TRecord, TRowData = unknown>({
   children,
@@ -389,12 +434,24 @@ const PaginationRoot = <TRecord, TRowData = unknown>({
   registry: _registry,
   ...rest
 }: TablePaginationRootProps<TRecord, TRowData>) => (
-  <nav className={['bui-table-pagination', className].filter(Boolean).join(' ')} style={style} {...rest}>
+  <nav
+    className={['bui-table-pagination', className].filter(Boolean).join(' ')}
+    style={style}
+    {...rest}
+  >
     {children}
   </nav>
 );
 
-const PaginationItem = ({ page, label, kind = 'page', selected, disabled, onClick, testId }: TablePaginationItemProps) => (
+const PaginationItem = ({
+  page,
+  label,
+  kind = 'page',
+  selected,
+  disabled,
+  onClick,
+  testId,
+}: TablePaginationItemProps) => (
   <button
     type="button"
     className="bui-table-pagination-item"
@@ -471,7 +528,10 @@ const Loading = ({ text = 'Loading...' }: TableLoadingProps) => (
   </div>
 );
 
-export function getDefaultTableRegistry<TRecord, TRowData = unknown>(): TableRegistry<TRecord, TRowData> {
+export function getDefaultTableRegistry<TRecord, TRowData = unknown>(): TableRegistry<
+  TRecord,
+  TRowData
+> {
   const components: TableComponents<TRecord, TRowData> = {
     Root: Root as TableComponents<TRecord, TRowData>['Root'],
     Title,
@@ -521,12 +581,22 @@ export function getDefaultTableRegistry<TRecord, TRowData = unknown>(): TableReg
         const cell = row.cells?.[column.key];
         if (cell?.kind) return null;
         if (cell?.render)
-          return cell.render(cell.value, { record, row, column, rowIndex, columnIndex: 0, registry: getDefaultTableRegistry<TRecord, TRowData>() });
+          return cell.render(cell.value, {
+            record,
+            row,
+            column,
+            rowIndex,
+            columnIndex: 0,
+            registry: getDefaultTableRegistry<TRecord, TRowData>(),
+          });
         const value = cell?.value;
         if (column.render) return column.render(value, record, rowIndex, row);
         return value == null ? null : String(value);
       },
-      headerCell: ({ column }) => (typeof column.title === 'function' ? column.title({ column, sortColumns: [], filters: {} }) : column.title),
+      headerCell: ({ column }) =>
+        typeof column.title === 'function'
+          ? column.title({ column, sortColumns: [], filters: {} })
+          : column.title,
       row: ({ row }) => (typeof row.title === 'function' ? null : row.title),
       empty: Empty,
       loading: (props) => <components.Loading {...props} />,

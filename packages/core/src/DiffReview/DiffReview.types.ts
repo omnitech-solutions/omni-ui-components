@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import type { CodeToken, HighlightFn } from '../Highlight';
 
@@ -18,7 +18,13 @@ export interface DiffChange {
 }
 
 /** Where the proposal is in its life. The caller owns the transitions; this only draws them. */
-export type DiffReviewStatus = 'pending' | 'preview' | 'applied' | 'rejected' | 'reverted' | 'conflicted';
+export type DiffReviewStatus =
+  | 'pending'
+  | 'preview'
+  | 'applied'
+  | 'rejected'
+  | 'reverted'
+  | 'conflicted';
 
 /** `diff`: one tab per change with its unified diff. `checklist`: one selectable row per change (needs more than one change). */
 export type DiffReviewVariant = 'diff' | 'checklist';
@@ -92,7 +98,8 @@ export interface DiffReviewIcons {
   notes?: Partial<Record<DiffReviewStatus, React.ReactNode>>;
 }
 
-export interface DiffReviewProps<C extends DiffChange = DiffChange> extends Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'title'> {
+export interface DiffReviewProps<C extends DiffChange = DiffChange>
+  extends Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'title'> {
   changes: C[];
   status?: DiffReviewStatus;
   variant?: DiffReviewVariant;

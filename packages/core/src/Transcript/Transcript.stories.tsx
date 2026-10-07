@@ -1,27 +1,26 @@
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
 import {
   analysingEntries,
   answeredEntries,
   answeredTurns,
   attachmentTurns,
+  ComposerExample,
+  type ComposerExampleProps,
   ConversationDemo,
-  longHistoryTurns,
-  failedTurns,
-  stoppedTurns,
-  streamingTurns,
   type ConversationDemoProps,
   codeEntries,
-  ComposerExample,
   editedEntries,
+  failedTurns,
+  longHistoryTurns,
   readyEntries,
+  stoppedTurns,
+  streamingTurns,
   TranscriptPanel,
-  userMessageEntries,
-  type ComposerExampleProps,
   type TranscriptPanelProps,
+  userMessageEntries,
 } from 'factories/omni-ui-components/Transcript/Transcript.factories';
+import type * as React from 'react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 /** Story-only extras: the see-through level and the callback every control reports through (Actions panel). */
 type StoryArgs = TranscriptPanelProps;
@@ -43,12 +42,14 @@ const meta: Meta<StoryArgs> = {
   argTypes: {
     entries: {
       control: 'object',
-      description: 'Typed entries: { id, kind: "speech" | "message" | "event", ... }. See the stories for each kind.',
+      description:
+        'Typed entries: { id, kind: "speech" | "message" | "event", ... }. See the stories for each kind.',
     },
     seeThrough: {
       control: 'inline-radio',
       options: [1, 0.6, 0.22],
-      description: 'Story-only: sets --oui-panel-see-through on the stage. Bubble, field and surface backgrounds only; text stays opaque.',
+      description:
+        'Story-only: sets --oui-panel-see-through on the stage. Bubble, field and surface backgrounds only; text stays opaque.',
     },
     composer: { control: 'boolean', description: 'Story-only: show the composer dock.' },
     copiedId: { control: 'text', description: 'Id of the entry shown as copied (controlled).' },
@@ -69,7 +70,12 @@ export const Default: Story = {};
 
 /** Event chips: eye-off for a capture without a question, check-circle for an answered one. Icons are nodes in the entry. */
 export const WithEvents: Story = {
-  args: { entries: [...readyEntries(), ...answeredEntries().map((entry) => ({ ...entry, id: `x-${entry.id}` }))] },
+  args: {
+    entries: [
+      ...readyEntries(),
+      ...answeredEntries().map((entry) => ({ ...entry, id: `x-${entry.id}` })),
+    ],
+  },
 };
 
 /** A merged phrase flagged `edited` shows the quiet tag by the updated time; the last line is interim (dimmed, italic). */
@@ -91,7 +97,9 @@ export const CopyPerBubble: Story = {
     await userEvent.tab();
     await waitFor(() => expect(button).toHaveFocus());
     await userEvent.keyboard('{Enter}');
-    await waitFor(() => expect(within(first).getByRole('button', { name: 'Copied' })).toBeVisible());
+    await waitFor(() =>
+      expect(within(first).getByRole('button', { name: 'Copied' })).toBeVisible(),
+    );
     await expect(args.onAction).toBeDefined();
     await expect(canvas.getAllByRole('button', { name: 'Copied' }).length).toBeGreaterThan(0);
   },
@@ -118,15 +126,25 @@ export const CodeBlocks: Story = {
  * Syntax highlighting: pass a highlighter (`highlight={highlightLines}`: lowlight / highlight.js grammars, tokens painted from
  * the `--oui-code-*` tokens so light and dark follow the theme). Without it the code stays plain, and the grammars are never imported.
  */
-export const HighlightedCodeBlocks: Story = { args: { entries: codeEntries(), fences: true, highlight: true, height: 460 } };
+export const HighlightedCodeBlocks: Story = {
+  args: { entries: codeEntries(), fences: true, highlight: true, height: 460 },
+};
 
 /** Highlighting with a line-number gutter (not selectable, so copy stays clean). */
 export const HighlightedWithLineNumbers: Story = {
-  args: { entries: codeEntries(), fences: true, highlight: true, codeLineNumbers: true, height: 460 },
+  args: {
+    entries: codeEntries(),
+    fences: true,
+    highlight: true,
+    codeLineNumbers: true,
+    height: 460,
+  },
 };
 
 /** The same reply with `wrapCode`: long lines wrap instead of scrolling. */
-export const CodeBlocksWrapped: Story = { args: { entries: codeEntries(), fences: true, wrapCode: true, height: 520, width: 300 } };
+export const CodeBlocksWrapped: Story = {
+  args: { entries: codeEntries(), fences: true, wrapCode: true, height: 520, width: 300 },
+};
 
 /** Without `fences` the same text stays plain: opt in per host. */
 export const FencesOff: Story = { args: { entries: codeEntries(), fences: false, height: 460 } };
@@ -141,13 +159,22 @@ export const SeeThrough: Story = { args: { entries: analysingEntries(), seeThrou
 const composerMeta = {
   args: { initialValue: '', dictating: false },
   argTypes: {
-    initialValue: { control: 'text', description: 'Story-only: text at the start. Empty keeps Send muted.' },
-    dictating: { control: 'boolean', description: 'Story-only: the mic is listening (danger tone, pressed).' },
+    initialValue: {
+      control: 'text',
+      description: 'Story-only: text at the start. Empty keeps Send muted.',
+    },
+    dictating: {
+      control: 'boolean',
+      description: 'Story-only: the mic is listening (danger tone, pressed).',
+    },
     onAction: { action: 'composer', description: 'Story-only: reports send and mic.' },
   },
 };
 
-const ComposerStage: React.FC<ComposerExampleProps & { seeThrough?: number }> = ({ seeThrough = 1, ...props }) => (
+const ComposerStage: React.FC<ComposerExampleProps & { seeThrough?: number }> = ({
+  seeThrough = 1,
+  ...props
+}) => (
   <div className="p-6">
     <div
       className="box-border flex w-[330px] rounded-xl p-3.5"
@@ -226,21 +253,66 @@ const conversationMeta = {
       },
     },
   },
-  args: { turns: answeredTurns(), busy: false, composer: true, readOnly: false, hasEarlier: false, empty: false, approval: false, seeThrough: 1 } as ConversationDemoProps,
+  args: {
+    turns: answeredTurns(),
+    busy: false,
+    composer: true,
+    readOnly: false,
+    hasEarlier: false,
+    empty: false,
+    approval: false,
+    seeThrough: 1,
+  } as ConversationDemoProps,
   argTypes: {
-    turns: { control: 'object', description: '`ConversationTurn[]`: { id, user, answer?, run? }. Build them with `buildTurns(messages, runs)`.' },
-    busy: { control: 'boolean', description: 'A reply is running: the last turn streams (the demo feeds `live.text` word by word).' },
-    waiting: { control: 'boolean', description: 'The run waits for an approval: the last turn is not running.' },
+    turns: {
+      control: 'object',
+      description:
+        '`ConversationTurn[]`: { id, user, answer?, run? }. Build them with `buildTurns(messages, runs)`.',
+    },
+    busy: {
+      control: 'boolean',
+      description:
+        'A reply is running: the last turn streams (the demo feeds `live.text` word by word).',
+    },
+    waiting: {
+      control: 'boolean',
+      description: 'The run waits for an approval: the last turn is not running.',
+    },
     liveText: { control: 'text', description: 'Story-only: the text streamed while busy.' },
     composer: { control: 'boolean', description: 'Story-only: show the Composer dock.' },
-    readOnly: { control: 'boolean', description: 'A shared transcript: no edit, copy, actions, versions, approvals or follow-ups.' },
-    hasEarlier: { control: 'boolean', description: 'Show the `Load previous messages` button (`onLoadEarlier`).' },
+    readOnly: {
+      control: 'boolean',
+      description:
+        'A shared transcript: no edit, copy, actions, versions, approvals or follow-ups.',
+    },
+    hasEarlier: {
+      control: 'boolean',
+      description: 'Show the `Load previous messages` button (`onLoadEarlier`).',
+    },
     empty: { control: 'boolean', description: 'Story-only: no turns, so the `empty` slot shows.' },
-    editingId: { control: 'text', description: '`editingId`: id of the turn whose question is being edited.' },
-    approval: { control: 'boolean', description: 'Story-only: a pending approval after the last turn (`slots.approvalsAfter`).' },
-    seeThrough: { control: 'inline-radio', options: [1, 0.6, 0.22], description: 'Story-only: `--oui-panel-see-through`.' },
-    attachmentVariant: { control: 'inline-radio', options: ['chip', 'card'], description: '`attachmentVariant`: how a sent question shows its files, read-only. `chip` (default) or `card`.' },
-    onAction: { action: 'conversation', description: 'Story-only: reports edit, copy, retry, suggestions, queue and send.' },
+    editingId: {
+      control: 'text',
+      description: '`editingId`: id of the turn whose question is being edited.',
+    },
+    approval: {
+      control: 'boolean',
+      description: 'Story-only: a pending approval after the last turn (`slots.approvalsAfter`).',
+    },
+    seeThrough: {
+      control: 'inline-radio',
+      options: [1, 0.6, 0.22],
+      description: 'Story-only: `--oui-panel-see-through`.',
+    },
+    attachmentVariant: {
+      control: 'inline-radio',
+      options: ['chip', 'card'],
+      description:
+        '`attachmentVariant`: how a sent question shows its files, read-only. `chip` (default) or `card`.',
+    },
+    onAction: {
+      action: 'conversation',
+      description: 'Story-only: reports edit, copy, retry, suggestions, queue and send.',
+    },
   },
   render: (args: ConversationDemoProps) => (
     <div className="p-6">
@@ -268,7 +340,13 @@ export const ConversationStreaming: ConversationStory = {
   ...conversationMeta,
   args: { ...conversationMeta.args, turns: streamingTurns(), busy: true },
   play: async ({ canvasElement }) => {
-    await waitFor(() => expect(canvasElement.querySelector('[data-slot="transcript-cursor"], [data-slot="markdown"] [data-slot="markdown-cursor"]')).not.toBeNull());
+    await waitFor(() =>
+      expect(
+        canvasElement.querySelector(
+          '[data-slot="transcript-cursor"], [data-slot="markdown"] [data-slot="markdown-cursor"]',
+        ),
+      ).not.toBeNull(),
+    );
     await expect(canvasElement.querySelector('[data-status="running"]')).not.toBeNull();
   },
 };
@@ -280,7 +358,11 @@ export const ConversationEditing: ConversationStory = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.hover(canvasElement.querySelector('[data-turn-id="u2"]') as HTMLElement);
-    const editButton = () => within(canvasElement.querySelector('[data-turn-id="u2"]') as HTMLElement).getByRole('button', { name: 'Edit and resend' });
+    const editButton = () =>
+      within(canvasElement.querySelector('[data-turn-id="u2"]') as HTMLElement).getByRole(
+        'button',
+        { name: 'Edit and resend' },
+      );
     await userEvent.click(editButton());
     const box = canvas.getByRole('textbox', { name: 'Edit message' });
     await expect(box).toHaveFocus();
@@ -294,7 +376,10 @@ export const ConversationEditing: ConversationStory = {
     const again = canvas.getByRole('textbox', { name: 'Edit message' });
     await userEvent.clear(again);
     await userEvent.type(again, 'Same question again{Enter}');
-    await expect(args.onAction).toHaveBeenCalledWith('edit-submit', { id: 'u2', text: 'Same question again' });
+    await expect(args.onAction).toHaveBeenCalledWith('edit-submit', {
+      id: 'u2',
+      text: 'Same question again',
+    });
   },
 };
 
@@ -320,14 +405,22 @@ export const ConversationStopped: ConversationStory = {
   ...conversationMeta,
   args: { ...conversationMeta.args, turns: stoppedTurns() },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByText('Stopped. Nothing has been applied.')).toBeVisible();
+    await expect(
+      within(canvasElement).getByText('Stopped. Nothing has been applied.'),
+    ).toBeVisible();
   },
 };
 
 /** The run waits for an approval: the last turn is not running (no caret) and the pending ApprovalCard follows it. */
 export const ConversationApproval: ConversationStory = {
   ...conversationMeta,
-  args: { ...conversationMeta.args, turns: streamingTurns(), busy: true, waiting: true, approval: true },
+  args: {
+    ...conversationMeta.args,
+    turns: streamingTurns(),
+    busy: true,
+    waiting: true,
+    approval: true,
+  },
 };
 
 /** A shared, read-only transcript: no hover actions, no edit, no action bar, no follow-ups. Reading parts stay. */
@@ -344,7 +437,13 @@ export const ConversationReadOnly: ConversationStory = {
 /** A sent question with its files as read-only cards (`attachmentVariant="card"`): thumbnail, name, status line ("Uploading…", "Not sent"), no remove button; choosing one calls `onAttachmentClick`. */
 export const ConversationAttachmentCards: ConversationStory = {
   ...conversationMeta,
-  args: { ...conversationMeta.args, turns: attachmentTurns(), attachmentVariant: 'card', composer: false, onAction: fn() },
+  args: {
+    ...conversationMeta.args,
+    turns: attachmentTurns(),
+    attachmentVariant: 'card',
+    composer: false,
+    onAction: fn(),
+  },
   play: async ({ canvasElement, args }) => {
     const log = within(canvasElement).getByRole('log', { name: 'Conversation' });
     await expect(within(log).queryByRole('button', { name: /^Remove/ })).toBeNull();
@@ -354,14 +453,19 @@ export const ConversationAttachmentCards: ConversationStory = {
   },
 };
 
-export const ConversationEmpty: ConversationStory = { ...conversationMeta, args: { ...conversationMeta.args, empty: true } };
+export const ConversationEmpty: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, empty: true },
+};
 
 /** Older messages exist: `Load previous messages` sits at the top and reports `onLoadEarlier`. */
 export const ConversationLoadEarlier: ConversationStory = {
   ...conversationMeta,
   args: { ...conversationMeta.args, hasEarlier: true, onAction: fn() },
   play: async ({ canvasElement, args }) => {
-    await userEvent.click(within(canvasElement).getByRole('button', { name: 'Load previous messages' }));
+    await userEvent.click(
+      within(canvasElement).getByRole('button', { name: 'Load previous messages' }),
+    );
     await expect(args.onAction).toHaveBeenCalledWith('load-earlier', 'u1');
   },
 };
@@ -369,12 +473,24 @@ export const ConversationLoadEarlier: ConversationStory = {
 /** Three thousand turns, only the newest 40 drawn. `Load previous messages` reveals 40 more and the reading position stays put; the jump pill and stick-to-bottom work as usual. */
 export const ConversationLongHistory: ConversationStory = {
   ...conversationMeta,
-  args: { ...conversationMeta.args, turns: longHistoryTurns(3000), windowSize: 40, windowStep: 40, composer: false, onAction: fn() },
+  args: {
+    ...conversationMeta.args,
+    turns: longHistoryTurns(3000),
+    windowSize: 40,
+    windowStep: 40,
+    composer: false,
+    onAction: fn(),
+  },
   play: async ({ canvasElement }) => {
     await expect(canvasElement.querySelectorAll('[data-slot="transcript-turn"]')).toHaveLength(40);
-    await expect(within(canvasElement).getByRole('button', { name: 'Load previous messages' })).toBeEnabled();
+    await expect(
+      within(canvasElement).getByRole('button', { name: 'Load previous messages' }),
+    ).toBeEnabled();
   },
 };
 
 /** The same chat on a see-through Panel at 22%: bubbles, field and surfaces follow the token. */
-export const ConversationSeeThrough: ConversationStory = { ...conversationMeta, args: { ...conversationMeta.args, seeThrough: 0.22 } };
+export const ConversationSeeThrough: ConversationStory = {
+  ...conversationMeta,
+  args: { ...conversationMeta.args, seeThrough: 0.22 },
+};

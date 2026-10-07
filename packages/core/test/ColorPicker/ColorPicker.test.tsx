@@ -13,14 +13,23 @@ import { ColorPicker } from '@oc-tech/omni-ui-components/ColorPicker';
 
 describe('omni-ui-components/ColorPicker', () => {
   it('renders the swatch trigger + label', () => {
-    render(<ColorPicker data-testid="c" label="Brand color" value="#22c55e" onChange={() => undefined} />);
+    render(
+      <ColorPicker
+        data-testid="c"
+        label="Brand color"
+        value="#22c55e"
+        onChange={() => undefined}
+      />,
+    );
     expect(screen.getByText('Brand color')).toBeInTheDocument();
     expect(screen.getByTestId('c')).toBeInTheDocument();
     expect(screen.getByTestId('c').textContent).toContain('#22c55e');
   });
 
   it('flags aria-invalid on error', () => {
-    render(<ColorPicker data-testid="c" label="t" error="pick a color" onChange={() => undefined} />);
+    render(
+      <ColorPicker data-testid="c" label="t" error="pick a color" onChange={() => undefined} />,
+    );
     expect(screen.getByTestId('c')).toHaveAttribute('aria-invalid', 'true');
   });
 });

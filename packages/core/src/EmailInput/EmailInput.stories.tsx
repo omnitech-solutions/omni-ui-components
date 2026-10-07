@@ -1,11 +1,18 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { EmailInput, type EmailInputProps } from '@oc-tech/omni-ui-components/EmailInput';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const Renderer: React.FC<EmailInputProps> = (args) => {
-  const [value, setValue] = React.useState<string>(typeof args.value === 'string' ? args.value : '');
-  return <EmailInput {...args} value={value} onChange={(next) => setValue(typeof next === 'string' ? next : value)} />;
+  const [value, setValue] = React.useState<string>(
+    typeof args.value === 'string' ? args.value : '',
+  );
+  return (
+    <EmailInput
+      {...args}
+      value={value}
+      onChange={(next) => setValue(typeof next === 'string' ? next : value)}
+    />
+  );
 };
 
 const meta: Meta<typeof EmailInput> = {

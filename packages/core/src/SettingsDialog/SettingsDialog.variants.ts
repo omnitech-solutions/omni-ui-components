@@ -4,7 +4,8 @@ export const settingRowVariants = cva('flex gap-3', {
   variants: {
     tone: {
       plain: '',
-      boxed: 'rounded-xl border border-solid border-[color:var(--oui-panel-border)] bg-[color:var(--oui-panel-bg)] p-3.5',
+      boxed:
+        'rounded-xl border border-solid border-[color:var(--oui-panel-border)] bg-[color:var(--oui-panel-bg)] p-3.5',
       danger:
         'rounded-xl border border-solid border-[color:var(--oui-tone-danger-border)] bg-[color:var(--oui-tone-danger-bg)] p-3.5',
     },

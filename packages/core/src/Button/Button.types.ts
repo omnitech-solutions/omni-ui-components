@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import type { RootProps } from '../lib';
 import type { ButtonTone, ButtonVariantProps } from './Button.variants';
@@ -15,7 +15,9 @@ import type { ButtonTone, ButtonVariantProps } from './Button.variants';
  * <Button variant="default" buttonSize="default" onClick={save}>Save</Button>
  */
 export interface ButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size'>, RootProps, Omit<ButtonVariantProps, 'tone' | 'soft' | 'fillIcon'> {
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size'>,
+    RootProps,
+    Omit<ButtonVariantProps, 'tone' | 'soft' | 'fillIcon'> {
   /** Optional leading icon node. */
   icon?: React.ReactNode;
   /** Optional trailing icon node. */
@@ -49,4 +51,4 @@ export interface ButtonProps
   labelMaxWidth?: number | string;
 }
 
-export type { ButtonVariant, ButtonSize, ButtonTone, ButtonVariantProps } from './Button.variants';
+export type { ButtonSize, ButtonTone, ButtonVariant, ButtonVariantProps } from './Button.variants';

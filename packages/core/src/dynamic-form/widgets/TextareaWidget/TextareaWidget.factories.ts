@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import type { UiSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import type { FormFixture } from '../../DynamicForm/DynamicForm.factories';
 
@@ -20,14 +20,18 @@ const MESSAGE_ZOD_REQUIRED = z.object({
   message: z.string().min(1, "Message can't be blank"),
 }) as unknown as z.ZodType<MessageFormData>;
 
-const fixtureFor = (uiSchema: UiSchema, opts: { initial?: string; required?: boolean } = {}): FormFixture<MessageFormData> => ({
+const fixtureFor = (
+  uiSchema: UiSchema,
+  opts: { initial?: string; required?: boolean } = {},
+): FormFixture<MessageFormData> => ({
   schema: MESSAGE_SCHEMA,
   uiSchema,
   zodSchema: opts.required ? MESSAGE_ZOD_REQUIRED : MESSAGE_ZOD,
   defaults: { message: opts.initial ?? '' },
 });
 
-export const plainMessageFixture = (): FormFixture<MessageFormData> => fixtureFor({ message: { 'ui:widget': 'textarea' } });
+export const plainMessageFixture = (): FormFixture<MessageFormData> =>
+  fixtureFor({ message: { 'ui:widget': 'textarea' } });
 
 export const placeholderMessageFixture = (): FormFixture<MessageFormData> =>
   fixtureFor({
@@ -45,9 +49,14 @@ export const descriptionMessageFixture = (): FormFixture<MessageFormData> =>
     },
   });
 
-export const tallMessageFixture = (): FormFixture<MessageFormData> => fixtureFor({ message: { 'ui:widget': 'textarea', 'ui:options': { rows: 10 } } });
+export const tallMessageFixture = (): FormFixture<MessageFormData> =>
+  fixtureFor({ message: { 'ui:widget': 'textarea', 'ui:options': { rows: 10 } } });
 
 export const prefilledMessageFixture = (): FormFixture<MessageFormData> =>
-  fixtureFor({ message: { 'ui:widget': 'textarea' } }, { initial: 'Hi Ada,\n\nWelcome to Omni. Glad to have you on board.' });
+  fixtureFor(
+    { message: { 'ui:widget': 'textarea' } },
+    { initial: 'Hi Ada,\n\nWelcome to Omni. Glad to have you on board.' },
+  );
 
-export const validationMessageFixture = (): FormFixture<MessageFormData> => fixtureFor({ message: { 'ui:widget': 'textarea' } }, { required: true });
+export const validationMessageFixture = (): FormFixture<MessageFormData> =>
+  fixtureFor({ message: { 'ui:widget': 'textarea' } }, { required: true });

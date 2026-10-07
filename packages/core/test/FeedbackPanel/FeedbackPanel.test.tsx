@@ -1,18 +1,23 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { expectTypeOf } from 'vitest';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
 import { FeedbackPanel, type FeedbackReason } from '@oc-tech/omni-ui-components/FeedbackPanel';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { feedbackPanelPropsFactory } from 'factories/omni-ui-components/FeedbackPanel/FeedbackPanel.factories';
+import { expectTypeOf } from 'vitest';
 
 describe('omni-ui-components/FeedbackPanel', () => {
   it('shows the heading and a pressed-state chip per reason', () => {
     render(<FeedbackPanel {...feedbackPanelPropsFactory({ defaultSelected: ['too-long'] })} />);
     expect(screen.getByRole('group', { name: 'What went wrong?' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Too long' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('button', { name: 'Incorrect' })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: 'Too long' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: 'Incorrect' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 
   it('toggles reasons; Send reports the chosen items in the order chosen, by reference', async () => {
@@ -33,7 +38,13 @@ describe('omni-ui-components/FeedbackPanel', () => {
   it('Cancel calls onCancel; Send can be disabled; labels are config', async () => {
     const onCancel = vi.fn();
     render(
-      <FeedbackPanel {...feedbackPanelPropsFactory({ onCancel, submitDisabled: true, labels: { cancel: 'Abbrechen', title: 'Was war falsch?' } })} />,
+      <FeedbackPanel
+        {...feedbackPanelPropsFactory({
+          onCancel,
+          submitDisabled: true,
+          labels: { cancel: 'Abbrechen', title: 'Was war falsch?' },
+        })}
+      />,
     );
     await userEvent.click(screen.getByRole('button', { name: 'Abbrechen' }));
     expect(onCancel).toHaveBeenCalled();
@@ -43,11 +54,18 @@ describe('omni-ui-components/FeedbackPanel', () => {
 
   it('is controlled by selected ids', () => {
     render(<FeedbackPanel {...feedbackPanelPropsFactory({ selected: ['incorrect'] })} />);
-    expect(screen.getByRole('button', { name: 'Incorrect' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Incorrect' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
   });
 
   it('buttons are not drawn without their callbacks', () => {
-    render(<FeedbackPanel {...feedbackPanelPropsFactory({ onSubmit: undefined, onCancel: undefined })} />);
+    render(
+      <FeedbackPanel
+        {...feedbackPanelPropsFactory({ onSubmit: undefined, onCancel: undefined })}
+      />,
+    );
     expect(screen.queryByRole('button', { name: 'Send feedback' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull();
   });
@@ -67,9 +85,14 @@ describe('omni-ui-components/FeedbackPanel', () => {
 
   it('withNote draws a note field and submit carries the note; without it there is no note key', async () => {
     const onSubmit = vi.fn();
-    const { rerender } = render(<FeedbackPanel {...feedbackPanelPropsFactory({ onSubmit, withNote: true })} />);
+    const { rerender } = render(
+      <FeedbackPanel {...feedbackPanelPropsFactory({ onSubmit, withNote: true })} />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Incorrect' }));
-    await userEvent.type(screen.getByRole('textbox', { name: 'Anything else? (optional)' }), '  wrong answer ');
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Anything else? (optional)' }),
+      '  wrong answer ',
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Send feedback' }));
     expect(onSubmit.mock.calls[0]![0]).toMatchObject({ note: 'wrong answer' });
     rerender(<FeedbackPanel {...feedbackPanelPropsFactory({ onSubmit })} />);

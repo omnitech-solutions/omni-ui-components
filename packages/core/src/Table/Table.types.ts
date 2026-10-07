@@ -1,4 +1,3 @@
-import type * as React from 'react';
 import type {
   ColumnFiltersState,
   ColumnOrderState,
@@ -11,6 +10,7 @@ import type {
   Table as TanStackTable,
   VisibilityState,
 } from '@tanstack/react-table';
+import type * as React from 'react';
 
 export type TableKey = React.Key;
 export type TableSize = 'large' | 'medium' | 'small';
@@ -21,7 +21,17 @@ export type TableAlign = 'left' | 'center' | 'right';
 export type TableFixed = boolean | 'start' | 'end' | 'left' | 'right';
 export type TableBreakpoint = 'sm' | 'md' | 'lg' | 'xl';
 export type TableAction = 'paginate' | 'sort' | 'filter';
-export const ROW_DATA_TYPES = ['string', 'date', 'icon', 'avatar', 'file', 'actions', 'money', 'link', 'number'] as const;
+export const ROW_DATA_TYPES = [
+  'string',
+  'date',
+  'icon',
+  'avatar',
+  'file',
+  'actions',
+  'money',
+  'link',
+  'number',
+] as const;
 export type TableRowDataType = (typeof ROW_DATA_TYPES)[number];
 
 export type TableSemanticDOM =
@@ -76,7 +86,11 @@ export interface TableDataRow<TRecord, TRowData = unknown> {
   data?: TRowData;
   dataIndex?: keyof TRecord | string | string[];
   title?: React.ReactNode | ((info: TableDataRowTitleInfo<TRecord, TRowData>) => React.ReactNode);
-  render?: (record: TRecord, index: number, row: TableDataRow<TRecord, TRowData>) => React.ReactNode;
+  render?: (
+    record: TRecord,
+    index: number,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => React.ReactNode;
   children?: TableDataRow<TRecord, TRowData>[];
   className?: string;
   style?: React.CSSProperties;
@@ -90,7 +104,10 @@ export interface TableDataRow<TRecord, TRowData = unknown> {
   draggable?: boolean;
   editable?: boolean | TableEditableRowConfig<TRecord, TRowData>;
   cells?: Record<string, TableCellOverride<TRecord, TRowData>>;
-  onCell?: (column: TableColumn<TRecord, TRowData>, columnIndex: number) => React.TdHTMLAttributes<HTMLTableCellElement>;
+  onCell?: (
+    column: TableColumn<TRecord, TRowData>,
+    columnIndex: number,
+  ) => React.TdHTMLAttributes<HTMLTableCellElement>;
   onRow?: (record: TRecord, rowIndex: number) => React.HTMLAttributes<HTMLTableRowElement>;
   /** Reserved for future memoized row rendering. The current runtime does not invoke this callback. */
   shouldRowUpdate?: (record: TRecord, prevRecord: TRecord) => boolean;
@@ -163,7 +180,9 @@ export interface TableColumn<TRecord, TRowData = unknown, TValue = unknown> {
   filterResetToDefaultFilteredValue?: boolean;
   defaultSortOrder?: TableSortOrder;
   ellipsis?: boolean | { showTitle?: boolean };
-  filterDropdown?: React.ReactNode | ((props: TableFilterDropdownProps<TRecord, TRowData>) => React.ReactNode);
+  filterDropdown?:
+    | React.ReactNode
+    | ((props: TableFilterDropdownProps<TRecord, TRowData>) => React.ReactNode);
   filtered?: boolean;
   filteredValue?: TableKey[];
   filterIcon?: React.ReactNode | ((filtered: boolean) => React.ReactNode);
@@ -179,7 +198,12 @@ export interface TableColumn<TRecord, TRowData = unknown, TValue = unknown> {
   filterDropdownProps?: TableDropdownProps;
   fixed?: TableFixed;
   key: string;
-  render?: (value: TValue, record: TRecord, index: number, row: TableDataRow<TRecord, TRowData>) => React.ReactNode;
+  render?: (
+    value: TValue,
+    record: TRecord,
+    index: number,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => React.ReactNode;
   responsive?: TableBreakpoint[];
   /** Reserved for future body row-header cells. Body cells currently render as td elements. */
   rowScope?: 'row' | 'rowgroup';
@@ -191,16 +215,25 @@ export interface TableColumn<TRecord, TRowData = unknown, TValue = unknown> {
   sorter?:
     | boolean
     | ((a: TRecord, b: TRecord, sortOrder?: TableSortOrder | null) => number)
-    | { compare?: (a: TRecord, b: TRecord, sortOrder?: TableSortOrder | null) => number; multiple?: number };
+    | {
+        compare?: (a: TRecord, b: TRecord, sortOrder?: TableSortOrder | null) => number;
+        multiple?: number;
+      };
   sortOrder?: TableSortOrder | null;
   sortIcon?: (props: { sortOrder: TableSortOrder | null }) => React.ReactNode;
   title?: React.ReactNode | ((info: TableColumnTitleInfo<TRecord, TRowData>) => React.ReactNode);
   width?: string | number;
   minWidth?: number;
   hidden?: boolean;
-  onCell?: (record: TRecord, rowIndex: number, row: TableDataRow<TRecord, TRowData>) => React.TdHTMLAttributes<HTMLTableCellElement>;
+  onCell?: (
+    record: TRecord,
+    rowIndex: number,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => React.TdHTMLAttributes<HTMLTableCellElement>;
   onFilter?: (value: TableKey, record: TRecord) => boolean;
-  onHeaderCell?: (column: TableColumn<TRecord, TRowData>) => React.ThHTMLAttributes<HTMLTableCellElement>;
+  onHeaderCell?: (
+    column: TableColumn<TRecord, TRowData>,
+  ) => React.ThHTMLAttributes<HTMLTableCellElement>;
   editable?: boolean | TableEditableColumnConfig<TRecord, TRowData>;
   draggable?: boolean;
   children?: TableColumn<TRecord, TRowData>[];
@@ -208,7 +241,17 @@ export interface TableColumn<TRecord, TRowData = unknown, TValue = unknown> {
   /** Declarative row-data type. Routes the cell through the matching
    * `Table.RowData<Name>.tsx` renderer (see Table.RowData.tsx for the
    * shared contract). Combine with `render` to layer additional content. */
-  type?: 'text' | 'number' | 'money' | 'date' | 'icon' | 'avatar' | 'link' | 'file' | 'actions' | (string & {});
+  type?:
+    | 'text'
+    | 'number'
+    | 'money'
+    | 'date'
+    | 'icon'
+    | 'avatar'
+    | 'link'
+    | 'file'
+    | 'actions'
+    | (string & {});
   /** Named icon to render when `type === 'icon'`. */
   icon?: import('./Table.RowDataIcon').RowDataIconName;
 }
@@ -249,7 +292,14 @@ export interface TableAppearance {
   blockBorder?: TableBlockBorder;
 }
 
-export type TablePaginationPlacement = 'topStart' | 'topCenter' | 'topEnd' | 'bottomStart' | 'bottomCenter' | 'bottomEnd' | 'none';
+export type TablePaginationPlacement =
+  | 'topStart'
+  | 'topCenter'
+  | 'topEnd'
+  | 'bottomStart'
+  | 'bottomCenter'
+  | 'bottomEnd'
+  | 'none';
 
 export interface TablePaginationConfig {
   current?: number;
@@ -280,7 +330,13 @@ export interface TableExpandable<TRecord, TRowData = unknown> {
   defaultExpandedRowKeys?: TableKey[];
   expandedRowClassName?: string | ((record: TRecord, index: number, indent: number) => string);
   expandedRowKeys?: TableKey[];
-  expandedRowRender?: (record: TRecord, index: number, indent: number, expanded: boolean, row: TableDataRow<TRecord, TRowData>) => React.ReactNode;
+  expandedRowRender?: (
+    record: TRecord,
+    index: number,
+    indent: number,
+    expanded: boolean,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => React.ReactNode;
   expandIcon?: (props: TableExpandIconProps<TRecord, TRowData>) => React.ReactNode;
   expandRowByClick?: boolean;
   fixed?: boolean | 'left' | 'right';
@@ -307,10 +363,20 @@ export interface TableSelectionAction {
 
 export type TableBulkActionsPlacement = 'left' | 'right';
 
-export interface TableBulkActionsButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'ref'> {
+export interface TableBulkActionsButtonProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'ref'> {
   children?: React.ReactNode;
   /** Matches the Bonsai `components/Button` variant surface. Defaults to `secondary`. */
-  variant?: 'primary' | 'secondary' | 'default' | 'ghost' | 'outline' | 'outline-primary' | 'outline-secondary' | 'danger' | 'outline-danger';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'default'
+    | 'ghost'
+    | 'outline'
+    | 'outline-primary'
+    | 'outline-secondary'
+    | 'danger'
+    | 'outline-danger';
   size?: 'xs' | 'sm' | 'smd' | 'md' | 'lg';
 }
 
@@ -327,7 +393,12 @@ export interface TableBulkActionsRenderContext<TRecord, TRowData = unknown> {
 export interface TableBulkAction<TRecord, TRowData = unknown> {
   key: string;
   label: React.ReactNode;
-  onClick: (ctx: { selectedRowKeys: TableKey[]; selectedRows: TRecord[]; selectedDataRows: TableDataRow<TRecord, TRowData>[]; clear: () => void }) => void;
+  onClick: (ctx: {
+    selectedRowKeys: TableKey[];
+    selectedRows: TRecord[];
+    selectedDataRows: TableDataRow<TRecord, TRowData>[];
+    clear: () => void;
+  }) => void;
   variant?: TableBulkActionsButtonProps['variant'];
   disabled?: boolean;
   icon?: React.ReactNode;
@@ -348,18 +419,41 @@ export interface TableRowSelection<TRecord, TRowData = unknown> {
   columnTitle?: React.ReactNode | ((originalNode: React.ReactNode) => React.ReactNode);
   columnWidth?: string | number;
   fixed?: boolean | 'left' | 'right';
-  getCheckboxProps?: (record: TRecord, row: TableDataRow<TRecord, TRowData>) => React.InputHTMLAttributes<HTMLInputElement>;
+  getCheckboxProps?: (
+    record: TRecord,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => React.InputHTMLAttributes<HTMLInputElement>;
   getTitleCheckboxProps?: () => React.InputHTMLAttributes<HTMLInputElement>;
   hideSelectAll?: boolean;
   preserveSelectedRowKeys?: boolean;
-  renderCell?: (checked: boolean, record: TRecord, index: number, originNode: React.ReactNode, row: TableDataRow<TRecord, TRowData>) => React.ReactNode;
+  renderCell?: (
+    checked: boolean,
+    record: TRecord,
+    index: number,
+    originNode: React.ReactNode,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => React.ReactNode;
   selectedRowKeys?: TableKey[];
   defaultSelectedRowKeys?: TableKey[];
   selections?: TableSelectionAction[] | boolean;
   type?: 'checkbox' | 'radio';
-  onCell?: (record: TRecord, rowIndex: number, row: TableDataRow<TRecord, TRowData>) => React.TdHTMLAttributes<HTMLTableCellElement>;
-  onChange?: (selectedRowKeys: TableKey[], selectedRows: TRecord[], info: { type: 'single' | 'multiple' | 'all' | 'invert' | 'none' }) => void;
-  onSelect?: (record: TRecord, selected: boolean, selectedRows: TRecord[], nativeEvent: Event, row: TableDataRow<TRecord, TRowData>) => void;
+  onCell?: (
+    record: TRecord,
+    rowIndex: number,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => React.TdHTMLAttributes<HTMLTableCellElement>;
+  onChange?: (
+    selectedRowKeys: TableKey[],
+    selectedRows: TRecord[],
+    info: { type: 'single' | 'multiple' | 'all' | 'invert' | 'none' },
+  ) => void;
+  onSelect?: (
+    record: TRecord,
+    selected: boolean,
+    selectedRows: TRecord[],
+    nativeEvent: Event,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => void;
   onSelectAll?: (selected: boolean, selectedRows: TRecord[], changeRows: TRecord[]) => void;
   onSelectInvert?: (selectedRowKeys: TableKey[]) => void;
   onSelectMultiple?: (selected: boolean, selectedRows: TRecord[], changeRows: TRecord[]) => void;
@@ -420,15 +514,30 @@ export interface RowDataEdit<TRecord, TRowData = unknown> {
 
 export interface TableEditableColumnConfig<TRecord, TRowData = unknown> {
   mode: 'cell' | 'row';
-  validate?: (value: unknown, record: TRecord, row: TableDataRow<TRecord, TRowData>) => string | null;
-  onSave?: (value: unknown, record: TRecord, row: TableDataRow<TRecord, TRowData>) => void | Promise<void>;
+  validate?: (
+    value: unknown,
+    record: TRecord,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => string | null;
+  onSave?: (
+    value: unknown,
+    record: TRecord,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => void | Promise<void>;
   renderEditor?: TableCellEditorRenderer<TRecord, TRowData>;
 }
 
 export interface TableEditableRowConfig<TRecord, TRowData = unknown> {
   mode: 'row';
-  initialValues?: (record: TRecord, row: TableDataRow<TRecord, TRowData>) => Record<string, unknown>;
-  onSave?: (values: Record<string, unknown>, record: TRecord, row: TableDataRow<TRecord, TRowData>) => void | Promise<void>;
+  initialValues?: (
+    record: TRecord,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => Record<string, unknown>;
+  onSave?: (
+    values: Record<string, unknown>,
+    record: TRecord,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => void | Promise<void>;
   onCancel?: (record: TRecord, row: TableDataRow<TRecord, TRowData>) => void;
 }
 
@@ -463,8 +572,14 @@ export interface TableAppendColumnContext<TRecord, TRowData = unknown> {
  *   custom `onAppend` callbacks that own the new row/column shape. Setting a
  *   side to `false` disables that side entirely.
  */
-export interface TableExtendableSide<TRecord, TRowData = unknown, TAppended = TableDataRow<TRecord, TRowData>> {
-  onAppend?: (ctx: TableAppendRowContext<TRecord, TRowData>) => TAppended | void | Promise<TAppended | void>;
+export interface TableExtendableSide<
+  TRecord,
+  TRowData = unknown,
+  TAppended = TableDataRow<TRecord, TRowData>,
+> {
+  onAppend?: (
+    ctx: TableAppendRowContext<TRecord, TRowData>,
+  ) => TAppended | void | Promise<TAppended | void>;
 }
 
 export interface TableExtendableConfig<TRecord, TRowData = unknown> {
@@ -479,7 +594,9 @@ export interface TableEditableConfig<TRecord, TRowData = unknown> {
   bodyRows?: boolean;
   appendRowOnTab?: boolean;
   controls?: boolean | TableEditableControlsConfig;
-  onAppendRow?: (ctx: TableAppendRowContext<TRecord, TRowData>) => TableDataRow<TRecord, TRowData> | void | Promise<TableDataRow<TRecord, TRowData> | void>;
+  onAppendRow?: (
+    ctx: TableAppendRowContext<TRecord, TRowData>,
+  ) => TableDataRow<TRecord, TRowData> | void | Promise<TableDataRow<TRecord, TRowData> | void>;
 }
 
 export interface TableChangeExtra<TRecord, TRowData = unknown> {
@@ -491,19 +608,31 @@ export interface TableChangeExtra<TRecord, TRowData = unknown> {
 
 export interface TableRef {
   nativeElement: HTMLDivElement;
-  scrollTo: (config: { index?: number; key?: TableKey; top?: number; offset?: number; align?: 'start' | 'center' | 'end' | 'nearest' }) => void;
+  scrollTo: (config: {
+    index?: number;
+    key?: TableKey;
+    top?: number;
+    offset?: number;
+    align?: 'start' | 'center' | 'end' | 'nearest';
+  }) => void;
 }
 
 export interface TableProps<TRecord, TRowData = unknown> {
   bordered?: boolean;
   theme?: 'auto' | 'light' | 'dark';
   className?: string;
-  classNames?: Partial<Record<TableSemanticDOM, string>> | ((info: { props: TableProps<TRecord, TRowData> }) => Partial<Record<TableSemanticDOM, string>>);
+  classNames?:
+    | Partial<Record<TableSemanticDOM, string>>
+    | ((info: {
+        props: TableProps<TRecord, TRowData>;
+      }) => Partial<Record<TableSemanticDOM, string>>);
   style?: React.CSSProperties;
   testIdPrefix?: string;
   styles?:
     | Partial<Record<TableSemanticDOM, React.CSSProperties>>
-    | ((info: { props: TableProps<TRecord, TRowData> }) => Partial<Record<TableSemanticDOM, React.CSSProperties>>);
+    | ((info: {
+        props: TableProps<TRecord, TRowData>;
+      }) => Partial<Record<TableSemanticDOM, React.CSSProperties>>);
   column?: Partial<TableColumn<TRecord, TRowData>>;
   columns: TableColumn<TRecord, TRowData>[];
   row?: Partial<TableDataRow<TRecord, TRowData>>;
@@ -525,7 +654,9 @@ export interface TableProps<TRecord, TRowData = unknown> {
   loading?: boolean | TableLoadingVariant | TableLoadingProps;
   locale?: TableLocale;
   pagination?: TablePaginationConfig | false;
-  rowClassName?: string | ((record: TRecord, index: number, row: TableDataRow<TRecord, TRowData>) => string);
+  rowClassName?:
+    | string
+    | ((record: TRecord, index: number, row: TableDataRow<TRecord, TRowData>) => string);
   rowSelection?: TableRowSelection<TRecord, TRowData>;
   rowHoverable?: boolean;
   scroll?: TableScrollConfig;
@@ -564,9 +695,20 @@ export interface TableProps<TRecord, TRowData = unknown> {
     extra: TableChangeExtra<TRecord, TRowData>,
   ) => void;
   onStateChange?: (state: TableState) => void;
-  onHeaderRow?: (columns: TableColumn<TRecord, TRowData>[], index: number) => React.HTMLAttributes<HTMLTableRowElement>;
-  onRow?: (record: TRecord, index: number, row: TableDataRow<TRecord, TRowData>) => React.HTMLAttributes<HTMLTableRowElement>;
-  onRowOrderChange?: (keys: TableKey[], rows: TableDataRow<TRecord, TRowData>[], records: TRecord[]) => void;
+  onHeaderRow?: (
+    columns: TableColumn<TRecord, TRowData>[],
+    index: number,
+  ) => React.HTMLAttributes<HTMLTableRowElement>;
+  onRow?: (
+    record: TRecord,
+    index: number,
+    row: TableDataRow<TRecord, TRowData>,
+  ) => React.HTMLAttributes<HTMLTableRowElement>;
+  onRowOrderChange?: (
+    keys: TableKey[],
+    rows: TableDataRow<TRecord, TRowData>[],
+    records: TRecord[],
+  ) => void;
   onColumnOrderChange?: (columnOrder: string[]) => void;
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
 }
@@ -584,12 +726,19 @@ export interface TableRowRenderContext<TRecord, TRowData = unknown> {
   registry: TableRegistry<TRecord, TRowData>;
 }
 
-export type TableCellRenderer<TRecord, TRowData = unknown> = (ctx: TableCellRenderContext<TRecord, TRowData>) => React.ReactNode;
-export type TableHeaderCellRenderer<TRecord, TRowData = unknown> = (ctx: TableHeaderCellRenderContext<TRecord, TRowData>) => React.ReactNode;
-export type TableRowRenderer<TRecord, TRowData = unknown> = (ctx: TableRowRenderContext<TRecord, TRowData>) => React.ReactNode;
+export type TableCellRenderer<TRecord, TRowData = unknown> = (
+  ctx: TableCellRenderContext<TRecord, TRowData>,
+) => React.ReactNode;
+export type TableHeaderCellRenderer<TRecord, TRowData = unknown> = (
+  ctx: TableHeaderCellRenderContext<TRecord, TRowData>,
+) => React.ReactNode;
+export type TableRowRenderer<TRecord, TRowData = unknown> = (
+  ctx: TableRowRenderContext<TRecord, TRowData>,
+) => React.ReactNode;
 export type TableEmptyRenderer = (props: TableEmptyProps) => React.ReactNode;
 export type TableLoadingRenderer = (props: TableLoadingProps) => React.ReactNode;
-export interface TableCellEditorRenderContext<TRecord, TRowData = unknown> extends TableCellRenderContext<TRecord, TRowData> {
+export interface TableCellEditorRenderContext<TRecord, TRowData = unknown>
+  extends TableCellRenderContext<TRecord, TRowData> {
   value: unknown;
   error: string | null;
   mode: 'cell' | 'row';
@@ -599,8 +748,13 @@ export interface TableCellEditorRenderContext<TRecord, TRowData = unknown> exten
   onCancel: () => void;
   onNavigate: (direction: -1 | 1, value?: unknown) => boolean;
 }
-export type TableCellEditorRenderer<TRecord, TRowData = unknown> = (ctx: TableCellEditorRenderContext<TRecord, TRowData>) => React.ReactNode;
-export type TableFieldEditors<TRecord, TRowData = unknown> = Record<string, TableCellEditorRenderer<TRecord, TRowData>>;
+export type TableCellEditorRenderer<TRecord, TRowData = unknown> = (
+  ctx: TableCellEditorRenderContext<TRecord, TRowData>,
+) => React.ReactNode;
+export type TableFieldEditors<TRecord, TRowData = unknown> = Record<
+  string,
+  TableCellEditorRenderer<TRecord, TRowData>
+>;
 
 export interface TableRenderers<TRecord, TRowData = unknown> {
   cell: TableCellRenderer<TRecord, TRowData>;
@@ -619,33 +773,76 @@ export interface TableBaseComponentProps<TRecord, TRowData = unknown> {
   children?: React.ReactNode;
 }
 
-export type TableRootProps<TRecord, TRowData = unknown> = TableBaseComponentProps<TRecord, TRowData> &
+export type TableRootProps<TRecord, TRowData = unknown> = TableBaseComponentProps<
+  TRecord,
+  TRowData
+> &
   React.HTMLAttributes<HTMLDivElement> &
   React.RefAttributes<HTMLDivElement>;
-export type TableTitleProps<TRecord, TRowData = unknown> = TableBaseComponentProps<TRecord, TRowData> & React.HTMLAttributes<HTMLDivElement>;
-export type TableContentProps<TRecord, TRowData = unknown> = TableBaseComponentProps<TRecord, TRowData> & React.HTMLAttributes<HTMLDivElement>;
-export type TableSectionProps<TRecord, TRowData = unknown> = TableBaseComponentProps<TRecord, TRowData> & React.HTMLAttributes<HTMLDivElement>;
-export type TableHeaderWrapperProps<TRecord, TRowData = unknown> = TableBaseComponentProps<TRecord, TRowData> & React.HTMLAttributes<HTMLTableSectionElement>;
-export type TableHeaderRowProps<TRecord, TRowData = unknown> = TableBaseComponentProps<TRecord, TRowData> & React.HTMLAttributes<HTMLTableRowElement>;
-export type TableBodyWrapperProps<TRecord, TRowData = unknown> = TableBaseComponentProps<TRecord, TRowData> & React.HTMLAttributes<HTMLTableSectionElement>;
-export type TableFooterProps<TRecord, TRowData = unknown> = TableBaseComponentProps<TRecord, TRowData> & React.HTMLAttributes<HTMLDivElement>;
-export type TableSummaryProps<TRecord, TRowData = unknown> = TableBaseComponentProps<TRecord, TRowData> & React.HTMLAttributes<HTMLTableSectionElement>;
-export type TablePaginationRootProps<TRecord, TRowData = unknown> = TableBaseComponentProps<TRecord, TRowData> & React.HTMLAttributes<HTMLElement>;
+export type TableTitleProps<TRecord, TRowData = unknown> = TableBaseComponentProps<
+  TRecord,
+  TRowData
+> &
+  React.HTMLAttributes<HTMLDivElement>;
+export type TableContentProps<TRecord, TRowData = unknown> = TableBaseComponentProps<
+  TRecord,
+  TRowData
+> &
+  React.HTMLAttributes<HTMLDivElement>;
+export type TableSectionProps<TRecord, TRowData = unknown> = TableBaseComponentProps<
+  TRecord,
+  TRowData
+> &
+  React.HTMLAttributes<HTMLDivElement>;
+export type TableHeaderWrapperProps<TRecord, TRowData = unknown> = TableBaseComponentProps<
+  TRecord,
+  TRowData
+> &
+  React.HTMLAttributes<HTMLTableSectionElement>;
+export type TableHeaderRowProps<TRecord, TRowData = unknown> = TableBaseComponentProps<
+  TRecord,
+  TRowData
+> &
+  React.HTMLAttributes<HTMLTableRowElement>;
+export type TableBodyWrapperProps<TRecord, TRowData = unknown> = TableBaseComponentProps<
+  TRecord,
+  TRowData
+> &
+  React.HTMLAttributes<HTMLTableSectionElement>;
+export type TableFooterProps<TRecord, TRowData = unknown> = TableBaseComponentProps<
+  TRecord,
+  TRowData
+> &
+  React.HTMLAttributes<HTMLDivElement>;
+export type TableSummaryProps<TRecord, TRowData = unknown> = TableBaseComponentProps<
+  TRecord,
+  TRowData
+> &
+  React.HTMLAttributes<HTMLTableSectionElement>;
+export type TablePaginationRootProps<TRecord, TRowData = unknown> = TableBaseComponentProps<
+  TRecord,
+  TRowData
+> &
+  React.HTMLAttributes<HTMLElement>;
 
 export interface TableHeaderCellProps<TRecord, TRowData = unknown>
-  extends TableBaseComponentProps<TRecord, TRowData>, React.ThHTMLAttributes<HTMLTableCellElement> {
+  extends TableBaseComponentProps<TRecord, TRowData>,
+    React.ThHTMLAttributes<HTMLTableCellElement> {
   column: TableColumn<TRecord, TRowData>;
   columnIndex: number;
 }
 
-export interface TableBodyRowProps<TRecord, TRowData = unknown> extends TableBaseComponentProps<TRecord, TRowData>, React.HTMLAttributes<HTMLTableRowElement> {
+export interface TableBodyRowProps<TRecord, TRowData = unknown>
+  extends TableBaseComponentProps<TRecord, TRowData>,
+    React.HTMLAttributes<HTMLTableRowElement> {
   record: TRecord;
   row: TableDataRow<TRecord, TRowData>;
   rowIndex: number;
 }
 
 export interface TableBodyCellProps<TRecord, TRowData = unknown>
-  extends TableBaseComponentProps<TRecord, TRowData>, React.TdHTMLAttributes<HTMLTableCellElement> {
+  extends TableBaseComponentProps<TRecord, TRowData>,
+    React.TdHTMLAttributes<HTMLTableCellElement> {
   record: TRecord;
   row: TableDataRow<TRecord, TRowData>;
   column: TableColumn<TRecord, TRowData>;
@@ -664,12 +861,14 @@ export interface TablePaginationItemProps {
   testId?: string;
 }
 
-export interface TableSelectionCellProps<TRecord, TRowData = unknown> extends TableBodyCellProps<TRecord, TRowData> {
+export interface TableSelectionCellProps<TRecord, TRowData = unknown>
+  extends TableBodyCellProps<TRecord, TRowData> {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
 }
 
-export interface TableExpandCellProps<TRecord, TRowData = unknown> extends TableBodyCellProps<TRecord, TRowData> {
+export interface TableExpandCellProps<TRecord, TRowData = unknown>
+  extends TableBodyCellProps<TRecord, TRowData> {
   expanded: boolean;
   onExpandedChange: (expanded: boolean) => void;
 }
@@ -708,7 +907,10 @@ export interface TableTemplates<TRecord, TRowData = unknown> {
   Pagination: React.ComponentType<TablePaginationRootProps<TRecord, TRowData>>;
 }
 
-export type TableFields<TRecord, TRowData = unknown> = Record<string, TableCellRenderer<TRecord, TRowData>>;
+export type TableFields<TRecord, TRowData = unknown> = Record<
+  string,
+  TableCellRenderer<TRecord, TRowData>
+>;
 
 export interface TableRegistry<TRecord, TRowData = unknown> {
   components: TableComponents<TRecord, TRowData>;

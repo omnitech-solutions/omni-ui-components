@@ -12,10 +12,20 @@ import { useSortingState } from './useSortingState';
 // Owns every piece of Table state and its prop-sync effects. Returned as
 // a flat bag so TableImpl destructures without threading the slice hooks
 // through every callback.
-export function useTableState<TRecord, TRowData>(rawProps: TableProps<TRecord, TRowData>, columns: TableColumn<TRecord, TRowData>[]) {
+export function useTableState<TRecord, TRowData>(
+  rawProps: TableProps<TRecord, TRowData>,
+  columns: TableColumn<TRecord, TRowData>[],
+) {
   const sortingSlice = useSortingState(columns, rawProps.state, rawProps.defaultState?.sorting);
-  const filterSlice = useFilterState(columns, rawProps.defaultState?.filters ?? rawProps.state?.filters);
-  const expandedSlice = useExpandedState(rawProps.state, rawProps.defaultState?.expanded, rawProps.expandable);
+  const filterSlice = useFilterState(
+    columns,
+    rawProps.defaultState?.filters ?? rawProps.state?.filters,
+  );
+  const expandedSlice = useExpandedState(
+    rawProps.state,
+    rawProps.defaultState?.expanded,
+    rawProps.expandable,
+  );
   const columnLayoutSlice = useColumnLayoutState(rawProps.state, rawProps.defaultState);
   const paginationSlice = usePaginationState(rawProps);
   const selectionSlice = useSelectionState(rawProps.rowSelection);
@@ -30,11 +40,12 @@ export function useTableState<TRecord, TRowData>(rawProps: TableProps<TRecord, T
   const { setExpanded } = expandedSlice;
   const { setPaginationStateValue } = paginationSlice;
   const { setTanStackRowSelection } = selectionSlice;
-  const { setColumnVisibility, setColumnOrder, setColumnSizing, setColumnPinning } = columnLayoutSlice;
+  const { setColumnVisibility, setColumnOrder, setColumnSizing, setColumnPinning } =
+    columnLayoutSlice;
   const propsState = rawProps.state;
 
   React.useEffect(() => {
-    if (propsState && Object.prototype.hasOwnProperty.call(propsState, 'sorting')) setSorting(propsState.sorting ?? []);
+    if (propsState && Object.hasOwn(propsState, 'sorting')) setSorting(propsState.sorting ?? []);
     if (propsState?.filters) setColumnFilters(propsState.filters);
     if (propsState?.expanded) setExpanded(propsState.expanded);
     if (propsState?.pagination) setPaginationStateValue(propsState.pagination);

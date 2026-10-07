@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { DatePickerPrimitive } from '../DatePicker';
 import { TimePickerPrimitive } from '../TimePicker';
 
@@ -46,12 +45,35 @@ const joinIso = (date: string, time: string): string => {
 };
 
 /** Raw date + time pair (no chrome). */
-export const DateTimePickerPrimitive = React.forwardRef<HTMLDivElement, DateTimePickerPrimitiveProps>(
-  ({ id, value = '', onChange, min, max, disabled, required, invalid, readOnly, className, ...rest }, ref) => {
+export const DateTimePickerPrimitive = React.forwardRef<
+  HTMLDivElement,
+  DateTimePickerPrimitiveProps
+>(
+  (
+    {
+      id,
+      value = '',
+      onChange,
+      min,
+      max,
+      disabled,
+      required,
+      invalid,
+      readOnly,
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
     const testId = rest['data-testid'] ?? id;
     const parts = splitIso(value);
     return (
-      <div ref={ref} className={cn('flex w-full gap-2', className)} data-slot="date-time-picker" data-testid={testId}>
+      <div
+        ref={ref}
+        className={cn('flex w-full gap-2', className)}
+        data-slot="date-time-picker"
+        data-testid={testId}
+      >
         <div className="flex-1">
           <DatePickerPrimitive
             id={id ? `${id}-date` : undefined}

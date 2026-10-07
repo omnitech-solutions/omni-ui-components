@@ -1,10 +1,13 @@
-import * as React from 'react';
-
 import { copyText, download, exportFileName, toMarkdown } from 'lib/chat';
 import { useControllableState } from 'lib/use-controllable-state';
+import * as React from 'react';
 import { ActionMenu } from '../ActionMenu/ActionMenu';
 import type { ActionMenuItem, ActionMenuSection } from '../ActionMenu/ActionMenu.types';
-import { DEFAULT_MESSAGE_MENU_LABELS, type MessageItem, type MessageMenuProps } from './MessageMenu.types';
+import {
+  DEFAULT_MESSAGE_MENU_LABELS,
+  type MessageItem,
+  type MessageMenuProps,
+} from './MessageMenu.types';
 
 /**
  * The per-message menu, built on `ActionMenu`: copy, hide / unhide, delete behind an inline "cannot be undone" confirm,
@@ -63,10 +66,12 @@ export function MessageMenu<T extends MessageItem = MessageItem>({
       return;
     }
     const id = window.requestAnimationFrame(() => {
-      const menu = Array.from(document.querySelectorAll<HTMLElement>('[data-slot="action-menu"][role="menu"]')).find(
-        (node) => node.getAttribute('aria-label') === l.menu,
-      );
-      menu?.querySelector<HTMLElement>(`[data-item-id="${confirming ? 'cancel' : 'delete'}"]`)?.focus();
+      const menu = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-slot="action-menu"][role="menu"]'),
+      ).find((node) => node.getAttribute('aria-label') === l.menu);
+      menu
+        ?.querySelector<HTMLElement>(`[data-item-id="${confirming ? 'cancel' : 'delete'}"]`)
+        ?.focus();
     });
     return () => window.cancelAnimationFrame(id);
   }, [confirming]);
@@ -85,7 +90,12 @@ export function MessageMenu<T extends MessageItem = MessageItem>({
   }
   if (onHide) {
     const hidden = Boolean(message.hidden);
-    rows.push({ id: 'hide', label: hidden ? l.unhide : l.hide, icon: hidden ? icons?.unhide : icons?.hide, onSelect: () => void onHide(message) });
+    rows.push({
+      id: 'hide',
+      label: hidden ? l.unhide : l.hide,
+      icon: hidden ? icons?.unhide : icons?.hide,
+      onSelect: () => void onHide(message),
+    });
   }
   if (conversation) {
     rows.push({
@@ -93,7 +103,11 @@ export function MessageMenu<T extends MessageItem = MessageItem>({
       label: l.download,
       icon: icons?.download,
       onSelect: () =>
-        download(exportFileName(conversation.title, 'md'), toMarkdown(conversation.title, conversation.messages, l.export), 'text/markdown'),
+        download(
+          exportFileName(conversation.title, 'md'),
+          toMarkdown(conversation.title, conversation.messages, l.export),
+          'text/markdown',
+        ),
     });
   }
   if (onDelete) {

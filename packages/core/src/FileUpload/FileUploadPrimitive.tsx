@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { Upload, X } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Upload, X } from 'lucide-react';
+import * as React from 'react';
 
 export interface FileUploadPrimitiveProps {
   id?: string;
@@ -30,7 +29,26 @@ const formatBytes = (bytes: number): string => {
 
 /** Raw drop-zone + file list (no chrome). */
 export const FileUploadPrimitive = React.forwardRef<HTMLInputElement, FileUploadPrimitiveProps>(
-  ({ id, name, value, onChange, onError, accept, multiple = false, maxSize, maxFiles, disabled, required, invalid, readOnly, className, ...rest }, ref) => {
+  (
+    {
+      id,
+      name,
+      value,
+      onChange,
+      onError,
+      accept,
+      multiple = false,
+      maxSize,
+      maxFiles,
+      disabled,
+      required,
+      invalid,
+      readOnly,
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
     const testId = rest['data-testid'] ?? id;
     const inputRef = React.useRef<HTMLInputElement | null>(null);
     const [dragOver, setDragOver] = React.useState(false);
@@ -82,7 +100,9 @@ export const FileUploadPrimitive = React.forwardRef<HTMLInputElement, FileUpload
           )}
         >
           <Upload aria-hidden="true" className="size-6 text-[var(--oui-foreground-muted)]" />
-          <div className="text-sm font-medium text-[var(--oui-foreground)]">{dragOver ? 'Drop to upload' : 'Click to browse or drag files here'}</div>
+          <div className="text-sm font-medium text-[var(--oui-foreground)]">
+            {dragOver ? 'Drop to upload' : 'Click to browse or drag files here'}
+          </div>
           <div className="text-xs text-[var(--oui-foreground-muted)]">
             {accept ? `Accepted: ${accept}` : 'Any file type'}
             {maxSize ? ` · up to ${formatBytes(maxSize)}` : ''}
@@ -91,7 +111,8 @@ export const FileUploadPrimitive = React.forwardRef<HTMLInputElement, FileUpload
             ref={(el) => {
               inputRef.current = el;
               if (typeof ref === 'function') ref(el);
-              else if (ref && typeof ref === 'object') (ref as React.MutableRefObject<HTMLInputElement | null>).current = el;
+              else if (ref && typeof ref === 'object')
+                (ref as React.MutableRefObject<HTMLInputElement | null>).current = el;
             }}
             id={id}
             name={name}
@@ -117,8 +138,12 @@ export const FileUploadPrimitive = React.forwardRef<HTMLInputElement, FileUpload
                 key={`${file.name}-${file.size}-${file.lastModified}`}
                 className="flex items-center justify-between gap-2 rounded-md border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] px-3 py-2 text-sm"
               >
-                <span className="min-w-0 flex-1 truncate text-[var(--oui-foreground)]">{file.name}</span>
-                <span className="shrink-0 text-xs tabular-nums text-[var(--oui-foreground-muted)]">{formatBytes(file.size)}</span>
+                <span className="min-w-0 flex-1 truncate text-[var(--oui-foreground)]">
+                  {file.name}
+                </span>
+                <span className="shrink-0 text-xs tabular-nums text-[var(--oui-foreground-muted)]">
+                  {formatBytes(file.size)}
+                </span>
                 {!disabled && !readOnly ? (
                   <button
                     type="button"

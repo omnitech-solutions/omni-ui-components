@@ -1,8 +1,7 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { useRovingTabindex } from '../lib/use-roving-tabindex';
+import * as React from 'react';
 import { IconButton } from '../IconButton';
+import { useRovingTabindex } from '../lib/use-roving-tabindex';
 import type { MessageActionButton, MessageActionsProps } from './MessageActions.types';
 
 /**
@@ -71,7 +70,10 @@ const MessageActionsImpl = React.forwardRef<HTMLDivElement, MessageActionsProps>
           ),
         )}
         {meta ? (
-          <span data-slot="message-actions-meta" className="ms-1.5 text-xs text-[color:var(--oui-panel-meta-fg)]">
+          <span
+            data-slot="message-actions-meta"
+            className="ms-1.5 text-xs text-[color:var(--oui-panel-meta-fg)]"
+          >
             {meta}
           </span>
         ) : null}
@@ -82,6 +84,8 @@ const MessageActionsImpl = React.forwardRef<HTMLDivElement, MessageActionsProps>
 MessageActionsImpl.displayName = 'MessageActions';
 
 /** Generic over the action item type: an extended action reaches its `onClick` by reference. */
-export const MessageActions = MessageActionsImpl as unknown as <T extends MessageActionButton = MessageActionButton>(
+export const MessageActions = MessageActionsImpl as unknown as <
+  T extends MessageActionButton = MessageActionButton,
+>(
   props: MessageActionsProps<T> & React.RefAttributes<HTMLDivElement>,
 ) => React.ReactElement | null;

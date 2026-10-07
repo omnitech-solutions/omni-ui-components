@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import {
+  stepsChecklistItems,
+  stepsVariants,
+} from 'factories/omni-ui-components/Steps/Steps.factories';
 import { Steps, type StepsProps } from './Steps';
-import { stepsChecklistItems, stepsVariants } from 'factories/omni-ui-components/Steps/Steps.factories';
 
 const meta = {
   title: 'omni-ui-components/Steps',
@@ -20,9 +23,13 @@ const meta = {
   },
 } satisfies Meta<typeof Steps>;
 export default meta;
-export const Default: StoryObj<typeof meta> = { args: { items: [{ title: 'Question' }, { title: 'Solution' }, { title: 'Tests' }] } };
+export const Default: StoryObj<typeof meta> = {
+  args: { items: [{ title: 'Question' }, { title: 'Solution' }, { title: 'Tests' }] },
+};
 
-export const Checklist: StoryObj<typeof meta> = { args: { variant: 'checklist', items: stepsChecklistItems() } };
+export const Checklist: StoryObj<typeof meta> = {
+  args: { variant: 'checklist', items: stepsChecklistItems() },
+};
 
 export const ChecklistStates: StoryObj<typeof meta> = {
   render: () => (

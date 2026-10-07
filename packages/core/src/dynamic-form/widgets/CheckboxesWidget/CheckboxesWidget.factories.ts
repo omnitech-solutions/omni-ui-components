@@ -1,5 +1,5 @@
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { z } from 'zod';
-import type { UiSchema, RJSFSchema } from '@rjsf/utils';
 
 import type { FormFixture } from '../../DynamicForm/DynamicForm.factories';
 
@@ -28,19 +28,25 @@ const CHANNELS_SCHEMA: RJSFSchema = {
   },
 };
 
-const CHANNELS_ZOD = z.object({ channels: z.array(z.string()) }) as unknown as z.ZodType<ChannelsFormData>;
+const CHANNELS_ZOD = z.object({
+  channels: z.array(z.string()),
+}) as unknown as z.ZodType<ChannelsFormData>;
 const CHANNELS_ZOD_REQUIRED = z.object({
   channels: z.array(z.string()).min(1, 'Pick at least one channel'),
 }) as unknown as z.ZodType<ChannelsFormData>;
 
-const fixtureFor = (uiSchema: UiSchema, opts: { initial?: string[]; required?: boolean } = {}): FormFixture<ChannelsFormData> => ({
+const fixtureFor = (
+  uiSchema: UiSchema,
+  opts: { initial?: string[]; required?: boolean } = {},
+): FormFixture<ChannelsFormData> => ({
   schema: CHANNELS_SCHEMA,
   uiSchema,
   zodSchema: opts.required ? CHANNELS_ZOD_REQUIRED : CHANNELS_ZOD,
   defaults: { channels: opts.initial ?? [] },
 });
 
-export const plainChannelsFixture = (): FormFixture<ChannelsFormData> => fixtureFor({ channels: { 'ui:widget': 'checkboxes' } });
+export const plainChannelsFixture = (): FormFixture<ChannelsFormData> =>
+  fixtureFor({ channels: { 'ui:widget': 'checkboxes' } });
 
 export const inlineChannelsFixture = (): FormFixture<ChannelsFormData> =>
   fixtureFor({ channels: { 'ui:widget': 'checkboxes', 'ui:options': { inline: true } } });
@@ -63,7 +69,8 @@ export const descriptionsChannelsFixture = (): FormFixture<ChannelsFormData> =>
 export const prefilledChannelsFixture = (): FormFixture<ChannelsFormData> =>
   fixtureFor({ channels: { 'ui:widget': 'checkboxes' } }, { initial: ['email', 'push'] });
 
-export const validationChannelsFixture = (): FormFixture<ChannelsFormData> => fixtureFor({ channels: { 'ui:widget': 'checkboxes' } }, { required: true });
+export const validationChannelsFixture = (): FormFixture<ChannelsFormData> =>
+  fixtureFor({ channels: { 'ui:widget': 'checkboxes' } }, { required: true });
 
 export const disabledOptionChannelsFixture = (): FormFixture<ChannelsFormData> =>
   fixtureFor({ channels: { 'ui:widget': 'checkboxes', 'ui:enumDisabled': ['slack'] } });

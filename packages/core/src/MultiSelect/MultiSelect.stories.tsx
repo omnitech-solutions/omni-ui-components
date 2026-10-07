@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { MultiSelect, type MultiSelectProps } from '@oc-tech/omni-ui-components/MultiSelect';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const OPTIONS = [
   { value: 'react', label: 'React' },
@@ -31,7 +30,14 @@ const meta: Meta<typeof MultiSelect> = {
   title: 'omni-ui-components/MultiSelect',
   component: MultiSelect,
   tags: ['autodocs'],
-  args: { id: 'demo-multi', label: 'Stack', options: OPTIONS, value: [], placeholder: 'Pick a few…', wrapperClassName: 'mx-auto max-w-md' },
+  args: {
+    id: 'demo-multi',
+    label: 'Stack',
+    options: OPTIONS,
+    value: [],
+    placeholder: 'Pick a few…',
+    wrapperClassName: 'mx-auto max-w-md',
+  },
   argTypes: { onChange: { action: 'changed' } },
   render: (args) => <Renderer {...(args as MultiSelectProps)} />,
 };

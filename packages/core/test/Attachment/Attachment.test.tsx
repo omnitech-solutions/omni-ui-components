@@ -1,22 +1,28 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { fireEvent, render, renderHook, screen, act } from '@testing-library/react';
 
 import {
-  acceptAttribute,
   AttachmentCard,
   AttachmentDropzone,
-  AttachmentStrip,
-  DEFAULT_ATTACHMENT_TYPES,
   type AttachmentItem,
+  AttachmentStrip,
+  acceptAttribute,
+  DEFAULT_ATTACHMENT_TYPES,
   useAttachmentDrop,
   useAttachmentList,
   useFilePreviews,
   validateFiles,
 } from '@oc-tech/omni-ui-components/Attachment';
 import { Composer } from '@oc-tech/omni-ui-components/Composer';
-import { manyItems, planForFile, readyItems, statusItems, useAttachmentUploads } from 'factories/omni-ui-components/Attachment/Attachment.factories';
+import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  manyItems,
+  planForFile,
+  readyItems,
+  statusItems,
+  useAttachmentUploads,
+} from 'factories/omni-ui-components/Attachment/Attachment.factories';
+import type * as React from 'react';
 
 const file = (name: string, type = 'text/plain', size = 10) => {
   const f = new File(['x'], name, { type });
@@ -26,20 +32,30 @@ const file = (name: string, type = 'text/plain', size = 10) => {
 
 describe('omni-ui-components/Attachment', () => {
   describe('validateFiles', () => {
-    it('passes allowed files', () => expect(validateFiles([file('a.txt'), file('b.pdf', 'application/pdf')])).toBeNull());
+    it('passes allowed files', () =>
+      expect(validateFiles([file('a.txt'), file('b.pdf', 'application/pdf')])).toBeNull());
     it('refuses more than maxFiles (default 10), counting existing', () => {
-      expect(validateFiles(Array.from({ length: 11 }, (_, i) => file(`${i}.txt`)))?.code).toBe('too-many');
+      expect(validateFiles(Array.from({ length: 11 }, (_, i) => file(`${i}.txt`)))?.code).toBe(
+        'too-many',
+      );
       expect(validateFiles([file('a.txt')], { existing: 10 })?.code).toBe('too-many');
       expect(validateFiles([file('a.txt')], { existing: 9 })).toBeNull();
     });
     it('refuses a file over maxBytes (default 10 MB) and a wrong type', () => {
-      expect(validateFiles([file('big.pdf', 'application/pdf', 10485761)])).toMatchObject({ code: 'too-large' });
+      expect(validateFiles([file('big.pdf', 'application/pdf', 10485761)])).toMatchObject({
+        code: 'too-large',
+      });
       expect(validateFiles([file('ok.pdf', 'application/pdf', 10485760)])).toBeNull();
-      expect(validateFiles([file('x.zip', 'application/zip')])).toMatchObject({ code: 'type', file: { name: 'x.zip' } });
+      expect(validateFiles([file('x.zip', 'application/zip')])).toMatchObject({
+        code: 'type',
+        file: { name: 'x.zip' },
+      });
     });
     it('one allowlist: the accept attribute is the same list', () => {
       expect(acceptAttribute()).toBe(DEFAULT_ATTACHMENT_TYPES.join(','));
-      expect(validateFiles([file('a.png', 'image/png')], { accept: ['text/plain'] })?.code).toBe('type');
+      expect(validateFiles([file('a.png', 'image/png')], { accept: ['text/plain'] })?.code).toBe(
+        'type',
+      );
     });
   });
 
@@ -66,24 +82,53 @@ describe('omni-ui-components/Attachment', () => {
       expect(screen.queryByRole('button')).toBeNull();
     });
     it('uploading: progress bar, upload text, remove disabled', () => {
-      render(<AttachmentCard item={{ id: '1', name: 'a.pdf', status: 'uploading', progress: 62 }} onRemove={() => undefined} />);
+      render(
+        <AttachmentCard
+          item={{ id: '1', name: 'a.pdf', status: 'uploading', progress: 62 }}
+          onRemove={() => undefined}
+        />,
+      );
       expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '62');
       expect(screen.getByText('Uploading…')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Remove a.pdf' })).toBeDisabled();
     });
     it('failed: shows the error, extracting says so, strings come from labels', () => {
-      const { rerender } = render(<AttachmentCard item={{ id: '1', name: 'a.pdf', status: 'failed', error: 'Bad PDF' }} />);
+      const { rerender } = render(
+        <AttachmentCard item={{ id: '1', name: 'a.pdf', status: 'failed', error: 'Bad PDF' }} />,
+      );
       expect(screen.getByText('Bad PDF')).toBeInTheDocument();
-      rerender(<AttachmentCard item={{ id: '1', name: 'a.pdf', status: 'extracting' }} labels={{ extracting: 'Lecture…' }} />);
+      rerender(
+        <AttachmentCard
+          item={{ id: '1', name: 'a.pdf', status: 'extracting' }}
+          labels={{ extracting: 'Lecture…' }}
+        />,
+      );
       expect(screen.getByText('Lecture…')).toBeInTheDocument();
     });
     it('readOnly and chip have no remove button; previewUrl renders a thumbnail; kindIcons stand in for a missing icon', () => {
-      const { rerender } = render(<AttachmentCard item={{ id: '1', name: 'a.png', previewUrl: 'data:image/png;base64,AA' }} onRemove={() => undefined} readOnly />);
+      const { rerender } = render(
+        <AttachmentCard
+          item={{ id: '1', name: 'a.png', previewUrl: 'data:image/png;base64,AA' }}
+          onRemove={() => undefined}
+          readOnly
+        />,
+      );
       expect(screen.queryByRole('button')).toBeNull();
       expect(document.querySelector('img')).toHaveAttribute('src', 'data:image/png;base64,AA');
-      rerender(<AttachmentCard item={{ id: '1', name: 'a.png' }} variant="chip" onRemove={() => undefined} />);
+      rerender(
+        <AttachmentCard
+          item={{ id: '1', name: 'a.png' }}
+          variant="chip"
+          onRemove={() => undefined}
+        />,
+      );
       expect(screen.queryByRole('button')).toBeNull();
-      rerender(<AttachmentCard item={{ id: '1', name: 'a.md', kind: 'file' }} kindIcons={{ file: <i data-testid="k" /> }} />);
+      rerender(
+        <AttachmentCard
+          item={{ id: '1', name: 'a.md', kind: 'file' }}
+          kindIcons={{ file: <i data-testid="k" /> }}
+        />,
+      );
       expect(screen.getByTestId('k')).toBeInTheDocument();
     });
   });
@@ -113,7 +158,11 @@ describe('omni-ui-components/Attachment', () => {
           {(drop) => <textarea aria-label="t" onPaste={drop.onPaste} />}
         </AttachmentDropzone>,
       );
-      return { onFiles, onReject, zone: document.querySelector('[data-slot="attachment-dropzone"]') as HTMLElement };
+      return {
+        onFiles,
+        onReject,
+        zone: document.querySelector('[data-slot="attachment-dropzone"]') as HTMLElement,
+      };
     };
     const dt = (files: File[]) => ({ dataTransfer: { types: ['Files'], files } });
 
@@ -132,7 +181,17 @@ describe('omni-ui-components/Attachment', () => {
     });
     it('dragleave inside the container rect keeps the overlay; outside ends it', () => {
       const { zone } = setup();
-      zone.getBoundingClientRect = () => ({ left: 0, top: 0, right: 100, bottom: 100, width: 100, height: 100, x: 0, y: 0, toJSON: () => ({}) });
+      zone.getBoundingClientRect = () => ({
+        left: 0,
+        top: 0,
+        right: 100,
+        bottom: 100,
+        width: 100,
+        height: 100,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      });
       fireEvent.dragEnter(zone, dt([file('a.txt')]));
       fireEvent(zone, new MouseEvent('dragleave', { bubbles: true, clientX: 50, clientY: 50 }));
       expect(screen.getByText('Drop files here…')).toBeInTheDocument();
@@ -220,7 +279,9 @@ describe('omni-ui-components/Attachment', () => {
       const revoke = vi.fn();
       Object.assign(URL, { createObjectURL: create, revokeObjectURL: revoke });
       const image = file('a.png', 'image/png');
-      const { result, rerender, unmount } = renderHook(({ files }) => useFilePreviews(files), { initialProps: { files: [image, file('b.txt')] } });
+      const { result, rerender, unmount } = renderHook(({ files }) => useFilePreviews(files), {
+        initialProps: { files: [image, file('b.txt')] },
+      });
       expect(create).toHaveBeenCalledTimes(1);
       expect(result.current.get(image)).toBe('blob:1');
       act(() => rerender({ files: [] }));
@@ -234,14 +295,17 @@ describe('omni-ui-components/Attachment', () => {
 
     it('the default picker accept attribute is exactly the default validation list', () => {
       expect(picked(acceptAttribute())).toEqual([...DEFAULT_ATTACHMENT_TYPES]);
-      for (const type of DEFAULT_ATTACHMENT_TYPES) expect(validateFiles([file('f', type)])).toBeNull();
+      for (const type of DEFAULT_ATTACHMENT_TYPES)
+        expect(validateFiles([file('f', type)])).toBeNull();
       expect(validateFiles([file('f.zip', 'application/zip')])?.code).toBe('type');
     });
 
     it('useAttachmentDrop: inputProps.accept, a dropped file and a pasted file all follow the same custom list', () => {
       const onFiles = vi.fn();
       const onReject = vi.fn();
-      const { result } = renderHook(() => useAttachmentDrop({ accept: allowed, onFiles, onReject }));
+      const { result } = renderHook(() =>
+        useAttachmentDrop({ accept: allowed, onFiles, onReject }),
+      );
       expect(picked(result.current.inputProps.accept)).toEqual(allowed);
       // Every type the picker offers is accepted when added by any route.
       for (const type of allowed) result.current.addFiles([file('ok', type)]);
@@ -251,16 +315,28 @@ describe('omni-ui-components/Attachment', () => {
       result.current.addFiles([file('x.md', 'text/markdown')]);
       expect(onReject).toHaveBeenCalledWith(expect.objectContaining({ code: 'type' }));
       const preventDefault = vi.fn();
-      result.current.onPaste({ clipboardData: { files: [file('x.md', 'text/markdown')] }, preventDefault } as never);
+      result.current.onPaste({
+        clipboardData: { files: [file('x.md', 'text/markdown')] },
+        preventDefault,
+      } as never);
       expect(preventDefault).not.toHaveBeenCalled();
       expect(onFiles).toHaveBeenCalledTimes(allowed.length);
     });
 
     it('Composer: its hidden picker input carries the same accept as validation', () => {
-      const { container, rerender } = render(<Composer value="" onChange={() => {}} onFiles={() => {}} />);
+      const { container, rerender } = render(
+        <Composer value="" onChange={() => {}} onFiles={() => {}} />,
+      );
       const input = () => container.querySelector('input[type="file"]') as HTMLInputElement;
       expect(picked(input().getAttribute('accept'))).toEqual([...DEFAULT_ATTACHMENT_TYPES]);
-      rerender(<Composer value="" onChange={() => {}} onFiles={() => {}} fileLimits={{ accept: allowed }} />);
+      rerender(
+        <Composer
+          value=""
+          onChange={() => {}}
+          onFiles={() => {}}
+          fileLimits={{ accept: allowed }}
+        />,
+      );
       expect(picked(input().getAttribute('accept'))).toEqual(allowed);
     });
   });
@@ -272,7 +348,11 @@ describe('omni-ui-components/Attachment', () => {
       vi.useFakeTimers();
       const { result } = renderHook(() => useAttachmentUploads());
       act(() => result.current.add([file('cv.pdf', 'application/pdf')]));
-      expect(result.current.items[0]).toMatchObject({ name: 'cv.pdf', status: 'uploading', progress: 0 });
+      expect(result.current.items[0]).toMatchObject({
+        name: 'cv.pdf',
+        status: 'uploading',
+        progress: 0,
+      });
       act(() => void vi.advanceTimersByTime(600));
       expect(result.current.items[0].progress).toBe(50);
       act(() => void vi.advanceTimersByTime(600));
@@ -295,12 +375,19 @@ describe('omni-ui-components/Attachment', () => {
 
     it('an extraction failure carries its error text; remove is refused while uploading but works once failed', () => {
       vi.useFakeTimers();
-      const { result } = renderHook(() => useAttachmentUploads({ plan: (f) => (f.name === 'x.pdf' ? { failAt: 'extract' } : planForFile(f)) }));
+      const { result } = renderHook(() =>
+        useAttachmentUploads({
+          plan: (f) => (f.name === 'x.pdf' ? { failAt: 'extract' } : planForFile(f)),
+        }),
+      );
       act(() => result.current.add([file('x.pdf', 'application/pdf')]));
       act(() => result.current.remove(result.current.items[0]));
       expect(result.current.items).toHaveLength(1);
       act(() => void vi.advanceTimersByTime(1900));
-      expect(result.current.items[0]).toMatchObject({ status: 'failed', error: 'Could not read this file' });
+      expect(result.current.items[0]).toMatchObject({
+        status: 'failed',
+        error: 'Could not read this file',
+      });
       act(() => result.current.remove(result.current.items[0]));
       expect(result.current.items).toHaveLength(0);
     });

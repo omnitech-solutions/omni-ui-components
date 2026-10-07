@@ -1,5 +1,5 @@
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { z } from 'zod';
-import type { UiSchema, RJSFSchema } from '@rjsf/utils';
 
 import type { FormFixture } from '../../DynamicForm/DynamicForm.factories';
 
@@ -15,9 +15,14 @@ const PAGES_SCHEMA: RJSFSchema = {
   },
 };
 
-const PAGES_ZOD = z.object({ pages: z.number().int().min(1).max(50) }) as unknown as z.ZodType<PageCountFormData>;
+const PAGES_ZOD = z.object({
+  pages: z.number().int().min(1).max(50),
+}) as unknown as z.ZodType<PageCountFormData>;
 
-const fixtureFor = (uiSchema: UiSchema, opts: { initial?: number } = {}): FormFixture<PageCountFormData> => ({
+const fixtureFor = (
+  uiSchema: UiSchema,
+  opts: { initial?: number } = {},
+): FormFixture<PageCountFormData> => ({
   schema: PAGES_SCHEMA,
   uiSchema,
   zodSchema: PAGES_ZOD,

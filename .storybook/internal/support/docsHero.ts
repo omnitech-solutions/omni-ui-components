@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 export interface DocsHeroSegmentOverride {
   className?: string;
@@ -15,11 +15,15 @@ export const affixDocsHeroPreset: DocsHeroPreset = {
   heroPillClassName: 'border-[var(--color-primary)] [&>span+span]:border-l-[var(--color-primary)]',
   heroNameSegment: {
     className: 'text-white',
-    style: { background: 'color-mix(in srgb, var(--color-primary) 72%, var(--color-background) 28%)' },
+    style: {
+      background: 'color-mix(in srgb, var(--color-primary) 72%, var(--color-background) 28%)',
+    },
   },
   heroSignatureSegment: {
     className: '',
-    style: { background: 'color-mix(in srgb, var(--color-primary) 22%, var(--color-background) 78%)' },
+    style: {
+      background: 'color-mix(in srgb, var(--color-primary) 22%, var(--color-background) 78%)',
+    },
   },
 };
 
@@ -29,16 +33,28 @@ export function resolveDocsHeroPreset(overrides?: {
   heroSignatureSegment?: DocsHeroSegmentOverride;
 }): DocsHeroPreset {
   return {
-    heroPillClassName: [affixDocsHeroPreset.heroPillClassName, overrides?.heroPillClassName ?? ''].filter(Boolean).join(' '),
+    heroPillClassName: [affixDocsHeroPreset.heroPillClassName, overrides?.heroPillClassName ?? '']
+      .filter(Boolean)
+      .join(' '),
     heroNameSegment: {
-      className: [affixDocsHeroPreset.heroNameSegment.className ?? '', overrides?.heroNameSegment?.className ?? ''].filter(Boolean).join(' '),
+      className: [
+        affixDocsHeroPreset.heroNameSegment.className ?? '',
+        overrides?.heroNameSegment?.className ?? '',
+      ]
+        .filter(Boolean)
+        .join(' '),
       style: {
         ...affixDocsHeroPreset.heroNameSegment.style,
         ...overrides?.heroNameSegment?.style,
       },
     },
     heroSignatureSegment: {
-      className: [affixDocsHeroPreset.heroSignatureSegment.className ?? '', overrides?.heroSignatureSegment?.className ?? ''].filter(Boolean).join(' '),
+      className: [
+        affixDocsHeroPreset.heroSignatureSegment.className ?? '',
+        overrides?.heroSignatureSegment?.className ?? '',
+      ]
+        .filter(Boolean)
+        .join(' '),
       style: {
         ...affixDocsHeroPreset.heroSignatureSegment.style,
         ...overrides?.heroSignatureSegment?.style,

@@ -1,11 +1,16 @@
-import * as React from 'react';
-import { Check, Search } from 'lucide-react';
-
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '../components/ui/command';
 import { cn } from 'lib/utils';
-import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { InputPrimitive } from '../Input/InputPrimitive';
+import { Check, Search } from 'lucide-react';
+import * as React from 'react';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from '../components/ui/command';
 import type { InputProps } from '../Input';
+import { InputPrimitive } from '../Input/InputPrimitive';
+import { FieldShell, useFieldChrome } from '../lib/FieldShell';
 
 export interface AutoCompleteOption {
   value: string;
@@ -59,7 +64,11 @@ export function AutoComplete({
   const filtered = React.useMemo(() => {
     const query = value.trim().toLowerCase();
     if (!query) return options;
-    return options.filter((option: AutoCompleteOption) => option.value.toLowerCase().includes(query) || optionText(option).toLowerCase().includes(query));
+    return options.filter(
+      (option: AutoCompleteOption) =>
+        option.value.toLowerCase().includes(query) ||
+        optionText(option).toLowerCase().includes(query),
+    );
   }, [options, value]);
 
   React.useEffect(() => {
@@ -98,7 +107,10 @@ export function AutoComplete({
     >
       <div ref={rootRef} className="relative">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-[var(--oui-foreground-muted)]" aria-hidden="true" />
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-[var(--oui-foreground-muted)]"
+            aria-hidden="true"
+          />
           <InputPrimitive
             {...props}
             ref={inputRef}
@@ -171,7 +183,10 @@ export function AutoComplete({
                           selected && 'font-medium text-foreground',
                         )}
                       >
-                        <Check className={cn('mr-2 h-4 w-4', selected ? 'opacity-100' : 'opacity-0')} aria-hidden="true" />
+                        <Check
+                          className={cn('mr-2 h-4 w-4', selected ? 'opacity-100' : 'opacity-0')}
+                          aria-hidden="true"
+                        />
                         <span>{option.label ?? option.value}</span>
                       </CommandItem>
                     );

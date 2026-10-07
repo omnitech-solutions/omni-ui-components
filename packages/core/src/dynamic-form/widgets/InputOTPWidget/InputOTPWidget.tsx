@@ -1,14 +1,13 @@
-import * as React from 'react';
-import type { WidgetProps } from '@rjsf/utils';
-
 import { InputOTPPrimitive } from '@oc-tech/omni-ui-components';
+import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF InputOTP widget — one-time-code grid. */
 export const InputOTPWidget = (props: WidgetProps) => {
   const { id, value, disabled, readonly, rawErrors, required, options, schema } = props;
   const { onChange } = useStableRjsfCallbacks<string>(props, (next) => next);
-  const length = (options?.length as number | undefined) ?? (schema.maxLength as number | undefined) ?? 6;
+  const length =
+    (options?.length as number | undefined) ?? (schema.maxLength as number | undefined) ?? 6;
   return (
     <InputOTPPrimitive
       id={id}

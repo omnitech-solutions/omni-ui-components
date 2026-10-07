@@ -1,16 +1,16 @@
-import * as React from 'react';
 import { Slot, Slottable } from '@radix-ui/react-slot';
-import { LoaderCircle } from 'lucide-react';
-
 import { cn } from 'lib/utils';
-import { buttonVariants } from './Button.variants';
+import { LoaderCircle } from 'lucide-react';
+import * as React from 'react';
 import type { ButtonProps } from './Button.types';
+import { buttonVariants } from './Button.variants';
 
 /** macOS modifier glyph → `aria-keyshortcuts` token. */
 const KEY_ARIA: Record<string, string> = { '⌘': 'Meta', '⌥': 'Alt', '⇧': 'Shift', '⌃': 'Control' };
 
 /** `['⌘','⇧','S']` → `"Meta+Shift+S"` (omitted when a key has no known token). */
-const toAriaKeyShortcuts = (keys: string[]): string => keys.map((k) => KEY_ARIA[k] ?? (k.length === 1 ? k.toUpperCase() : k)).join('+');
+const toAriaKeyShortcuts = (keys: string[]): string =>
+  keys.map((k) => KEY_ARIA[k] ?? (k.length === 1 ? k.toUpperCase() : k)).join('+');
 
 /**
  * Omni Button — namespaced wrapper over the shadcn Button shape, with
@@ -65,7 +65,10 @@ const ButtonInner = React.forwardRef<HTMLButtonElement, ButtonProps>(
         setTruncatedLabel(undefined);
         return;
       }
-      const measure = () => setTruncatedLabel(el.scrollWidth > el.clientWidth ? (el.textContent ?? undefined) : undefined);
+      const measure = () =>
+        setTruncatedLabel(
+          el.scrollWidth > el.clientWidth ? (el.textContent ?? undefined) : undefined,
+        );
       measure();
       if (typeof ResizeObserver === 'undefined') return;
       const observer = new ResizeObserver(measure);
@@ -73,7 +76,11 @@ const ButtonInner = React.forwardRef<HTMLButtonElement, ButtonProps>(
       return () => observer.disconnect();
     }, [labelMaxWidth, children]);
 
-    const leading = loading ? <LoaderCircle data-slot="button-spinner" aria-hidden="true" className="animate-spin" /> : icon;
+    const leading = loading ? (
+      <LoaderCircle data-slot="button-spinner" aria-hidden="true" className="animate-spin" />
+    ) : (
+      icon
+    );
     const maxWidth = typeof labelMaxWidth === 'number' ? `${labelMaxWidth}px` : labelMaxWidth;
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -87,7 +94,11 @@ const ButtonInner = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const shortcutNode =
       shortcut && shortcut.length > 0 ? (
-        <span data-slot="button-shortcut" aria-hidden="true" className="ml-1 font-mono text-[11px] leading-none opacity-70">
+        <span
+          data-slot="button-shortcut"
+          aria-hidden="true"
+          className="ml-1 font-mono text-[11px] leading-none opacity-70"
+        >
           {shortcut.join('')}
         </span>
       ) : null;
@@ -109,7 +120,8 @@ const ButtonInner = React.forwardRef<HTMLButtonElement, ButtonProps>(
       'data-loading': loading ? 'true' : undefined,
       'aria-busy': loading ? true : undefined,
       'aria-pressed': pressed,
-      'aria-keyshortcuts': shortcut && shortcut.length > 0 ? toAriaKeyShortcuts(shortcut) : undefined,
+      'aria-keyshortcuts':
+        shortcut && shortcut.length > 0 ? toAriaKeyShortcuts(shortcut) : undefined,
       title: title ?? truncatedLabel,
       className: cn(buttonVariants({ variant, buttonSize, tone, soft, fillIcon }), className),
       onClick: handleClick,

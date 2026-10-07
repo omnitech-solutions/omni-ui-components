@@ -1,7 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Button } from '@oc-tech/omni-ui-components/Button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@oc-tech/omni-ui-components/Card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@oc-tech/omni-ui-components/Card';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Card> = {
   title: 'omni-ui-components/Card',

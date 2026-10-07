@@ -1,9 +1,13 @@
-import * as React from 'react';
+import { useControllableState } from 'lib/use-controllable-state';
 
 import { cn } from 'lib/utils';
-import { useControllableState } from 'lib/use-controllable-state';
+import * as React from 'react';
 import type { ThinkingLabels, ThinkingProps } from './Thinking.types';
-import { thinkingBodyClasses, thinkingButtonClasses, thinkingSpinnerClasses } from './Thinking.variants';
+import {
+  thinkingBodyClasses,
+  thinkingButtonClasses,
+  thinkingSpinnerClasses,
+} from './Thinking.variants';
 
 /** English strings of {@link Thinking}. */
 export const DEFAULT_THINKING_LABELS: ThinkingLabels = {
@@ -24,7 +28,20 @@ export const DEFAULT_THINKING_LABELS: ThinkingLabels = {
  */
 export const Thinking = React.forwardRef<HTMLDivElement, ThinkingProps>(
   (
-    { text, streaming = false, seconds, open, defaultOpen = false, onOpenChange, icon, spinner, chevron, labels: labelOverrides, className, ...rest },
+    {
+      text,
+      streaming = false,
+      seconds,
+      open,
+      defaultOpen = false,
+      onOpenChange,
+      icon,
+      spinner,
+      chevron,
+      labels: labelOverrides,
+      className,
+      ...rest
+    },
     ref,
   ) => {
     const labels = { ...DEFAULT_THINKING_LABELS, ...labelOverrides };
@@ -52,7 +69,13 @@ export const Thinking = React.forwardRef<HTMLDivElement, ThinkingProps>(
           onClick={() => setExpanded(!expanded)}
         >
           {streaming ? (
-            (spinner ?? <span aria-hidden="true" data-slot="thinking-spinner" className={thinkingSpinnerClasses} />)
+            (spinner ?? (
+              <span
+                aria-hidden="true"
+                data-slot="thinking-spinner"
+                className={thinkingSpinnerClasses}
+              />
+            ))
           ) : icon ? (
             <span aria-hidden="true" className="inline-flex">
               {icon}
@@ -60,7 +83,13 @@ export const Thinking = React.forwardRef<HTMLDivElement, ThinkingProps>(
           ) : null}
           <span>{heading}</span>
           {chevron ? (
-            <span aria-hidden="true" className={cn('inline-flex transition-transform motion-reduce:transition-none', expanded && 'rotate-180')}>
+            <span
+              aria-hidden="true"
+              className={cn(
+                'inline-flex transition-transform motion-reduce:transition-none',
+                expanded && 'rotate-180',
+              )}
+            >
               {chevron}
             </span>
           ) : null}

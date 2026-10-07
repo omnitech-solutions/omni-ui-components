@@ -1,8 +1,20 @@
-import * as React from 'react';
-import { createRoot } from 'react-dom/client';
 import {
-  Alert, Badge, Button, Card, Checkbox, Composer, IconButton, Input, Panel, Segmented, Select, SplitButton, Table, Tag,
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  Composer,
+  IconButton,
+  Input,
+  Panel,
+  Segmented,
+  Select,
+  SplitButton,
+  Table,
+  Tag,
 } from '@oc-tech/omni-ui-components';
+import { createRoot } from 'react-dom/client';
 import { invoiceColumns, invoiceLines } from '../../src/Table/Table.factories';
 
 import '@oc-tech/omni-ui-components/styles.css';
@@ -11,7 +23,10 @@ const theme = new URLSearchParams(location.search).get('theme');
 if (theme) document.documentElement.setAttribute('data-theme', theme);
 
 const glyph = <span aria-hidden>*</span>;
-const options = [{ value: 'a', label: 'One' }, { value: 'b', label: 'Two' }];
+const options = [
+  { value: 'a', label: 'One' },
+  { value: 'b', label: 'Two' },
+];
 
 // A spread of library components that wrap native controls or use border utilities. isolation.mjs compares every computed
 // property of every element here with the host stylesheet absent and present (in `@layer host`): they must be identical.
@@ -33,8 +48,13 @@ createRoot(document.getElementById('library-root')!).render(
     <Segmented aria-label="Control" appearance="control" options={options} defaultValue="a" />
     <Alert message="Alert" />
     <Card>Card body</Card>
-    <Panel title="Panel"><div>Body</div></Panel>
-    <SplitButton main={{ label: 'Main', icon: glyph, onClick: () => undefined } as never} menu={{ sections: [{ items: [{ id: 'x', label: 'X' }] }] } as never} />
+    <Panel title="Panel">
+      <div>Body</div>
+    </Panel>
+    <SplitButton
+      main={{ label: 'Main', icon: glyph, onClick: () => undefined } as never}
+      menu={{ sections: [{ items: [{ id: 'x', label: 'X' }] }] } as never}
+    />
     <Table columns={invoiceColumns} dataSource={invoiceLines} rowKey="id" />
     <Composer value="" onChange={() => undefined} onSubmit={() => undefined} />
   </div>,

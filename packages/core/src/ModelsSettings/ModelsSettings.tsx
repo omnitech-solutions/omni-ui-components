@@ -1,12 +1,11 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { Button } from '../Button';
 import { InputPrimitive } from '../Input';
 import type { ModelInfo } from '../ModelPicker/ModelPicker.types';
 import { SettingRow } from '../SettingsDialog/SettingRow';
-import { modelsStatusVariants } from './ModelsSettings.variants';
 import type { ModelsSettingsLabels, ModelsSettingsProps } from './ModelsSettings.types';
+import { modelsStatusVariants } from './ModelsSettings.variants';
 
 export const DEFAULT_MODELS_SETTINGS_LABELS: ModelsSettingsLabels = {
   endpoint: 'Endpoint',
@@ -46,7 +45,12 @@ export const ModelsSettings = <M extends ModelInfo = ModelInfo>({
 }: ModelsSettingsProps<M>) => {
   const labels = { ...DEFAULT_MODELS_SETTINGS_LABELS, ...labelOverrides };
   const endpointId = React.useId();
-  const statusText = status === 'connected' ? labels.connected(models.length) : status === 'checking' ? labels.checking : labels.disconnected;
+  const statusText =
+    status === 'connected'
+      ? labels.connected(models.length)
+      : status === 'checking'
+        ? labels.checking
+        : labels.disconnected;
   return (
     <div data-slot="models-settings" className={cn('flex flex-col gap-4', className)}>
       {endpoint ? (
@@ -54,7 +58,12 @@ export const ModelsSettings = <M extends ModelInfo = ModelInfo>({
           <InputPrimitive id={endpointId} readOnly value={endpoint} className="font-mono" />
         </SettingRow>
       ) : null}
-      <div data-slot="models-status" data-status={status} role="status" className="flex items-center gap-2 text-[13px]">
+      <div
+        data-slot="models-status"
+        data-status={status}
+        role="status"
+        className="flex items-center gap-2 text-[13px]"
+      >
         <span aria-hidden="true" className={modelsStatusVariants({ status })} />
         {statusText}
       </div>
@@ -68,7 +77,13 @@ export const ModelsSettings = <M extends ModelInfo = ModelInfo>({
           {models.map((model) => {
             const meta = renderModelMeta
               ? renderModelMeta(model)
-              : [model.parameters, model.contextWindow ? labels.context(formatTokens(model.contextWindow)) : undefined, model.description]
+              : [
+                  model.parameters,
+                  model.contextWindow
+                    ? labels.context(formatTokens(model.contextWindow))
+                    : undefined,
+                  model.description,
+                ]
                   .filter(Boolean)
                   .join(' · ');
             return (
@@ -87,7 +102,11 @@ export const ModelsSettings = <M extends ModelInfo = ModelInfo>({
                 ) : null}
                 <div className="min-w-0 flex-1 leading-snug">
                   <div className="truncate text-[13.5px] font-medium">{model.name}</div>
-                  {meta ? <div className="truncate text-[12px] text-[color:var(--oui-panel-meta-fg)]">{meta}</div> : null}
+                  {meta ? (
+                    <div className="truncate text-[12px] text-[color:var(--oui-panel-meta-fg)]">
+                      {meta}
+                    </div>
+                  ) : null}
                 </div>
                 {model.tags?.map((tag) => (
                   <span
@@ -100,12 +119,20 @@ export const ModelsSettings = <M extends ModelInfo = ModelInfo>({
               </li>
             );
           })}
-          {models.length === 0 ? <li className="px-3 py-4 text-[13px] text-[color:var(--oui-panel-meta-fg)]">{labels.empty}</li> : null}
+          {models.length === 0 ? (
+            <li className="px-3 py-4 text-[13px] text-[color:var(--oui-panel-meta-fg)]">
+              {labels.empty}
+            </li>
+          ) : null}
         </ul>
       </div>
       {onAddProvider ? (
         <div data-slot="models-providers">
-          <SettingRow tone="boxed" title={labels.providersTitle} description={labels.providersDescription}>
+          <SettingRow
+            tone="boxed"
+            title={labels.providersTitle}
+            description={labels.providersDescription}
+          >
             <Button variant="outline" icon={addProviderIcon} onClick={() => void onAddProvider()}>
               {labels.addProvider}
             </Button>

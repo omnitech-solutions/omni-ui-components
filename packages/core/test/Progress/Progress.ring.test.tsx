@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Progress } from '@oc-tech/omni-ui-components/Progress';
+import { render, screen } from '@testing-library/react';
 import { progressRingVariants } from 'factories/omni-ui-components/Progress/Progress.factories';
 
 const TONES = ['neutral', 'accent', 'success', 'warning', 'danger', 'dim'] as const;
@@ -82,7 +82,10 @@ describe('omni-ui-components/Progress ring', () => {
   it('a decorative (aria-hidden) ring carries no progressbar role', () => {
     const { container } = render(<Progress shape="ring" aria-hidden="true" />);
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-    expect(container.querySelector('[data-slot="progress-ring"]')).toHaveAttribute('aria-hidden', 'true');
+    expect(container.querySelector('[data-slot="progress-ring"]')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    );
   });
 
   it('renders every factory ring variant', () => {

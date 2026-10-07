@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { PanelShell } from '@oc-tech/omni-ui-components/PanelShell';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import * as React from 'react';
 
 const Harness = () => {
   const [open, setOpen] = React.useState(false);

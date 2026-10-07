@@ -1,23 +1,23 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen, within } from '@testing-library/react';
-import { Check, Copy } from 'lucide-react';
 
 import { Panel } from '@oc-tech/omni-ui-components/Panel';
 import { Transcript, type TranscriptEntry } from '@oc-tech/omni-ui-components/Transcript';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   analysingEntries,
   ComposerExample,
   editedEntries,
   readyEntries,
+  TranscriptPanel,
   transcriptPropsFactory,
   transcriptVariants,
-  TranscriptPanel,
 } from 'factories/omni-ui-components/Transcript/Transcript.factories';
+import { Check, Copy } from 'lucide-react';
 
 const slot = (name: string) => document.querySelector(`[data-slot="${name}"]`) as HTMLElement;
-const slots = (name: string) => Array.from(document.querySelectorAll(`[data-slot="${name}"]`)) as HTMLElement[];
+const slots = (name: string) =>
+  Array.from(document.querySelectorAll(`[data-slot="${name}"]`)) as HTMLElement[];
 
 describe('omni-ui-components/Transcript', () => {
   describe('entry kinds', () => {
@@ -25,14 +25,27 @@ describe('omni-ui-components/Transcript', () => {
       render(<Transcript {...transcriptPropsFactory({ entries: readyEntries() })} />);
       const speech = slots('transcript-speech');
       expect(speech).toHaveLength(2);
-      expect(within(speech[0]).getByText('Mic · 08:21')).toHaveClass('text-[color:var(--oui-tone-success-fg)]');
+      expect(within(speech[0]).getByText('Mic · 08:21')).toHaveClass(
+        'text-[color:var(--oui-tone-success-fg)]',
+      );
       expect(within(speech[0]).getByText(/Love to hear why/)).toBeInTheDocument();
     });
 
     it('the label tone is data', () => {
-      const entries: TranscriptEntry[] = [{ id: 'x', kind: 'speech', speaker: 'Interviewer', tone: 'accent', time: '09:00', text: 'Hi' }];
+      const entries: TranscriptEntry[] = [
+        {
+          id: 'x',
+          kind: 'speech',
+          speaker: 'Interviewer',
+          tone: 'accent',
+          time: '09:00',
+          text: 'Hi',
+        },
+      ];
       render(<Transcript entries={entries} />);
-      expect(screen.getByText('Interviewer · 09:00')).toHaveClass('text-[color:var(--oui-tone-accent-fg)]');
+      expect(screen.getByText('Interviewer · 09:00')).toHaveClass(
+        'text-[color:var(--oui-tone-accent-fg)]',
+      );
     });
 
     it('renders your own message right-aligned at most 85% wide, without a label', () => {
@@ -72,7 +85,8 @@ describe('omni-ui-components/Transcript', () => {
   });
 
   describe('copy', () => {
-    const props = (overrides = {}) => transcriptPropsFactory({ entries: analysingEntries(), ...overrides });
+    const props = (overrides = {}) =>
+      transcriptPropsFactory({ entries: analysingEntries(), ...overrides });
 
     it('has no copy control without onCopy, or without a copy icon', () => {
       const { rerender } = render(<Transcript {...props()} />);
@@ -82,10 +96,19 @@ describe('omni-ui-components/Transcript', () => {
     });
 
     it('gives each bubble (not events) a ghost copy control named by copyLabel, hidden until hover or focus', () => {
-      render(<Transcript {...props({ entries: readyEntries(), onCopy: () => undefined, copyLabel: 'Copy text' })} />);
+      render(
+        <Transcript
+          {...props({ entries: readyEntries(), onCopy: () => undefined, copyLabel: 'Copy text' })}
+        />,
+      );
       const buttons = screen.getAllByRole('button', { name: 'Copy text' });
       expect(buttons).toHaveLength(2);
-      expect(buttons[0]).toHaveClass('opacity-0', 'group-hover:opacity-100', 'group-focus-within:opacity-100', 'select-none');
+      expect(buttons[0]).toHaveClass(
+        'opacity-0',
+        'group-hover:opacity-100',
+        'group-focus-within:opacity-100',
+        'select-none',
+      );
       expect(slot('transcript-event').querySelector('button')).toBeNull();
     });
 
@@ -97,16 +120,28 @@ describe('omni-ui-components/Transcript', () => {
       await userEvent.keyboard('{Enter}');
       expect(onCopy).toHaveBeenLastCalledWith(analysingEntries()[0]);
       await userEvent.click(screen.getAllByRole('button', { name: 'Copy' })[1]);
-      expect(onCopy).toHaveBeenLastCalledWith(expect.objectContaining({ id: 'b', kind: 'message' }));
+      expect(onCopy).toHaveBeenLastCalledWith(
+        expect.objectContaining({ id: 'b', kind: 'message' }),
+      );
     });
 
     it('swaps the label and icon to Copied for copiedId only (controlled, no timer)', () => {
-      const { rerender } = render(<Transcript {...props({ onCopy: () => undefined, copiedId: 'b', copiedIcon: <Check data-testid="done" /> })} />);
+      const { rerender } = render(
+        <Transcript
+          {...props({
+            onCopy: () => undefined,
+            copiedId: 'b',
+            copiedIcon: <Check data-testid="done" />,
+          })}
+        />,
+      );
       expect(screen.getAllByRole('button', { name: 'Copy' })).toHaveLength(1);
       const copied = screen.getByRole('button', { name: 'Copied' });
       expect(copied).toHaveAttribute('data-copied', 'true');
       expect(within(copied).getByTestId('done')).toBeInTheDocument();
-      rerender(<Transcript {...props({ onCopy: () => undefined, copiedId: null, copiedLabel: 'Done' })} />);
+      rerender(
+        <Transcript {...props({ onCopy: () => undefined, copiedId: null, copiedLabel: 'Done' })} />,
+      );
       expect(screen.queryByRole('button', { name: 'Copied' })).toBeNull();
     });
 
@@ -167,14 +202,23 @@ describe('omni-ui-components/Input as a composer (variant panel + actions)', () 
   it('renders the field and the actions slot in one row', () => {
     render(<ComposerExample />);
     const row = slot('input-row');
-    expect(within(row).getByRole('textbox', { name: 'Message' })).toHaveAttribute('data-variant', 'panel');
-    expect(within(slot('input-actions')).getAllByRole('button').map((b) => b.getAttribute('aria-label'))).toEqual(['Dictate', 'Send']);
+    expect(within(row).getByRole('textbox', { name: 'Message' })).toHaveAttribute(
+      'data-variant',
+      'panel',
+    );
+    expect(
+      within(slot('input-actions'))
+        .getAllByRole('button')
+        .map((b) => b.getAttribute('aria-label')),
+    ).toEqual(['Dictate', 'Send']);
   });
 
   it('follows the see-through token on the field background only', () => {
     render(<ComposerExample />);
     const field = screen.getByRole('textbox', { name: 'Message' });
-    expect(field.className).toContain('color-mix(in_srgb,var(--oui-panel-dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)');
+    expect(field.className).toContain(
+      'color-mix(in_srgb,var(--oui-panel-dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)',
+    );
     expect(field).toHaveClass('text-[var(--oui-foreground)]');
   });
 
@@ -218,6 +262,12 @@ describe('omni-ui-components/Input as a composer (variant panel + actions)', () 
 });
 
 it('a Copy icon is just a node: any element works', () => {
-  render(<Transcript entries={analysingEntries()} onCopy={() => undefined} copyIcon={<Copy data-testid="c" />} />);
+  render(
+    <Transcript
+      entries={analysingEntries()}
+      onCopy={() => undefined}
+      copyIcon={<Copy data-testid="c" />}
+    />,
+  );
   expect(screen.getAllByTestId('c')).toHaveLength(2);
 });

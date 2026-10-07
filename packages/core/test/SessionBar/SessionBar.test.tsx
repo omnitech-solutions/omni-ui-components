@@ -1,11 +1,14 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen, waitFor, within } from '@testing-library/react';
 
 import { SessionBar } from '@oc-tech/omni-ui-components/SessionBar';
 import { StatusClock } from '@oc-tech/omni-ui-components/StatusClock';
-import { SessionBarDemo, sessionBarExamples, sessionBarPropsFactory } from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  SessionBarDemo,
+  sessionBarExamples,
+  sessionBarPropsFactory,
+} from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
 import { RecordIcon } from 'factories/omni-ui-components/StatusClock/StatusClock.factories';
 
 const bar = () => screen.getByRole('toolbar', { name: 'Session controls' });
@@ -27,10 +30,19 @@ describe('omni-ui-components/SessionBar', () => {
   it('live: Pause session (outline, filled icon) and End session (outlined red), no Resume', () => {
     render(<SessionBar {...sessionBarPropsFactory()} />);
     const pause = screen.getByRole('button', { name: 'Pause session' });
-    expect(pause).toHaveClass('border', 'border-[color:var(--oui-session-pause-border)]', 'bg-transparent', '[&_svg]:fill-current');
+    expect(pause).toHaveClass(
+      'border',
+      'border-[color:var(--oui-session-pause-border)]',
+      'bg-transparent',
+      '[&_svg]:fill-current',
+    );
     expect(screen.queryByRole('button', { name: 'Resume session' })).toBeNull();
     const end = screen.getByRole('button', { name: 'End session' });
-    expect(end).toHaveClass('border-[color:var(--oui-tone-danger-border)]', 'bg-transparent', 'text-[color:var(--oui-tone-danger-fg)]');
+    expect(end).toHaveClass(
+      'border-[color:var(--oui-tone-danger-border)]',
+      'bg-transparent',
+      'text-[color:var(--oui-tone-danger-fg)]',
+    );
   });
 
   it('paused: Resume session (green solid, filled icon) takes the Pause slot', () => {
@@ -47,7 +59,12 @@ describe('omni-ui-components/SessionBar', () => {
   });
 
   it('labels and icons come from config', () => {
-    render(<SessionBar pause={{ label: 'Pause', icon: <i data-testid="p" /> }} end={{ label: 'Stop', icon: <i data-testid="e" /> }} />);
+    render(
+      <SessionBar
+        pause={{ label: 'Pause', icon: <i data-testid="p" /> }}
+        end={{ label: 'Stop', icon: <i data-testid="e" /> }}
+      />,
+    );
     expect(screen.getByRole('button', { name: 'Pause' })).toContainElement(screen.getByTestId('p'));
     expect(screen.getByRole('button', { name: 'Stop' })).toContainElement(screen.getByTestId('e'));
   });
@@ -56,12 +73,21 @@ describe('omni-ui-components/SessionBar', () => {
     const pause = vi.fn();
     const resume = vi.fn();
     const end = vi.fn();
-    const { rerender } = render(<SessionBar pause={{ onClick: pause }} resume={{ onClick: resume }} end={{ onClick: end }} />);
+    const { rerender } = render(
+      <SessionBar pause={{ onClick: pause }} resume={{ onClick: resume }} end={{ onClick: end }} />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Pause session' }));
     await userEvent.click(screen.getByRole('button', { name: 'End session' }));
     expect(pause).toHaveBeenCalledTimes(1);
     expect(end).toHaveBeenCalledTimes(1);
-    rerender(<SessionBar status="paused" pause={{ onClick: pause }} resume={{ onClick: resume }} end={{ onClick: end }} />);
+    rerender(
+      <SessionBar
+        status="paused"
+        pause={{ onClick: pause }}
+        resume={{ onClick: resume }}
+        end={{ onClick: end }}
+      />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Resume session' }));
     expect(resume).toHaveBeenCalledTimes(1);
     expect(pause).toHaveBeenCalledTimes(1);

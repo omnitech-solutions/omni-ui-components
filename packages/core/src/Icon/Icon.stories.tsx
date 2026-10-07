@@ -6,7 +6,12 @@ const NAMES = ['Check', 'X', 'Copy', 'Mic', 'Settings', 'Search', 'Trash2', 'Pen
 const meta = {
   title: 'omni-ui-components/Icon',
   parameters: {
-    docs: { description: { component: 'Re-export of the lucide `icons` map. Icons are passed to components as `ReactNode` props.' } },
+    docs: {
+      description: {
+        component:
+          'Re-export of the lucide `icons` map. Icons are passed to components as `ReactNode` props.',
+      },
+    },
   },
   render: () => (
     <div style={{ display: 'flex', gap: 16, color: 'var(--oui-text, currentColor)' }}>

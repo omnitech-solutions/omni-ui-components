@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Popover, PopoverContent, PopoverTrigger } from '@oc-tech/omni-ui-components/Popover';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/Popover portal', () => {
   it('mounts in a custom container with data-oui-surface', () => {
@@ -27,7 +27,9 @@ describe('omni-ui-components/Popover portal', () => {
       </Popover>,
     );
     const surface = screen.getByText('Body');
-    expect((surface.closest('[data-radix-popper-content-wrapper]') ?? surface).parentElement).toBe(document.body);
+    expect((surface.closest('[data-radix-popper-content-wrapper]') ?? surface).parentElement).toBe(
+      document.body,
+    );
     expect(container).not.toContainElement(surface);
     expect(surface).toHaveAttribute('data-oui-surface');
   });

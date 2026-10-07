@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
 import { ModelMenu } from '@oc-tech/omni-ui-components';
+import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { modelPickerPropsFactory } from 'factories/omni-ui-components/ModelPicker/ModelPicker.factories';
 
 const rowList = () => Array.from(document.querySelectorAll<HTMLElement>('[data-slot="model-row"]'));

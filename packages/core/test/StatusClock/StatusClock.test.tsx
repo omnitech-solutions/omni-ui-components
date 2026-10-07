@@ -1,17 +1,23 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
 import { StatusClock } from '@oc-tech/omni-ui-components/StatusClock';
-import { SAMPLE_BUILD_TAG, statusClockExamples, statusClockPropsFactory } from 'factories/omni-ui-components/StatusClock/StatusClock.factories';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  SAMPLE_BUILD_TAG,
+  statusClockExamples,
+  statusClockPropsFactory,
+} from 'factories/omni-ui-components/StatusClock/StatusClock.factories';
 
 const slot = (name: string) => document.querySelector(`[data-slot="${name}"]`) as HTMLElement;
 
 describe('omni-ui-components/StatusClock', () => {
   it('is a named group with the elapsed string in a mono timer and no "Live" text', () => {
     render(<StatusClock {...statusClockPropsFactory()} />);
-    expect(screen.getByRole('group', { name: 'Session status' })).toHaveAttribute('data-state', 'live');
+    expect(screen.getByRole('group', { name: 'Session status' })).toHaveAttribute(
+      'data-state',
+      'live',
+    );
     const timer = screen.getByRole('timer');
     expect(timer).toHaveTextContent('2:18:20');
     expect(timer).toHaveClass('font-mono');
@@ -34,10 +40,24 @@ describe('omni-ui-components/StatusClock', () => {
   });
 
   it('paused swaps in pausedIcon (falling back to icon); pausedLabel is configurable and nullable', () => {
-    const { rerender } = render(<StatusClock elapsed="0:01" state="paused" icon={<i data-testid="rec" />} pausedIcon={<i data-testid="pause" />} />);
+    const { rerender } = render(
+      <StatusClock
+        elapsed="0:01"
+        state="paused"
+        icon={<i data-testid="rec" />}
+        pausedIcon={<i data-testid="pause" />}
+      />,
+    );
     expect(screen.getByTestId('pause')).toBeInTheDocument();
     expect(screen.queryByTestId('rec')).toBeNull();
-    rerender(<StatusClock elapsed="0:01" state="paused" icon={<i data-testid="rec" />} pausedLabel="En pause" />);
+    rerender(
+      <StatusClock
+        elapsed="0:01"
+        state="paused"
+        icon={<i data-testid="rec" />}
+        pausedLabel="En pause"
+      />,
+    );
     expect(screen.getByTestId('rec')).toBeInTheDocument();
     expect(screen.getByText('En pause')).toBeInTheDocument();
     rerender(<StatusClock elapsed="0:01" state="paused" pausedLabel={null} />);

@@ -1,9 +1,8 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { TextareaPrimitive } from './TextareaPrimitive';
 import type { TextareaProps } from './Textarea.types';
+import { TextareaPrimitive } from './TextareaPrimitive';
 
 /**
  * Chrome-wrapped Omni Textarea. Composes {@link TextareaPrimitive} with
@@ -13,7 +12,22 @@ import type { TextareaProps } from './Textarea.types';
  * <Textarea label="Message" value={msg} onChange={setMsg} rows={6} required />
  */
 const TextareaInner = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

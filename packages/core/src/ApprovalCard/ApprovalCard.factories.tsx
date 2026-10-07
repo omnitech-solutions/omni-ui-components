@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { Ban, CircleCheck, Shield, ShieldCheck } from 'lucide-react';
-
 import type { ApprovalCardProps } from '@oc-tech/omni-ui-components/ApprovalCard';
+import { Ban, CircleCheck, Shield, ShieldCheck } from 'lucide-react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Build `<ApprovalCard>` props for stories and tests. */
-export const approvalCardPropsFactory = (overrides: Partial<ApprovalCardProps> = {}): ApprovalCardProps => ({
+export const approvalCardPropsFactory = (
+  overrides: Partial<ApprovalCardProps> = {},
+): ApprovalCardProps => ({
   title: 'Run the solution against your tests?',
   description: 'The assistant wants to run code in the sandbox.',
   tool: 'runCode',

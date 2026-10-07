@@ -1,5 +1,6 @@
 /** The menu surface; the library popover supplies position, portal and animation. */
-export const modelMenuClasses = 'w-[340px] max-w-[calc(100vw-24px)] max-h-[70vh] overflow-y-auto p-1.5 text-[13px]';
+export const modelMenuClasses =
+  'w-[340px] max-w-[calc(100vw-24px)] max-h-[70vh] overflow-y-auto p-1.5 text-[13px]';
 
 export const modelGroupLabelClasses =
   'flex items-center gap-1.5 px-2.5 pt-2 pb-1 text-[11.5px] font-medium text-[color:var(--oui-panel-meta-fg)]';
@@ -14,4 +15,5 @@ export const modelRowClasses = [
 export const modelTagClasses =
   'rounded-full bg-[color:var(--oui-panel-dock-bg)] px-1.5 py-px text-[10.5px] leading-4 text-[color:var(--oui-panel-meta-fg)]';
 
-export const modelChipClasses = 'max-w-[220px] gap-1 px-2 text-[12.5px] font-medium text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-3.5';
+export const modelChipClasses =
+  'max-w-[220px] gap-1 px-2 text-[12.5px] font-medium text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-3.5';
