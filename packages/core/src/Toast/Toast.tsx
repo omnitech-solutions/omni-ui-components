@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 
 import { cn } from 'lib/utils';
+import { surfaceProps } from '../internal/support/PortalContainer';
 import { useControllableState } from '../lib/use-controllable-state';
 import { toastVariants } from './Toast.variants';
 import type { ToastController, ToastItem, ToastProps } from './Toast.types';
@@ -32,6 +34,7 @@ export const Toast = <T extends ToastItem = ToastItem>({
   duration = DEFAULT_TOAST_DURATION,
   placement = 'bottom-center',
   position = 'fixed',
+  container,
   className,
   'data-testid': testId,
 }: ToastProps<T>) => {
@@ -63,9 +66,10 @@ export const Toast = <T extends ToastItem = ToastItem>({
   }, [open, toast]);
 
   if (!open || !toast) return null;
-  return (
+  const node = (
     <output
       data-slot="toast"
+      {...surfaceProps('toast')}
       data-testid={testId}
       className={cn(toastVariants({ position, placement }), className)}
       onMouseEnter={() => setPaused(true)}
@@ -94,6 +98,7 @@ export const Toast = <T extends ToastItem = ToastItem>({
       ) : null}
     </output>
   );
+  return container ? createPortal(node, container) : node;
 };
 
 /** State for one toast: `notify(item)` shows it (replacing any on screen), `dismiss` hides it. */

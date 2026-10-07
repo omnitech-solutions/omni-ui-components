@@ -4,6 +4,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { cn } from 'lib/utils';
 import { IconAction } from '../internal/support/IconAction';
 import { useControllableState } from '../lib/use-controllable-state';
+import { resolvePortalContainer, surfaceProps } from '../internal/support/PortalContainer';
 import { Modal, ModalDescription, ModalOverlay, ModalPortal, ModalTitle } from '../Modal';
 import { SETTINGS_TAB_CLASS } from './SettingsDialog.variants';
 import type { SettingsDialogLabels, SettingsDialogProps, SettingsTab } from './SettingsDialog.types';
@@ -31,6 +32,7 @@ export const SettingsDialog = <Tab extends SettingsTab<Tab> = SettingsTab>({
   defaultTab,
   onTabChange,
   closeIcon,
+  container,
   labels: labelOverrides,
   className,
   'data-testid': testId,
@@ -73,10 +75,11 @@ export const SettingsDialog = <Tab extends SettingsTab<Tab> = SettingsTab>({
 
   return (
     <Modal open={open} onOpenChange={(next) => !next && void onClose?.()}>
-      <ModalPortal>
-        <ModalOverlay />
+      <ModalPortal container={resolvePortalContainer(container)}>
+        <ModalOverlay {...surfaceProps('settings-backdrop')} />
         <DialogPrimitive.Content
           data-slot="settings-dialog"
+          {...surfaceProps('settings-dialog')}
           data-testid={testId}
           className={cn(
             'fixed top-[50%] left-[50%] z-50 flex h-[min(80vh,540px)] w-[min(calc(100vw-2rem),720px)] translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-2xl border border-solid',

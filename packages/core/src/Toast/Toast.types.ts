@@ -33,6 +33,8 @@ export interface ToastProps<T extends ToastItem = ToastItem> {
   placement?: ToastPlacement;
   /** `fixed` (default) pins to the window; `absolute` pins inside the nearest positioned parent (a PanelShell). */
   position?: 'fixed' | 'absolute';
+  /** Set: the toast renders in a portal into this element (a native host's root). Unset: it renders in place, as before. */
+  container?: HTMLElement | null;
   className?: string;
   'data-testid'?: string;
 }

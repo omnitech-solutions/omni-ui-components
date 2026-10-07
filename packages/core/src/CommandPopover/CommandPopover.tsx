@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
+import { resolvePortalContainer, surfaceProps } from '../internal/support/PortalContainer';
 
 import { cn } from 'lib/utils';
 import { useStableId } from '../lib';
@@ -104,6 +105,7 @@ function CommandPopoverInner<T extends CommandItem = CommandItem>(
         data-slot="command-popover"
         data-placement={placement}
         data-portal={anchor ? 'true' : undefined}
+        {...surfaceProps('command-popover')}
         className={cn(commandPopoverVariants({ placement }), anchor && 'fixed inset-x-auto z-50 mb-0 mt-0', className)}
         style={anchor ? { ...box, bottom: placement === 'above' ? box?.bottom : 'auto', top: placement === 'below' ? box?.top : 'auto', ...style } : style}
         {...rest}
@@ -142,7 +144,7 @@ function CommandPopoverInner<T extends CommandItem = CommandItem>(
         {hint ? <div className={commandPopoverHintClasses}>{hint}</div> : null}
       </div>
     );
-    return anchor ? createPortal(node, container ?? document.body) : node;
+    return anchor ? createPortal(node, resolvePortalContainer(container) ?? document.body) : node;
 }
 
 export const CommandPopover = React.forwardRef(CommandPopoverInner) as <T extends CommandItem = CommandItem>(
