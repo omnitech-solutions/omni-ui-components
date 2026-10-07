@@ -46,7 +46,7 @@ const firstPresent = (...values: unknown[]): unknown =>
 const textFromValue = (value: FieldValue): string => {
   if (value === null || value === undefined) return '';
   if (React.isValidElement(value)) return '';
-  if (value instanceof Date) return value.toISOString();
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? '' : value.toISOString();
   if (typeof value !== 'object') return String(value);
   return String(
     firstPresent(
@@ -59,9 +59,12 @@ const textFromValue = (value: FieldValue): string => {
   );
 };
 
+// A row-data type (`column.type` / `column.valueType`) hands the already-resolved cell value in as `value`;
+// a `cells[key].kind` field renderer receives a plain cell context and reads the override's value.
 const valuePayload = <TRecord, TRowData>(
   ctx: TableCellRenderContext<TRecord, TRowData>,
-): FieldValue => ctx.row.cells?.[ctx.column.key]?.value;
+): FieldValue =>
+  'value' in ctx ? (ctx as { value?: unknown }).value : ctx.row.cells?.[ctx.column.key]?.value;
 
 const numberCandidate = (value: FieldValue): unknown => {
   if (!isRecord(value)) return value;
@@ -72,7 +75,7 @@ const parseFiniteNumber = (value: FieldValue): number | null => {
   const candidate = numberCandidate(value);
   if (typeof candidate === 'number') return Number.isFinite(candidate) ? candidate : null;
   if (typeof candidate !== 'string') return null;
-  const normalized = candidate.replace(/[^0-9+-.]/g, '');
+  const normalized = candidate.replace(/[^0-9+\-.]/g, '');
   if (!normalized || normalized === '-' || normalized === '.' || normalized === '-.') return null;
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : null;
@@ -132,7 +135,10 @@ export const renderDateField = <TRecord, TRowData>(
   ctx: TableCellRenderContext<TRecord, TRowData>,
 ) => {
   const value = valuePayload(ctx);
-  const candidate = isRecord(value) ? firstPresent(value.date, value.value, value.text) : value;
+  const candidate =
+    isRecord(value) && !(value instanceof Date)
+      ? firstPresent(value.date, value.value, value.text)
+      : value;
   const date = parseDateValue(candidate);
   if (!date) return renderOriginalValue(value);
   const options =

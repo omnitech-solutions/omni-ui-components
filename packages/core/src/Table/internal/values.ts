@@ -40,14 +40,17 @@ export const parseSortableNumber = (value: unknown): number | null => {
     : value;
   if (typeof candidate === 'number') return Number.isFinite(candidate) ? candidate : null;
   if (typeof candidate !== 'string') return null;
-  const normalized = candidate.replace(/[^0-9+-.]/g, '');
+  const normalized = candidate.replace(/[^0-9+\-.]/g, '');
   if (!normalized || normalized === '-' || normalized === '.' || normalized === '-.') return null;
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : null;
 };
 
 export const parseSortableDate = (value: unknown): number | null => {
-  const candidate = isRecordLike(value) ? firstPresent(value.date, value.value, value.text) : value;
+  const candidate =
+    isRecordLike(value) && !(value instanceof Date)
+      ? firstPresent(value.date, value.value, value.text)
+      : value;
   if (candidate instanceof Date)
     return Number.isNaN(candidate.getTime()) ? null : candidate.getTime();
   if (typeof candidate !== 'string' && typeof candidate !== 'number') return null;

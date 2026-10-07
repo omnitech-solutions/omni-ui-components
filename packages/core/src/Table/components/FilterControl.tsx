@@ -123,9 +123,15 @@ export function FilterControl<TRecord, TRowData>({
     return Boolean(filter.children?.some(hasDescendantMatch));
   };
 
-  const renderFilterItems = (items: TableFilterItem[], depth = 0): React.ReactNode =>
+  // `showAll` is set below a group whose own label matched the search: its whole subtree stays visible.
+  const renderFilterItems = (
+    items: TableFilterItem[],
+    depth = 0,
+    showAll = false,
+  ): React.ReactNode =>
     items
       .filter((filter) => {
+        if (showAll) return true;
         if (filter.children?.length) {
           if (!searchValue) return true;
           return selfMatches(filter) || filter.children.some(hasDescendantMatch);
@@ -135,7 +141,7 @@ export function FilterControl<TRecord, TRowData>({
       .map((filter) => {
         const value = filter.value;
         const key = String(value);
-        const groupLabelMatches = selfMatches(filter);
+        const groupLabelMatches = showAll || selfMatches(filter);
         const visibleChildren = filter.children?.filter(hasDescendantMatch);
         if (filter.children?.length) {
           return (
@@ -151,6 +157,7 @@ export function FilterControl<TRecord, TRowData>({
                 {renderFilterItems(
                   searchValue && !groupLabelMatches ? (visibleChildren ?? []) : filter.children,
                   depth + 1,
+                  groupLabelMatches,
                 )}
               </div>
             </div>

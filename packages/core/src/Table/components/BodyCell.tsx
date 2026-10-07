@@ -82,6 +82,7 @@ export interface BodyCellProps<TRecord, TRowData> {
   saveRowEdit: (
     resolved: TableResolvedRow<TRecord, TRowData>,
     rowConfig: TableEditableRowConfig<TRecord, TRowData>,
+    pending?: Record<string, unknown>,
   ) => Promise<void>;
   cancelCellEdit: (rowKey: string, columnKey: string) => void;
   cancelRowEdit: (
@@ -297,7 +298,12 @@ export function BodyCell<TRecord, TRowData>({
           onChange: (nextValue) => setEditableValue(rowKey, col.key, nextValue),
           onSave: (nextValue?: unknown) => {
             if (nextValue !== undefined) setEditableValue(rowKey, col.key, nextValue);
-            if (isRowEditing && rowConfig) return saveRowEdit(resolved, rowConfig);
+            if (isRowEditing && rowConfig)
+              return saveRowEdit(
+                resolved,
+                rowConfig,
+                nextValue !== undefined ? { [col.key]: nextValue } : undefined,
+              );
             if (editableConfig)
               return saveCellEdit(rowKey, col, editableConfig, ctx, nextValue).then(
                 () => undefined,
