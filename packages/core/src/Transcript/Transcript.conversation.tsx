@@ -146,6 +146,7 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
   editIcon,
   stoppedIcon,
   attachmentIcons,
+  attachmentVariant = 'chip',
   copyIcon,
   copyLabel,
   labels: labelsProp,
@@ -196,7 +197,7 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
     const hasActions = Boolean(versions) || canCopy || canEdit || Boolean(userActions);
     return (
       <div data-slot="transcript-user" className={conversationUserClasses}>
-        {chips.length > 0 ? <AttachmentStrip items={chips} variant="chip" readOnly layout="wrap" className="justify-end" kindIcons={attachmentIcons} onClick={onAttachmentClick} /> : null}
+        {chips.length > 0 ? <AttachmentStrip items={chips} variant={attachmentVariant} readOnly layout="wrap" className="justify-end" kindIcons={attachmentIcons} onClick={onAttachmentClick} /> : null}
         {editing ? (
           <TranscriptEditor
             value={editValue}

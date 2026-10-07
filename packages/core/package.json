@@ -55,6 +55,7 @@
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test:attachments-drop": "node test/Attachment/browser/drop.playwright.mjs",
     "test:isolation": "pnpm run build && node fixtures/host-app/isolation.mjs",
     "test": "vitest run --config ../../vitest.config.ts",
     "prepublishOnly": "pnpm run typecheck && pnpm run build"

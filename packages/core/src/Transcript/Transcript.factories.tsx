@@ -339,6 +339,23 @@ export const longHistoryTurns = (count = 3000): ConversationTurn[] =>
 
 export const answeredTurns = (): ConversationTurn[] => buildTurns([...chatMessages(), secondAnswer()], chatRuns());
 /** The same conversation with the last question still waiting for its answer (streams when `busy`). */
+/** The first question carries four files as read-only cards: a document, an image thumbnail, one still uploading and one "Not sent". */
+export const attachmentTurns = (): ConversationTurn[] => {
+  const messages = chatMessages();
+  const thumb = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='%233b6fe0'/><circle cx='22' cy='24' r='8' fill='%23ffffff' opacity='.85'/><path d='M0 56 L22 34 L40 50 L52 40 L64 52 V64 H0Z' fill='%231a3a7a'/></svg>";
+  messages[0] = {
+    ...messages[0],
+    parts: [
+      { type: 'attachment', kind: 'file', id: 'att-1', name: 'two-sum-notes.md', meta: 'File' },
+      { type: 'attachment', kind: 'image', id: 'att-2', name: 'whiteboard.png', meta: 'Image', previewUrl: thumb },
+      { type: 'attachment', kind: 'file', id: 'att-3', name: 'big-spec.pdf', status: 'uploading' },
+      { type: 'attachment', kind: 'file', id: 'att-4', name: 'scan.pdf', status: 'failed' },
+      ...messages[0].parts.filter((part) => part.type !== 'attachment'),
+    ],
+  };
+  return buildTurns([...messages, secondAnswer()], chatRuns());
+};
+
 export const streamingTurns = (): ConversationTurn[] => buildTurns(chatMessages(), [chatRuns()[0], { id: 'r2', userMessageId: 'u2', status: 'running' }]);
 /** The last run failed: the error slot shows. */
 export const failedTurns = (): ConversationTurn[] =>
@@ -369,6 +386,8 @@ export interface ConversationDemoProps {
   height?: number;
   /** Add a pending approval after the last turn. */
   approval?: boolean;
+  /** How a sent question shows its files: `chip` (default) or read-only `card`. */
+  attachmentVariant?: 'chip' | 'card';
   onAction?: OnAction;
 }
 
@@ -395,6 +414,7 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
   width = 440,
   height = 620,
   approval = false,
+  attachmentVariant,
   onAction,
 }) => {
   const [editingId, setEditingId] = React.useState<string | null>(editingProp);
@@ -480,6 +500,7 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
           editIcon={<Pencil />}
           stoppedIcon={<CircleStop />}
           attachmentIcons={kindIcons}
+          attachmentVariant={attachmentVariant}
           editingId={editingId}
           editValue={editValue}
           onEditChange={setEditValue}

@@ -49,3 +49,90 @@ export const attachmentVariants: Variant<{ items: AttachmentItem[] }>[] = [
   { name: 'Ready', args: { items: readyItems() } },
   { name: 'Lifecycle', args: { items: statusItems() } },
 ];
+
+/** How `useAttachmentUploads` treats one file: how long each step lasts, and whether it fails. */
+export interface UploadPlan {
+  /** Milliseconds of the `uploading` step (progress climbs to 100). Default 1200. */
+  uploadMs?: number;
+  /** Milliseconds of the `extracting` step (text pulled out of a PDF or image). Default 700. */
+  extractMs?: number;
+  /** Fail this file after `uploading` (`'upload'`) or after `extracting` (`'extract'`). Default: it succeeds. */
+  failAt?: 'upload' | 'extract';
+}
+
+/** A file's name decides its fate in the demo: `fail-upload*` fails while uploading, `fail-extract*` while extracting. */
+export const planForFile = (file: Pick<File, 'name'>): UploadPlan =>
+  file.name.startsWith('fail-upload') ? { failAt: 'upload' } : file.name.startsWith('fail-extract') ? { failAt: 'extract' } : {};
+
+/**
+ * Example host state for sending files: each added `File` becomes an `AttachmentItem` that goes
+ * `uploading` (with `progress` 0-100) then `extracting` (PDFs and images only) then `ready`, or ends `failed` with the
+ * `Not sent` label (or an `error` text). The component does not own this: a host keeps a list like this and hands it to the
+ * strip. `remove` is refused while an item is uploading (the card disables its button too); `retry` restarts a failed one.
+ * Timers are cleared on unmount. Replace `plan` and the timers with your real upload and extraction calls.
+ */
+export function useAttachmentUploads(options: { plan?: (file: File) => UploadPlan } = {}) {
+  const { plan = planForFile } = options;
+  const [items, setItems] = React.useState<AttachmentItem[]>([]);
+  const files = React.useRef(new Map<string, File>());
+  const timers = React.useRef(new Set<ReturnType<typeof setTimeout>>());
+  const counter = React.useRef(0);
+  const latest = React.useRef(plan);
+  latest.current = plan;
+
+  const patch = React.useCallback((id: string, change: Partial<AttachmentItem>) => setItems((all) => all.map((item) => (item.id === id ? { ...item, ...change } : item))), []);
+  const later = React.useCallback((ms: number, run: () => void) => {
+    const timer = setTimeout(() => {
+      timers.current.delete(timer);
+      run();
+    }, ms);
+    timers.current.add(timer);
+  }, []);
+  React.useEffect(() => {
+    const pending = timers.current;
+    return () => pending.forEach(clearTimeout);
+  }, []);
+
+  const run = React.useCallback(
+    (id: string, file: File) => {
+      const { uploadMs = 1200, extractMs = 700, failAt } = latest.current(file);
+      const steps = 4;
+      patch(id, { status: 'uploading', progress: 0, error: undefined });
+      for (let step = 1; step <= steps; step += 1) later((uploadMs / steps) * step, () => patch(id, { progress: (step / steps) * 100 }));
+      later(uploadMs, () => {
+        if (failAt === 'upload') return patch(id, { status: 'failed', progress: undefined });
+        const needsExtraction = file.type === 'application/pdf' || file.type.startsWith('image/');
+        if (!needsExtraction) return patch(id, { status: 'ready' });
+        patch(id, { status: 'extracting', progress: undefined });
+        later(extractMs, () => patch(id, failAt === 'extract' ? { status: 'failed', error: 'Could not read this file' } : { status: 'ready' }));
+      });
+    },
+    [later, patch],
+  );
+
+  const add = React.useCallback(
+    (incoming: File[]) => {
+      const created = incoming.map((file) => {
+        const id = `up-${(counter.current += 1)}`;
+        files.current.set(id, file);
+        const kind: AttachmentKind = file.type.startsWith('image/') ? 'image' : 'file';
+        return { id, file, item: attachmentItem({ id, name: file.name, kind, meta: kind === 'image' ? 'Image' : 'File', status: 'uploading', progress: 0 }) };
+      });
+      setItems((all) => [...all, ...created.map((entry) => entry.item)]);
+      for (const entry of created) run(entry.id, entry.file);
+    },
+    [run],
+  );
+  const remove = React.useCallback((item: AttachmentItem) => {
+    files.current.delete(item.id);
+    setItems((all) => all.filter((candidate) => candidate.id !== item.id || candidate.status === 'uploading'));
+  }, []);
+  const retry = React.useCallback(
+    (item: AttachmentItem) => {
+      const file = files.current.get(item.id);
+      if (file) run(item.id, file);
+    },
+    [run],
+  );
+  return { items, add, remove, retry };
+}
