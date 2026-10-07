@@ -32,6 +32,21 @@
       "types": "./dist-types/dynamic-form/index.d.ts",
       "import": "./dist/dynamic-form/index.js",
       "require": "./dist/dynamic-form/index.cjs"
+    },
+    "./native": {
+      "types": "./dist-types/entries/native.d.ts",
+      "import": "./dist/native.js",
+      "require": "./dist/native.cjs"
+    },
+    "./chat": {
+      "types": "./dist-types/entries/chat.d.ts",
+      "import": "./dist/chat.js",
+      "require": "./dist/chat.cjs"
+    },
+    "./highlight": {
+      "types": "./dist-types/entries/highlight.d.ts",
+      "import": "./dist/highlight.js",
+      "require": "./dist/highlight.cjs"
     }
   },
   "publishConfig": {
