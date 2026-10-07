@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import { CommandPopover } from '@oc-tech/omni-ui-components/CommandPopover';
 import { commandPopoverPropsFactory } from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
