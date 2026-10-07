@@ -42,6 +42,7 @@ const ApprovalCardImpl = React.forwardRef<HTMLElement, ApprovalCardProps>(
       busy = false,
       icons,
       labels: labelOverrides,
+      autoFocus = false,
       className,
       ...rest
     },
@@ -55,6 +56,12 @@ const ApprovalCardImpl = React.forwardRef<HTMLElement, ApprovalCardProps>(
     // The item handed to `onDecide`: the host's own object when given (by reference), else one built from the props.
     const item = approval ?? ({ id: 'approval', title, description, tags, tool } as ApprovalItem);
     const waiting = busy;
+    const denyButton = React.useRef<HTMLButtonElement | null>(null);
+    // [SAFETY] Land on Deny, never on an Allow button, so a stray Enter or Space cannot grant permission; only on mount.
+    React.useEffect(() => {
+      if (autoFocus) denyButton.current?.focus();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const resolved: Record<'once' | 'always' | 'denied', [React.ReactNode, string]> = {
       once: [icons?.once, labels.allowedOnce],
       always: [icons?.always, labels.alwaysAllowed(tool)],
@@ -96,7 +103,7 @@ const ApprovalCardImpl = React.forwardRef<HTMLElement, ApprovalCardProps>(
         {status === 'pending' ? (
           onDecide ? (
             <div className="flex flex-wrap justify-end gap-2">
-              <Button variant="outline" buttonSize="sm" disabled={waiting} data-slot="approval-deny" onClick={() => onDecide('deny', item)}>
+              <Button ref={denyButton} variant="outline" buttonSize="sm" disabled={waiting} data-slot="approval-deny" onClick={() => onDecide('deny', item)}>
                 {labels.deny}
               </Button>
               <Button variant="outline" buttonSize="sm" disabled={waiting} data-slot="approval-always" onClick={() => onDecide('always', item)}>
