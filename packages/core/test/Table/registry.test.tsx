@@ -247,7 +247,7 @@ describe('Table.registry field renderers', () => {
             <a key="x" href="#a">
               go
             </a>,
-            <span>keyless</span>,
+            <span key="keyless">keyless</span>,
           ]),
         ),
       );
