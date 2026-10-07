@@ -22,3 +22,6 @@ tmp
 
 # A global "Icon" ignore (macOS custom-folder-icon file) would otherwise hide the Icon component folder.
 !packages/core/src/Icon/
+
+# agent worktrees
+.claude/worktrees/

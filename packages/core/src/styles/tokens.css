@@ -101,6 +101,10 @@
     --oui-panel-meta-fg:           #6b7280;
     --oui-tag-filled-bg:           #eef0f4;
     --oui-tag-filled-fg:           #374151;
+    --oui-clock-live:              #b42318; /* StatusClock record icon and timer while live */
+    --oui-clock-paused:            #8a5a00; /* StatusClock timer and Paused label */
+    --oui-clock-paused-icon:       #f0b429; /* StatusClock pause disc */
+    --oui-session-pause-border:    var(--oui-tone-neutral-border); /* SessionBar Pause outline */
 
     /* Code colours (highlight.js classes are painted from these; derived from the assistant prototype palette). */
     --oui-code-plain:              oklch(0.28 0.02 260);
@@ -163,6 +167,10 @@
     --oui-panel-meta-fg:           #7d8aa3;
     --oui-tag-filled-bg:           #212c42;
     --oui-tag-filled-fg:           #a9b6cf;
+    --oui-clock-live:              #ff8a85; /* board-1e coral */
+    --oui-clock-paused:            #f5c86b; /* board-1e gold */
+    --oui-clock-paused-icon:       #f0b429;
+    --oui-session-pause-border:    #33425f; /* board-1e Pause outline */
 
     --oui-code-plain:              oklch(0.9 0.008 260);
     --oui-code-keyword:            oklch(0.76 0.14 300);

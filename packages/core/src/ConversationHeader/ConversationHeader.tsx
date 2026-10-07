@@ -209,7 +209,7 @@ export const ConversationHeader = <C extends ConversationItem = ConversationItem
       trailing={
         <>
           {modelControl ? (
-            <div data-slot="conversation-model" className="min-w-0 shrink [&_button]:max-w-full [&_button]:min-w-0 [&_button]:overflow-hidden [&_button]:text-ellipsis">
+            <div data-slot="conversation-model" className="mr-2 min-w-0 shrink [&>*]:block [&>*]:max-w-full [&>*]:min-w-0 [&>*]:overflow-hidden [&>*]:text-ellipsis [&>*]:whitespace-nowrap [&_button]:max-w-full [&_button]:min-w-0 [&_button]:overflow-hidden [&_button]:text-ellipsis [&_button]:whitespace-nowrap">
               {modelControl}
             </div>
           ) : null}

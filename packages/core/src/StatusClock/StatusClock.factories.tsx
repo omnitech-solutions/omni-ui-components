@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { GitBranch, GitCommitHorizontal } from 'lucide-react';
+
 import type { StatusClockProps } from '@oc-tech/omni-ui-components/StatusClock';
 import type { Variant } from '../../internal/support/makeFactory';
 
@@ -21,7 +23,10 @@ export const PauseDiscIcon: React.FC = () => (
 );
 
 export const SAMPLE_BUILD_TAG = {
-  label: 'a1b2c3d · feat/native-panel-cleanup',
+  sha: 'a1b2c3d',
+  branch: 'feat/native-panel-cleanup',
+  commitIcon: <GitCommitHorizontal />,
+  branchIcon: <GitBranch />,
   title: 'a1b2c3d4e5f60718293a4b5c6d7e8f9012345678',
 };
 

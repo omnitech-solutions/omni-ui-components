@@ -9,12 +9,12 @@ import { statusClockIconVariants, statusClockTimerVariants, statusClockVariants 
  * Omni StatusClock: the live-session status of the footer. A caller-supplied icon node (the filled record
  * icon), a monospace elapsed timer the caller has already formatted, and a `live | paused` state. Paused
  * swaps in the amber pause icon, turns the timer amber and adds a "Paused" label; nothing else changes
- * colour. An optional `buildTag` renders `<short sha> · <branch>` in mono after a divider, click to copy
+ * colour. An optional `buildTag` renders `<commit icon> <short sha> · <branch icon> <branch>` in mono after a divider, click to copy
  * (`copied` is controlled; the caller decides it is a development build and only passes it then).
  *
  * @example
  * <StatusClock state="paused" elapsed="2:18:20" icon={<RecordIcon />} pausedIcon={<PauseCircleIcon />}
- *   buildTag={{ label: 'a1b2c3d · main', title: 'a1b2c3d4e5f6…', onCopy: copySha, copied }} />
+ *   buildTag={{ sha: 'a1b2c3d', branch: 'main', commitIcon: <GitCommit />, branchIcon: <GitBranch />, title: 'a1b2c3d4e5f6…', onCopy: copySha, copied }} />
  */
 export const StatusClock = React.forwardRef<HTMLDivElement, StatusClockProps>(
   (
@@ -54,7 +54,7 @@ export const StatusClock = React.forwardRef<HTMLDivElement, StatusClockProps>(
           {elapsed}
         </span>
         {paused && pausedLabel !== null ? (
-          <span data-slot="status-clock-paused" className="flex-none text-[14px] font-medium text-[color:var(--oui-tone-warning-fg)]">
+          <span data-slot="status-clock-paused" className="flex-none text-[14px] font-medium text-[color:var(--oui-clock-paused)]">
             {pausedLabel}
           </span>
         ) : null}
@@ -71,7 +71,7 @@ export const StatusClock = React.forwardRef<HTMLDivElement, StatusClockProps>(
               data-copied={buildTag.copied ? 'true' : undefined}
               title={buildTag.title}
               aria-label={
-                buildTag.copied ? (buildTag.copiedLabel ?? 'Copied') : (buildTag['aria-label'] ?? `Copy build ${buildTag.title ?? buildTag.label}`)
+                buildTag.copied ? (buildTag.copiedLabel ?? 'Copied') : (buildTag['aria-label'] ?? `Copy build ${buildTag.title ?? buildTag.sha}`)
               }
               onClick={buildTag.onCopy}
               className={cn(
@@ -81,12 +81,35 @@ export const StatusClock = React.forwardRef<HTMLDivElement, StatusClockProps>(
                 buildTag.copied && 'text-[color:var(--oui-tone-success-fg)]',
               )}
             >
-              {buildTag.icon ? (
-                <span aria-hidden="true" className="inline-flex flex-none [&_svg]:size-3.5">
-                  {buildTag.icon}
-                </span>
-              ) : null}
-              <span className="truncate">{buildTag.copied ? (buildTag.copiedLabel ?? 'Copied') : buildTag.label}</span>
+              {buildTag.copied ? (
+                <span className="truncate">{buildTag.copiedLabel ?? 'Copied'}</span>
+              ) : (
+                <>
+                  {buildTag.commitIcon ? (
+                    <span data-slot="status-clock-commit-icon" aria-hidden="true" className="inline-flex flex-none [&_svg]:size-3.5">
+                      {buildTag.commitIcon}
+                    </span>
+                  ) : null}
+                  <span data-slot="status-clock-sha" className="flex-none">
+                    {buildTag.sha}
+                  </span>
+                  {buildTag.branch ? (
+                    <>
+                      <span aria-hidden="true" className="flex-none opacity-60">
+                        ·
+                      </span>
+                      {buildTag.branchIcon ? (
+                        <span data-slot="status-clock-branch-icon" aria-hidden="true" className="inline-flex flex-none [&_svg]:size-3.5">
+                          {buildTag.branchIcon}
+                        </span>
+                      ) : null}
+                      <span data-slot="status-clock-branch" className="truncate">
+                        {buildTag.branch}
+                      </span>
+                    </>
+                  ) : null}
+                </>
+              )}
             </button>
           </>
         ) : null}

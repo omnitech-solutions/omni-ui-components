@@ -27,7 +27,7 @@ describe('omni-ui-components/SessionBar', () => {
   it('live: Pause session (outline, filled icon) and End session (outlined red), no Resume', () => {
     render(<SessionBar {...sessionBarPropsFactory()} />);
     const pause = screen.getByRole('button', { name: 'Pause session' });
-    expect(pause).toHaveClass('border', 'border-[color:var(--oui-tone-neutral-border)]', 'bg-transparent', '[&_svg]:fill-current');
+    expect(pause).toHaveClass('border', 'border-[color:var(--oui-session-pause-border)]', 'bg-transparent', '[&_svg]:fill-current');
     expect(screen.queryByRole('button', { name: 'Resume session' })).toBeNull();
     const end = screen.getByRole('button', { name: 'End session' });
     expect(end).toHaveClass('border-[color:var(--oui-tone-danger-border)]', 'bg-transparent', 'text-[color:var(--oui-tone-danger-fg)]');
