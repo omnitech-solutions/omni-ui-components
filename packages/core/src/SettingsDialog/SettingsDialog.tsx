@@ -42,6 +42,8 @@ export const SettingsDialog = <Tab extends SettingsTab<Tab> = SettingsTab>({
   const current = tabs.find((tab) => tab.id === requested) ?? tabs[0];
   const base = React.useId();
   const tabRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
+  // [SAFETY] The dialog is controlled and has no Radix trigger, so Radix would not return focus: remember the opener ourselves.
+  const opener = React.useRef<HTMLElement | null>(null);
 
   const select = (id: string) => {
     setTab(id);
@@ -80,6 +82,13 @@ export const SettingsDialog = <Tab extends SettingsTab<Tab> = SettingsTab>({
         <DialogPrimitive.Content
           data-slot="settings-dialog"
           {...surfaceProps('settings-dialog')}
+          onOpenAutoFocus={() => {
+            opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+          }}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            opener.current?.focus();
+          }}
           data-testid={testId}
           className={cn(
             'fixed top-[50%] left-[50%] z-50 flex h-[min(80vh,540px)] w-[min(calc(100vw-2rem),720px)] translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-2xl border border-solid',
