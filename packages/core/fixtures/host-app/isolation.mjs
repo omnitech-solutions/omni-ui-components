@@ -1,9 +1,12 @@
 // CSS isolation test: does importing the shipped dist/styles.css into a non-Tailwind host change the host?
 //   1. Static audit of dist/styles.css: every top-level block is a layer (omni-ui-components or a sublayer), @property or
 //      @keyframes; no rule whose subject is an element, `*`, :root, html or body declares anything but custom properties.
-//   2. Host page A is screenshotted (a) host only and (b) with the library stylesheet in every order/layering; the PNG bytes
+//   2. Host page A is screenshotted (a) host only and (b) with the library stylesheet in every order/layering, including unlayered host rules; the PNG bytes
 //      and the computed style of every element must be identical (threshold 0).
-//   3. Host page B (host + library Panel and Button) renders in light and dark with zero console errors.
+//   3. Host page B (host + library Panel and Button) renders in light and dark with zero console errors; the library Button does
+//      not take the host button's look.
+//   4. Library regression page: ~90 library elements (buttons, inputs, select, segmented, card, alert, panel, table, composer ...)
+//      compute identically with no host stylesheet and with the host in `@layer host`, in light and dark.
 // Run: pnpm --filter @oc-tech/omni-ui-components test:isolation   (builds the package first)
 import { createServer } from 'node:http';
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
@@ -127,7 +130,7 @@ if (!existsSync(cssPath)) {
 }
 const cssText = readFileSync(cssPath, 'utf8');
 const auditProblems = auditCss(cssText);
-if (!/^(?:\/\*[\s\S]*?\*\/)?\s*@layer omni-ui-components\.properties, omni-ui-components\.theme, omni-ui-components\.palette, omni-ui-components\.base, omni-ui-components\.components, omni-ui-components\.utilities, omni-ui-components\.classes;/.test(cssText)) {
+if (!/^(?:\/\*[\s\S]*?\*\/)?\s*@layer omni-ui-components\.properties, omni-ui-components\.theme, omni-ui-components\.palette, omni-ui-components\.base, omni-ui-components\.utilities, omni-ui-components\.classes;/.test(cssText)) {
   auditProblems.push('the layer order statement is not the first rule of the stylesheet (the bundler may have reordered the layers)');
 }
 if (auditProblems.length) auditProblems.slice(0, 20).forEach((p) => fail(`css audit: ${p}`));
@@ -313,7 +316,6 @@ for (const theme of ['light', 'dark']) {
     const visible = diffs.length === 1 && diffs[0] === 'box-sizing' ? [] : diffs;
     for (const key of visible) leaks.push(`${id} ${key}: ${props[key]} -> ${hosted.computed[i][1][key]}`);
   });
-  if (process.env.LEAK_SUMMARY) { const by = {}; leaks.forEach((l) => { const [head, to] = l.split(': '); const key = head.split(' ').pop(); (by[key] ??= []).push(l); }); Object.entries(by).forEach(([k, v]) => console.log('LEAK', theme, k, v.length, v[0].slice(0, 160))); }
   if (leaks.length) fail(`library ${theme}: host styles leak into ${alone.computed.length} library elements, ${leaks.length} differences: ${leaks.slice(0, Number(process.env.DIFF_SAMPLE ?? 8)).join(' | ')}`);
   else pass(`library ${theme}: ${alone.computed.length} library elements compute identically with and without the host stylesheet`);
 }

@@ -1,7 +1,7 @@
 /* Every rule the library ships lives in the cascade layer `omni-ui-components` (sublayers below). A host declares
    `@layer host, omni-ui-components;` and keeps control of precedence. See bionic/research/references/css-delivery.md. */
 @layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base,
-  omni-ui-components.components, omni-ui-components.utilities, omni-ui-components.classes;
+  omni-ui-components.utilities, omni-ui-components.classes;
 @import "tailwindcss/theme" layer(omni-ui-components.theme);
 @import "tailwindcss/utilities" layer(omni-ui-components.utilities) source(none);
 @import "tw-animate-css";
@@ -46,6 +46,18 @@
      only: width and style come from the utility. */
   :where([class~='border'], [class^='border-'], [class*=' border-'], [class*=':border-']) {
     border-color: var(--color-border, currentColor);
+  }
+
+  /* The library's table elements: back to the browser's own table (padding, border, spacing ...) so a host's `th, td { border; padding }`
+     does not reach them; `.bui-table` rules, in a later layer, style them. */
+  :where(table, thead, tbody, tfoot, tr, th, td, caption, colgroup, col):where(.bui-table, .bui-table *, [data-slot] *, [data-oui-surface] *) {
+    all: revert;
+  }
+
+  /* `border-solid` (and -dashed, -dotted) sets the style on every side; with `border-b` only one side may have a width, which is what
+     preflight's `border-width: 0` guaranteed. */
+  :where([class~='border-solid'], [class~='border-dashed'], [class~='border-dotted']) {
+    border-width: 0;
   }
 
   /* Native controls of the library: a marked component, a portalled surface, or Tailwind layout classes no host without Tailwind uses

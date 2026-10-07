@@ -16,7 +16,7 @@ const externalPackages = [
 ];
 
 /** The library's layer order, from lowest to highest; the sublayers of `omni-ui-components`. */
-const layerOrder = '@layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base, omni-ui-components.components, omni-ui-components.utilities, omni-ui-components.classes;';
+const layerOrder = '@layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base, omni-ui-components.utilities, omni-ui-components.classes;';
 
 /**
  * Tailwind emits its `@property` fallback as a top-level `@layer properties`: nest it under the library layer so every layer the

@@ -1,7 +1,7 @@
 @import '../styles/base-palette.css';
 @import '../styles/theme-tokens.css' layer(omni-ui-components.palette);
 
-@layer omni-ui-components.components {
+@layer omni-ui-components.classes {
   :root {
     --bui-table-bg: var(--color-card, var(--bg-panel, var(--white)));
     --bui-table-fg: var(--color-foreground, var(--text-default, var(--black)));

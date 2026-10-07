@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import {
-  Alert, Badge, Button, Card, Checkbox, Composer, IconButton, Input, Panel, Segmented, Select, SplitButton, Tag,
+  Alert, Badge, Button, Card, Checkbox, Composer, IconButton, Input, Panel, Segmented, Select, SplitButton, Table, Tag,
 } from '@oc-tech/omni-ui-components';
+import { invoiceColumns, invoiceLines } from '../../src/Table/Table.factories';
 
 import '@oc-tech/omni-ui-components/styles.css';
 
@@ -34,6 +35,7 @@ createRoot(document.getElementById('library-root')!).render(
     <Card>Card body</Card>
     <Panel title="Panel"><div>Body</div></Panel>
     <SplitButton main={{ label: 'Main', icon: glyph, onClick: () => undefined } as never} menu={{ sections: [{ items: [{ id: 'x', label: 'X' }] }] } as never} />
+    <Table columns={invoiceColumns} dataSource={invoiceLines} rowKey="id" />
     <Composer value="" onChange={() => undefined} onSubmit={() => undefined} />
   </div>,
 );
