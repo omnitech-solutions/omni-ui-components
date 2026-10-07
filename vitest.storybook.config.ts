@@ -4,7 +4,7 @@ import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
 import viteConfig from './vite.config';
 
-// Runs every story's `play` function in real Chromium (see `pnpm test:stories`).
+// Runs the Storybook tests (every story, including its `play` function) in real Chromium (see `pnpm test:storybook`).
 // Kept apart from vitest.config.ts so `pnpm test` (happy-dom unit tests) is unchanged.
 export default mergeConfig(
   viteConfig,

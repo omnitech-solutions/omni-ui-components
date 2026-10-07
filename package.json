@@ -22,7 +22,7 @@
     "docker:dev:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:dev:down": "docker compose -f docker-compose.dev.yml down -v",
     "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
-    "test:stories": "vitest run --config vitest.storybook.config.ts",
+    "test:storybook": "vitest run --config vitest.storybook.config.ts",
     "test:visual": "vitest run --config vitest.visual.config.ts",
     "test:visual:update": "vitest run --config vitest.visual.config.ts --update"
   },

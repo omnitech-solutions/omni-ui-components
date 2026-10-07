@@ -33,4 +33,4 @@ jobs:
 
       # run every story's `play` in real Chromium (vitest browser mode + @storybook/addon-vitest)
       - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm test:stories
+      - run: pnpm test:storybook
