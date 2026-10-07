@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Host page B (host plus library Panel and Button)</title>
     <link rel="icon" href="data:," />
+    <!-- The order statement must come first: the first `@layer` statement a page meets fixes the order, bundler CSS chunking included. -->
+    <style>@layer host, omni-ui-components;</style>
   </head>
   <body>
     <div id="host-content">

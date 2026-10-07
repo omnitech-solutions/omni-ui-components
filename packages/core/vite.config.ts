@@ -15,9 +15,14 @@ const externalPackages = [
   ...Object.keys(packageJson.peerDependencies ?? {}),
 ];
 
+/** The library's layer order, from lowest to highest; the sublayers of `omni-ui-components`. */
+const layerOrder = '@layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base, omni-ui-components.components, omni-ui-components.utilities, omni-ui-components.classes;';
+
 /**
- * Tailwind emits its `@property` fallback as a top-level `@layer properties`. Nest it under the library layer so every
- * layer the package ships is `omni-ui-components` or one of its sublayers (see bionic/research/references/css-delivery.md).
+ * Tailwind emits its `@property` fallback as a top-level `@layer properties`: nest it under the library layer so every layer the
+ * package ships is `omni-ui-components` or one of its sublayers. The bundler also drops the order statement the sources open with
+ * and the first layer block in the file then fixes the order, so the statement is put back at the very top of every stylesheet
+ * (see bionic/research/references/css-delivery.md).
  */
 const nestTailwindLayers = (): Plugin => ({
   name: 'oui:nest-tailwind-layers',
@@ -25,7 +30,10 @@ const nestTailwindLayers = (): Plugin => ({
   generateBundle(_options, bundle) {
     for (const asset of Object.values(bundle)) {
       if (asset.type !== 'asset' || !asset.fileName.endsWith('.css') || typeof asset.source !== 'string') continue;
-      asset.source = asset.source.replace(/@layer properties(?=[{;,])/g, '@layer omni-ui-components.properties');
+      const nested = asset.source.replace(/@layer properties(?=[{;,])/g, '@layer omni-ui-components.properties');
+      // `@charset` and `@import` must stay first; the shipped stylesheet has neither, but a future one might.
+      const head = nested.match(/^(?:\s*(?:\/\*[\s\S]*?\*\/|@charset[^;]*;|@import[^;]*;))*/)?.[0] ?? '';
+      asset.source = `${head}${layerOrder}${nested.slice(head.length)}`;
     }
   },
 });

@@ -17,6 +17,6 @@ export default defineConfig({
   build: {
     outDir: resolve(core, 'tmp/host-app'),
     emptyOutDir: true,
-    rollupOptions: { input: { b: resolve(__dirname, 'b.html') } },
+    rollupOptions: { input: { b: resolve(__dirname, 'b.html'), c: resolve(__dirname, 'c.html') } },
   },
 });

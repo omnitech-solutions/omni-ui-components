@@ -1,7 +1,7 @@
 /* Base Palette — immutable across themes
  * Moved from app/assets/stylesheets/base/_base_variables.scss
  */
-@layer omni-ui-components-reset, omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base,
+@layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base,
   omni-ui-components.components, omni-ui-components.utilities, omni-ui-components.classes;
 
 /* `color-scheme` is not set on :root: a host that sets its own (or none) keeps it. Library themes set it on [data-theme]. */

@@ -1,7 +1,6 @@
-/* Every rule the library ships lives in the cascade layer `omni-ui-components` (sublayers below), except the bare-element reset,
-   which has its own lowest layer. A host declares `@layer omni-ui-components-reset, host, omni-ui-components;` and keeps control
-   of precedence. See bionic/research/references/css-delivery.md. */
-@layer omni-ui-components-reset, omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base,
+/* Every rule the library ships lives in the cascade layer `omni-ui-components` (sublayers below). A host declares
+   `@layer host, omni-ui-components;` and keeps control of precedence. See bionic/research/references/css-delivery.md. */
+@layer omni-ui-components.properties, omni-ui-components.theme, omni-ui-components.palette, omni-ui-components.base,
   omni-ui-components.components, omni-ui-components.utilities, omni-ui-components.classes;
 @import "tailwindcss/theme" layer(omni-ui-components.theme);
 @import "tailwindcss/utilities" layer(omni-ui-components.utilities) source(none);
@@ -19,34 +18,50 @@
    Full preflight would also reset margins, padding, headings, links, lists, and
    set img/svg to display:block — all of which would break existing bridge CSS.
    We'll enable full preflight once bridge CSS is fully retired. */
-/* The preflight subset Tailwind utilities depend on, kept in its OWN layer below the host. Unlike every other library rule it
-   selects bare elements (`*`, `button`), because the library's native controls cannot be told apart from the host's. It is
-   the lowest layer, so a host that declares `@layer omni-ui-components-reset, host, omni-ui-components;`, or that leaves
-   its rules unlayered, always wins over it: the reset only fills in what the host does not say. */
-@layer omni-ui-components-reset {
-  *,
-  ::after,
-  ::before,
-  ::backdrop {
+/* The preflight subset Tailwind utilities depend on, scoped to library elements only (no `*`, `button` or `html` rule: those would
+   strip the browser's own border from the host's unstyled controls and give the host's buttons a transparent background).
+   A library element is one that carries `data-slot` (or sits inside one), or is a portalled `data-oui-surface`. Utilities sit in a
+   later layer than `base`, so a component class still wins; the host's layer sits below this one, so a host's `button { ... }`
+   cannot restyle a library control. `:where()` keeps specificity at zero. */
+@layer omni-ui-components.base {
+  :where([data-slot], [data-slot] *, [data-oui-surface], [data-oui-surface] *),
+  :where([data-slot], [data-slot] *, [data-oui-surface], [data-oui-surface] *)::after,
+  :where([data-slot], [data-slot] *, [data-oui-surface], [data-oui-surface] *)::before {
     --tw-border-style: solid;
-    border-width: 0;
-    border-style: solid;
     border-color: var(--color-border, currentColor);
   }
 
-  /* Component buttons that use only hover/active background utilities would otherwise inherit the browser's native
-     ButtonFace grey, which varies by browser and color scheme. */
-  button {
-    background-color: transparent;
-    background-image: none;
+  /* The browser's own box model for library elements, whatever the host's `* { box-sizing }` says: the marked components, and the
+     roots that carry Tailwind layout or border classes (`flex`, `grid`, `border`, `rounded-*`) without a marker. */
+  :where([data-slot], [data-slot] *, [data-oui-surface], [data-oui-surface] *, [class~='flex'], [class~='inline-flex'], [class~='grid'], [class~='border'], [class*='rounded-']) {
+    box-sizing: revert;
   }
-}
 
-/* Native controls the library marks with `data-slot` (Button, Input, IconButton, ...) take back what a host's own element rules
-   (`button { border; background; box-shadow }`, inside a host layer below this one) would otherwise paint onto them. This layer sits
-   below the utilities, so a component class that sets any of these still wins. The host's own, unmarked controls are not matched. */
-@layer omni-ui-components.base {
-  :where(button, input, select, textarea)[data-slot] {
+  /* A host's `img, svg { vertical-align: middle }` would shift the library's icons. */
+  :where(svg):where([data-slot] *, [data-oui-surface] *, .lucide) {
+    vertical-align: revert;
+  }
+
+  /* Elements that use a border utility (`border`, `border-b`, `hover:border-x`) but sit outside any marked component (Card). Colour
+     only: width and style come from the utility. */
+  :where([class~='border'], [class^='border-'], [class*=' border-'], [class*=':border-']) {
+    border-color: var(--color-border, currentColor);
+  }
+
+  /* Native controls of the library: a marked component, a portalled surface, or Tailwind layout classes no host without Tailwind uses
+     (`inline-flex`, `flex`, `box-border`). They take back what a host's own element rules (`button { border; background; shadow }`)
+     would paint onto them. A host control carrying one of those class names is the one case that loses its host styling. */
+  :where(button, input, select, textarea):where(
+      [data-slot],
+      [data-slot] *,
+      [data-oui-surface] *,
+      [class~='inline-flex'],
+      [class~='flex'],
+      [class~='box-border']
+    ) {
+    /* Back to the browser's own control (padding, font, colour ...) so a host's `button { padding; font }` does not size library
+       controls; the library's utilities, in later layers, then style it. */
+    all: revert;
     border-width: 0;
     border-style: solid;
     border-color: var(--color-border, currentColor);

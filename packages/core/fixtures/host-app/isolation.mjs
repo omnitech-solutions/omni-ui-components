@@ -88,17 +88,8 @@ function auditCss(css) {
   for (const node of root.children) {
     const p = node.prelude;
     if (node.statement) {
-      if (!/^@layer omni-ui-components(-reset|\.[\w-]+)?(\s*,\s*omni-ui-components(-reset|\.[\w-]+)?)*$/.test(p) && !p.startsWith('@charset')) {
+      if (!/^@layer omni-ui-components(\.[\w-]+)?(\s*,\s*omni-ui-components(\.[\w-]+)?)*$/.test(p) && !p.startsWith('@charset')) {
         problems.push(`top-level statement escapes the library layer: ${p.slice(0, 80)}`);
-      }
-      continue;
-    }
-    if (p === '@layer omni-ui-components-reset') {
-      // The one layer allowed to select bare elements, and only for the two documented reset rules.
-      for (const child of node.children) {
-        const selectors = splitSelectors(child.prelude).join(',');
-        const allowed = ['*,::after,::before,::backdrop', '*,:after,:before,::backdrop', 'button'];
-        if (!allowed.includes(selectors)) problems.push(`unexpected rule in the reset layer: ${selectors.slice(0, 80)}`);
       }
       continue;
     }
@@ -134,9 +125,13 @@ if (!existsSync(cssPath)) {
   console.error('dist/styles.css is missing: run `pnpm build` first (the test:isolation script does).');
   process.exit(2);
 }
-const auditProblems = auditCss(readFileSync(cssPath, 'utf8'));
+const cssText = readFileSync(cssPath, 'utf8');
+const auditProblems = auditCss(cssText);
+if (!/^(?:\/\*[\s\S]*?\*\/)?\s*@layer omni-ui-components\.properties, omni-ui-components\.theme, omni-ui-components\.palette, omni-ui-components\.base, omni-ui-components\.components, omni-ui-components\.utilities, omni-ui-components\.classes;/.test(cssText)) {
+  auditProblems.push('the layer order statement is not the first rule of the stylesheet (the bundler may have reordered the layers)');
+}
 if (auditProblems.length) auditProblems.slice(0, 20).forEach((p) => fail(`css audit: ${p}`));
-else pass(`css audit: all of dist/styles.css (${Math.round(statSync(cssPath).size / 1024)} KB) sits in layer omni-ui-components (plus the two-rule reset layer); no unscoped element rule`);
+else pass(`css audit: all of dist/styles.css (${Math.round(statSync(cssPath).size / 1024)} KB) sits in layer omni-ui-components; no unscoped element rule`);
 
 // ---------------------------------------------------------------- servers
 
@@ -178,20 +173,21 @@ const settle = async (page) => {
 
 // ---------------------------------------------------------------- 2. page A, zero-pixel diff
 
-// The reset sets `border-style: solid` and a default `border-color` on every element, which is invisible while the width is 0.
-// A zero-width border is therefore compared without its style and colour (the pixels still have to match exactly).
+// Every computed property of every host element is compared (threshold 0), custom properties excepted.
 const computedDump = () =>
   [...document.querySelectorAll('html, body, #host-content, #host-content *')].map((el) => {
     const cs = getComputedStyle(el);
-    const noBorder = ['top', 'right', 'bottom', 'left'].every((side) => cs.getPropertyValue(`border-${side}-width`) === '0px');
     const o = {};
     for (const name of cs) {
       if (name.startsWith('--')) continue;
-      if (noBorder && /^border-.*-(style|color)$/.test(name)) continue;
       o[name] = cs.getPropertyValue(name);
     }
     return [el.tagName + (el.className ? `.${el.className}` : ''), o];
   });
+
+// Chromium reports the UA default serif as `Times` or `"Times New Roman"` depending on when platform fonts were resolved. The same
+// flip happens with the library stylesheet disabled again, so it is a browser artefact, not a rule: pixels are compared exactly.
+const sameDefaultSerif = (key, a, b) => key === 'font-family' && [a, b].every((v) => v === 'Times' || v === '"Times New Roman"');
 
 async function capturePage(url, name) {
   const context = await browser.newContext({ viewport: { width: 1000, height: 900 }, deviceScaleFactor: 1 });
@@ -217,9 +213,9 @@ for (const variant of ['before', 'after', 'layered']) {
   baseline.computed.forEach(([id, props], i) => {
     const other = withLib.computed[i]?.[1] ?? {};
     for (const key of Object.keys(props)) {
-      if (props[key] !== other[key]) {
+      if (props[key] !== other[key] && !sameDefaultSerif(key, props[key], other[key])) {
         styleDiffs += 1;
-        if (sample.length < 8) sample.push(`${id} ${key}: ${props[key]} -> ${other[key]}`);
+        if (sample.length < Number(process.env.DIFF_SAMPLE ?? 8)) sample.push(`${id} ${key}: ${props[key]} -> ${other[key]}`);
       }
     }
   });
@@ -272,6 +268,54 @@ for (const theme of ['light', 'dark']) {
   else pass(`page B ${theme}: Panel header 40px, region background ${facts.regionBg}`);
   console.log(`      ${theme}: ${JSON.stringify(facts)}`);
   await context.close();
+}
+
+// ---------------------------------------------------------------- 4. host does not leak into the library
+
+// A spread of library components (c.tsx; its own wrapper divs are marked data-fixture and skipped) is rendered with no host stylesheet and with host.css in `@layer host`. Every computed
+// property of every library element must be identical: the host's resets, element rules and tokens do not reach them.
+const libraryDump = () =>
+  [...document.querySelectorAll('#library-root, #library-root *')].filter((el) => !el.closest('.sr-only') && !el.hasAttribute('data-fixture')).map((el) => {
+    const cs = getComputedStyle(el);
+    const o = {};
+    for (const name of cs) if (!name.startsWith('--')) o[name] = cs.getPropertyValue(name);
+    return [(el.parentElement ? el.parentElement.tagName + (el.parentElement.getAttribute("data-slot") ? "[" + el.parentElement.getAttribute("data-slot") + "]" : "") + ">" : "") + el.tagName + (el.getAttribute("data-slot") ? `[data-slot=${el.getAttribute('data-slot')}]` : '') + (el.getAttribute('class') ? `.${el.getAttribute('class').slice(0, 120)}` : ''), o];
+  });
+
+async function captureLibrary(host, theme) {
+  const context = await browser.newContext({ viewport: { width: 900, height: 1200 }, deviceScaleFactor: 1 });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+  page.on('pageerror', (e) => errors.push(String(e)));
+  await page.goto(`${base}/c.html?host=${host}&theme=${theme}`, { waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('#library-root button', { state: 'attached' });
+  await page.addStyleTag({ content: '*, ::before, ::after { transition: none !important; animation: none !important; }' });
+  await settle(page);
+  const computed = await page.evaluate(libraryDump);
+  await context.close();
+  return { computed, errors };
+}
+
+for (const theme of ['light', 'dark']) {
+  const alone = await captureLibrary('none', theme);
+  const hosted = await captureLibrary('layered', theme);
+  const errors = [...alone.errors, ...hosted.errors];
+  if (errors.length) fail(`library regression page ${theme}: console errors ${errors.join(' | ')}`);
+  if (alone.computed.length !== hosted.computed.length) {
+    fail(`library regression page ${theme}: ${alone.computed.length} elements alone, ${hosted.computed.length} with the host`);
+    continue;
+  }
+  const leaks = [];
+  alone.computed.forEach(([id, props], i) => {
+    const diffs = Object.keys(props).filter((key) => props[key] !== hosted.computed[i][1][key] && !sameDefaultSerif(key, props[key], hosted.computed[i][1][key]));
+    // `box-sizing` on its own changes nothing visible (an empty, unsized div): only report it when size or paint also differ.
+    const visible = diffs.length === 1 && diffs[0] === 'box-sizing' ? [] : diffs;
+    for (const key of visible) leaks.push(`${id} ${key}: ${props[key]} -> ${hosted.computed[i][1][key]}`);
+  });
+  if (process.env.LEAK_SUMMARY) { const by = {}; leaks.forEach((l) => { const [head, to] = l.split(': '); const key = head.split(' ').pop(); (by[key] ??= []).push(l); }); Object.entries(by).forEach(([k, v]) => console.log('LEAK', theme, k, v.length, v[0].slice(0, 160))); }
+  if (leaks.length) fail(`library ${theme}: host styles leak into ${alone.computed.length} library elements, ${leaks.length} differences: ${leaks.slice(0, Number(process.env.DIFF_SAMPLE ?? 8)).join(' | ')}`);
+  else pass(`library ${theme}: ${alone.computed.length} library elements compute identically with and without the host stylesheet`);
 }
 
 await browser.close();

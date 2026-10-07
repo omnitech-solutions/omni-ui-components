@@ -9,14 +9,14 @@
       // ?lib=none (default)  host only
       // ?lib=before          library stylesheet first, host.css after it (host wins by order)
       // ?lib=after           host.css first, library stylesheet after it (library would win by order, were it not layered)
-      // ?lib=layered         the documented setup: `@layer omni-ui-components-reset, host, omni-ui-components;` with host.css inside layer(host)
+      // ?lib=layered         the documented setup: `@layer host, omni-ui-components;` with host.css inside layer(host)
       var variant = new URLSearchParams(location.search).get('lib') || 'none';
       var lib = '<link rel="stylesheet" href="/dist/styles.css" />';
       var host = '<link rel="stylesheet" href="./host.css" />';
       if (variant === 'before') document.write(lib + host);
       else if (variant === 'after') document.write(host + lib);
-      else if (variant === 'layered') document.write('<style>@layer omni-ui-components-reset, host, omni-ui-components; @import url("./host.css") layer(host);</style>' + lib);
-      else if (variant === 'layered-none') document.write('<style>@layer omni-ui-components-reset, host, omni-ui-components; @import url("./host.css") layer(host);</style>');
+      else if (variant === 'layered') document.write('<style>@layer host, omni-ui-components; @import url("./host.css") layer(host);</style>' + lib);
+      else if (variant === 'layered-none') document.write('<style>@layer host, omni-ui-components; @import url("./host.css") layer(host);</style>');
       else document.write(host);
     </script>
   </head>
@@ -44,6 +44,19 @@
         <thead><tr><th>Name</th><th>Role</th></tr></thead>
         <tbody><tr><td>Ada</td><td>Engineer</td></tr><tr><td>Grace</td><td>Admiral</td></tr></tbody>
       </table>
+      <h2>Elements the host never styles</h2>
+      <div class="row">
+        <input type="color" aria-label="Colour" />
+        <input type="file" aria-label="File" />
+        <input type="range" aria-label="Range" />
+        <progress value="30" max="100"></progress>
+        <meter value="0.4"></meter>
+        <iframe title="Empty frame" width="120" height="50" srcdoc=""></iframe>
+        <input type="image" alt="" width="24" height="24" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Crect width='24' height='24' fill='%23333'/%3E%3C/svg%3E" />
+        <details open><summary>Details</summary>Body</details>
+        <dialog open>Native dialog</dialog>
+      </div>
+      <div class="rule-bottom" style="border-bottom-width: 3px; padding: 4px">Host border width without a style or colour</div>
       <div class="card"><h3>Card</h3><ul><li>First</li><li>Second</li></ul><ol><li>One</li><li>Two</li></ol></div>
       <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="none" stroke="currentColor" stroke-width="3" /></svg>
       <img alt="" width="40" height="40" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23b5451b'/%3E%3C/svg%3E" />
