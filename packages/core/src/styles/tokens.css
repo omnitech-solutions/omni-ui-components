@@ -34,6 +34,7 @@
     --oui-control-radius:          10px;
     --oui-control-gap:             6px;
     --oui-control-separator:       20px; /* vertical divider height between control groups */
+    --oui-control-hit:             40px; /* minimum pointer target: a ::before grows a 36px control to this without moving layout */
     --oui-control-icon:            20px;
     --oui-control-caret:           20px; /* width of a split button's caret segment */
     --oui-control-label-max:       260px; /* default ellipsis width for a truncating label */
@@ -259,5 +260,31 @@
     :root {
       --oui-transition-duration: 0ms;
     }
+  }
+
+  /* 40px hit area: see internal/support/hitArea.ts. --oui-hit-base is the owner's own height, --oui-hit-border its border width. */
+  .oui-hit {
+    position: relative;
+    --oui-hit-grow: calc(min(0px, (var(--oui-hit-base, var(--oui-control-height)) - var(--oui-control-hit)) / 2) - var(--oui-hit-border, 0px));
+  }
+  .oui-hit::before {
+    content: '';
+    position: absolute;
+    inset: var(--oui-hit-grow);
+  }
+  .oui-hit-y::before {
+    inset-inline: calc(-1 * var(--oui-hit-border, 0px));
+  }
+  .oui-hit-start::before {
+    right: 0;
+  }
+  .oui-hit-end::before {
+    left: var(--oui-hit-left, 0px);
+  }
+
+  /* Storybook "Hit area" toolbar toggle: outline each control's expanded 40px pointer target. */
+  html[data-oui-hit-outline] .oui-hit::before {
+    outline: 1px dashed #e11d90;
+    background: rgba(225, 29, 144, 0.12);
   }
 }

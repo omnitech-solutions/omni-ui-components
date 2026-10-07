@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group';
 
 import { cn } from 'lib/utils';
+import { hitAreaY } from '../internal/support/hitArea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../Tooltip';
 import type { SegmentedOption, SegmentedPrimitiveProps } from './Segmented.types';
 
@@ -17,7 +18,10 @@ const PILL_ITEM = cn(
 /** One bordered group on the control row: 2px inset, 2px gaps, accent-tinted active segment, transparent inactive. */
 const CONTROL_ROOT =
   'box-border inline-flex h-[var(--oui-control-height)] w-fit items-stretch gap-[2px] rounded-[calc(var(--oui-control-radius)+1px)] border border-[color:var(--oui-tone-neutral-border)] p-[2px]';
+/** The item is the root's 36px minus its 1px border and 2px padding (30px): the hit area grows from that. */
 const CONTROL_ITEM = cn(
+  hitAreaY,
+  '[--oui-hit-base:30px]',
   'h-auto min-w-8 gap-1.5 rounded-[8px] px-2 text-[13px] font-medium cursor-pointer',
   'bg-transparent text-[color:var(--oui-segment-inactive-fg)] hover:bg-[color:var(--oui-tone-neutral-bg)] hover:text-[color:var(--oui-tone-neutral-fg)]',
   'data-[state=on]:bg-[color:var(--oui-segment-active-bg)] data-[state=on]:text-[color:var(--oui-segment-active-fg)]',

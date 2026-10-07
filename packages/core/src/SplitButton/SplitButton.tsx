@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from 'lib/utils';
 import { ActionMenu } from '../ActionMenu';
 import { ControlBadge } from '../internal/support/ControlBadge';
+import { hitAreaEnd, hitAreaStart } from '../internal/support/hitArea';
 import { toneTintClasses } from '../internal/support/controlTone';
 import { Progress } from '../Progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../Tooltip';
@@ -79,6 +80,7 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
         className={cn(
           SEGMENT,
           'relative rounded-l-[calc(var(--oui-control-radius)-1px)]',
+          !labelled && `${hitAreaStart} [--oui-hit-base:34px]`,
           labelled ? 'min-w-[58px] flex-col gap-[3px] px-1' : 'min-w-[var(--oui-control-height)]',
           '[&_svg]:size-[var(--oui-control-icon)]',
           'aria-pressed:bg-[color:var(--oui-tone-accent-bg)] aria-pressed:text-[color:var(--oui-tone-accent-fg)]',
@@ -145,6 +147,7 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
 
     const caretClass = cn(
       SEGMENT,
+      !labelled && `${hitAreaEnd} [--oui-hit-base:34px] [--oui-hit-left:-1px]`,
       'w-[var(--oui-control-caret)] rounded-r-[calc(var(--oui-control-radius)-1px)] border-l border-inherit text-[color:var(--oui-foreground-muted)] [&_svg]:size-4',
     );
     const caretLabel = caret?.label ?? 'More options';

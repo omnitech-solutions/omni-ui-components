@@ -34,6 +34,13 @@ const formatArgs = (args: Record<string, unknown>): string => {
 };
 
 const preview: Preview = {
+  globalTypes: {
+    hitArea: {
+      description: 'Outline the 40px hit area of control-row buttons',
+      toolbar: { title: 'Hit area', icon: 'outline', items: [{ value: 'off', title: 'Hit area: off' }, { value: 'outline', title: 'Hit area: outline' }], dynamicTitle: true },
+    },
+  },
+  initialGlobals: { hitArea: 'off' },
   parameters: {
     layout: 'fullscreen',
     controls: {
@@ -72,6 +79,10 @@ const preview: Preview = {
       attributeName: 'data-theme',
     }),
     (Story, ctx) => {
+      if (typeof document !== 'undefined') {
+        if (ctx.globals.hitArea === 'outline') document.documentElement.setAttribute('data-oui-hit-outline', '');
+        else document.documentElement.removeAttribute('data-oui-hit-outline');
+      }
       const theme = String(ctx.globals.theme ?? 'dark').toLowerCase();
       if (typeof document !== 'undefined') {
         if (theme === 'light') document.documentElement.removeAttribute('data-theme');
