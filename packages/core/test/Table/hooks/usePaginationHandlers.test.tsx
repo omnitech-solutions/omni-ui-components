@@ -3,7 +3,6 @@ import * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { usePaginationHandlers } from '../../../src/Table/hooks/usePaginationHandlers';
 import { TableProvider, type TableContextShape } from '../../../src/Table/hooks/useTable';
-import { useTableHandlers } from '../../../src/Table/hooks/useTableHandlers';
 import { useTableInstance } from '../../../src/Table/hooks/useTableInstance';
 import { useTableState } from '../../../src/Table/hooks/useTableState';
 import type { TableProps } from '../../../src/Table/Table.types';
