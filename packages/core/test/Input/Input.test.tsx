@@ -139,4 +139,9 @@ describe('omni-ui-components/Input', () => {
       expect(screen.getByTestId('i').id).toMatch(/^oui-input-/);
     });
   });
+
+  it('truncates a long placeholder with an ellipsis in the panel variant', () => {
+    renderInput({ variant: 'panel' });
+    expect(screen.getByTestId('i')).toHaveClass('text-ellipsis');
+  });
 });

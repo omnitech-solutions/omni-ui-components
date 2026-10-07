@@ -1,0 +1,24 @@
+# Changelog
+
+## 0.1.0 - 2026-10-06
+
+First release since 0.0.2. Everything below is new in a published version.
+
+### Added
+
+- Component library expansion (85 components) with Storybook coverage and a `dynamic-form` entry point.
+- Native App controls: Button and IconButton (tone, control sizes, badge, loading, pressed, shortcut, working `asChild`), Toolbar, SplitButton, data-driven ActionMenu, Panel with `useFollowLatest`, Transcript, Input `actions` and `panel` variant, SessionBar and StatusClock.
+- Variations on existing components: Progress `ring`, Segmented `multiple` and `control`, Empty `tile`, Steps `checklist`, Tag `mono` / `copyValue`, Divider control separator.
+- Conversation and composer: Transcript turn mode, Composer, Attachment, CommandPopover (`useCommandTrigger`), DictationBar, QueuedList, `useHoldToTalk`.
+- Message parts: Markdown, Sources, Suggestions, Thinking, StepTimeline, ErrorCard, ApprovalCard, FeedbackPanel, VersionPager, MessageActions, SummaryDivider.
+- Chat shell and settings: ConversationList, ConversationHeader, EmptyStarters, SettingsDialog, SettingRow, Toast and `useToast`, PanelShell, PreferencesForm, DataPrivacyPanel, IntegrationList, ShortcutList, and the chat utilities (`groupByRecency`, `useHotkeys`, export helpers, `copyText`, `useSpeech`, `initialsOf`, `useDebouncedCallback`).
+- DiffReview, ModelPicker / ModelMenu and ContextMeter.
+- Shared `useControllableState`; `--oui-*` panel tokens including `--oui-panel-see-through`.
+
+### Changed
+
+- Package metadata prepared for npm (`files`, `exports`, `publishConfig`).
+
+### Fixed
+
+- Chat panel header layout, popover portal and focus return, SplitButton status badge, Toolbar menu overlap, Storybook docs rendering.

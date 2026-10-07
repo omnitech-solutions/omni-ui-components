@@ -4,6 +4,7 @@ import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { Check, CircleAlert } from 'lucide-react';
 
 import { cn } from 'lib/utils';
+import { resolvePortalContainer, surfaceProps } from '../internal/support/PortalContainer';
 import type { ActionMenuHint, ActionMenuItem, ActionMenuNotice, ActionMenuProps, ActionMenuSection } from './ActionMenu.types';
 
 const SURFACE =
@@ -370,6 +371,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
     const content = (
       <PopoverPrimitive.Content
         data-slot="action-menu"
+        {...surfaceProps('action-menu')}
         data-kind="list"
         data-testid={testId}
         aria-label={label}
@@ -384,7 +386,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
     return (
       <PopoverPrimitive.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
         <PopoverPrimitive.Trigger asChild>{trigger}</PopoverPrimitive.Trigger>
-        {portal ? <PopoverPrimitive.Portal container={container}>{content}</PopoverPrimitive.Portal> : content}
+        {portal ? <PopoverPrimitive.Portal container={resolvePortalContainer(container)}>{content}</PopoverPrimitive.Portal> : content}
       </PopoverPrimitive.Root>
     );
   }
@@ -392,6 +394,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
   const content = (
     <DropdownMenuPrimitive.Content
       data-slot="action-menu"
+      {...surfaceProps('action-menu')}
       data-kind="menu"
       data-testid={testId}
       aria-label={label}
@@ -408,7 +411,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
   return (
     <DropdownMenuPrimitive.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange} modal={modal}>
       <DropdownMenuPrimitive.Trigger asChild>{trigger}</DropdownMenuPrimitive.Trigger>
-      {portal ? <DropdownMenuPrimitive.Portal container={container}>{content}</DropdownMenuPrimitive.Portal> : content}
+      {portal ? <DropdownMenuPrimitive.Portal container={resolvePortalContainer(container)}>{content}</DropdownMenuPrimitive.Portal> : content}
     </DropdownMenuPrimitive.Root>
   );
 };
