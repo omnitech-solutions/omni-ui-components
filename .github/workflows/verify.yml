@@ -17,7 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      # pnpm/action-setup is blocked by the repo's Actions policy (github-owned actions only); corepack reads `packageManager`
+      - run: corepack enable
 
       - uses: actions/setup-node@v4
         with:
