@@ -22,7 +22,7 @@
     "publish:package": "(npm whoami >/dev/null 2>&1 || npm login --scope=@oc-tech --auth-type=web) && pnpm --filter @oc-tech/omni-ui-components publish --access public",
     "docker:dev:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:dev:down": "docker compose -f docker-compose.dev.yml down -v",
-    "verify": "pnpm check && pnpm typecheck && pnpm test && pnpm build",
+    "verify": "pnpm check && pnpm typecheck && pnpm test:coverage && pnpm build",
     "test:storybook": "vitest run --config vitest.storybook.config.ts",
     "test:visual": "vitest run --config vitest.visual.config.ts",
     "test:visual:update": "vitest run --config vitest.visual.config.ts --update",

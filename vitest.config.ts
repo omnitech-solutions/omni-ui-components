@@ -42,7 +42,7 @@ export default defineConfig({
         '**/test/**',
         '**/*.test.{ts,tsx}',
       ],
-      // thresholds (80 on lines, statements, branches and functions) are switched on once src/Table has tests: see U46.
+      thresholds: { lines: 80, statements: 80, branches: 80, functions: 80 },
     },
   },
 });
