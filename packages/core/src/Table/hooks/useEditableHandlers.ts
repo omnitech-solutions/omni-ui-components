@@ -163,9 +163,14 @@ export function useEditableHandlers<TRecord, TRowData>({
     return null;
   };
 
-  const saveRowEdit = async (resolved: TableResolvedRow<TRecord, TRowData>, rowConfig: TableEditableRowConfig<TRecord, TRowData>) => {
+  // `pending` carries a value an editor passed to onSave(value) in the same tick: `editValues` has not re-rendered with it yet.
+  const saveRowEdit = async (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    rowConfig: TableEditableRowConfig<TRecord, TRowData>,
+    pending?: Record<string, unknown>,
+  ) => {
     const rowKey = String(resolved.key);
-    const values = editValues[rowKey] ?? rowInitialEditableValues(resolved, rowConfig);
+    const values = { ...(editValues[rowKey] ?? rowInitialEditableValues(resolved, rowConfig)), ...pending };
     const nextErrors: Record<string, string | null> = {};
     let hasError = false;
 
