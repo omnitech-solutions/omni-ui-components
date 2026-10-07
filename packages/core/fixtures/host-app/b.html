@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Host page B (host plus library Panel and Button)</title>
+    <link rel="icon" href="data:," />
+    <!-- The order statement must come first: the first `@layer` statement a page meets fixes the order, bundler CSS chunking included. -->
+    <style>@layer host, omni-ui-components;</style>
+  </head>
+  <body>
+    <div id="host-content">
+      <h1>Host application</h1>
+      <p>Host markup next to a library <code>Panel</code> and <code>Button</code>. <a href="#x">A link</a>.</p>
+      <div class="row">
+        <button type="button">Host button</button>
+        <input type="text" value="Host input" aria-label="Host text" />
+      </div>
+    </div>
+    <div id="library-root" style="max-width: 420px; height: 240px; display: flex"></div>
+    <script type="module" src="./b.tsx"></script>
+  </body>
+</html>

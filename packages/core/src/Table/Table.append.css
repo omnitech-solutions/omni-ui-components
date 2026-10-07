@@ -1,3 +1,4 @@
+@layer omni-ui-components.classes {
 /*
  * Small "+" affordances for row / column extension. Positioned around the
  * table's outer border. Idle at low opacity; lift on hover.
@@ -64,4 +65,5 @@
   top: 50%;
   transform: translate(50%, -50%) scale(var(--append-scale, 1));
   z-index: 2;
+}
 }
