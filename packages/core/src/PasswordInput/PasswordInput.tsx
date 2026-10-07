@@ -4,7 +4,6 @@ import { Eye, EyeOff } from 'lucide-react';
 import { cn } from 'lib/utils';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
 import { InputPrimitive } from '../Input/InputPrimitive';
-import { PasswordInputPrimitive } from './PasswordInputPrimitive';
 import type { InputProps } from '../Input';
 
 export interface PasswordInputProps extends Omit<InputProps, 'type'> {
@@ -44,8 +43,8 @@ const PasswordInputInner = React.forwardRef<HTMLInputElement, PasswordInputProps
       prefix: 'oui-password',
     });
     const [visible, setVisible] = React.useState(false);
-    const Primitive = visible ? InputPrimitive : PasswordInputPrimitive;
-    const extraType = visible ? ({ type: 'text' } as const) : ({} as const);
+    // One element for both states: swapping components would remount the input and drop uncontrolled text and focus.
+    const type = visible ? 'text' : 'password';
 
     return (
       <FieldShell
@@ -61,7 +60,7 @@ const PasswordInputInner = React.forwardRef<HTMLInputElement, PasswordInputProps
         labelClassName={labelClassName}
       >
         <div className="relative flex w-full items-center" data-slot="password-input-wrapper">
-          <Primitive
+          <InputPrimitive
             ref={ref}
             id={id}
             invalid={isInvalid}
@@ -70,8 +69,8 @@ const PasswordInputInner = React.forwardRef<HTMLInputElement, PasswordInputProps
             aria-required={required || undefined}
             aria-invalid={isInvalid || undefined}
             className={cn(layout === 'horizontal' && 'flex-1', toggleable && 'pr-10', className)}
-            {...extraType}
             {...primitiveProps}
+            type={type}
           />
           {toggleable ? (
             <button
