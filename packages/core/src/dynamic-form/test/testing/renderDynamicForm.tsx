@@ -1,17 +1,17 @@
-import * as React from 'react';
-import { act, fireEvent, render, screen, within, type RenderResult } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import type { RJSFSchema, UiSchema } from '@rjsf/utils';
-import type { z } from 'zod';
-
+import { act, fireEvent, type RenderResult, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { DynamicForm, type DynamicFormProps } from 'dynamic-form';
+import type * as React from 'react';
+import type { z } from 'zod';
 
 /**
  * Options for {@link renderDynamicForm}. Inherits {@link DynamicFormProps}
  * except `onSubmit`/`onError`, which the helper provides as jest mocks if
  * none are passed.
  */
-export interface RenderDynamicFormOptions<TFormData, TSubmitData> extends Omit<DynamicFormProps<TFormData, TSubmitData>, 'onSubmit' | 'onError'> {
+export interface RenderDynamicFormOptions<TFormData, TSubmitData>
+  extends Omit<DynamicFormProps<TFormData, TSubmitData>, 'onSubmit' | 'onError'> {
   onSubmit?: jest.Mock;
   onError?: jest.Mock;
   children?: React.ReactNode;
@@ -43,7 +43,9 @@ const DEFAULT_SUBMIT_LABEL = 'Save';
  * await submit();
  * expect(onSubmit).toHaveBeenCalledWith({ subject: 'Welcome' });
  */
-export function renderDynamicForm<TFormData, TSubmitData>(opts: RenderDynamicFormOptions<TFormData, TSubmitData>): RenderDynamicFormResult {
+export function renderDynamicForm<TFormData, TSubmitData>(
+  opts: RenderDynamicFormOptions<TFormData, TSubmitData>,
+): RenderDynamicFormResult {
   const onSubmit = opts.onSubmit ?? jest.fn();
   const onError = opts.onError ?? jest.fn();
   const user = userEvent.setup();
@@ -88,9 +90,14 @@ export function renderDynamicForm<TFormData, TSubmitData>(opts: RenderDynamicFor
  * @example
  * renderDynamicForm({ ..., zodSchema: passthroughZod<{ subject: string }>() });
  */
-export const passthroughZod = <T,>() => ({ safeParse: (v: T) => ({ success: true as const, data: v }) }) as unknown as z.ZodType<T, z.ZodTypeDef, T>;
+export const passthroughZod = <T,>() =>
+  ({ safeParse: (v: T) => ({ success: true as const, data: v }) }) as unknown as z.ZodType<
+    T,
+    z.ZodTypeDef,
+    T
+  >;
 
-export { screen, within, act, fireEvent };
+export { act, fireEvent, screen, within };
 
 /**
  * Build a single-property `RJSFSchema` for fixture tests.
@@ -98,7 +105,11 @@ export { screen, within, act, fireEvent };
  * @example
  * buildSingleFieldSchema('subject', { type: 'string', title: 'Subject' }, true);
  */
-export const buildSingleFieldSchema = (fieldName: string, fieldSchema: RJSFSchema, required = false): RJSFSchema => ({
+export const buildSingleFieldSchema = (
+  fieldName: string,
+  fieldSchema: RJSFSchema,
+  required = false,
+): RJSFSchema => ({
   type: 'object',
   ...(required ? { required: [fieldName] } : {}),
   properties: { [fieldName]: fieldSchema },
@@ -110,4 +121,6 @@ export const buildSingleFieldSchema = (fieldName: string, fieldSchema: RJSFSchem
  * @example
  * buildSingleFieldUiSchema('subject', { 'ui:widget': 'text', 'ui:placeholder': '…' });
  */
-export const buildSingleFieldUiSchema = (fieldName: string, ui: UiSchema[string]): UiSchema => ({ [fieldName]: ui });
+export const buildSingleFieldUiSchema = (fieldName: string, ui: UiSchema[string]): UiSchema => ({
+  [fieldName]: ui,
+});

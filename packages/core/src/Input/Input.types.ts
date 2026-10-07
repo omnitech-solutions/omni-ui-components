@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import type { RootProps } from '../lib';
 import type { FieldLayoutProps, InputVariantProps } from './Input.variants';
@@ -9,7 +9,10 @@ import type { FieldLayoutProps, InputVariantProps } from './Input.variants';
  * @example
  * <InputPrimitive variant="bordered" inputSize="default" value={v} onChange={setV} />
  */
-export interface InputPrimitiveProps extends Omit<React.ComponentProps<'input'>, 'onChange' | 'size' | 'onSubmit'>, InputVariantProps, RootProps {
+export interface InputPrimitiveProps
+  extends Omit<React.ComponentProps<'input'>, 'onChange' | 'size' | 'onSubmit'>,
+    InputVariantProps,
+    RootProps {
   invalid?: boolean;
   /**
    * Render an auto-growing `<textarea>` instead of an `<input>` (a message box). The ref then holds the textarea (typed as
@@ -49,4 +52,10 @@ export interface InputProps extends InputPrimitiveProps, FieldLayoutProps {
   labelClassName?: string;
 }
 
-export type { InputVariant, InputSize, InputVariantProps, FieldLayout, FieldLayoutProps } from './Input.variants';
+export type {
+  FieldLayout,
+  FieldLayoutProps,
+  InputSize,
+  InputVariant,
+  InputVariantProps,
+} from './Input.variants';

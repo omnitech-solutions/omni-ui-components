@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import type * as React from 'react';
 
 import { Table } from '../../src/Table';
 import type { TableProps } from '../../src/Table/Table.types';

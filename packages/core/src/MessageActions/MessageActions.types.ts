@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import type { ControlTone } from '../internal/support/controlTone';
 
@@ -26,12 +26,12 @@ export interface MessageActionNode {
   node: React.ReactNode;
 }
 
-export type MessageAction<T extends MessageActionButton = MessageActionButton> = T | MessageActionNode;
+export type MessageAction<T extends MessageActionButton = MessageActionButton> =
+  | T
+  | MessageActionNode;
 
-export interface MessageActionsProps<T extends MessageActionButton = MessageActionButton> extends Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  'children'
-> {
+export interface MessageActionsProps<T extends MessageActionButton = MessageActionButton>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   /** Buttons (your own item type, extended with any fields) and custom nodes. */
   actions: MessageAction<T>[];
   /** Quiet text after the buttons, e.g. `DeepSeek R1 · 1,284 tokens · local`. */

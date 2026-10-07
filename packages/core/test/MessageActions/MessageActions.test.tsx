@@ -1,11 +1,17 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { expectTypeOf } from 'vitest';
-import userEvent from '@testing-library/user-event';
-import { render, screen, within } from '@testing-library/react';
 
-import { MessageActions, type MessageActionButton } from '@oc-tech/omni-ui-components/MessageActions';
-import { MessageActionsDemo, messageActionsPropsFactory, sampleActions } from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
+import {
+  type MessageActionButton,
+  MessageActions,
+} from '@oc-tech/omni-ui-components/MessageActions';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  MessageActionsDemo,
+  messageActionsPropsFactory,
+  sampleActions,
+} from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
+import { expectTypeOf } from 'vitest';
 
 describe('omni-ui-components/MessageActions', () => {
   it('is a labelled toolbar of named icon buttons, a custom node and meta text', () => {
@@ -24,8 +30,14 @@ describe('omni-ui-components/MessageActions', () => {
         })}
       />,
     );
-    expect(screen.getByRole('button', { name: 'Good reply' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('button', { name: 'Bad reply' })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: 'Good reply' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: 'Bad reply' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
     expect(screen.getByRole('button', { name: 'Copy' })).not.toHaveAttribute('aria-pressed');
   });
 
@@ -70,12 +82,24 @@ describe('omni-ui-components/MessageActions', () => {
   it('the demo toggles thumbs exclusively and read aloud', async () => {
     render(<MessageActionsDemo />);
     await userEvent.click(screen.getByRole('button', { name: 'Good reply' }));
-    expect(screen.getByRole('button', { name: 'Good reply' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Good reply' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Bad reply' }));
-    expect(screen.getByRole('button', { name: 'Good reply' })).toHaveAttribute('aria-pressed', 'false');
-    expect(screen.getByRole('button', { name: 'Bad reply' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Good reply' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(screen.getByRole('button', { name: 'Bad reply' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Read aloud' }));
-    expect(screen.getByRole('button', { name: 'Stop reading' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Stop reading' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
   });
 
   it('an action without onClick is not rendered', () => {

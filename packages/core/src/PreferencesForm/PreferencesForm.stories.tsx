@@ -1,9 +1,14 @@
-import * as React from 'react';
+import {
+  PreferencesForm,
+  type PreferencesFormProps,
+} from '@oc-tech/omni-ui-components/PreferencesForm';
 import type { Meta, StoryObj } from '@storybook/react';
+import {
+  PreferencesFormDemo,
+  preferencesFormPropsFactory,
+  preferencesFormVariants,
+} from 'factories/omni-ui-components/PreferencesForm/PreferencesForm.factories';
 import { expect, fn, userEvent, within } from 'storybook/test';
-
-import { PreferencesForm, type PreferencesFormProps } from '@oc-tech/omni-ui-components/PreferencesForm';
-import { PreferencesFormDemo, preferencesFormPropsFactory, preferencesFormVariants } from 'factories/omni-ui-components/PreferencesForm/PreferencesForm.factories';
 
 const meta: Meta<PreferencesFormProps> = {
   title: 'omni-ui-components/PreferencesForm',
@@ -19,16 +24,32 @@ const meta: Meta<PreferencesFormProps> = {
   },
   args: { ...preferencesFormPropsFactory(), onChange: fn(), onMemoryToggle: fn(), onForget: fn() },
   argTypes: {
-    instructions: { control: 'text', description: 'The saved instructions. A change from outside replaces the field.' },
+    instructions: {
+      control: 'text',
+      description: 'The saved instructions. A change from outside replaces the field.',
+    },
     maxLength: { control: 'number', description: 'Default 4000.' },
     rows: { control: 'number' },
     loading: { control: 'boolean' },
-    memories: { control: 'object', description: 'The remembered facts `{ id, text, ... }`. The memory section shows when given.' },
+    memories: {
+      control: 'object',
+      description: 'The remembered facts `{ id, text, ... }`. The memory section shows when given.',
+    },
     memoryEnabled: { control: 'boolean', description: 'State of the memory switch.' },
     labels: { control: 'object' },
-    onChange: { action: 'change', description: '(text): every keystroke. Debounce it to autosave.' },
-    onMemoryToggle: { action: 'memory toggle', description: '(enabled): the memory switch; not rendered without it.' },
-    onForget: { action: 'forget', description: '(memory): the full memory item; the Forget buttons are not rendered without it.' },
+    onChange: {
+      action: 'change',
+      description: '(text): every keystroke. Debounce it to autosave.',
+    },
+    onMemoryToggle: {
+      action: 'memory toggle',
+      description: '(enabled): the memory switch; not rendered without it.',
+    },
+    onForget: {
+      action: 'forget',
+      description:
+        '(memory): the full memory item; the Forget buttons are not rendered without it.',
+    },
   },
   decorators: [
     (Story) => (
@@ -65,7 +86,9 @@ export const MemoryInteractive: Story = {
   render: () => <PreferencesFormDemo />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: 'Forget: Prefers TypeScript over JavaScript' }));
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Forget: Prefers TypeScript over JavaScript' }),
+    );
     expect(canvas.queryByText('Prefers TypeScript over JavaScript')).not.toBeInTheDocument();
     await userEvent.click(canvas.getByRole('button', { name: /Forget: Interviewing/ }));
     expect(canvas.getByText(/No memories yet/)).toBeInTheDocument();

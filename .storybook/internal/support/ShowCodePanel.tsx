@@ -9,12 +9,12 @@
 import * as React from 'react';
 import './overview.css';
 import { Check, ChevronUp, Code2, Copy } from 'lucide-react';
+import * as estree from 'prettier/plugins/estree';
+import * as typescript from 'prettier/plugins/typescript';
+import { format } from 'prettier/standalone';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { format } from 'prettier/standalone';
-import * as typescript from 'prettier/plugins/typescript';
-import * as estree from 'prettier/plugins/estree';
-import { useDynamicSnippet, type UseDynamicSnippetOptions } from './useDynamicSnippet';
+import { type UseDynamicSnippetOptions, useDynamicSnippet } from './useDynamicSnippet';
 
 export type ShowCodeInput = string | Record<string, string>;
 
@@ -28,7 +28,12 @@ interface ShowCodePanelProps {
   defaultOpen?: boolean;
 }
 
-export const ShowCodePanel: React.FC<ShowCodePanelProps> = ({ code, dynamic, language = 'tsx', defaultOpen = false }) => {
+export const ShowCodePanel: React.FC<ShowCodePanelProps> = ({
+  code,
+  dynamic,
+  language = 'tsx',
+  defaultOpen = false,
+}) => {
   const dynamicSnippet = useDynamicSnippet(dynamic);
   const resolvedCode = dynamic ? dynamicSnippet : (code ?? '');
   const snippets = React.useMemo(
@@ -84,7 +89,9 @@ export const ShowCodePanel: React.FC<ShowCodePanelProps> = ({ code, dynamic, lan
         tabIndex={0}
         className={`pb-showcode-toolbar${open ? ' is-open' : ''}`}
         onClick={() => setOpen((v) => !v)}
-        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), setOpen((v) => !v))}
+        onKeyDown={(e) =>
+          (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), setOpen((v) => !v))
+        }
       >
         {/* eslint-disable bonsai-ui-components/prefer-ui-components -- Storybook shell components; app Button drags Redux + TooltipProvider into the docs bundle. */}
         <button
@@ -117,7 +124,12 @@ export const ShowCodePanel: React.FC<ShowCodePanelProps> = ({ code, dynamic, lan
         <>
           <div className="pb-showcode-body">
             {/* eslint-disable-next-line bonsai-ui-components/prefer-ui-components -- see toolbar comment above. */}
-            <button type="button" className="pb-showcode-btn pb-showcode-copy-abs" onClick={copy} aria-label={copied ? 'Copied' : 'Copy code'}>
+            <button
+              type="button"
+              className="pb-showcode-btn pb-showcode-copy-abs"
+              onClick={copy}
+              aria-label={copied ? 'Copied' : 'Copy code'}
+            >
               {copied ? <Check size={14} /> : <Copy size={14} />}
             </button>
             {formatted.length > 1 && (
@@ -139,7 +151,9 @@ export const ShowCodePanel: React.FC<ShowCodePanelProps> = ({ code, dynamic, lan
             {activeSnippet &&
               [activeSnippet].map((snippet) => (
                 <div key={snippet.label || 'code'} className="pb-showcode-snippet">
-                  {snippet.label && <div className="pb-showcode-snippet-label">{snippet.label}</div>}
+                  {snippet.label && (
+                    <div className="pb-showcode-snippet-label">{snippet.label}</div>
+                  )}
                   <SyntaxHighlighter
                     language={language}
                     style={oneDark}

@@ -1,12 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
+  type BudgetFormData,
   eurBudgetFixture,
   jpyBudgetFixture,
   usdBudgetFixture,
-  type BudgetFormData,
 } from 'factories/dynamic-form/widgets/CurrencyWidget/CurrencyWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<BudgetFormData>;
 
@@ -15,7 +17,11 @@ const config = defineDynamicFormStories<BudgetFormData>({
   fixtures: { usd: usdBudgetFixture, eur: eurBudgetFixture, jpy: jpyBudgetFixture },
   titles: { usd: 'CurrencyWidget · USD', eur: 'CurrencyWidget · EUR', jpy: 'CurrencyWidget · JPY' },
   defaultArgs: { fixture: 'usd' },
-  docs: { name: 'CurrencyWidget', whenToUse: 'Monetary input with locale-aware currency symbol. `ui:options.currency` + `ui:options.locale`.' },
+  docs: {
+    name: 'CurrencyWidget',
+    whenToUse:
+      'Monetary input with locale-aware currency symbol. `ui:options.currency` + `ui:options.locale`.',
+  },
   stories: { USD: { fixture: 'usd' }, EUR: { fixture: 'eur' }, JPY: { fixture: 'jpy' } },
 });
 

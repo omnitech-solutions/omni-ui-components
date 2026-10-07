@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { TreeSelect } from '@oc-tech/omni-ui-components/TreeSelect';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const meta: Meta<typeof TreeSelect> = {
   title: 'omni-ui-components/TreeSelect',
@@ -27,7 +26,16 @@ export const Default: Story = {
         label="Department"
         value={value}
         onChange={setValue}
-        treeData={[{ value: 'workspace', title: 'Workspace', children: [{ value: 'accounts', title: 'Accounts' }, { value: 'billing', title: 'Billing' }] }]}
+        treeData={[
+          {
+            value: 'workspace',
+            title: 'Workspace',
+            children: [
+              { value: 'accounts', title: 'Accounts' },
+              { value: 'billing', title: 'Billing' },
+            ],
+          },
+        ]}
       />
     );
   },
@@ -42,7 +50,16 @@ export const Placeholder: Story = {
         placeholder="Choose a node"
         value={value}
         onChange={setValue}
-        treeData={[{ value: 'na', title: 'North America', children: [{ value: 'ca', title: 'Canada' }, { value: 'us', title: 'United States' }] }]}
+        treeData={[
+          {
+            value: 'na',
+            title: 'North America',
+            children: [
+              { value: 'ca', title: 'Canada' },
+              { value: 'us', title: 'United States' },
+            ],
+          },
+        ]}
       />
     );
   },

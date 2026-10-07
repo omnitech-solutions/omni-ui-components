@@ -1,8 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Slider, type SliderProps } from '@oc-tech/omni-ui-components/Slider';
+import type { Meta, StoryObj } from '@storybook/react';
 import { sliderPropsFactory } from 'factories/omni-ui-components/Slider/Slider.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<SliderProps> = (args) => {
   const [value, setValue] = React.useState<number | number[]>(args.value ?? 0);

@@ -1,6 +1,5 @@
-import type { RJSFSchema, UiSchema } from '@rjsf/utils';
-
 import type { InputProps } from '@oc-tech/omni-ui-components/Input/Input.types';
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { makeFactory, type Variant } from '../../internal/support/makeFactory';
 
 /**
@@ -24,7 +23,14 @@ export const inputPropsFactory = makeFactory<InputProps>({
 export const inputVariants: Variant<InputProps>[] = [
   { name: 'Default', args: { label: 'Default', placeholder: 'Type something…' } },
   { name: 'Required', args: { label: 'Required', placeholder: 'Required value', required: true } },
-  { name: 'With description', args: { label: 'With description', placeholder: 'Hello', description: 'Helper text below the field.' } },
+  {
+    name: 'With description',
+    args: {
+      label: 'With description',
+      placeholder: 'Hello',
+      description: 'Helper text below the field.',
+    },
+  },
   { name: 'Read only', args: { label: 'Read only', readOnly: true, value: 'Locked in' } },
   { name: 'Disabled', args: { label: 'Disabled', disabled: true, value: 'Greyed out' } },
   { name: 'Invalid', args: { label: 'Invalid', error: 'This field is required' } },

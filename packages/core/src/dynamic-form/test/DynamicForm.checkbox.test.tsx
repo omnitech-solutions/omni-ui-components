@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { z } from 'zod';
 import type { RJSFSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import { buildSingleFieldUiSchema, renderDynamicForm } from './testing/renderDynamicForm';
 
@@ -50,7 +50,11 @@ describe('DynamicForm — CheckboxWidget (boolean) integration', () => {
     });
     await submit();
     expect(onSubmit).not.toHaveBeenCalled();
-    expect(onError).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({ path: ['agreed'], source: 'zod', message: 'You must agree' })]));
+    expect(onError).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ path: ['agreed'], source: 'zod', message: 'You must agree' }),
+      ]),
+    );
   });
 
   it('disables the box when DynamicForm.disabled is set', () => {

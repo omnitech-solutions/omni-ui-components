@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** The session state the bar renders: `live` shows Pause, `paused` shows Resume in the same slot. */
 export type SessionStatus = 'live' | 'paused';

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { FileUpload } from '@oc-tech/omni-ui-components/FileUpload';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/FileUpload', () => {
   it('renders the dropzone + label', () => {
@@ -12,7 +12,9 @@ describe('omni-ui-components/FileUpload', () => {
 
   it('shows a file row when value has entries', () => {
     const file = new File(['hi'], 'hello.txt', { type: 'text/plain' });
-    render(<FileUpload data-testid="f" label="Attachments" value={[file]} onChange={() => undefined} />);
+    render(
+      <FileUpload data-testid="f" label="Attachments" value={[file]} onChange={() => undefined} />,
+    );
     expect(screen.getByText('hello.txt')).toBeInTheDocument();
   });
 

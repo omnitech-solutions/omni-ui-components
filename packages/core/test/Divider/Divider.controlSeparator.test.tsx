@@ -1,12 +1,17 @@
 import '@testing-library/jest-dom';
-import { render } from '@testing-library/react';
 
 import { Divider } from '@oc-tech/omni-ui-components/Divider';
-import { CONTROL_SEPARATOR_CLASS, dividerVariants } from 'factories/omni-ui-components/Divider/Divider.factories';
+import { render } from '@testing-library/react';
+import {
+  CONTROL_SEPARATOR_CLASS,
+  dividerVariants,
+} from 'factories/omni-ui-components/Divider/Divider.factories';
 
 describe('omni-ui-components/Divider as control separator', () => {
   it('a vertical Divider takes the 20px token height and the neutral border colour through className alone', () => {
-    const { container } = render(<Divider orientation="vertical" className={CONTROL_SEPARATOR_CLASS} />);
+    const { container } = render(
+      <Divider orientation="vertical" className={CONTROL_SEPARATOR_CLASS} />,
+    );
     const sep = container.firstElementChild!;
     expect(sep).toHaveAttribute('data-orientation', 'vertical');
     expect(sep).toHaveClass('h-[var(--oui-control-separator)]');
@@ -18,7 +23,9 @@ describe('omni-ui-components/Divider as control separator', () => {
   });
 
   it('is decorative by default', () => {
-    const { container } = render(<Divider orientation="vertical" className={CONTROL_SEPARATOR_CLASS} />);
+    const { container } = render(
+      <Divider orientation="vertical" className={CONTROL_SEPARATOR_CLASS} />,
+    );
     expect(container.firstElementChild).toHaveAttribute('role', 'none');
   });
 

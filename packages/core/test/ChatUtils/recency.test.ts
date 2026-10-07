@@ -2,7 +2,8 @@ import { groupByRecency, recencyGroupOf } from '@oc-tech/omni-ui-components/lib/
 
 // Tuesday 6 October 2026, midday (local time): midnight is the day boundary.
 const NOW = new Date(2026, 9, 6, 12, 0, 0);
-const at = (days: number, hours = 0) => new Date(NOW.getTime() - days * 86_400_000 - hours * 3_600_000);
+const at = (days: number, hours = 0) =>
+  new Date(NOW.getTime() - days * 86_400_000 - hours * 3_600_000);
 
 describe('groupByRecency', () => {
   it('buckets by local midnight: today, previous 7 days, previous 30 days, older', () => {
@@ -21,7 +22,9 @@ describe('groupByRecency', () => {
       { id: 'c', updatedAt: at(0, 2).toISOString() },
       { id: 'd', updatedAt: at(100).toISOString() },
     ];
-    const groups = groupByRecency(items, NOW, { pinned: (item) => Boolean((item as { pinned?: boolean }).pinned) });
+    const groups = groupByRecency(items, NOW, {
+      pinned: (item) => Boolean((item as { pinned?: boolean }).pinned),
+    });
     expect(groups.map((group) => group.key)).toEqual(['pinned', 'today', 'older']);
     expect(groups[1].items.map((item) => item.id)).toEqual(['a', 'c']);
     expect(groups[0].label).toBe('Pinned');
@@ -31,7 +34,10 @@ describe('groupByRecency', () => {
   it('ignores pinned when the option is off, accepts a custom timestamp and labels, and does not mutate', () => {
     const items = [{ id: 'a', stamp: at(3).getTime(), pinned: true }];
     const frozen = JSON.stringify(items);
-    const groups = groupByRecency(items, NOW, { at: (item) => item.stamp, labels: { week: 'Esta semana' } });
+    const groups = groupByRecency(items, NOW, {
+      at: (item) => item.stamp,
+      labels: { week: 'Esta semana' },
+    });
     expect(groups).toEqual([{ key: 'week', label: 'Esta semana', items }]);
     expect(JSON.stringify(items)).toBe(frozen);
   });

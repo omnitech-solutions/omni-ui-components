@@ -1,7 +1,11 @@
 import { cva, type VariantProps } from 'class-variance-authority';
-
+import {
+  CONTROL_TONES,
+  pressedClasses,
+  toneSoftClasses,
+  toneSolidClasses,
+} from '../internal/support/controlTone';
 import { hitAreaY } from '../internal/support/hitArea';
-import { CONTROL_TONES, pressedClasses, toneSoftClasses, toneSolidClasses } from '../internal/support/controlTone';
 
 /**
  * Tailwind class config for the Omni Button. Mirrors the shadcn
@@ -26,7 +30,8 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive: 'bg-red-600 text-white hover:bg-red-600/90 dark:bg-red-500 dark:hover:bg-red-500/90',
+        destructive:
+          'bg-red-600 text-white hover:bg-red-600/90 dark:bg-red-500 dark:hover:bg-red-500/90',
         outline:
           'border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] text-[var(--oui-foreground)] shadow-xs hover:border-[var(--oui-border-interactive)] hover:bg-muted/40',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',

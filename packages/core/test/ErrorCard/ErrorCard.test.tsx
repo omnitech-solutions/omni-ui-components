@@ -1,18 +1,19 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { expectTypeOf } from 'vitest';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
 import { ErrorCard, type ErrorItem } from '@oc-tech/omni-ui-components/ErrorCard';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { errorCardPropsFactory } from 'factories/omni-ui-components/ErrorCard/ErrorCard.factories';
+import { expectTypeOf } from 'vitest';
 
 describe('omni-ui-components/ErrorCard', () => {
   it('is an alert with title, message and the reassurance note', () => {
     render(<ErrorCard {...errorCardPropsFactory()} />);
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('The model took too long');
-    expect(alert).toHaveTextContent('The request timed out after 30 seconds. Your message is saved and nothing has been applied.');
+    expect(alert).toHaveTextContent(
+      'The request timed out after 30 seconds. Your message is saved and nothing has been applied.',
+    );
     expect(screen.queryByRole('button')).toBeNull();
   });
 
@@ -73,14 +74,23 @@ describe('omni-ui-components/ErrorCard', () => {
     rerender(<ErrorCard {...errorCardPropsFactory({ onDismiss })} />);
     await userEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
     expect(onDismiss).toHaveBeenCalledTimes(1);
-    rerender(<ErrorCard {...errorCardPropsFactory({ variant: 'stopped', onDismiss, dismissLabel: 'Close' })} />);
+    rerender(
+      <ErrorCard
+        {...errorCardPropsFactory({ variant: 'stopped', onDismiss, dismissLabel: 'Close' })}
+      />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Close' }));
     expect(onDismiss).toHaveBeenCalledTimes(2);
   });
 
   it('onRetry and onDismiss receive the extended error item by reference; its extra fields are typed; it supplies the text', async () => {
     type RunError = ErrorItem & { code: string };
-    const error: RunError = { id: 'e1', title: 'The model took too long', message: 'Timed out.', code: 'model-timeout' };
+    const error: RunError = {
+      id: 'e1',
+      title: 'The model took too long',
+      message: 'Timed out.',
+      code: 'model-timeout',
+    };
     const onRetry = vi.fn((given: RunError) => {
       expectTypeOf(given.code).toEqualTypeOf<string>();
     });

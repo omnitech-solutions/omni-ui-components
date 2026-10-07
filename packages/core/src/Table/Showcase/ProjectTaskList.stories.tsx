@@ -1,8 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Table } from '@oc-tech/omni-ui-components/Table';
-import { defaultColumns, treeProjects, type ProjectRecord } from '../Table.story.fixtures';
+import type { Meta, StoryObj } from '@storybook/react';
+import { defaultColumns, type ProjectRecord, treeProjects } from '../Table.story.fixtures';
 import { ShowcaseShell } from './ShowcaseShell';
 
 const meta: Meta = {

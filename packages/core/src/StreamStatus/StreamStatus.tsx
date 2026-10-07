@@ -1,9 +1,12 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { formatElapsed } from './StreamStatus.utils';
-import { streamStatusPulseClasses, streamStatusTimerClasses, streamStatusVariants } from './StreamStatus.variants';
+import * as React from 'react';
 import type { StreamStatusLabels, StreamStatusProps } from './StreamStatus.types';
+import { formatElapsed } from './StreamStatus.utils';
+import {
+  streamStatusPulseClasses,
+  streamStatusTimerClasses,
+  streamStatusVariants,
+} from './StreamStatus.variants';
 
 /** English defaults for every string. */
 export const DEFAULT_STREAM_STATUS_LABELS: StreamStatusLabels = {
@@ -36,8 +39,25 @@ function useElapsed(start: number, active: boolean): number {
  * <StreamStatus kind="tool" toolName="search_docs" status="running" />
  */
 export const StreamStatus = React.forwardRef<HTMLDivElement, StreamStatusProps>(
-  ({ kind, toolName, status = 'running', message, startedAt, icon, hideTimer = false, labels: labelsProp, className, ...rest }, ref) => {
-    const labels = React.useMemo(() => ({ ...DEFAULT_STREAM_STATUS_LABELS, ...labelsProp }), [labelsProp]);
+  (
+    {
+      kind,
+      toolName,
+      status = 'running',
+      message,
+      startedAt,
+      icon,
+      hideTimer = false,
+      labels: labelsProp,
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
+    const labels = React.useMemo(
+      () => ({ ...DEFAULT_STREAM_STATUS_LABELS, ...labelsProp }),
+      [labelsProp],
+    );
     const [mountedAt] = React.useState(() => Date.now());
     const start = startedAt ?? mountedAt;
     const finished = kind === 'tool' && status !== 'running';
@@ -65,13 +85,20 @@ export const StreamStatus = React.forwardRef<HTMLDivElement, StreamStatusProps>(
         {...rest}
       >
         {icon ? (
-          <span aria-hidden="true" className={cn('inline-flex shrink-0', !finished && streamStatusPulseClasses)}>
+          <span
+            aria-hidden="true"
+            className={cn('inline-flex shrink-0', !finished && streamStatusPulseClasses)}
+          >
             {icon}
           </span>
         ) : null}
         <span data-slot="stream-status-text">{text}</span>
         {hideTimer || finished ? null : (
-          <span data-slot="stream-status-timer" aria-hidden="true" className={streamStatusTimerClasses}>
+          <span
+            data-slot="stream-status-timer"
+            aria-hidden="true"
+            className={streamStatusTimerClasses}
+          >
             {formatElapsed(elapsed)}
           </span>
         )}

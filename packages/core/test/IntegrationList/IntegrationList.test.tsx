@@ -1,10 +1,13 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { IntegrationList } from '@oc-tech/omni-ui-components/IntegrationList';
-import { IntegrationListDemo, integrationListPropsFactory, integrationListVariants } from 'factories/omni-ui-components/IntegrationList/IntegrationList.factories';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  IntegrationListDemo,
+  integrationListPropsFactory,
+  integrationListVariants,
+} from 'factories/omni-ui-components/IntegrationList/IntegrationList.factories';
 
 describe('omni-ui-components/IntegrationList', () => {
   it('renders a row per item with name, detail, a switch and a remove button', () => {
@@ -31,13 +34,19 @@ describe('omni-ui-components/IntegrationList', () => {
   });
 
   it('shows the intro, a loading line and an empty line', () => {
-    const { rerender } = render(<IntegrationList {...integrationListPropsFactory(integrationListVariants[1].args)} />);
+    const { rerender } = render(
+      <IntegrationList {...integrationListPropsFactory(integrationListVariants[1].args)} />,
+    );
     expect(screen.getByText(/Model Context Protocol/)).toBeInTheDocument();
     expect(screen.getByText('Checking connectors…')).toBeInTheDocument();
     expect(screen.queryByRole('list')).not.toBeInTheDocument();
     rerender(<IntegrationList {...integrationListPropsFactory(integrationListVariants[2].args)} />);
     expect(screen.getByText('No connectors yet.')).toBeInTheDocument();
-    rerender(<IntegrationList {...integrationListPropsFactory({ items: [], empty: 'Nothing connected', intro: null })} />);
+    rerender(
+      <IntegrationList
+        {...integrationListPropsFactory({ items: [], empty: 'Nothing connected', intro: null })}
+      />,
+    );
     expect(screen.getByText('Nothing connected')).toBeInTheDocument();
     expect(screen.queryByText(/Model Context Protocol/)).not.toBeInTheDocument();
   });
@@ -82,7 +91,13 @@ describe('omni-ui-components/IntegrationList', () => {
   });
 
   it('translates labels', () => {
-    render(<IntegrationList {...integrationListPropsFactory({ labels: { add: 'Añadir', remove: (n) => `Quitar ${n}`, addField: 'Dirección' } })} />);
+    render(
+      <IntegrationList
+        {...integrationListPropsFactory({
+          labels: { add: 'Añadir', remove: (n) => `Quitar ${n}`, addField: 'Dirección' },
+        })}
+      />,
+    );
     expect(screen.getByRole('button', { name: 'Añadir' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Quitar Docs search' })).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: 'Dirección' })).toBeInTheDocument();
@@ -90,8 +105,13 @@ describe('omni-ui-components/IntegrationList', () => {
 
   it('the demo adds a server row', async () => {
     render(<IntegrationListDemo />);
-    await userEvent.type(screen.getByRole('textbox', { name: 'MCP server address' }), 'https://tools.example.com/mcp');
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'MCP server address' }),
+      'https://tools.example.com/mcp',
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Add server' }));
-    await waitFor(() => expect(screen.getByText('tools.example.com')).toBeInTheDocument(), { timeout: 3000 });
+    await waitFor(() => expect(screen.getByText('tools.example.com')).toBeInTheDocument(), {
+      timeout: 3000,
+    });
   });
 });

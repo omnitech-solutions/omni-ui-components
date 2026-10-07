@@ -1,8 +1,7 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { inputVariants } from './Input.variants';
+import * as React from 'react';
 import type { InputPrimitiveProps } from './Input.types';
+import { inputVariants } from './Input.variants';
 import { MultilineField } from './MultilineField';
 
 /**
@@ -28,7 +27,27 @@ import { MultilineField } from './MultilineField';
  * />
  */
 const InputPrimitiveInner = React.forwardRef<HTMLInputElement, InputPrimitiveProps>(
-  ({ id, className, variant, inputSize, invalid, commitOnEnter = false, value, onChange, onKeyDown, disabled, readOnly, multiline, maxHeight, sendOnEnter, onSubmit, ...rest }, ref) => {
+  (
+    {
+      id,
+      className,
+      variant,
+      inputSize,
+      invalid,
+      commitOnEnter = false,
+      value,
+      onChange,
+      onKeyDown,
+      disabled,
+      readOnly,
+      multiline,
+      maxHeight,
+      sendOnEnter,
+      onSubmit,
+      ...rest
+    },
+    ref,
+  ) => {
     const isInvalid = Boolean(invalid);
     const state = disabled ? 'disabled' : readOnly ? 'readonly' : isInvalid ? 'invalid' : 'idle';
 
@@ -74,7 +93,10 @@ const InputPrimitiveInner = React.forwardRef<HTMLInputElement, InputPrimitivePro
     }
 
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
     return (
       <input
         ref={ref}

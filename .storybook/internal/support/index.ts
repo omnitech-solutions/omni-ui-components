@@ -1,15 +1,24 @@
 export { CodePanel, type CodePanelProps } from './CodePanel';
 export { ComponentWrapper, type ComponentWrapperProps } from './ComponentWrapper';
-export { affixDocsHeroPreset, resolveDocsHeroPreset, type DocsHeroPreset, type DocsHeroSegmentOverride } from './docsHero';
 export { DocsPage } from './DocsPage';
-export { InlineCode, type InlineCodeProps } from './InlineCode';
-export { SignatureCode, type SignatureCodeProps } from './SignatureCode';
-export { SegmentedPill, type PillSegment, type SegmentedPillProps } from './SegmentedPill';
-export { ShowCodePanel, type ShowCodeInput } from './ShowCodePanel';
-export { TableOfContents, type TocItem } from './TableOfContents';
-export { registerFixtures, getRegisteredFixtures } from './fixtureRegistry';
+export {
+  affixDocsHeroPreset,
+  type DocsHeroPreset,
+  type DocsHeroSegmentOverride,
+  resolveDocsHeroPreset,
+} from './docsHero';
+export { getRegisteredFixtures, registerFixtures } from './fixtureRegistry';
 export { formatValue, oneLine } from './formatValue';
-export { looksLikeColor, readCssTokens, resolveCssVar, type CssToken } from './readCssTokens';
-export { buildTableSnippet, type BuildTableSnippetOptions } from './tableSnippet';
-export { buildDynamicSnippet, useDynamicSnippet, type UseDynamicSnippetOptions } from './useDynamicSnippet';
+export { InlineCode, type InlineCodeProps } from './InlineCode';
+export { type CssToken, looksLikeColor, readCssTokens, resolveCssVar } from './readCssTokens';
+export { type PillSegment, SegmentedPill, type SegmentedPillProps } from './SegmentedPill';
+export { type ShowCodeInput, ShowCodePanel } from './ShowCodePanel';
+export { SignatureCode, type SignatureCodeProps } from './SignatureCode';
+export { TableOfContents, type TocItem } from './TableOfContents';
+export { type BuildTableSnippetOptions, buildTableSnippet } from './tableSnippet';
+export {
+  buildDynamicSnippet,
+  type UseDynamicSnippetOptions,
+  useDynamicSnippet,
+} from './useDynamicSnippet';
 export { useIsDark } from './useIsDark';

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** The reasoning-effort scale of the default control. Any string works when `efforts` is passed. */
 export type ReasoningEffort = 'off' | 'low' | 'medium' | 'high';
@@ -82,7 +82,8 @@ export interface ModelIcons {
   expand?: React.ReactNode;
 }
 
-export interface ModelMenuProps<M extends ModelInfo = ModelInfo> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'onSelect'> {
+export interface ModelMenuProps<M extends ModelInfo = ModelInfo>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'onSelect'> {
   models: M[];
   /** Provider of every model that has none of its own. */
   provider?: ModelProvider;
@@ -106,7 +107,8 @@ export interface ModelMenuProps<M extends ModelInfo = ModelInfo> extends Omit<Re
   icons?: ModelIcons;
 }
 
-export interface ModelPickerProps<M extends ModelInfo = ModelInfo> extends Omit<ModelMenuProps<M>, 'className'> {
+export interface ModelPickerProps<M extends ModelInfo = ModelInfo>
+  extends Omit<ModelMenuProps<M>, 'className'> {
   /** Controlled open state; leave unset for an uncontrolled menu. */
   open?: boolean;
   defaultOpen?: boolean;

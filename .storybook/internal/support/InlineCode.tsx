@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 export interface InlineCodeProps {
   code: string;
@@ -6,5 +6,11 @@ export interface InlineCodeProps {
 }
 
 export const InlineCode: React.FC<InlineCodeProps> = ({ code, className }) => (
-  <code className={['pb-pill-inline-code font-mono', className ?? 'text-xs text-[var(--color-primary)]'].filter(Boolean).join(' ')}>{code}</code>
+  <code
+    className={['pb-pill-inline-code font-mono', className ?? 'text-xs text-[var(--color-primary)]']
+      .filter(Boolean)
+      .join(' ')}
+  >
+    {code}
+  </code>
 );

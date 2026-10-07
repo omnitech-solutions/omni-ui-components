@@ -1,16 +1,21 @@
 import '@testing-library/jest-dom';
+import type { RJSFSchema, UiSchema, WidgetProps } from '@rjsf/utils';
+import { DynamicForm } from 'dynamic-form';
 import * as React from 'react';
 import { z } from 'zod';
-import type { RJSFSchema, UiSchema, WidgetProps } from '@rjsf/utils';
-
-import { DynamicForm } from 'dynamic-form';
 import { renderDynamicForm, screen } from './testing/renderDynamicForm';
 
 const buildSpyWidget = (counts: Record<string, number>) => {
   const SpyTextWidget = (props: WidgetProps) => {
     const id = props.id || 'unknown';
     counts[id] = (counts[id] ?? 0) + 1;
-    return <input data-testid={id} value={(props.value as string | undefined) ?? ''} onChange={(e) => props.onChange(e.target.value)} />;
+    return (
+      <input
+        data-testid={id}
+        value={(props.value as string | undefined) ?? ''}
+        onChange={(e) => props.onChange(e.target.value)}
+      />
+    );
   };
   SpyTextWidget.displayName = 'SpyTextWidget';
   return SpyTextWidget;
@@ -93,7 +98,14 @@ describe('DynamicForm memoization', () => {
           <button data-testid="bump" onClick={() => setTick((t) => t + 1)}>
             bump {tick}
           </button>
-          {React.createElement(DynamicForm, { schema, uiSchema, zodSchema, formData: stableFormData, widgets, onSubmit })}
+          {React.createElement(DynamicForm, {
+            schema,
+            uiSchema,
+            zodSchema,
+            formData: stableFormData,
+            widgets,
+            onSubmit,
+          })}
         </>
       );
     };

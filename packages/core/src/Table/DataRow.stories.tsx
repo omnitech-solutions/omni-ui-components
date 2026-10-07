@@ -1,18 +1,19 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
 import { Table, type TableColumn } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 import { ComponentWrapper } from './storySupport';
 import {
+  type DocCellData,
+  defaultColumns,
   draggableRows,
   matrixRows,
-  defaultColumns,
+  type ProjectRecord,
   projects,
   registryRows,
   spanRows,
   storyTableRegistry,
-  type DocCellData,
-  type ProjectRecord,
 } from './Table.story.fixtures';
+
 const meta: Meta = {
   title: 'omni-ui-components/Table/DataRow',
   tags: ['autodocs'],
@@ -36,7 +37,11 @@ export const ExplicitDataRowMatrix: Story = {
       title="Explicit data row matrix"
       description="Use `rows` instead of `dataSource` when the model is cell-oriented (documents, matrices, editable spreadsheets). Each `TableDataRow` supplies a `record` for downstream consumers and a `cells` map keyed by `column.key`; if a `column` has no matching cell, the cell renders empty rather than through `dataIndex`."
     >
-      <Table<ProjectRecord, DocCellData> columns={defaultColumns} rows={matrixRows} testIdPrefix="data-row-matrix" />
+      <Table<ProjectRecord, DocCellData>
+        columns={defaultColumns}
+        rows={matrixRows}
+        testIdPrefix="data-row-matrix"
+      />
     </ComponentWrapper>
   ),
 };
@@ -163,9 +168,17 @@ export const RowStatesAndAttributes: Story = {
 
 const EditableRowsExample = () => {
   const [, setLastSaved] = React.useState<string>('Nothing saved yet');
-  const handleSave = React.useCallback((value: unknown, record: ProjectRecord) => setLastSaved(`${record.id}: ${JSON.stringify(value)}`), []);
+  const handleSave = React.useCallback(
+    (value: unknown, record: ProjectRecord) =>
+      setLastSaved(`${record.id}: ${JSON.stringify(value)}`),
+    [],
+  );
   const editableColumns: TableColumn<ProjectRecord>[] = React.useMemo(
-    () => defaultColumns.map((column) => ({ ...column, editable: { mode: 'cell' as const, onSave: handleSave } })),
+    () =>
+      defaultColumns.map((column) => ({
+        ...column,
+        editable: { mode: 'cell' as const, onSave: handleSave },
+      })),
     [handleSave],
   );
   return (
@@ -196,7 +209,12 @@ export const DraggableRows: Story = {
       title="Draggable rows"
       description="Mark rows with `draggable: true` and pass `onRowOrderChange` to enable reorder via `@atlaskit/pragmatic-drag-and-drop`. `disabled` rows stay pinned; the callback receives the new order so the parent can persist it."
     >
-      <Table<ProjectRecord, DocCellData> columns={defaultColumns} rows={draggableRows} onRowOrderChange={() => undefined} testIdPrefix="data-row-draggable" />
+      <Table<ProjectRecord, DocCellData>
+        columns={defaultColumns}
+        rows={draggableRows}
+        onRowOrderChange={() => undefined}
+        testIdPrefix="data-row-draggable"
+      />
     </ComponentWrapper>
   ),
 };

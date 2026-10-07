@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 export interface FeedbackPanelLabels {
   /** Heading. Default `What went wrong?`. */
@@ -22,10 +22,8 @@ export interface FeedbackSubmission<T extends FeedbackReason = FeedbackReason> {
   note?: string;
 }
 
-export interface FeedbackPanelProps<T extends FeedbackReason = FeedbackReason> extends Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  'title' | 'onSubmit' | 'autoFocus'
-> {
+export interface FeedbackPanelProps<T extends FeedbackReason = FeedbackReason>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title' | 'onSubmit' | 'autoFocus'> {
   /** The reasons offered as toggle chips. */
   reasons: T[];
   /** Ids of the chosen reasons (controlled). */

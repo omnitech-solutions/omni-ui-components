@@ -1,14 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
+  type CountryFormData,
   customPlaceholderComboboxFixture,
   groupedMemberComboboxFixture,
   plainComboboxFixture,
   prefilledComboboxFixture,
   projectComboboxFixture,
-  type CountryFormData,
 } from 'factories/dynamic-form/widgets/ComboboxWidget/ComboboxWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<Record<string, unknown>>;
 type _UseImport = CountryFormData;

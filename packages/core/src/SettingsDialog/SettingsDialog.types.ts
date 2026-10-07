@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** One tab of the dialog: its nav row and its panel. Extend it with your own fields (`interface MyTab extends SettingsTab<MyTab> { badge: number }`); callbacks and `render` get the full tab back. */
 export interface SettingsTab<Self = any> {

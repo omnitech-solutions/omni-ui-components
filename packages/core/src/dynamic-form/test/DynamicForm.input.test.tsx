@@ -1,13 +1,20 @@
 import '@testing-library/jest-dom';
-import { z } from 'zod';
 
 import { Input } from '@oc-tech/omni-ui-components/Input';
-import { buildSingleFieldSchema, buildSingleFieldUiSchema, renderDynamicForm, screen } from './testing/renderDynamicForm';
+import { z } from 'zod';
+import {
+  buildSingleFieldSchema,
+  buildSingleFieldUiSchema,
+  renderDynamicForm,
+  screen,
+} from './testing/renderDynamicForm';
 
 describe('DynamicForm — Input widget integration', () => {
   describe('rendering attribute matrix (data-driven, one assertion per case)', () => {
-    const baseSchema = (overrides = {}) => buildSingleFieldSchema('subject', { type: 'string', title: 'Subject', ...overrides });
-    const baseUi = (overrides = {}) => buildSingleFieldUiSchema('subject', { 'ui:widget': 'text', ...overrides });
+    const baseSchema = (overrides = {}) =>
+      buildSingleFieldSchema('subject', { type: 'string', title: 'Subject', ...overrides });
+    const baseUi = (overrides = {}) =>
+      buildSingleFieldUiSchema('subject', { 'ui:widget': 'text', ...overrides });
     const baseZod = z.object({ subject: z.string() });
 
     it.each([
@@ -177,7 +184,13 @@ describe('DynamicForm — Input widget integration', () => {
       const makeCountingWidget = (id: 'a' | 'b') => {
         const Widget = (props: { id: string; value?: string; onChange: (v: string) => void }) => {
           renderCounts[id] += 1;
-          return <Input id={props.id} value={props.value ?? ''} onChange={(next: string) => props.onChange(next)} />;
+          return (
+            <Input
+              id={props.id}
+              value={props.value ?? ''}
+              onChange={(next: string) => props.onChange(next)}
+            />
+          );
         };
         Widget.displayName = `CountingWidget_${id}`;
         return Widget;

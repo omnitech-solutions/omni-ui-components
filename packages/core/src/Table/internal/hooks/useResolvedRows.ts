@@ -23,7 +23,10 @@ export function useResolvedRows<TRecord, TRowData>({
   appendedRows,
   rowOrder,
 }: UseResolvedRowsInput<TRecord, TRowData>) {
-  const effectiveRows = React.useMemo(() => (rows && appendedRows.length ? [...rows, ...appendedRows] : rows), [rows, appendedRows]);
+  const effectiveRows = React.useMemo(
+    () => (rows && appendedRows.length ? [...rows, ...appendedRows] : rows),
+    [rows, appendedRows],
+  );
 
   const baseResolvedRows = React.useMemo(() => {
     const normalized = normalizeRows(dataSource, effectiveRows, row, rowKey, childrenColumnName);
@@ -32,7 +35,10 @@ export function useResolvedRows<TRecord, TRowData>({
       const extras = appendedRows.map((r, index) => ({
         key: r.key,
         record: r.record ?? ({} as TRecord),
-        row: { ...row, ...r, record: r.record ?? ({} as TRecord) } as TableDataRow<TRecord, TRowData>,
+        row: { ...row, ...r, record: r.record ?? ({} as TRecord) } as TableDataRow<
+          TRecord,
+          TRowData
+        >,
         index: normalized.length + index,
       }));
       return [...normalized, ...extras];
@@ -40,9 +46,18 @@ export function useResolvedRows<TRecord, TRowData>({
     return normalized;
   }, [childrenColumnName, dataSource, effectiveRows, row, rowKey, rows, appendedRows]);
 
-  const resolvedRows = React.useMemo(() => reorderByKeys(baseResolvedRows, rowOrder), [baseResolvedRows, rowOrder]);
-  const allResolvedRows = React.useMemo<TableResolvedRow<TRecord, TRowData>[]>(() => flattenResolvedRows(resolvedRows), [resolvedRows]);
-  const rowByKey = React.useMemo(() => new Map(allResolvedRows.map((item) => [String(item.key), item])), [allResolvedRows]);
+  const resolvedRows = React.useMemo(
+    () => reorderByKeys(baseResolvedRows, rowOrder),
+    [baseResolvedRows, rowOrder],
+  );
+  const allResolvedRows = React.useMemo<TableResolvedRow<TRecord, TRowData>[]>(
+    () => flattenResolvedRows(resolvedRows),
+    [resolvedRows],
+  );
+  const rowByKey = React.useMemo(
+    () => new Map(allResolvedRows.map((item) => [String(item.key), item])),
+    [allResolvedRows],
+  );
 
   return { effectiveRows, baseResolvedRows, resolvedRows, allResolvedRows, rowByKey };
 }

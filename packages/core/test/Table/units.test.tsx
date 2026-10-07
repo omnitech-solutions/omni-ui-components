@@ -1,8 +1,24 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
 import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
-
+import type * as React from 'react';
+import {
+  BUILT_IN_ROW_DATA_TYPES,
+  renderCellContent,
+  useAppendControls,
+  useDragState,
+  useLoadingState,
+  useResolvedRows,
+  useRowDataTypeMap,
+} from '../../src/Table/internal';
+import { BulkActionsButton } from '../../src/Table/internal/components';
+import { SortableHandle, SortableRowHandleCell } from '../../src/Table/internal/dragHandle';
 import { AutoFlipDropdown } from '../../src/Table/Table.AutoFlipDropdown';
+import {
+  AppendControlButton,
+  makeEmptyColumn,
+  makeEmptyRow,
+  resolveExtendable,
+} from '../../src/Table/Table.append';
 import { getLoadingVariant, resolveLoading } from '../../src/Table/Table.Loading';
 import { TableLoadingSkeletonVariant } from '../../src/Table/Table.Loading.Skeleton';
 import { TableLoadingSpinnerVariant } from '../../src/Table/Table.Loading.Spinner';
@@ -16,35 +32,18 @@ import {
   resizeTableMatrixRows,
   syncTableMatrixRowToColumns,
 } from '../../src/Table/Table.matrix';
-import {
-  AppendControlButton,
-  makeEmptyColumn,
-  makeEmptyRow,
-  resolveExtendable,
-} from '../../src/Table/Table.append';
-import { detectTreeMode, TreeExpandToggle } from '../../src/Table/Table.tree';
 import { createRowDataTypeMap } from '../../src/Table/Table.RowData';
-import { RowDataIcon, RowDataIconType } from '../../src/Table/Table.RowDataIcon';
 import { RowDataActionsType } from '../../src/Table/Table.RowDataActions';
 import { RowDataAvatarType } from '../../src/Table/Table.RowDataAvatar';
 import { RowDataDateType } from '../../src/Table/Table.RowDataDate';
 import { RowDataFileType } from '../../src/Table/Table.RowDataFile';
+import { RowDataIcon, RowDataIconType } from '../../src/Table/Table.RowDataIcon';
 import { RowDataLinkType } from '../../src/Table/Table.RowDataLink';
 import { RowDataMoneyType } from '../../src/Table/Table.RowDataMoney';
 import { RowDataNumberType } from '../../src/Table/Table.RowDataNumber';
 import { RowDataTextType } from '../../src/Table/Table.RowDataText';
-import {
-  BUILT_IN_ROW_DATA_TYPES,
-  renderCellContent,
-  useRowDataTypeMap,
-  useLoadingState,
-  useAppendControls,
-  useDragState,
-  useResolvedRows,
-} from '../../src/Table/internal';
-import { SortableHandle, SortableRowHandleCell } from '../../src/Table/internal/dragHandle';
-import { BulkActionsButton } from '../../src/Table/internal/components';
 import { getDefaultTableRegistry } from '../../src/Table/Table.registry';
+import { detectTreeMode, TreeExpandToggle } from '../../src/Table/Table.tree';
 import type {
   TableCellRenderContext,
   TableColumn,

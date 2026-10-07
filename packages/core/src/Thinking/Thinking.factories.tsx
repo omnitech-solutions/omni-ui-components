@@ -1,7 +1,5 @@
-import * as React from 'react';
-import { Brain, ChevronDown } from 'lucide-react';
-
 import type { ThinkingProps } from '@oc-tech/omni-ui-components/Thinking';
+import { Brain, ChevronDown } from 'lucide-react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const SAMPLE_REASONING =

@@ -1,9 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Camera, Mic } from 'lucide-react';
-
 import { Button } from '@oc-tech/omni-ui-components/Button';
 import { Divider } from '@oc-tech/omni-ui-components/Divider';
+import type { Meta, StoryObj } from '@storybook/react';
 import { CONTROL_SEPARATOR_CLASS } from 'factories/omni-ui-components/Divider/Divider.factories';
+import { Camera, Mic } from 'lucide-react';
 
 const meta: Meta<typeof Divider> = {
   title: 'omni-ui-components/Divider',

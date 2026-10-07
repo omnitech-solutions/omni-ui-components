@@ -8,20 +8,31 @@ export const TABLE_BREAKPOINT_QUERIES: Record<string, string> = {
   xl: '(min-width: 1280px)',
 };
 
-export const allResponsiveScreens = (): Record<string, boolean> => Object.fromEntries(Object.keys(TABLE_BREAKPOINT_QUERIES).map((key) => [key, true]));
+export const allResponsiveScreens = (): Record<string, boolean> =>
+  Object.fromEntries(Object.keys(TABLE_BREAKPOINT_QUERIES).map((key) => [key, true]));
 
 export const currentResponsiveScreens = (): Record<string, boolean> => {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return allResponsiveScreens();
-  return Object.fromEntries(Object.entries(TABLE_BREAKPOINT_QUERIES).map(([key, query]) => [key, window.matchMedia(query).matches]));
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function')
+    return allResponsiveScreens();
+  return Object.fromEntries(
+    Object.entries(TABLE_BREAKPOINT_QUERIES).map(([key, query]) => [
+      key,
+      window.matchMedia(query).matches,
+    ]),
+  );
 };
 
 export const useResponsiveScreens = (): Record<string, boolean> => {
-  const [screens, setScreens] = React.useState<Record<string, boolean>>(() => currentResponsiveScreens());
+  const [screens, setScreens] = React.useState<Record<string, boolean>>(() =>
+    currentResponsiveScreens(),
+  );
 
   React.useEffect(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return undefined;
     const update = () => setScreens(currentResponsiveScreens());
-    const mediaLists = Object.values(TABLE_BREAKPOINT_QUERIES).map((query) => window.matchMedia(query));
+    const mediaLists = Object.values(TABLE_BREAKPOINT_QUERIES).map((query) =>
+      window.matchMedia(query),
+    );
     mediaLists.forEach((media) => {
       if (media.addEventListener) media.addEventListener('change', update);
       else media.addListener?.(update);
@@ -41,5 +52,8 @@ export const useResponsiveScreens = (): Record<string, boolean> => {
   return screens;
 };
 
-export const isResponsiveColumnVisible = <TRecord, TRowData>(column: TableColumn<TRecord, TRowData>, screens: Record<string, boolean>): boolean =>
+export const isResponsiveColumnVisible = <TRecord, TRowData>(
+  column: TableColumn<TRecord, TRowData>,
+  screens: Record<string, boolean>,
+): boolean =>
   !column.responsive?.length || column.responsive.some((breakpoint) => screens[breakpoint]);

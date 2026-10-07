@@ -1,4 +1,4 @@
-export { DateTimePicker } from './DateTimePicker';
 export type { DateTimePickerProps } from './DateTimePicker';
-export { DateTimePickerPrimitive } from './DateTimePickerPrimitive';
+export { DateTimePicker } from './DateTimePicker';
 export type { DateTimePickerPrimitiveProps } from './DateTimePickerPrimitive';
+export { DateTimePickerPrimitive } from './DateTimePickerPrimitive';

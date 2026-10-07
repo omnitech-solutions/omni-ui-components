@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 
 export interface FormRowProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -44,9 +43,15 @@ export const FormRow: React.FC<FormRowProps> = ({ cols, className, children, ...
   const resolvedCols = cols ?? (items.length === 1 ? 1 : 2);
   const trailing = resolvedCols - (items.length % resolvedCols || resolvedCols);
   return (
-    <div className={cn('grid gap-x-8 gap-y-6', className)} style={{ gridTemplateColumns: `repeat(${resolvedCols}, minmax(0, 1fr))` }} {...rest}>
+    <div
+      className={cn('grid gap-x-8 gap-y-6', className)}
+      style={{ gridTemplateColumns: `repeat(${resolvedCols}, minmax(0, 1fr))` }}
+      {...rest}
+    >
       {items}
-      {trailing > 0 && trailing < resolvedCols ? Array.from({ length: trailing }).map((_, i) => <div key={`__pad-${i}`} aria-hidden />) : null}
+      {trailing > 0 && trailing < resolvedCols
+        ? Array.from({ length: trailing }).map((_, i) => <div key={`__pad-${i}`} aria-hidden />)
+        : null}
     </div>
   );
 };
@@ -77,8 +82,22 @@ const JUSTIFY: Record<NonNullable<FormActionsProps['align']>, string> = {
  *   <Button type="submit">Save</Button>
  * </FormActions>
  */
-export const FormActions: React.FC<FormActionsProps> = ({ divider = true, align = 'end', className, children, ...rest }) => (
-  <div className={cn('mt-6 flex items-center gap-3 pt-6', JUSTIFY[align], divider && 'border-t border-border', className)} {...rest}>
+export const FormActions: React.FC<FormActionsProps> = ({
+  divider = true,
+  align = 'end',
+  className,
+  children,
+  ...rest
+}) => (
+  <div
+    className={cn(
+      'mt-6 flex items-center gap-3 pt-6',
+      JUSTIFY[align],
+      divider && 'border-t border-border',
+      className,
+    )}
+    {...rest}
+  >
     {children}
   </div>
 );

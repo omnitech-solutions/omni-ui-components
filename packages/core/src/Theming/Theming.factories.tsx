@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import { Alert } from '../Alert';
 import { Button } from '../Button';
@@ -29,7 +29,15 @@ export const ThemedSet: React.FC<ThemedSetProps> = ({ title, theme, tokens, chil
   <section
     data-theme={theme}
     data-testid={title}
-    style={{ ...(tokens as React.CSSProperties), padding: 12, display: 'grid', gap: 8, background: 'var(--oui-background-current)', color: 'var(--text-default)', borderRadius: 12 }}
+    style={{
+      ...(tokens as React.CSSProperties),
+      padding: 12,
+      display: 'grid',
+      gap: 8,
+      background: 'var(--oui-background-current)',
+      color: 'var(--text-default)',
+      borderRadius: 12,
+    }}
   >
     <Panel title={title}>
       <div style={{ padding: 8 }}>Panel body</div>

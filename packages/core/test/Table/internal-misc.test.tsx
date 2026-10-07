@@ -1,10 +1,9 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
 import { act, render, renderHook } from '@testing-library/react';
 
 import {
-  allResponsiveScreens,
   alignStyle,
+  allResponsiveScreens,
   appearanceStyle,
   componentTitle,
   currentResponsiveScreens,
@@ -25,8 +24,8 @@ import {
   sameFilterValues,
   shouldShowEllipsisTitle,
   sortDescFromOrder,
-  sortOrderFromTanStack,
   sorterPriority,
+  sortOrderFromTanStack,
   tableEditableConfig,
   useResponsiveScreens,
   visibleLeafColumns,

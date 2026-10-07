@@ -1,10 +1,17 @@
-import * as React from 'react';
+import {
+  type MessageItem,
+  MessageMenu,
+  type MessageMenuProps,
+} from '@oc-tech/omni-ui-components/MessageMenu';
 import { Copy, Download, Ellipsis, Eye, EyeOff, Trash2, TriangleAlert } from 'lucide-react';
-
-import { MessageMenu, type MessageItem, type MessageMenuProps } from '@oc-tech/omni-ui-components/MessageMenu';
+import * as React from 'react';
 import type { Variant } from '../../internal/support/makeFactory';
 
-export const sampleMessage: MessageItem = { id: 'm1', role: 'assistant', text: 'Here is the plan: ship the menu, then the thread.' };
+export const sampleMessage: MessageItem = {
+  id: 'm1',
+  role: 'assistant',
+  text: 'Here is the plan: ship the menu, then the thread.',
+};
 
 export const sampleConversation = {
   title: 'Plan the launch',
@@ -24,7 +31,9 @@ export const messageMenuIcons = {
 };
 
 /** Build `<MessageMenu>` props for stories and tests. */
-export const messageMenuPropsFactory = <T extends MessageItem = MessageItem>(overrides: Partial<MessageMenuProps<T>> = {}): MessageMenuProps<T> =>
+export const messageMenuPropsFactory = <T extends MessageItem = MessageItem>(
+  overrides: Partial<MessageMenuProps<T>> = {},
+): MessageMenuProps<T> =>
   ({
     message: sampleMessage as T,
     trigger: (
@@ -47,12 +56,16 @@ export const messageMenuVariants: Variant<MessageMenuProps>[] = [
 ];
 
 /** A message with state: Hide flips `hidden`, Delete removes it. */
-export const MessageMenuDemo: React.FC<Partial<MessageMenuProps> & { onAction?: (name: string) => void }> = ({ onAction, ...props }) => {
+export const MessageMenuDemo: React.FC<
+  Partial<MessageMenuProps> & { onAction?: (name: string) => void }
+> = ({ onAction, ...props }) => {
   const [message, setMessage] = React.useState<MessageItem | null>(sampleMessage);
   if (!message) return <p className="p-6 text-sm">Message deleted.</p>;
   return (
     <div className="min-h-[360px] p-6">
-      <p className={message.hidden ? 'mb-3 text-sm opacity-50' : 'mb-3 text-sm'}>{message.hidden ? 'Hidden message' : message.text}</p>
+      <p className={message.hidden ? 'mb-3 text-sm opacity-50' : 'mb-3 text-sm'}>
+        {message.hidden ? 'Hidden message' : message.text}
+      </p>
       <MessageMenu
         {...messageMenuPropsFactory(props)}
         message={message}

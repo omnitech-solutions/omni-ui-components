@@ -1,2 +1,2 @@
-export { Popconfirm } from './Popconfirm';
 export type { PopconfirmProps } from './Popconfirm';
+export { Popconfirm } from './Popconfirm';

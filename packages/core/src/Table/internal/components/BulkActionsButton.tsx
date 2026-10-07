@@ -1,5 +1,5 @@
-import * as React from 'react';
 import classNames from 'classnames';
+import type * as React from 'react';
 import { Button } from '../../../Button';
 import type { TableBulkActionsButtonProps } from '../../Table.types';
 
@@ -25,8 +25,19 @@ const sizeMap = {
 
 // Bulk-bar button: Bonsai Button + shared `bui-table-bulk-btn` class so
 // `bulkActions.render` overrides compose cleanly.
-export const BulkActionsButton: React.FC<TableBulkActionsButtonProps> = ({ variant = 'secondary', size = 'sm', children, className, ...rest }) => (
-  <Button variant={variantMap[variant]} buttonSize={sizeMap[size]} className={classNames('bui-table-bulk-btn', className)} {...rest}>
+export const BulkActionsButton: React.FC<TableBulkActionsButtonProps> = ({
+  variant = 'secondary',
+  size = 'sm',
+  children,
+  className,
+  ...rest
+}) => (
+  <Button
+    variant={variantMap[variant]}
+    buttonSize={sizeMap[size]}
+    className={classNames('bui-table-bulk-btn', className)}
+    {...rest}
+  >
     {children}
   </Button>
 );

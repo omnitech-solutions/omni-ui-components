@@ -1,7 +1,11 @@
-import * as React from 'react';
 import { KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { restrictToHorizontalAxis, restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import {
+  restrictToHorizontalAxis,
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import * as React from 'react';
 
 // DnD sensors + axis modifier. Active id prefix (`column:` / `row:`) locks
 // the axis so a column can't be dragged vertically off the table.
@@ -15,7 +19,8 @@ export function useDragState() {
 
   const modifiers = React.useMemo(() => {
     if (!activeDragId) return [restrictToParentElement];
-    if (activeDragId.startsWith('column:')) return [restrictToHorizontalAxis, restrictToParentElement];
+    if (activeDragId.startsWith('column:'))
+      return [restrictToHorizontalAxis, restrictToParentElement];
     if (activeDragId.startsWith('row:')) return [restrictToVerticalAxis, restrictToParentElement];
     return [restrictToParentElement];
   }, [activeDragId]);

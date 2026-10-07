@@ -1,6 +1,5 @@
-import * as React from 'react';
-import type { Preview } from '@storybook/react';
 import { withThemeByDataAttribute } from '@storybook/addon-themes';
+import type { Preview } from '@storybook/react';
 import { themes } from 'storybook/theming';
 import { DocsPage } from './internal/support';
 
@@ -37,7 +36,15 @@ const preview: Preview = {
   globalTypes: {
     hitArea: {
       description: 'Outline the 40px hit area of control-row buttons',
-      toolbar: { title: 'Hit area', icon: 'outline', items: [{ value: 'off', title: 'Hit area: off' }, { value: 'outline', title: 'Hit area: outline' }], dynamicTitle: true },
+      toolbar: {
+        title: 'Hit area',
+        icon: 'outline',
+        items: [
+          { value: 'off', title: 'Hit area: off' },
+          { value: 'outline', title: 'Hit area: outline' },
+        ],
+        dynamicTitle: true,
+      },
     },
   },
   initialGlobals: { hitArea: 'off' },
@@ -51,7 +58,13 @@ const preview: Preview = {
       theme: themes.dark,
       page: DocsPage,
       source: {
-        transform: (_code: string, ctx: { args?: Record<string, unknown>; component?: { displayName?: string; name?: string } }) => {
+        transform: (
+          _code: string,
+          ctx: {
+            args?: Record<string, unknown>;
+            component?: { displayName?: string; name?: string };
+          },
+        ) => {
           const name = ctx.component?.displayName || ctx.component?.name || 'Component';
           const args = ctx.args ?? {};
           return `<${name}\n${formatArgs(args)}\n/>`;
@@ -68,7 +81,12 @@ const preview: Preview = {
     a11y: { test: 'error' },
     options: {
       storySort: {
-        order: ['Getting Started', ['Component Overview', 'Dynamic Form Overview', 'Table Overview', 'Design Tokens'], 'omni-ui-components', 'dynamic-form'],
+        order: [
+          'Getting Started',
+          ['Component Overview', 'Dynamic Form Overview', 'Table Overview', 'Design Tokens'],
+          'omni-ui-components',
+          'dynamic-form',
+        ],
       },
     },
   },
@@ -80,7 +98,8 @@ const preview: Preview = {
     }),
     (Story, ctx) => {
       if (typeof document !== 'undefined') {
-        if (ctx.globals.hitArea === 'outline') document.documentElement.setAttribute('data-oui-hit-outline', '');
+        if (ctx.globals.hitArea === 'outline')
+          document.documentElement.setAttribute('data-oui-hit-outline', '');
         else document.documentElement.removeAttribute('data-oui-hit-outline');
       }
       const theme = String(ctx.globals.theme ?? 'dark').toLowerCase();
@@ -90,7 +109,8 @@ const preview: Preview = {
       }
       const bg = theme === 'light' ? '#ffffff' : '#1A1C1D';
       const fg = 'var(--color-foreground)';
-      const fontStack = "var(--font-sans, 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif)";
+      const fontStack =
+        "var(--font-sans, 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif)";
       const css = `
         html, body { background: ${bg} !important; color: ${fg} !important; font-family: ${fontStack} !important; }
         #storybook-root[hidden] { display: none !important; }

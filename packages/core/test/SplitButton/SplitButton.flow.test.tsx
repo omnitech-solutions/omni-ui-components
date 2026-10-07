@@ -1,17 +1,17 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { SplitButton } from '@oc-tech/omni-ui-components/SplitButton';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   CaptureSplitButtonDemo,
-  MicSplitButtonDemo,
   captureSplitButtonProps,
+  MicSplitButtonDemo,
   splitButtonPropsFactory,
 } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
 
-const root = (container: HTMLElement) => container.querySelector('[data-slot="split-button"]') as HTMLElement;
+const root = (container: HTMLElement) =>
+  container.querySelector('[data-slot="split-button"]') as HTMLElement;
 
 describe('omni-ui-components/SplitButton interaction flow', () => {
   describe('choosing a menu row updates everything that shows the value', () => {
@@ -27,11 +27,19 @@ describe('omni-ui-components/SplitButton interaction flow', () => {
       expect(root(container)).toHaveAttribute('data-tone', 'accent');
       expect(screen.queryByRole('menu')).not.toBeInTheDocument();
       // the callback fired exactly once for the one choice
-      expect(onAction.mock.calls.filter(([name]) => name === 'capture:select')).toEqual([['capture:select', 'auto']]);
+      expect(onAction.mock.calls.filter(([name]) => name === 'capture:select')).toEqual([
+        ['capture:select', 'auto'],
+      ]);
 
       await user.click(screen.getByRole('button', { name: 'More options' }));
-      expect(screen.getByRole('menuitemradio', { name: /^Auto/ })).toHaveAttribute('aria-checked', 'true');
-      expect(screen.getByRole('menuitemradio', { name: /^Manual/ })).toHaveAttribute('aria-checked', 'false');
+      expect(screen.getByRole('menuitemradio', { name: /^Auto/ })).toHaveAttribute(
+        'aria-checked',
+        'true',
+      );
+      expect(screen.getByRole('menuitemradio', { name: /^Manual/ })).toHaveAttribute(
+        'aria-checked',
+        'false',
+      );
       await user.keyboard('{Escape}');
 
       await user.hover(screen.getByRole('button', { name: 'Capture' }));
@@ -44,8 +52,13 @@ describe('omni-ui-components/SplitButton interaction flow', () => {
       await user.click(screen.getByRole('button', { name: 'More options' }));
       await user.click(screen.getByRole('menuitemradio', { name: /Built-in Retina Display$/ }));
       await user.click(screen.getByRole('button', { name: 'More options' }));
-      expect(screen.getByRole('menuitemradio', { name: /^Built-in Retina Display$/ })).toHaveAttribute('aria-checked', 'true');
-      expect(screen.getByRole('menuitemradio', { name: /^Manual/ })).toHaveAttribute('aria-checked', 'true');
+      expect(
+        screen.getByRole('menuitemradio', { name: /^Built-in Retina Display$/ }),
+      ).toHaveAttribute('aria-checked', 'true');
+      expect(screen.getByRole('menuitemradio', { name: /^Manual/ })).toHaveAttribute(
+        'aria-checked',
+        'true',
+      );
       expect(root(container)).toHaveAttribute('data-tone', 'neutral');
     });
 
@@ -65,7 +78,10 @@ describe('omni-ui-components/SplitButton interaction flow', () => {
       await user.click(screen.getByRole('button', { name: 'More options' }));
       await user.click(screen.getByRole('menuitemradio', { name: 'AirPods Pro' }));
       await user.click(screen.getByRole('button', { name: 'More options' }));
-      expect(screen.getByRole('menuitemradio', { name: 'AirPods Pro' })).toHaveAttribute('aria-checked', 'true');
+      expect(screen.getByRole('menuitemradio', { name: 'AirPods Pro' })).toHaveAttribute(
+        'aria-checked',
+        'true',
+      );
       await user.click(screen.getByRole('menuitem', { name: 'Retry now' }));
       expect(root(container)).toHaveAttribute('data-tone', 'neutral');
       expect(container.querySelector('[data-slot="split-button-status"]')).toBeNull();
@@ -80,7 +96,10 @@ describe('omni-ui-components/SplitButton interaction flow', () => {
       await user.click(caret);
       await user.click(screen.getByRole('menuitemradio', { name: /^Auto/ }));
       expect(caret).not.toHaveFocus();
-      expect(document.activeElement === document.body || !document.activeElement?.closest('[data-slot="split-button"]')).toBe(true);
+      expect(
+        document.activeElement === document.body ||
+          !document.activeElement?.closest('[data-slot="split-button"]'),
+      ).toBe(true);
     });
 
     it('after a KEYBOARD selection focus returns to the caret', async () => {
@@ -116,10 +135,12 @@ describe('omni-ui-components/SplitButton interaction flow', () => {
     it('the focus ring belongs to the whole control, never to one half', () => {
       const { container } = render(<SplitButton {...splitButtonPropsFactory()} />);
       expect(root(container).className).toContain('has-[:focus-visible]:ring-2');
-      container.querySelectorAll('[data-slot="split-button-main"], [data-slot="split-button-caret"]').forEach((half) => {
-        expect(half.className).not.toMatch(/focus-visible:ring/);
-        expect(half).toHaveClass('outline-none');
-      });
+      container
+        .querySelectorAll('[data-slot="split-button-main"], [data-slot="split-button-caret"]')
+        .forEach((half) => {
+          expect(half.className).not.toMatch(/focus-visible:ring/);
+          expect(half).toHaveClass('outline-none');
+        });
     });
   });
 
@@ -129,20 +150,29 @@ describe('omni-ui-components/SplitButton interaction flow', () => {
       (tone) => {
         const { container } = render(<SplitButton {...splitButtonPropsFactory({ tone })} />);
         expect(root(container)).toHaveClass('border');
-        expect(root(container).className).toContain(`border-[color:var(--oui-tone-${tone}-border)]`);
+        expect(root(container).className).toContain(
+          `border-[color:var(--oui-tone-${tone}-border)]`,
+        );
         expect(screen.getByRole('button', { name: 'Capture' })).toHaveClass('text-inherit');
       },
     );
 
     it("the caret is divided by a 1px left border that takes the control's own border colour", () => {
       render(<SplitButton {...splitButtonPropsFactory()} />);
-      expect(screen.getByRole('button', { name: 'More options' })).toHaveClass('border-l', 'border-inherit');
+      expect(screen.getByRole('button', { name: 'More options' })).toHaveClass(
+        'border-l',
+        'border-inherit',
+      );
     });
   });
 
   describe('status badge sits at the main segment top-right corner, inside it, same size as the IconButton badge', () => {
     it('is a direct child of the main button (its positioning anchor), and not inside the caret or a sibling of it', () => {
-      const { container } = render(<SplitButton {...splitButtonPropsFactory(captureSplitButtonProps({ mode: 'manual', problem: true }))} />);
+      const { container } = render(
+        <SplitButton
+          {...splitButtonPropsFactory(captureSplitButtonProps({ mode: 'manual', problem: true }))}
+        />,
+      );
       const badge = container.querySelector('[data-slot="split-button-status"]') as HTMLElement;
       const main = screen.getByRole('button', { name: 'Capture' });
       const caret = screen.getByRole('button', { name: 'More options' });
@@ -156,9 +186,17 @@ describe('omni-ui-components/SplitButton interaction flow', () => {
     });
 
     it('keeps its spoken description on the main button', () => {
-      render(<SplitButton {...splitButtonPropsFactory(captureSplitButtonProps({ mode: 'manual', problem: true }))} />);
-      expect(screen.getByRole('button', { name: 'Capture' })).toHaveAccessibleDescription('Screen recording permission lost');
-      expect(within(screen.getByRole('button', { name: 'Capture' })).getByText('!')).toBeInTheDocument();
+      render(
+        <SplitButton
+          {...splitButtonPropsFactory(captureSplitButtonProps({ mode: 'manual', problem: true }))}
+        />,
+      );
+      expect(screen.getByRole('button', { name: 'Capture' })).toHaveAccessibleDescription(
+        'Screen recording permission lost',
+      );
+      expect(
+        within(screen.getByRole('button', { name: 'Capture' })).getByText('!'),
+      ).toBeInTheDocument();
     });
   });
 });

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { z } from 'zod';
 import type { RJSFSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import { buildSingleFieldUiSchema, renderDynamicForm } from './testing/renderDynamicForm';
 

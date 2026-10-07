@@ -1,8 +1,12 @@
-import { z } from 'zod';
-
 import type { FormFixture } from '@oc-tech/omni-ui-components/Form/Form.types';
-import { SHOWCASE_EXPENSE_CATEGORIES, SHOWCASE_MEMBERS, SHOWCASE_PROJECTS, SHOWCASE_TAX_RATES } from '../../showcase/entities';
+import { z } from 'zod';
 import { formOptions, project } from '../../helpers/optionMappers';
+import {
+  SHOWCASE_EXPENSE_CATEGORIES,
+  SHOWCASE_MEMBERS,
+  SHOWCASE_PROJECTS,
+  SHOWCASE_TAX_RATES,
+} from '../../showcase/entities';
 
 /**
  * New Expense scenario — canonical source for both Form and RJSF.
@@ -97,11 +101,15 @@ export const expenseScenarioZod = z.object({
 /* Derived display helpers                                                      */
 /* -------------------------------------------------------------------------- */
 
-const TAX_RATE_BY_ID: Record<string, number> = Object.fromEntries(SHOWCASE_TAX_RATES.map((t) => [t.id, t.percent]));
+const TAX_RATE_BY_ID: Record<string, number> = Object.fromEntries(
+  SHOWCASE_TAX_RATES.map((t) => [t.id, t.percent]),
+);
 
 export const formatExpenseAmount = (n: number, currency: ExpenseCurrency): string => {
   const locale = currency === 'ETB' ? 'en-ET' : 'en-GB';
-  return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(Number.isFinite(n) ? n : 0);
+  return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(
+    Number.isFinite(n) ? n : 0,
+  );
 };
 
 export interface ExpenseDerived {
@@ -112,9 +120,13 @@ export interface ExpenseDerived {
 
 export const deriveExpense = (data: Readonly<Partial<ExpenseScenarioFormData>>): ExpenseDerived => {
   const amount = typeof data.amount === 'number' && Number.isFinite(data.amount) ? data.amount : 0;
-  const markup = typeof data.markupPercentage === 'number' && Number.isFinite(data.markupPercentage) ? data.markupPercentage / 100 : 0;
+  const markup =
+    typeof data.markupPercentage === 'number' && Number.isFinite(data.markupPercentage)
+      ? data.markupPercentage / 100
+      : 0;
   const currency: ExpenseCurrency = data.currency === 'ETB' ? 'ETB' : 'GBP';
-  const taxRateId = typeof data.taxRateId === 'string' && data.taxRateId.length > 0 ? data.taxRateId : 'none';
+  const taxRateId =
+    typeof data.taxRateId === 'string' && data.taxRateId.length > 0 ? data.taxRateId : 'none';
   const taxRate = TAX_RATE_BY_ID[taxRateId] ?? 0;
   const excludingTax = amount / (1 + taxRate);
   const salesPrice = amount * (1 + markup);
@@ -128,12 +140,17 @@ export const deriveExpense = (data: Readonly<Partial<ExpenseScenarioFormData>>):
 /* Option list adapters                                                         */
 /* -------------------------------------------------------------------------- */
 
-export const expenseCategoryOptions = () => project(SHOWCASE_EXPENSE_CATEGORIES, { value: 'id' as const, label: 'label' as const });
-export const expenseTaxRateOptions = () => project(SHOWCASE_TAX_RATES, { value: 'id' as const, label: 'label' as const });
-export const expenseProjectOptions = () => project(SHOWCASE_PROJECTS, { value: 'id' as const, label: (p) => `${p.icon} ${p.name}` });
+export const expenseCategoryOptions = () =>
+  project(SHOWCASE_EXPENSE_CATEGORIES, { value: 'id' as const, label: 'label' as const });
+export const expenseTaxRateOptions = () =>
+  project(SHOWCASE_TAX_RATES, { value: 'id' as const, label: 'label' as const });
+export const expenseProjectOptions = () =>
+  project(SHOWCASE_PROJECTS, { value: 'id' as const, label: (p) => `${p.icon} ${p.name}` });
 export const expenseMemberOptions = () => formOptions(SHOWCASE_MEMBERS);
 
-export const expenseScenarioFormFactory = (overrides: Partial<ExpenseScenarioFormData> = {}): FormFixture<ExpenseScenarioFormData> => {
+export const expenseScenarioFormFactory = (
+  overrides: Partial<ExpenseScenarioFormData> = {},
+): FormFixture<ExpenseScenarioFormData> => {
   const initial = { ...expenseScenarioInitial, ...overrides };
   const derived = deriveExpense(initial);
 
@@ -145,7 +162,13 @@ export const expenseScenarioFormFactory = (overrides: Partial<ExpenseScenarioFor
     rows: [
       [
         { name: 'name', label: 'Name', placeholder: 'Travel expenses', required: true },
-        { name: 'companyTagId', label: 'Category', type: 'select', placeholder: 'Select…', options: expenseCategoryOptions() },
+        {
+          name: 'companyTagId',
+          label: 'Category',
+          type: 'select',
+          placeholder: 'Select…',
+          options: expenseCategoryOptions(),
+        },
       ],
       [
         { name: 'amount', label: 'Amount', type: 'currency', required: true },
@@ -163,8 +186,20 @@ export const expenseScenarioFormFactory = (overrides: Partial<ExpenseScenarioFor
       { kind: 'heading', title: derived.salesPriceLabel, description: derived.excludingTaxLabel },
       { kind: 'heading', title: 'Additional Fields' },
       [
-        { name: 'projectId', label: 'Project', type: 'select', placeholder: 'Select…', options: expenseProjectOptions() },
-        { name: 'memberId', label: 'Member', type: 'select', placeholder: 'Select…', options: expenseMemberOptions() },
+        {
+          name: 'projectId',
+          label: 'Project',
+          type: 'select',
+          placeholder: 'Select…',
+          options: expenseProjectOptions(),
+        },
+        {
+          name: 'memberId',
+          label: 'Member',
+          type: 'select',
+          placeholder: 'Select…',
+          options: expenseMemberOptions(),
+        },
       ],
       [{ name: 'notes', label: 'Note', type: 'textarea', placeholder: 'Add a note…' }],
       /* expense_receipt_blob_id, deductible_*, recurring_time*,

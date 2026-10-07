@@ -1,19 +1,25 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen, within } from '@testing-library/react';
-
-import { ConversationTranscript, DEFAULT_CONVERSATION_TRANSCRIPT_LABELS } from '@oc-tech/omni-ui-components/ConversationTranscript';
 import type { ApprovalItem } from '@oc-tech/omni-ui-components/ApprovalCard';
-import type { FeedbackReason } from '@oc-tech/omni-ui-components/FeedbackPanel';
-import type { ChatSource, ChatVersion, ConversationTurn } from '@oc-tech/omni-ui-components/Transcript';
 import {
+  ConversationTranscript,
+  DEFAULT_CONVERSATION_TRANSCRIPT_LABELS,
+} from '@oc-tech/omni-ui-components/ConversationTranscript';
+import type { FeedbackReason } from '@oc-tech/omni-ui-components/FeedbackPanel';
+import type {
+  ChatSource,
+  ChatVersion,
+  ConversationTurn,
+} from '@oc-tech/omni-ui-components/Transcript';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  ConversationTranscriptDemo,
   chatReplyApproval,
   chatReplySummary,
   chatReplyTurns,
   conversationTranscriptPropsFactory,
-  ConversationTranscriptDemo,
 } from 'factories/omni-ui-components/ConversationTranscript/ConversationTranscript.factories';
+import type * as React from 'react';
 
 interface MyTurn extends ConversationTurn {
   tag: string;
@@ -35,7 +41,12 @@ const extendedTurns = (): MyTurn[] =>
   chatReplyTurns().map((turn) => ({
     ...turn,
     tag: `tag-${turn.id}`,
-    answer: turn.answer && { ...turn.answer, sources: turn.answer.sources.map((source, index) => ({ ...source, score: index }) as MySource) },
+    answer: turn.answer && {
+      ...turn.answer,
+      sources: turn.answer.sources.map(
+        (source, index) => ({ ...source, score: index }) as MySource,
+      ),
+    },
   }));
 
 const setup = (props: Partial<React.ComponentProps<typeof ConversationTranscript>> = {}) =>
@@ -61,7 +72,8 @@ describe('omni-ui-components/ConversationTranscript composition', () => {
     expect(screen.getByText(/Thought for 4s/)).toBeInTheDocument();
     expect(screen.getByText('Two Sum')).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'Open source 1' }).length).toBeGreaterThan(0);
-    for (const name of ['Copy', 'Regenerate', 'Good reply', 'Bad reply']) expect(screen.getAllByRole('button', { name }).length).toBeGreaterThan(0);
+    for (const name of ['Copy', 'Regenerate', 'Good reply', 'Bad reply'])
+      expect(screen.getAllByRole('button', { name }).length).toBeGreaterThan(0);
     expect(screen.getByRole('button', { name: 'Show me a test for it' })).toBeInTheDocument();
     expect(screen.getByText('Save this solution to your notes?')).toBeInTheDocument();
     expect(screen.getByText(/earlier messages summarised/i)).toBeInTheDocument();
@@ -128,7 +140,10 @@ describe('omni-ui-components/ConversationTranscript callbacks receive the origin
     await userEvent.click(within(row).getByRole('button', { name: 'Good reply' }));
     expect(onRate.mock.calls[0]![0]).toBe(turns[1]);
     expect(onRate.mock.calls[0]![1]).toBe('up');
-    expect(within(row).getByRole('button', { name: 'Good reply' })).toHaveAttribute('aria-pressed', 'true');
+    expect(within(row).getByRole('button', { name: 'Good reply' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     await userEvent.click(within(row).getByRole('button', { name: 'Good reply' }));
     expect(onRate.mock.calls[1]![1]).toBeNull();
   });
@@ -172,12 +187,23 @@ describe('omni-ui-components/ConversationTranscript callbacks receive the origin
     const turns = extendedTurns();
     const item: MyApproval = { id: 'x', title: 'Run it?', tool: 'run', risk: 'high' };
     const onDecideApproval = vi.fn();
-    const { rerender } = setup({ turns, approvals: [{ turnId: 'u1', approval: item }], onDecideApproval });
+    const { rerender } = setup({
+      turns,
+      approvals: [{ turnId: 'u1', approval: item }],
+      onDecideApproval,
+    });
     await userEvent.click(screen.getByRole('button', { name: /allow once/i }));
     expect(onDecideApproval.mock.calls[0]![0]).toBe(item);
     expect(onDecideApproval.mock.calls[0]![1]).toBe('once');
     expect(onDecideApproval.mock.calls[0]![2]).toBe(turns[1]);
-    rerender(<ConversationTranscript {...conversationTranscriptPropsFactory({ turns, approvals: [{ turnId: 'u1', approval: item, status: 'once' }] })} />);
+    rerender(
+      <ConversationTranscript
+        {...conversationTranscriptPropsFactory({
+          turns,
+          approvals: [{ turnId: 'u1', approval: item, status: 'once' }],
+        })}
+      />,
+    );
     const decided = screen.getByText('Run it?');
     const reply = document.querySelector('[data-turn-id="u1"] [data-slot="transcript-reply"]')!;
     expect(decided.compareDocumentPosition(reply) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -213,7 +239,16 @@ describe('omni-ui-components/ConversationTranscript callbacks receive the origin
 
   it('onRetry on a failed turn: the error card calls it with the turn', async () => {
     const turns = extendedTurns();
-    const failed: MyTurn = { ...turns[1]!, answer: undefined, run: { id: 'r', userMessageId: 'u1', status: 'failed', error: { code: 'x', message: 'Model down' } } };
+    const failed: MyTurn = {
+      ...turns[1]!,
+      answer: undefined,
+      run: {
+        id: 'r',
+        userMessageId: 'u1',
+        status: 'failed',
+        error: { code: 'x', message: 'Model down' },
+      },
+    };
     const onRetry = vi.fn();
     setup({ turns: [turns[0]!, failed], onRetry });
     expect(screen.getByText('Model down')).toBeInTheDocument();

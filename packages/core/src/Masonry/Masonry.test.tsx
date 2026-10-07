@@ -6,7 +6,14 @@ import { Masonry } from './Masonry';
 describe('Masonry', () => {
   it('renders items in the configured number of columns and applies the gutter', () => {
     render(
-      <Masonry columns={4} gutter={20} items={[{ key: 'a', children: 'Alpha' }, { key: 'b', children: 'Beta' }]} />,
+      <Masonry
+        columns={4}
+        gutter={20}
+        items={[
+          { key: 'a', children: 'Alpha' },
+          { key: 'b', children: 'Beta' },
+        ]}
+      />,
     );
 
     const root = screen.getByText('Alpha').parentElement;
@@ -34,10 +41,12 @@ describe('Masonry', () => {
     const onLayoutChange = vi.fn();
     render(<Masonry columns={2} items={['One', 'Two', 'Three']} onLayoutChange={onLayoutChange} />);
 
-    await waitFor(() => expect(onLayoutChange).toHaveBeenCalledWith([
-      { key: 0, column: 0 },
-      { key: 1, column: 1 },
-      { key: 2, column: 0 },
-    ]));
+    await waitFor(() =>
+      expect(onLayoutChange).toHaveBeenCalledWith([
+        { key: 0, column: 0 },
+        { key: 1, column: 1 },
+        { key: 2, column: 0 },
+      ]),
+    );
   });
 });

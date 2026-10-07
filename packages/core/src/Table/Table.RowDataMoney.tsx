@@ -1,5 +1,5 @@
-import { renderMoneyField } from './Table.registry';
 import type { RowDataType } from './Table.RowData';
+import { renderMoneyField } from './Table.registry';
 
 export const RowDataMoneyType: RowDataType = {
   type: 'money',

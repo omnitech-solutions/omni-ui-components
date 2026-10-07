@@ -1,21 +1,30 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
 import { SessionBar } from '@oc-tech/omni-ui-components/SessionBar';
-import { SessionBarDemo, sessionBarPropsFactory, type SessionBarDemoProps } from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
+import type { Meta, StoryObj } from '@storybook/react';
+import {
+  SessionBarDemo,
+  type SessionBarDemoProps,
+  sessionBarPropsFactory,
+} from 'factories/omni-ui-components/SessionBar/SessionBar.factories';
+import type * as React from 'react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 type StoryArgs = SessionBarDemoProps;
 
 /** The designer gallery's backdrop behind the footer (story-only chrome). */
-const Backdrop: React.FC<React.PropsWithChildren<{ seeThrough?: number; width?: number }>> = ({ children, seeThrough, width }) => (
+const Backdrop: React.FC<React.PropsWithChildren<{ seeThrough?: number; width?: number }>> = ({
+  children,
+  seeThrough,
+  width,
+}) => (
   <div className="w-full p-6">
     <div
       className="rounded-xl p-3"
       style={{
         background: '#1a4f96',
         width,
-        ...(seeThrough !== undefined ? { ['--oui-panel-see-through' as string]: seeThrough } : null),
+        ...(seeThrough !== undefined
+          ? { ['--oui-panel-see-through' as string]: seeThrough }
+          : null),
       }}
     >
       {children}
@@ -79,17 +88,22 @@ export const Live: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Live: Pause session (outline, filled pause icon) and End session (outlined red). Pause toggles to Resume and back.',
+        story:
+          'Live: Pause session (outline, filled pause icon) and End session (outlined red). Pause toggles to Resume and back.',
       },
     },
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Pause session' }));
-    await waitFor(() => expect(canvas.getByRole('button', { name: 'Resume session' })).toBeVisible());
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: 'Resume session' })).toBeVisible(),
+    );
     await expect(canvas.getByText('Paused')).toBeVisible();
     await userEvent.click(canvas.getByRole('button', { name: 'Resume session' }));
-    await waitFor(() => expect(canvas.getByRole('button', { name: 'Pause session' })).toBeVisible());
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: 'Pause session' })).toBeVisible(),
+    );
     await expect(args.onAction).toHaveBeenCalledWith('pause');
     await expect(args.onAction).toHaveBeenCalledWith('resume');
   },
@@ -135,7 +149,8 @@ export const EndConfirm: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'End with `confirm` config: the button opens a Popconfirm; the End callback runs only on confirm.',
+        story:
+          'End with `confirm` config: the button opens a Popconfirm; the End callback runs only on confirm.',
       },
     },
   },
@@ -188,7 +203,8 @@ export const SeeThrough: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'See-through (token 0.22) lowers the bar surface only; icon, timer, labels and buttons stay fully opaque.',
+        story:
+          'See-through (token 0.22) lowers the bar surface only; icon, timer, labels and buttons stay fully opaque.',
       },
     },
   },
@@ -198,7 +214,10 @@ export const SeeThrough: Story = {
 export const PropsOnly: StoryObj = {
   render: () => (
     <Backdrop>
-      <SessionBar {...sessionBarPropsFactory({ status: 'paused' })} leading={<span className="text-sm">Custom leading slot</span>} />
+      <SessionBar
+        {...sessionBarPropsFactory({ status: 'paused' })}
+        leading={<span className="text-sm">Custom leading slot</span>}
+      />
     </Backdrop>
   ),
 };

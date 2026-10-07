@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { Check } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Check } from 'lucide-react';
+import * as React from 'react';
 import type { WizardStepsProps } from './Wizard.types';
 
 /**
@@ -13,7 +12,10 @@ import type { WizardStepsProps } from './Wizard.types';
  * Set `forceLinearForward={false}` to allow jumping ahead.
  */
 const WizardStepsInner = React.forwardRef<HTMLElement, WizardStepsProps>(
-  ({ steps, value, onChange, forceLinearForward = true, className, 'data-testid': testId }, ref) => {
+  (
+    { steps, value, onChange, forceLinearForward = true, className, 'data-testid': testId },
+    ref,
+  ) => {
     const activeIdx = steps.findIndex((s) => s.name === value);
 
     return (
@@ -57,12 +59,23 @@ const WizardStepsInner = React.forwardRef<HTMLElement, WizardStepsProps>(
                     'inline-flex size-5 items-center justify-center rounded-full text-[11px] font-semibold transition-colors',
                     done && 'bg-primary text-primary-foreground',
                     active && 'bg-foreground text-background',
-                    !done && !active && 'border border-[var(--oui-border-field)] text-[var(--oui-foreground-muted)]',
+                    !done &&
+                      !active &&
+                      'border border-[var(--oui-border-field)] text-[var(--oui-foreground-muted)]',
                   )}
                 >
                   {done ? <Check className="size-3" /> : idx + 1}
                 </span>
-                <span className={cn('font-medium', done || active ? 'text-[var(--oui-foreground)]' : 'text-[var(--oui-foreground-muted)]')}>{step.label}</span>
+                <span
+                  className={cn(
+                    'font-medium',
+                    done || active
+                      ? 'text-[var(--oui-foreground)]'
+                      : 'text-[var(--oui-foreground-muted)]',
+                  )}
+                >
+                  {step.label}
+                </span>
               </button>
             </React.Fragment>
           );

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import { makeFactory, type Variant } from '../internal/support/makeFactory';
 import { ContextMeter } from './ContextMeter';
@@ -25,9 +25,14 @@ export const contextMeterVariants: Variant<ContextMeterProps>[] = [
   { name: 'Danger (90%)', args: { used: 235800 } },
   { name: 'Full (clamped to 100%)', args: { used: 300000 } },
   { name: 'No window (empty ring)', args: { window: undefined, used: 1200 } },
-  { name: 'Custom thresholds (30 / 50)', args: { used: 100000, window: 262000, thresholds: { warn: 30, danger: 50 } } },
+  {
+    name: 'Custom thresholds (30 / 50)',
+    args: { used: 100000, window: 262000, thresholds: { warn: 30, danger: 50 } },
+  },
   { name: 'No summarise button', args: { onSummarise: undefined } },
 ];
 
 /** A meter that is already open, for stories that show the popover. */
-export const OpenContextMeter: React.FC<Partial<ContextMeterProps>> = (props) => <ContextMeter {...contextMeterPropsFactory()} defaultOpen {...props} />;
+export const OpenContextMeter: React.FC<Partial<ContextMeterProps>> = (props) => (
+  <ContextMeter {...contextMeterPropsFactory()} defaultOpen {...props} />
+);

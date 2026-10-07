@@ -17,7 +17,11 @@ export const speakable = (markdown: string, codeOmitted = '(code omitted)'): str
  * Read-aloud toggle: `speak(id, text)` starts reading, or stops when `id` is already being read. `speaking` is the id
  * being read. Speech stops when the component unmounts.
  */
-export const useSpeech = (): { speaking: string | undefined; speak: (id: string, text: string) => void; stop: () => void } => {
+export const useSpeech = (): {
+  speaking: string | undefined;
+  speak: (id: string, text: string) => void;
+  stop: () => void;
+} => {
   const [speaking, setSpeaking] = React.useState<string>();
   const speak = React.useCallback(
     (id: string, text: string) => {

@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { Button } from '@oc-tech/omni-ui-components/Button';
 import { Popconfirm } from '@oc-tech/omni-ui-components/Popconfirm';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 describe('omni-ui-components/Popconfirm', () => {
   it('shows confirm content when opened', async () => {

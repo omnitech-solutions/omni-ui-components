@@ -4,8 +4,20 @@
  * so both `checkmark` / `check` resolve to the same lucide component.
  */
 
-import * as React from 'react';
-import { Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Circle, File, Folder, FolderOpen, type LucideIcon } from 'lucide-react';
+import {
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  Circle,
+  File,
+  Folder,
+  FolderOpen,
+  type LucideIcon,
+} from 'lucide-react';
+import type * as React from 'react';
 
 import type { RowDataType } from './Table.RowData';
 
@@ -38,7 +50,11 @@ const ICONS: Record<RowDataIconName, LucideIcon> = {
   'folder-open': FolderOpen,
 };
 
-export const RowDataIcon: React.FC<{ name: RowDataIconName; size?: number; className?: string }> = ({ name, size = 16, className }) => {
+export const RowDataIcon: React.FC<{
+  name: RowDataIconName;
+  size?: number;
+  className?: string;
+}> = ({ name, size = 16, className }) => {
   const Component = ICONS[name];
   if (!Component) return null;
   return <Component size={size} className={className} aria-hidden />;
@@ -49,7 +65,8 @@ export const RowDataIcon: React.FC<{ name: RowDataIconName; size?: number; class
 export const RowDataIconType: RowDataType = {
   type: 'icon',
   render: ({ column, value }) => {
-    const name = ((column as { icon?: string }).icon ?? (typeof value === 'string' ? value : undefined)) as RowDataIconName | undefined;
+    const name = ((column as { icon?: string }).icon ??
+      (typeof value === 'string' ? value : undefined)) as RowDataIconName | undefined;
     if (!name) return null;
     return <RowDataIcon name={name} />;
   },

@@ -1,11 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
   plainDateTimeFixture,
   prefilledDateTimeFixture,
   type StartsAtFormData,
 } from 'factories/dynamic-form/widgets/DateTimeWidget/DateTimeWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<StartsAtFormData>;
 
@@ -14,7 +16,11 @@ const config = defineDynamicFormStories<StartsAtFormData>({
   fixtures: { plain: plainDateTimeFixture, prefilled: prefilledDateTimeFixture },
   titles: { plain: 'DateTimeWidget', prefilled: 'DateTimeWidget · prefilled' },
   defaultArgs: { fixture: 'plain' },
-  docs: { name: 'DateTimeWidget', whenToUse: 'Combined date + time picker for `format: "date-time"`. Submits ISO `YYYY-MM-DDTHH:MM`.' },
+  docs: {
+    name: 'DateTimeWidget',
+    whenToUse:
+      'Combined date + time picker for `format: "date-time"`. Submits ISO `YYYY-MM-DDTHH:MM`.',
+  },
   stories: { Plain: { fixture: 'plain' }, Prefilled: { fixture: 'prefilled' } },
 });
 

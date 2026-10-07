@@ -1,19 +1,17 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
-import { ComponentWrapper } from './storySupport';
 import { Table } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
+import { ComponentWrapper } from './storySupport';
 import type { InvoiceLineRecord, ProjectRecord } from './Table.story.fixtures';
 import {
   clientFilters,
+  type DocCellData,
+  defaultColumns,
   invoiceColumns,
   invoiceLines,
-  defaultColumns,
   projects,
   statusFilters,
   storyTableRegistry,
   treeProjects,
-  type DocCellData,
 } from './Table.story.fixtures';
 
 const meta: Meta = {
@@ -33,24 +31,52 @@ export default meta;
 
 type Story = StoryObj;
 
-const primaryRowSelection = { selections: true, getCheckboxProps: (record: ProjectRecord) => ({ disabled: record.disabled }) };
+const primaryRowSelection = {
+  selections: true,
+  getCheckboxProps: (record: ProjectRecord) => ({ disabled: record.disabled }),
+};
 const primaryExpandable = {
   defaultExpandedRowKeys: ['p-1'],
-  expandedRowRender: (record: ProjectRecord) => <div className="text-sm text-[var(--color-muted-foreground)]">{record.description}</div>,
+  expandedRowRender: (record: ProjectRecord) => (
+    <div className="text-sm text-[var(--color-muted-foreground)]">{record.description}</div>
+  ),
 };
-const primaryPagination = { defaultPageSize: 4, placement: ['topEnd', 'bottomEnd'] as ('topStart' | 'topEnd' | 'bottomStart' | 'bottomEnd' | 'none')[] };
+const primaryPagination = {
+  defaultPageSize: 4,
+  placement: ['topEnd', 'bottomEnd'] as (
+    | 'topStart'
+    | 'topEnd'
+    | 'bottomStart'
+    | 'bottomEnd'
+    | 'none'
+  )[],
+};
 
 const filterableColumns = [
   { ...defaultColumns[0], sorter: true },
-  { ...defaultColumns[1], filters: clientFilters, onFilter: (value: unknown, record: ProjectRecord) => record.client === value },
-  { ...defaultColumns[2], filters: statusFilters, onFilter: (value: unknown, record: ProjectRecord) => record.status === value },
+  {
+    ...defaultColumns[1],
+    filters: clientFilters,
+    onFilter: (value: unknown, record: ProjectRecord) => record.client === value,
+  },
+  {
+    ...defaultColumns[2],
+    filters: statusFilters,
+    onFilter: (value: unknown, record: ProjectRecord) => record.status === value,
+  },
   ...defaultColumns.slice(3),
 ];
 
-const treeExpandable = { childrenColumnName: 'children' as const, defaultExpandAllRows: true, indentSize: 28 };
+const treeExpandable = {
+  childrenColumnName: 'children' as const,
+  defaultExpandAllRows: true,
+  indentSize: 28,
+};
 const treeRowSelection = { checkStrictly: false };
 
-const invoicePagination = { placement: ['none'] as ('topStart' | 'topEnd' | 'bottomStart' | 'bottomEnd' | 'none')[] };
+const invoicePagination = {
+  placement: ['none'] as ('topStart' | 'topEnd' | 'bottomStart' | 'bottomEnd' | 'none')[],
+};
 
 export const AllFeatures: Story = {
   render: () => (
@@ -75,7 +101,12 @@ export const AllFeatures: Story = {
         title="Filter and sort headers"
         description="Overlay `column.sorter` on the header cells you want sortable and `column.filters` + `column.onFilter` on the ones with dropdown filters — same `dataSource`, no extra state."
       >
-        <Table<ProjectRecord> columns={filterableColumns} dataSource={projects} rowKey="id" testIdPrefix="table-kitchen-sink-filters" />
+        <Table<ProjectRecord>
+          columns={filterableColumns}
+          dataSource={projects}
+          rowKey="id"
+          testIdPrefix="table-kitchen-sink-filters"
+        />
       </ComponentWrapper>
 
       <ComponentWrapper

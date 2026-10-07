@@ -1,7 +1,6 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
-import { toneTextClasses, type ControlTone } from '../internal/support/controlTone';
+import type * as React from 'react';
+import { type ControlTone, toneTextClasses } from '../internal/support/controlTone';
 
 export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
   /** `line` (default): the linear bar. `ring`: a circular indicator that fits a control's icon slot. */
@@ -81,7 +80,14 @@ export const Progress = ({
           aria-hidden="true"
           className={cn(!determinate && 'animate-spin')}
         >
-          <circle cx={RING_VIEWBOX / 2} cy={RING_VIEWBOX / 2} r={RING_RADIUS} stroke="currentColor" strokeOpacity={0.25} strokeWidth={RING_STROKE} />
+          <circle
+            cx={RING_VIEWBOX / 2}
+            cy={RING_VIEWBOX / 2}
+            r={RING_RADIUS}
+            stroke="currentColor"
+            strokeOpacity={0.25}
+            strokeWidth={RING_STROKE}
+          />
           <circle
             data-slot="progress-ring-arc"
             cx={RING_VIEWBOX / 2}
@@ -101,17 +107,24 @@ export const Progress = ({
   }
 
   const clamped = Math.max(0, Math.min(100, percent));
-  const barClassName = status === 'exception' ? 'bg-destructive' : status === 'success' ? 'bg-primary' : 'bg-primary';
+  const barClassName =
+    status === 'exception' ? 'bg-destructive' : status === 'success' ? 'bg-primary' : 'bg-primary';
 
   return (
     <div className={cn('space-y-2', className)} {...props}>
       <div className="h-2 overflow-hidden rounded-full bg-muted">
         <div
-          className={cn('h-full rounded-full transition-[width]', barClassName, status === 'active' && 'animate-pulse')}
+          className={cn(
+            'h-full rounded-full transition-[width]',
+            barClassName,
+            status === 'active' && 'animate-pulse',
+          )}
           style={{ width: `${clamped}%` }}
         />
       </div>
-      {showInfo ? <div className="text-sm text-muted-foreground">{`${Math.round(clamped)}%`}</div> : null}
+      {showInfo ? (
+        <div className="text-sm text-muted-foreground">{`${Math.round(clamped)}%`}</div>
+      ) : null}
     </div>
   );
 };

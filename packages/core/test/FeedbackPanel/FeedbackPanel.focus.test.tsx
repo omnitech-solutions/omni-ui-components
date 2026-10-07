@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { FeedbackPanel } from '@oc-tech/omni-ui-components/FeedbackPanel';
+import { render, screen } from '@testing-library/react';
 
 const reasons = [
   { id: 'a', label: 'Incorrect' },

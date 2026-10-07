@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { Tab, TabPanel, Tabs, TabsBar } from '@oc-tech/omni-ui-components/Tabs';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 describe('omni-ui-components/Tabs', () => {
   it('switches the active panel when a tab is selected', async () => {

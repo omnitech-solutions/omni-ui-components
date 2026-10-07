@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 export interface VersionPagerLabels {
   previous: string;
@@ -14,7 +14,8 @@ export interface VersionItem {
   id: string;
 }
 
-export interface VersionPagerProps<T extends VersionItem = VersionItem> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onSelect'> {
+export interface VersionPagerProps<T extends VersionItem = VersionItem>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onSelect'> {
   /** 0-based index of the shown version. */
   index: number;
   /** Number of versions. Default: `versions.length`. */

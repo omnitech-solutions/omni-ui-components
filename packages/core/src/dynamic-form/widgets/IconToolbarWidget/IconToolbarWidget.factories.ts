@@ -1,5 +1,5 @@
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { z } from 'zod';
-import type { UiSchema, RJSFSchema } from '@rjsf/utils';
 
 import type { FormFixture } from '../../DynamicForm/DynamicForm.factories';
 
@@ -18,7 +18,9 @@ const QUICK_ACTIONS_SCHEMA: RJSFSchema = {
   },
 };
 
-const QUICK_ACTIONS_ZOD = z.object({ quick_actions: z.string().optional() }) as unknown as z.ZodType<QuickActionsFormData>;
+const QUICK_ACTIONS_ZOD = z.object({
+  quick_actions: z.string().optional(),
+}) as unknown as z.ZodType<QuickActionsFormData>;
 
 const fixtureFor = (uiSchema: UiSchema): FormFixture<QuickActionsFormData> => ({
   schema: QUICK_ACTIONS_SCHEMA,

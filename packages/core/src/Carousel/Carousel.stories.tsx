@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Carousel } from '@oc-tech/omni-ui-components/Carousel';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Carousel> = {
   title: 'omni-ui-components/Carousel',

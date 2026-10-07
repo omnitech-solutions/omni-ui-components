@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { Check, X } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Check, X } from 'lucide-react';
+import * as React from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../Tooltip';
 
 export interface TagProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'onCopy'> {
@@ -36,7 +35,19 @@ const COPIED_MS = 1500;
  * <Tag color="#2563eb">Published</Tag>
  * <Tag mono copyValue="3f9a1c2d4e" tooltip="3f9a1c2d4e5b6a7f…" onCopy={track}>3f9a1c2 · main</Tag>
  */
-export const Tag = ({ closable, onClose, color, mono, variant = 'outline', copyValue, onCopy, tooltip, className, children, ...props }: TagProps) => {
+export const Tag = ({
+  closable,
+  onClose,
+  color,
+  mono,
+  variant = 'outline',
+  copyValue,
+  onCopy,
+  tooltip,
+  className,
+  children,
+  ...props
+}: TagProps) => {
   const [copied, setCopied] = React.useState(false);
   const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   React.useEffect(() => () => clearTimeout(timer.current), []);
@@ -64,7 +75,8 @@ export const Tag = ({ closable, onClose, color, mono, variant = 'outline', copyV
       ? 'min-h-0 rounded-md border-0 bg-[var(--oui-tag-filled-bg)] px-2 py-0.5 text-[11.5px] text-[var(--oui-tag-filled-fg)]'
       : 'min-h-7 rounded-full border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] px-2.5 py-1 text-[var(--oui-foreground)] shadow-xs',
     mono && 'font-mono',
-    copyable && 'cursor-pointer transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+    copyable &&
+      'cursor-pointer transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
     className,
   );
   const style = color ? { borderColor: color, color, backgroundColor: `${color}14` } : undefined;
@@ -88,7 +100,14 @@ export const Tag = ({ closable, onClose, color, mono, variant = 'outline', copyV
       </span>
     </button>
   ) : (
-    <span data-slot="tag" data-mono={mono ? 'true' : undefined} data-variant={variant} className={classes} style={style} {...props}>
+    <span
+      data-slot="tag"
+      data-mono={mono ? 'true' : undefined}
+      data-variant={variant}
+      className={classes}
+      style={style}
+      {...props}
+    >
       {children}
       {closable ? (
         <button

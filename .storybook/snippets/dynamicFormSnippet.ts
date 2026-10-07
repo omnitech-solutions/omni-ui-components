@@ -7,7 +7,10 @@ import { formatValue } from './formatValue';
  * code passes the bundle through with spread — keeping the snippet
  * compact regardless of fixture size.
  */
-export function buildDynamicFormSnippet<T>(fixture: FormFixture<T>, opts: { submitLabel?: string } = {}): string {
+export function buildDynamicFormSnippet<T>(
+  fixture: FormFixture<T>,
+  opts: { submitLabel?: string } = {},
+): string {
   const submit = opts.submitLabel ?? 'Save';
   const fixtureLiteral = formatValue({
     schema: fixture.schema,

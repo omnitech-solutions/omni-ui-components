@@ -1,7 +1,12 @@
 import '@testing-library/jest-dom';
-import { render } from '@testing-library/react';
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@oc-tech/omni-ui-components/Tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@oc-tech/omni-ui-components/Tooltip';
+import { render } from '@testing-library/react';
 
 const setup = (container?: HTMLElement) =>
   render(
@@ -27,7 +32,9 @@ describe('omni-ui-components/Tooltip portal', () => {
   it('mounts in body by default', () => {
     const { container } = setup();
     const surface = document.querySelector('[data-oui-surface]') as HTMLElement;
-    expect((surface.closest('[data-radix-popper-content-wrapper]') ?? surface).parentElement).toBe(document.body);
+    expect((surface.closest('[data-radix-popper-content-wrapper]') ?? surface).parentElement).toBe(
+      document.body,
+    );
     expect(container).not.toContainElement(surface);
   });
 });

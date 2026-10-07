@@ -1,6 +1,5 @@
-import { Code, Hourglass, MonitorUp } from 'lucide-react';
-
 import type { EmptyProps } from '@oc-tech/omni-ui-components/Empty';
+import { Code, Hourglass, MonitorUp } from 'lucide-react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Build `<Empty>` props for standalone stories and tests. */
@@ -18,10 +17,30 @@ export const emptyVariants: Variant<EmptyProps>[] = [
       variant: 'tile',
       icon: <MonitorUp />,
       title: 'Nothing analysed yet',
-      description: 'Open the problem in your browser and capture it. Spoken questions are answered automatically.',
-      action: { label: 'Capture screen', icon: <MonitorUp />, shortcut: ['⌘', '⇧', 'S'], onClick: () => undefined },
+      description:
+        'Open the problem in your browser and capture it. Spoken questions are answered automatically.',
+      action: {
+        label: 'Capture screen',
+        icon: <MonitorUp />,
+        shortcut: ['⌘', '⇧', 'S'],
+        onClick: () => undefined,
+      },
     },
   },
-  { name: 'Tile, one line', args: { variant: 'tile', icon: <Code />, description: 'Code appears once the approach is drafted.' } },
-  { name: 'Tile, waiting', args: { variant: 'tile', icon: <Hourglass />, description: 'Starts automatically after the approach.' } },
+  {
+    name: 'Tile, one line',
+    args: {
+      variant: 'tile',
+      icon: <Code />,
+      description: 'Code appears once the approach is drafted.',
+    },
+  },
+  {
+    name: 'Tile, waiting',
+    args: {
+      variant: 'tile',
+      icon: <Hourglass />,
+      description: 'Starts automatically after the approach.',
+    },
+  },
 ];

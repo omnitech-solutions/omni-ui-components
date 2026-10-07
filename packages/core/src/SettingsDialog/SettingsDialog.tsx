@@ -1,15 +1,21 @@
-import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { IconAction } from '../internal/support/IconAction';
-import { useControllableState } from '../lib/use-controllable-state';
 import { resolvePortalContainer, surfaceProps } from '../internal/support/PortalContainer';
+import { useControllableState } from '../lib/use-controllable-state';
 import { Modal, ModalDescription, ModalOverlay, ModalPortal, ModalTitle } from '../Modal';
+import type {
+  SettingsDialogLabels,
+  SettingsDialogProps,
+  SettingsTab,
+} from './SettingsDialog.types';
 import { SETTINGS_TAB_CLASS } from './SettingsDialog.variants';
-import type { SettingsDialogLabels, SettingsDialogProps, SettingsTab } from './SettingsDialog.types';
 
-export const DEFAULT_SETTINGS_DIALOG_LABELS: SettingsDialogLabels = { title: 'Settings', close: 'Close' };
+export const DEFAULT_SETTINGS_DIALOG_LABELS: SettingsDialogLabels = {
+  title: 'Settings',
+  close: 'Close',
+};
 
 /**
  * Omni SettingsDialog: the library Modal (Radix Dialog) with a vertical tablist on the left and the active tab's
@@ -38,7 +44,10 @@ export const SettingsDialog = <Tab extends SettingsTab<Tab> = SettingsTab>({
   'data-testid': testId,
 }: SettingsDialogProps<Tab>) => {
   const labels = { ...DEFAULT_SETTINGS_DIALOG_LABELS, ...labelOverrides };
-  const [requested, setTab] = useControllableState<string | undefined>(activeTab, defaultTab ?? tabs[0]?.id);
+  const [requested, setTab] = useControllableState<string | undefined>(
+    activeTab,
+    defaultTab ?? tabs[0]?.id,
+  );
   const current = tabs.find((tab) => tab.id === requested) ?? tabs[0];
   const base = React.useId();
   const tabRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
@@ -83,7 +92,8 @@ export const SettingsDialog = <Tab extends SettingsTab<Tab> = SettingsTab>({
           data-slot="settings-dialog"
           {...surfaceProps('settings-dialog')}
           onOpenAutoFocus={() => {
-            opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+            opener.current =
+              document.activeElement instanceof HTMLElement ? document.activeElement : null;
           }}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
@@ -97,9 +107,20 @@ export const SettingsDialog = <Tab extends SettingsTab<Tab> = SettingsTab>({
             className,
           )}
         >
-          <div data-slot="settings-nav" className="flex w-[180px] flex-none flex-col gap-0.5 border-r border-solid border-[color:var(--oui-panel-divider)] bg-[color:var(--oui-panel-dock-bg)] p-2.5">
-            <ModalTitle className="px-2.5 pt-1.5 pb-2 text-[13px] leading-none font-semibold">{labels.title}</ModalTitle>
-            <div role="tablist" aria-orientation="vertical" aria-label={labels.title} onKeyDown={onKeyDown} className="flex flex-col gap-0.5">
+          <div
+            data-slot="settings-nav"
+            className="flex w-[180px] flex-none flex-col gap-0.5 border-r border-solid border-[color:var(--oui-panel-divider)] bg-[color:var(--oui-panel-dock-bg)] p-2.5"
+          >
+            <ModalTitle className="px-2.5 pt-1.5 pb-2 text-[13px] leading-none font-semibold">
+              {labels.title}
+            </ModalTitle>
+            <div
+              role="tablist"
+              aria-orientation="vertical"
+              aria-label={labels.title}
+              onKeyDown={onKeyDown}
+              className="flex flex-col gap-0.5"
+            >
               {tabs.map((tab) => {
                 const selected = tab.id === current.id;
                 return (
@@ -129,7 +150,14 @@ export const SettingsDialog = <Tab extends SettingsTab<Tab> = SettingsTab>({
               })}
             </div>
           </div>
-          <div id={panelId} role="tabpanel" aria-labelledby={tabId(current.id)} tabIndex={-1} data-slot="settings-body" className="flex min-w-0 flex-1 flex-col outline-none">
+          <div
+            id={panelId}
+            role="tabpanel"
+            aria-labelledby={tabId(current.id)}
+            tabIndex={-1}
+            data-slot="settings-body"
+            className="flex min-w-0 flex-1 flex-col outline-none"
+          >
             <div className="flex h-12 flex-none items-center justify-between border-b border-solid border-[color:var(--oui-panel-divider)] pr-2 pl-5">
               <span className="text-[14px] font-semibold">{current.label}</span>
               {onClose ? (
@@ -137,7 +165,10 @@ export const SettingsDialog = <Tab extends SettingsTab<Tab> = SettingsTab>({
               ) : null}
             </div>
             <ModalDescription className="sr-only">{current.label}</ModalDescription>
-            <div data-slot="settings-content" className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-5">
+            <div
+              data-slot="settings-content"
+              className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-5"
+            >
               {current.render(current)}
             </div>
           </div>

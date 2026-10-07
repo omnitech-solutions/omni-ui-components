@@ -1,7 +1,6 @@
-import * as React from 'react';
 import { Switch as ShadcnSwitch } from 'components/ui/switch';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import type { SwitchPrimitiveProps } from './Switch.types';
 
 /**
@@ -28,7 +27,10 @@ const SwitchPrimitiveInner = React.forwardRef<HTMLButtonElement, SwitchPrimitive
     ref,
   ) => {
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
     return (
       <ShadcnSwitch
         ref={ref}

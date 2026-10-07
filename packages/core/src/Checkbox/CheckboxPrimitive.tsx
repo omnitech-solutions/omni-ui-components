@@ -1,8 +1,7 @@
-import * as React from 'react';
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
-import { Check } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Check } from 'lucide-react';
+import * as React from 'react';
 import type { CheckboxPrimitiveProps } from './Checkbox.types';
 
 /**
@@ -41,7 +40,10 @@ const CheckboxPrimitiveInner = React.forwardRef<HTMLButtonElement, CheckboxPrimi
     ref,
   ) => {
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
 
     return (
       <RadixCheckbox.Root
@@ -84,4 +86,6 @@ const CheckboxPrimitiveInner = React.forwardRef<HTMLButtonElement, CheckboxPrimi
 );
 CheckboxPrimitiveInner.displayName = 'CheckboxPrimitive';
 
-export const CheckboxPrimitive = React.memo(CheckboxPrimitiveInner) as typeof CheckboxPrimitiveInner;
+export const CheckboxPrimitive = React.memo(
+  CheckboxPrimitiveInner,
+) as typeof CheckboxPrimitiveInner;

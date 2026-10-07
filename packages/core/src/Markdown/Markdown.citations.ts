@@ -43,7 +43,8 @@ export function remarkCitations(cited: ReadonlySet<number>) {
           });
           node.children.splice(index, 1, ...(replacement as never[]));
           index += replacement.length - 1;
-        } else if ('children' in child && child.type !== 'code' && child.type !== 'inlineCode') visit(child);
+        } else if ('children' in child && child.type !== 'code' && child.type !== 'inlineCode')
+          visit(child);
       }
     };
     visit(tree);

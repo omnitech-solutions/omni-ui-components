@@ -1,12 +1,15 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { fireEvent, render, screen, within } from '@testing-library/react';
-
-import { Panel, type PanelProps } from '@oc-tech/omni-ui-components/Panel';
 import { Button } from '@oc-tech/omni-ui-components/Button';
+import { Panel, type PanelProps } from '@oc-tech/omni-ui-components/Panel';
 import { Tag } from '@oc-tech/omni-ui-components/Tag';
-import { NativePanelsDemo, panelPropsFactory, panelVariants, TranscriptDemo } from 'factories/omni-ui-components/Panel/Panel.factories';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  NativePanelsDemo,
+  panelPropsFactory,
+  panelVariants,
+  TranscriptDemo,
+} from 'factories/omni-ui-components/Panel/Panel.factories';
 
 const slot = (name: string) => document.querySelector(`[data-slot="${name}"]`) as HTMLElement;
 
@@ -46,22 +49,38 @@ describe('omni-ui-components/Panel', () => {
           body
         </Panel>,
       );
-      for (const name of ['panel', 'panel-header', 'panel-body', 'panel-dock']) expect(slot(name)).toBeInTheDocument();
+      for (const name of ['panel', 'panel-header', 'panel-body', 'panel-dock'])
+        expect(slot(name)).toBeInTheDocument();
     });
   });
 
   describe('header', () => {
     it('is the 40px header token with a 1px separator and holds title, subtitle, meta and actions in that order', () => {
       render(
-        <Panel title="Answer" subtitle="S2 · 10:57" meta="Last capture 08:33" actions={<Button>Stop</Button>}>
+        <Panel
+          title="Answer"
+          subtitle="S2 · 10:57"
+          meta="Last capture 08:33"
+          actions={<Button>Stop</Button>}
+        >
           body
         </Panel>,
       );
       const header = slot('panel-header');
       expect(header).toHaveClass('h-[var(--oui-panel-header-height)]', 'border-b');
-      const order = Array.from(header.querySelectorAll('[data-slot^="panel-"]')).map((el) => el.getAttribute('data-slot'));
-      expect(order).toEqual(['panel-title', 'panel-subtitle', 'panel-header-end', 'panel-meta', 'panel-actions']);
-      expect(within(slot('panel-actions')).getByRole('button', { name: 'Stop' })).toBeInTheDocument();
+      const order = Array.from(header.querySelectorAll('[data-slot^="panel-"]')).map((el) =>
+        el.getAttribute('data-slot'),
+      );
+      expect(order).toEqual([
+        'panel-title',
+        'panel-subtitle',
+        'panel-header-end',
+        'panel-meta',
+        'panel-actions',
+      ]);
+      expect(
+        within(slot('panel-actions')).getByRole('button', { name: 'Stop' }),
+      ).toBeInTheDocument();
     });
 
     it('has only a title when nothing else is given (no empty meta or actions slots)', () => {
@@ -110,7 +129,9 @@ describe('omni-ui-components/Panel', () => {
           body
         </Panel>,
       );
-      const classes = Array.from(slot('panel').querySelectorAll('*')).map((el) => el.className.toString());
+      const classes = Array.from(slot('panel').querySelectorAll('*')).map((el) =>
+        el.className.toString(),
+      );
       classes.push(slot('panel').className);
       expect(classes.join(' ')).not.toMatch(/(^|\s)(absolute|fixed)(\s|$)/);
     });
@@ -139,7 +160,9 @@ describe('omni-ui-components/Panel', () => {
       );
       const dock = slot('panel-dock');
       expect(slot('panel').contains(dock)).toBe(true);
-      expect(slot('panel-body').compareDocumentPosition(dock) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(
+        slot('panel-body').compareDocumentPosition(dock) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
       expect(dock).toHaveClass('border-t', 'flex-none');
       expect(within(dock).getByRole('button', { name: 'Apply' })).toBeInTheDocument();
     });
@@ -258,18 +281,33 @@ describe('omni-ui-components/Panel', () => {
           body
         </Panel>,
       );
-      expect(classOf('panel')).toContain(`${MIX}bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)`);
-      expect(classOf('panel-header')).toContain(`${MIX}header-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)`);
-      expect(classOf('panel-dock')).toContain(`${MIX}dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)`);
+      expect(classOf('panel')).toContain(
+        `${MIX}bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)`,
+      );
+      expect(classOf('panel-header')).toContain(
+        `${MIX}header-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)`,
+      );
+      expect(classOf('panel-dock')).toContain(
+        `${MIX}dock-bg)_calc(var(--oui-panel-see-through,1)_*_100%),transparent)`,
+      );
     });
 
     it('applies it to nothing but backgrounds: no opacity utility anywhere, text and borders use the plain tokens', () => {
       render(
-        <Panel title="Answer" subtitle="S2" meta="meta" actions={<Button>Stop</Button>} dock="dock" scroll={{ fade: true, stickToBottom: true }}>
+        <Panel
+          title="Answer"
+          subtitle="S2"
+          meta="meta"
+          actions={<Button>Stop</Button>}
+          dock="dock"
+          scroll={{ fade: true, stickToBottom: true }}
+        >
           body text
         </Panel>,
       );
-      const all = [slot('panel'), ...Array.from(slot('panel').querySelectorAll('*'))].map((el) => el.className.toString()).join(' ');
+      const all = [slot('panel'), ...Array.from(slot('panel').querySelectorAll('*'))]
+        .map((el) => el.className.toString())
+        .join(' ');
       // The only see-through consumer is the three background classes (see-through is never combined with text or border colours).
       const consumers = all.split(/\s+/).filter((c) => c.includes('--oui-panel-see-through'));
       expect(consumers).toHaveLength(3);
@@ -286,7 +324,9 @@ describe('omni-ui-components/Panel', () => {
           <Panel title="Answer">body</Panel>
         </div>,
       );
-      expect(screen.getByTestId('stage').style.getPropertyValue('--oui-panel-see-through')).toBe('0.22');
+      expect(screen.getByTestId('stage').style.getPropertyValue('--oui-panel-see-through')).toBe(
+        '0.22',
+      );
       expect(classOf('panel')).toContain('var(--oui-panel-see-through,1)');
     });
 
@@ -316,7 +356,9 @@ describe('omni-ui-components/Panel', () => {
   describe('scroll: fade and thin scrollbar', () => {
     it('adds the 28px top fade mask only when asked', () => {
       const { rerender } = render(<Panel title="Answer" scroll={{ fade: true }} />);
-      expect(slot('panel-body').className).toContain('mask-image:linear-gradient(to_bottom,transparent_0,#000_var(--oui-panel-fade))');
+      expect(slot('panel-body').className).toContain(
+        'mask-image:linear-gradient(to_bottom,transparent_0,#000_var(--oui-panel-fade))',
+      );
       expect(slot('panel-body')).toHaveAttribute('data-fade', 'true');
       rerender(<Panel title="Answer" />);
       expect(slot('panel-body').className).not.toContain('mask-image');
@@ -385,7 +427,9 @@ describe('omni-ui-components/Panel', () => {
           {lines(5)}
         </Panel>,
       );
-      expect(screen.getByRole('button', { name: 'Jump to latest, 2 new' })).toHaveTextContent('2 new');
+      expect(screen.getByRole('button', { name: 'Jump to latest, 2 new' })).toHaveTextContent(
+        '2 new',
+      );
       expect(body.scrollTop).toBe(0);
     });
 
@@ -488,7 +532,12 @@ describe('omni-ui-components/Panel', () => {
     it('focus order is header action, then the scrolling body, then the dock', async () => {
       const user = userEvent.setup();
       render(
-        <Panel title="Answer" actions={<Button>Stop</Button>} dock={<Button>Apply</Button>} scroll={{ fade: true }}>
+        <Panel
+          title="Answer"
+          actions={<Button>Stop</Button>}
+          dock={<Button>Apply</Button>}
+          scroll={{ fade: true }}
+        >
           body
         </Panel>,
       );
@@ -541,10 +590,15 @@ describe('omni-ui-components/Panel', () => {
   });
 
   describe('board 1d states (factories)', () => {
-    it.each(panelVariants.map((v) => [v.name, v] as const))('%s renders as a named region', (_name, variant) => {
-      render(<Panel {...panelPropsFactory(variant.args)} />);
-      expect(screen.getByRole('region', { name: variant.args.title as string })).toBeInTheDocument();
-    });
+    it.each(panelVariants.map((v) => [v.name, v] as const))(
+      '%s renders as a named region',
+      (_name, variant) => {
+        render(<Panel {...panelPropsFactory(variant.args)} />);
+        expect(
+          screen.getByRole('region', { name: variant.args.title as string }),
+        ).toBeInTheDocument();
+      },
+    );
 
     it('ready: right-aligned meta, empty tile with the capture action inside the body', () => {
       render(<Panel {...panelPropsFactory(panelVariants[0].args)} />);
@@ -558,11 +612,14 @@ describe('omni-ui-components/Panel', () => {
 
     it('analysing: Stop in the header, the To apply dock at the bottom', () => {
       render(<Panel {...panelPropsFactory(panelVariants[2].args)} />);
-      expect(within(slot('panel-header')).getByRole('button', { name: /Stop/ })).toBeInTheDocument();
+      expect(
+        within(slot('panel-header')).getByRole('button', { name: /Stop/ }),
+      ).toBeInTheDocument();
       expect(slot('panel-subtitle')).toHaveTextContent('S2 · 10:57');
       const dock = slot('panel-dock');
       expect(dock).toHaveTextContent('To apply · 1');
-      for (const name of ['Add screenshot', 'Clear', 'Apply']) expect(within(dock).getByRole('button', { name })).toBeInTheDocument();
+      for (const name of ['Add screenshot', 'Clear', 'Apply'])
+        expect(within(dock).getByRole('button', { name })).toBeInTheDocument();
     });
 
     it('answer ready: complexity chips in the meta', () => {
@@ -588,7 +645,9 @@ describe('omni-ui-components/Panel', () => {
       expect(regions).toHaveLength(count);
       expect((regions[0] as HTMLElement).style.flex).toBe('0 0 330px');
       expect((regions[0] as HTMLElement).style.minWidth).toBe('300px');
-      regions.slice(1).forEach((panel) => expect((panel as HTMLElement).style.flex).toMatch(/^1 1 0(px)?$/));
+      regions
+        .slice(1)
+        .forEach((panel) => expect((panel as HTMLElement).style.flex).toMatch(/^1 1 0(px)?$/));
     });
 
     it('reflows with `visible`: the transcript keeps 330 (min 300), the rest share equally, the last panel stays', () => {
@@ -602,14 +661,17 @@ describe('omni-ui-components/Panel', () => {
       rerender(<NativePanelsDemo visible={{ chat: false, answer: false, code: false }} />);
       expect(screen.getByRole('region', { name: 'Transcript & chat' })).toBeInTheDocument();
       rerender(<NativePanelsDemo visible={{ chat: false, answer: true, code: true }} />);
-      expect(screen.getAllByRole('region').map((region) => (region as HTMLElement).style.flex)).toEqual(
-        ['1 1 0px', '1 1 0px'].map((f) => expect.stringMatching(/^1 1 0(px)?$/)),
-      );
+      expect(
+        screen.getAllByRole('region').map((region) => (region as HTMLElement).style.flex),
+      ).toEqual(['1 1 0px', '1 1 0px'].map((f) => expect.stringMatching(/^1 1 0(px)?$/)));
     });
 
     it('the Answer meta keeps its full text as a title', () => {
       render(<NativePanelsDemo />);
-      expect(screen.getByTestId('answer-meta')).toHaveAttribute('title', 'Last capture 08:33 · no question found');
+      expect(screen.getByTestId('answer-meta')).toHaveAttribute(
+        'title',
+        'Last capture 08:33 · no question found',
+      );
     });
 
     it('sets the see-through token and the row width from props', () => {
@@ -640,7 +702,11 @@ describe('omni-ui-components/Panel', () => {
       const before = screen.getAllByText(/Mic ·|Assume|Just kick/).length;
       await userEvent.click(screen.getByTestId('add-message'));
       expect(screen.getAllByText(/Mic ·|Assume|Just kick/).length).toBeGreaterThan(before - 1);
-      expect(document.querySelectorAll('[data-slot="transcript-speech"],[data-slot="transcript-message"]').length).toBe(4);
+      expect(
+        document.querySelectorAll(
+          '[data-slot="transcript-speech"],[data-slot="transcript-message"]',
+        ).length,
+      ).toBe(4);
       expect(screen.queryByRole('button', { name: /Jump to latest/ })).toBeNull();
     });
 
@@ -650,7 +716,12 @@ describe('omni-ui-components/Panel', () => {
       const body = slot('panel-body');
       Object.defineProperty(body, 'scrollHeight', {
         configurable: true,
-        get: () => 1000 + document.querySelectorAll('[data-slot="transcript-speech"],[data-slot="transcript-message"]').length * 10,
+        get: () =>
+          1000 +
+          document.querySelectorAll(
+            '[data-slot="transcript-speech"],[data-slot="transcript-message"]',
+          ).length *
+            10,
       });
       Object.defineProperty(body, 'clientHeight', {
         configurable: true,

@@ -20,21 +20,34 @@ export interface CreateTableMatrixOptions<TRecord, TRowData> {
 }
 
 const indexedKey = (items: Array<{ key: Key }>, prefix: string): string => {
-  const used = items.map((item) => Number(String(item.key).replace(`${prefix}-`, ''))).filter((value) => Number.isFinite(value));
+  const used = items
+    .map((item) => Number(String(item.key).replace(`${prefix}-`, '')))
+    .filter((value) => Number.isFinite(value));
 
   return `${prefix}-${used.length ? Math.max(...used) + 1 : 1}`;
 };
 
-export const normalizeTableMatrixCount = (value: number | undefined, fallback: number, min = 1): number => Math.max(min, Math.floor(value ?? fallback));
+export const normalizeTableMatrixCount = (
+  value: number | undefined,
+  fallback: number,
+  min = 1,
+): number => Math.max(min, Math.floor(value ?? fallback));
 
-export const nextTableMatrixColumnKey = <TRecord, TRowData>(columns: TableColumn<TRecord, TRowData>[]): string => indexedKey(columns, 'col');
+export const nextTableMatrixColumnKey = <TRecord, TRowData>(
+  columns: TableColumn<TRecord, TRowData>[],
+): string => indexedKey(columns, 'col');
 
-export const nextTableMatrixRowKey = <TRecord, TRowData>(rows: TableDataRow<TRecord, TRowData>[]): string => indexedKey(rows, 'row');
+export const nextTableMatrixRowKey = <TRecord, TRowData>(
+  rows: TableDataRow<TRecord, TRowData>[],
+): string => indexedKey(rows, 'row');
 
 export const createTableMatrixColumns = <TRecord, TRowData>(
   count: number,
   options: Pick<CreateTableMatrixOptions<TRecord, TRowData>, 'createColumn'>,
-): TableColumn<TRecord, TRowData>[] => Array.from({ length: count }, (_, index) => options.createColumn({ index, key: `col-${index + 1}` }));
+): TableColumn<TRecord, TRowData>[] =>
+  Array.from({ length: count }, (_, index) =>
+    options.createColumn({ index, key: `col-${index + 1}` }),
+  );
 
 export const syncTableMatrixRowToColumns = <TRecord, TRowData>(
   row: TableDataRow<TRecord, TRowData>,
@@ -46,7 +59,8 @@ export const syncTableMatrixRowToColumns = <TRecord, TRowData>(
   cells: Object.fromEntries(
     columns.map((column, columnIndex) => [
       column.key,
-      row.cells?.[column.key] ?? createCell({ rowIndex, columnIndex, rowKey: String(row.key), columnKey: column.key }),
+      row.cells?.[column.key] ??
+        createCell({ rowIndex, columnIndex, rowKey: String(row.key), columnKey: column.key }),
     ]),
   ),
 });
@@ -61,7 +75,10 @@ export const createTableMatrixRows = <TRecord, TRowData>(
     return {
       key: rowKey,
       cells: Object.fromEntries(
-        columns.map((column, columnIndex) => [column.key, options.createCell({ rowIndex, columnIndex, rowKey, columnKey: column.key })]),
+        columns.map((column, columnIndex) => [
+          column.key,
+          options.createCell({ rowIndex, columnIndex, rowKey, columnKey: column.key }),
+        ]),
       ),
     };
   });
@@ -83,7 +100,9 @@ export const resizeTableMatrixColumns = <TRecord, TRowData>(
 
   return {
     columns: nextColumns,
-    rows: rows.map((row, rowIndex) => syncTableMatrixRowToColumns(row, nextColumns, options.createCell, rowIndex)),
+    rows: rows.map((row, rowIndex) =>
+      syncTableMatrixRowToColumns(row, nextColumns, options.createCell, rowIndex),
+    ),
   };
 };
 
@@ -102,11 +121,23 @@ export const resizeTableMatrixRows = <TRecord, TRowData>(
       {
         key: rowKey,
         cells: Object.fromEntries(
-          columns.map((column, columnIndex) => [column.key, options.createCell({ rowIndex: nextRows.length, columnIndex, rowKey, columnKey: column.key })]),
+          columns.map((column, columnIndex) => [
+            column.key,
+            options.createCell({
+              rowIndex: nextRows.length,
+              columnIndex,
+              rowKey,
+              columnKey: column.key,
+            }),
+          ]),
         ),
       },
     ];
   }
 
-  return nextRows.slice(0, count).map((row, rowIndex) => syncTableMatrixRowToColumns(row, columns, options.createCell, rowIndex));
+  return nextRows
+    .slice(0, count)
+    .map((row, rowIndex) =>
+      syncTableMatrixRowToColumns(row, columns, options.createCell, rowIndex),
+    );
 };

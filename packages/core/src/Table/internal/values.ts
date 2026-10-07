@@ -1,5 +1,11 @@
 import * as React from 'react';
-import type { TableColumn, TableDataRow, TableKey, TableProps, TableRowDataType } from '../Table.types';
+import type {
+  TableColumn,
+  TableDataRow,
+  TableKey,
+  TableProps,
+  TableRowDataType,
+} from '../Table.types';
 
 export const EMPTY_RECORD = {} as never;
 
@@ -12,18 +18,26 @@ export const pathValue = (source: unknown, path?: string | string[] | number | s
   }, source);
 };
 
-export const resolveRowKey = <TRecord>(record: TRecord, index: number, rowKey?: TableProps<TRecord>['rowKey']): TableKey => {
+export const resolveRowKey = <TRecord>(
+  record: TRecord,
+  index: number,
+  rowKey?: TableProps<TRecord>['rowKey'],
+): TableKey => {
   if (typeof rowKey === 'function') return rowKey(record, index);
   if (rowKey) return (pathValue(record, String(rowKey)) as TableKey) ?? index;
   return (pathValue(record, 'key') as TableKey) ?? (pathValue(record, 'id') as TableKey) ?? index;
 };
 
-export const isRecordLike = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
+export const isRecordLike = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
 
-export const firstPresent = (...values: unknown[]): unknown => values.find((value) => value !== null && value !== undefined && value !== '');
+export const firstPresent = (...values: unknown[]): unknown =>
+  values.find((value) => value !== null && value !== undefined && value !== '');
 
 export const parseSortableNumber = (value: unknown): number | null => {
-  const candidate = isRecordLike(value) ? firstPresent(value.amount, value.number, value.value, value.text) : value;
+  const candidate = isRecordLike(value)
+    ? firstPresent(value.amount, value.number, value.value, value.text)
+    : value;
   if (typeof candidate === 'number') return Number.isFinite(candidate) ? candidate : null;
   if (typeof candidate !== 'string') return null;
   const normalized = candidate.replace(/[^0-9+\-.]/g, '');
@@ -33,8 +47,12 @@ export const parseSortableNumber = (value: unknown): number | null => {
 };
 
 export const parseSortableDate = (value: unknown): number | null => {
-  const candidate = isRecordLike(value) && !(value instanceof Date) ? firstPresent(value.date, value.value, value.text) : value;
-  if (candidate instanceof Date) return Number.isNaN(candidate.getTime()) ? null : candidate.getTime();
+  const candidate =
+    isRecordLike(value) && !(value instanceof Date)
+      ? firstPresent(value.date, value.value, value.text)
+      : value;
+  if (candidate instanceof Date)
+    return Number.isNaN(candidate.getTime()) ? null : candidate.getTime();
   if (typeof candidate !== 'string' && typeof candidate !== 'number') return null;
   const parsed = new Date(candidate);
   return Number.isNaN(parsed.getTime()) ? null : parsed.getTime();
@@ -46,7 +64,10 @@ export const textSortableValue = (value: unknown): unknown => {
   return firstPresent(value.text, value.label, value.name, value.title, value.value) ?? value;
 };
 
-export const normalizedCellValue = (value: unknown, valueType?: TableRowDataType | string): unknown => {
+export const normalizedCellValue = (
+  value: unknown,
+  valueType?: TableRowDataType | string,
+): unknown => {
   switch (valueType) {
     case 'money':
     case 'number':
@@ -65,11 +86,22 @@ export const normalizedCellValue = (value: unknown, valueType?: TableRowDataType
   }
 };
 
-export const rawCellValue = <TRecord, TRowData>(record: TRecord, row: TableDataRow<TRecord, TRowData>, column: TableColumn<TRecord, TRowData>): unknown => {
+export const rawCellValue = <TRecord, TRowData>(
+  record: TRecord,
+  row: TableDataRow<TRecord, TRowData>,
+  column: TableColumn<TRecord, TRowData>,
+): unknown => {
   const override = row.cells?.[column.key];
   if (override && 'value' in override) return override.value;
   return pathValue(record, column.dataIndex as string | string[] | undefined);
 };
 
-export const cellValue = <TRecord, TRowData>(record: TRecord, row: TableDataRow<TRecord, TRowData>, column: TableColumn<TRecord, TRowData>): unknown =>
-  normalizedCellValue(rawCellValue(record, row, column), column.valueType ?? row.cells?.[column.key]?.kind);
+export const cellValue = <TRecord, TRowData>(
+  record: TRecord,
+  row: TableDataRow<TRecord, TRowData>,
+  column: TableColumn<TRecord, TRowData>,
+): unknown =>
+  normalizedCellValue(
+    rawCellValue(record, row, column),
+    column.valueType ?? row.cells?.[column.key]?.kind,
+  );

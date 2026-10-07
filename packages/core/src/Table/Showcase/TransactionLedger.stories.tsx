@@ -1,8 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
 
 import { Table } from '@oc-tech/omni-ui-components/Table';
-import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ShowcaseShell } from './ShowcaseShell';
 
 interface LedgerEntry {
@@ -39,7 +38,12 @@ const currencyFormatter: Record<LedgerEntry['currency'], Intl.NumberFormat> = {
 };
 
 const ledgerColumns: TableColumn<LedgerEntry>[] = [
-  { key: 'postedOn', dataIndex: 'postedOn', title: 'Posted', sorter: (a, b) => a.postedOn.localeCompare(b.postedOn) },
+  {
+    key: 'postedOn',
+    dataIndex: 'postedOn',
+    title: 'Posted',
+    sorter: (a, b) => a.postedOn.localeCompare(b.postedOn),
+  },
   { key: 'description', dataIndex: 'description', title: 'Description' },
   {
     key: 'category',
@@ -53,7 +57,12 @@ const ledgerColumns: TableColumn<LedgerEntry>[] = [
     onFilter: (value, record) => record.category === value,
   },
   { key: 'method', dataIndex: 'method', title: 'Method' },
-  { key: 'reconciled', dataIndex: 'reconciled', title: 'Reconciled', render: (v: boolean) => (v ? '✓' : '—') },
+  {
+    key: 'reconciled',
+    dataIndex: 'reconciled',
+    title: 'Reconciled',
+    render: (v: boolean) => (v ? '✓' : '—'),
+  },
   {
     key: 'amount',
     dataIndex: 'amount',

@@ -1,35 +1,40 @@
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 import '../internal/support/overview.css';
-import source from './TableOverview.stories.tsx?raw';
-import fixtureSource from '../../packages/core/src/Table/Table.factories.tsx?raw';
-import themeSource from '../internal/support/useIsDark.ts?raw';
-import { ComponentLink } from '../internal/support/ComponentLink';
-import { buildSourceSnippet } from '../internal/support/sourceSnippet';
-
-import { InlineCode, SegmentedPill, ShowCodePanel, TableOfContents, useIsDark, type TocItem } from '../internal/support';
-
-import { Table } from '@oc-tech/omni-ui-components/Table';
 import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
+import { Table } from '@oc-tech/omni-ui-components/Table';
+import fixtureSource from '../../packages/core/src/Table/Table.factories.tsx?raw';
 import {
   clientFilters,
+  type DocCellData,
+  defaultColumns,
   draggableRows,
   groupedProjectColumns,
+  type InvoiceLineRecord,
   invoiceColumns,
   invoiceLines,
   largeProjects,
   matrixRows,
-  defaultColumns,
+  type ProjectRecord,
   projects,
   registryRows,
   spanRows,
   statusFilters,
   storyTableRegistry,
   wideProjectColumns,
-  type DocCellData,
-  type InvoiceLineRecord,
-  type ProjectRecord,
 } from '../../packages/core/src/Table/Table.story.fixtures';
+import {
+  InlineCode,
+  SegmentedPill,
+  ShowCodePanel,
+  TableOfContents,
+  type TocItem,
+  useIsDark,
+} from '../internal/support';
+import { ComponentLink } from '../internal/support/ComponentLink';
+import { buildSourceSnippet } from '../internal/support/sourceSnippet';
+import themeSource from '../internal/support/useIsDark.ts?raw';
+import source from './TableOverview.stories.tsx?raw';
 
 const meta: Meta = {
   title: 'Getting Started/Table Overview',
@@ -57,7 +62,11 @@ const tocItems: TocItem[] = [
   { id: 'core-cell-overrides', label: '1.5 Cell overrides' },
   { id: 'core-registry', label: '1.6 Registry cell renderers' },
   { id: 'presentation-defaults', label: '1.7 Row and column defaults; renderers' },
-  { id: 'interaction-selection-checkbox', label: '2.1 Row selection (checkbox)', group: '2. Interaction' },
+  {
+    id: 'interaction-selection-checkbox',
+    label: '2.1 Row selection (checkbox)',
+    group: '2. Interaction',
+  },
   { id: 'interaction-selection-radio', label: '2.2 Row selection (radio)' },
   { id: 'interaction-bulk-actions', label: '2.3 Bulk actions' },
   { id: 'interaction-expandable', label: '2.4 Expandable rows' },
@@ -127,11 +136,24 @@ const codeForPreviews = (children: React.ReactNode) => {
   return entries.length === 1 ? { '': entries[0][1] } : snippets;
 };
 
-const SubComponentRow = ({ id, number, name, ic, description, chips, language = 'tsx', children }: SubComponentRowProps) => (
+const SubComponentRow = ({
+  id,
+  number,
+  name,
+  ic,
+  description,
+  chips,
+  language = 'tsx',
+  children,
+}: SubComponentRowProps) => (
   <div id={id} className="pb-overview-row">
     <div className="pb-overview-row-header">
       <SegmentedPill
-        segments={[{ content: number, uppercase: true, tinted: true }, { content: <ComponentLink component="Table">{name}</ComponentLink>, uppercase: true }, { content: <InlineCode code={ic} /> }]}
+        segments={[
+          { content: number, uppercase: true, tinted: true },
+          { content: <ComponentLink component="Table">{name}</ComponentLink>, uppercase: true },
+          { content: <InlineCode code={ic} /> },
+        ]}
       />
     </div>
     <div className="pb-overview-description">{description}</div>
@@ -149,7 +171,16 @@ const SubComponentRow = ({ id, number, name, ic, description, chips, language = 
   </div>
 );
 
-const GroupHeader = ({ id, number, title }: { id: string; number: string; title: string; description?: React.ReactNode }) => (
+const GroupHeader = ({
+  id,
+  number,
+  title,
+}: {
+  id: string;
+  number: string;
+  title: string;
+  description?: React.ReactNode;
+}) => (
   <section id={id} className="pb-pipeline-section pb-overview-group">
     <h3 className="pb-overview-group-title">
       {number}. {title}
@@ -288,7 +319,9 @@ const ExpandablePreview = () => (
     rowKey="id"
     expandable={{
       defaultExpandedRowKeys: ['p-1'],
-      expandedRowRender: (record) => <div className="text-sm text-[var(--color-muted-foreground)]">{record.description}</div>,
+      expandedRowRender: (record) => (
+        <div className="text-sm text-[var(--color-muted-foreground)]">{record.description}</div>
+      ),
     }}
     pagination={{ placement: ['none'] }}
     testIdPrefix="overview-expandable"
@@ -694,7 +727,15 @@ const LoadingSpinnerPreview = () => (
 const DensityPreview = () => (
   <div className="grid gap-4">
     {(['small', 'medium', 'large'] as const).map((size) => (
-      <Table key={size} columns={plainProjectColumns} dataSource={projects.slice(0, 2)} rowKey="id" size={size} bordered pagination={false} />
+      <Table
+        key={size}
+        columns={plainProjectColumns}
+        dataSource={projects.slice(0, 2)}
+        rowKey="id"
+        size={size}
+        bordered
+        pagination={false}
+      />
     ))}
   </div>
 );
@@ -746,7 +787,9 @@ const TitleFooterSummaryPreview = () => (
     summary={(records) => (
       <tr>
         <td colSpan={2}>Total</td>
-        <td className="text-right">${records.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}</td>
+        <td className="text-right">
+          ${records.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}
+        </td>
       </tr>
     )}
     pagination={false}
@@ -767,7 +810,9 @@ const ScrollFixedPreview = () => (
   />
 );
 const ControlledStatePreview = () => {
-  const [state, setState] = React.useState<import('@oc-tech/omni-ui-components/Table').TableState>({ sorting: [{ id: 'name', desc: false }] });
+  const [state, setState] = React.useState<import('@oc-tech/omni-ui-components/Table').TableState>({
+    sorting: [{ id: 'name', desc: false }],
+  });
   const [lastAction, setLastAction] = React.useState('No changes yet');
   return (
     <div className="grid gap-3">
@@ -876,14 +921,18 @@ const TableComponentOverview = () => (
             <SegmentedPill
               segments={[
                 { content: 'Omni UI', uppercase: true },
-                { content: <ComponentLink component="Table">{'<Table />'}</ComponentLink>, tinted: true },
+                {
+                  content: <ComponentLink component="Table">{'<Table />'}</ComponentLink>,
+                  tinted: true,
+                },
                 { content: 'Reference', tinted: true },
               ]}
             />
           </h2>
           <p style={{ color: '#CED0D2' }}>
-            Every configuration option the Table component supports, on one page. Each section shows what the option does, a working preview you can
-            interact with, and a copy-pasteable snippet.
+            Every configuration option the Table component supports, on one page. Each section shows
+            what the option does, a working preview you can interact with, and a copy-pasteable
+            snippet.
           </p>
         </div>
 
@@ -902,8 +951,10 @@ const TableComponentOverview = () => (
           chips={['<Table />', 'columns', 'dataSource']}
           description={
             <>
-              Render a list of records as a table. Pass an array to <InlineCode code="dataSource" />, describe your columns, and give each row a
-              stable id via <InlineCode code="rowKey" />. That’s the minimum setup — everything else on this page is optional.
+              Render a list of records as a table. Pass an array to <InlineCode code="dataSource" />
+              , describe your columns, and give each row a stable id via{' '}
+              <InlineCode code="rowKey" />. That’s the minimum setup — everything else on this page
+              is optional.
             </>
           }
         >
@@ -921,8 +972,10 @@ const TableComponentOverview = () => (
               Each column decides which record property to read (
               <InlineCode code="dataIndex" />
               ), what header to show (<InlineCode code="title" />
-              ), and how the cell renders. Add <InlineCode code="render" /> for custom JSX, <InlineCode code="align" /> / <InlineCode code="width" />{' '}
-              for layout, and <InlineCode code="sorter" /> or <InlineCode code="filters" /> to make the column interactive.
+              ), and how the cell renders. Add <InlineCode code="render" /> for custom JSX,{' '}
+              <InlineCode code="align" /> / <InlineCode code="width" /> for layout, and{' '}
+              <InlineCode code="sorter" /> or <InlineCode code="filters" /> to make the column
+              interactive.
             </>
           }
         >
@@ -937,8 +990,9 @@ const TableComponentOverview = () => (
           chips={['column.children']}
           description={
             <>
-              Group related columns under a shared header. Put child columns inside a parent column’s <InlineCode code="children" /> array — the
-              parent header spans them automatically and each child keeps its own sorting or filtering.
+              Group related columns under a shared header. Put child columns inside a parent
+              column’s <InlineCode code="children" /> array — the parent header spans them
+              automatically and each child keeps its own sorting or filtering.
             </>
           }
         >
@@ -953,9 +1007,10 @@ const TableComponentOverview = () => (
           chips={['dataRows', 'cells']}
           description={
             <>
-              Use <InlineCode code="rows" /> instead of <InlineCode code="dataSource" /> when your data is cell-first rather than record-first — e.g.
-              a document-style table where each cell has its own type. Every row still carries its record plus an explicit <InlineCode code="cells" />{' '}
-              object keyed by column.
+              Use <InlineCode code="rows" /> instead of <InlineCode code="dataSource" /> when your
+              data is cell-first rather than record-first — e.g. a document-style table where each
+              cell has its own type. Every row still carries its record plus an explicit{' '}
+              <InlineCode code="cells" /> object keyed by column.
             </>
           }
         >
@@ -970,9 +1025,10 @@ const TableComponentOverview = () => (
           chips={['colSpan', 'rowSpan', 'align', 'value', 'kind']}
           description={
             <>
-              Change behaviour on a single cell without touching the whole column. <InlineCode code="colSpan" /> and <InlineCode code="rowSpan" />{' '}
-              merge cells, <InlineCode code="align" /> overrides the column’s alignment, and <InlineCode code="kind" /> picks a specific renderer from
-              the registry.
+              Change behaviour on a single cell without touching the whole column.{' '}
+              <InlineCode code="colSpan" /> and <InlineCode code="rowSpan" /> merge cells,{' '}
+              <InlineCode code="align" /> overrides the column’s alignment, and{' '}
+              <InlineCode code="kind" /> picks a specific renderer from the registry.
             </>
           }
         >
@@ -987,8 +1043,10 @@ const TableComponentOverview = () => (
           chips={['registry', 'mergeTableRegistry', 'getDefaultTableRegistry']}
           description={
             <>
-              The registry turns a cell’s <InlineCode code="kind" /> (paragraph, image, money, status, …) into the component that renders it. Extend
-              the default registry with <InlineCode code="mergeTableRegistry" /> when you need a custom renderer — don’t fork the Table itself.
+              The registry turns a cell’s <InlineCode code="kind" /> (paragraph, image, money,
+              status, …) into the component that renders it. Extend the default registry with{' '}
+              <InlineCode code="mergeTableRegistry" /> when you need a custom renderer — don’t fork
+              the Table itself.
             </>
           }
         >
@@ -1019,9 +1077,11 @@ const TableComponentOverview = () => (
           chips={['type: checkbox', 'defaultSelectedRowKeys', 'preserveSelectedRowKeys']}
           description={
             <>
-              Pass <InlineCode code="rowSelection" /> to add per-row checkboxes and a select-all in the header. Use{' '}
-              <InlineCode code="defaultSelectedRowKeys" /> for uncontrolled defaults, or <InlineCode code="selectedRowKeys" /> +
-              <InlineCode code="onChange" /> for full control. Add <InlineCode code="preserveSelectedRowKeys" /> to keep the selection when the data
+              Pass <InlineCode code="rowSelection" /> to add per-row checkboxes and a select-all in
+              the header. Use <InlineCode code="defaultSelectedRowKeys" /> for uncontrolled
+              defaults, or <InlineCode code="selectedRowKeys" /> +
+              <InlineCode code="onChange" /> for full control. Add{' '}
+              <InlineCode code="preserveSelectedRowKeys" /> to keep the selection when the data
               reloads.
             </>
           }
@@ -1059,9 +1119,10 @@ const TableComponentOverview = () => (
           chips={['defaultExpandedRowKeys', 'expandedRowKeys', 'expandIcon']}
           description={
             <>
-              Show extra detail inline below any row. Return React content from <InlineCode code="expandable.expandedRowRender" />. Use{' '}
-              <InlineCode code="defaultExpandedRowKeys" /> for a default open state, or <InlineCode code="expandedRowKeys" /> when you need to control
-              which rows are open.
+              Show extra detail inline below any row. Return React content from{' '}
+              <InlineCode code="expandable.expandedRowRender" />. Use{' '}
+              <InlineCode code="defaultExpandedRowKeys" /> for a default open state, or{' '}
+              <InlineCode code="expandedRowKeys" /> when you need to control which rows are open.
             </>
           }
         >
@@ -1076,8 +1137,10 @@ const TableComponentOverview = () => (
           chips={['indentSize', 'defaultExpandAllRows', 'checkStrictly']}
           description={
             <>
-              Turn the table into a tree by pointing <InlineCode code="expandable.childrenColumnName" /> at the property that holds a row’s children.
-              Combine with <InlineCode code="rowSelection.checkStrictly: false" /> so selecting a parent also selects everything under it.
+              Turn the table into a tree by pointing{' '}
+              <InlineCode code="expandable.childrenColumnName" /> at the property that holds a row’s
+              children. Combine with <InlineCode code="rowSelection.checkStrictly: false" /> so
+              selecting a parent also selects everything under it.
             </>
           }
         >
@@ -1092,7 +1155,8 @@ const TableComponentOverview = () => (
           chips={['@dnd-kit/core', 'horizontal sortable', 'columnOrder']}
           description={
             <>
-              Let users reorder columns by dragging their headers. Add <InlineCode code="draggable: true" /> to each reorderable column and listen to{' '}
+              Let users reorder columns by dragging their headers. Add{' '}
+              <InlineCode code="draggable: true" /> to each reorderable column and listen to{' '}
               <InlineCode code="onColumnOrderChange" /> to persist the new order.
             </>
           }
@@ -1108,9 +1172,10 @@ const TableComponentOverview = () => (
           chips={['@dnd-kit/core', 'vertical sortable', 'onRowOrderChange']}
           description={
             <>
-              Let users reorder rows by dragging a grip handle on the left. Pass data through the <InlineCode code="rows" /> prop with{' '}
-              <InlineCode code="draggable: true" /> on each reorderable row — <InlineCode code="onRowOrderChange" /> gives you the new key order after
-              every drop.
+              Let users reorder rows by dragging a grip handle on the left. Pass data through the{' '}
+              <InlineCode code="rows" /> prop with <InlineCode code="draggable: true" /> on each
+              reorderable row — <InlineCode code="onRowOrderChange" /> gives you the new key order
+              after every drop.
             </>
           }
         >
@@ -1125,8 +1190,9 @@ const TableComponentOverview = () => (
           chips={['editable', 'extendable', 'onEdit']}
           description={
             <>
-              One prop turns every column into an inline editor and enables the "+" affordances for appending rows and columns. Table persists edits
-              and appended rows/columns internally; wire <InlineCode code="onEdit" />, <InlineCode code="column.editable" />, or
+              One prop turns every column into an inline editor and enables the "+" affordances for
+              appending rows and columns. Table persists edits and appended rows/columns internally;
+              wire <InlineCode code="onEdit" />, <InlineCode code="column.editable" />, or
               <InlineCode code="extendable.rows.onAppend" /> only when you need to intercept.
             </>
           }
@@ -1166,9 +1232,10 @@ const TableComponentOverview = () => (
           chips={['ascend', 'descend', 'unset']}
           description={
             <>
-              Set <InlineCode code="sorter: true" /> for the default comparison, or provide <InlineCode code="sorter: (a, b) => …" /> for custom
-              logic. Clicking a header cycles ascend → descend → unset. Use <InlineCode code="sorter.multiple" /> to sort by more than one column at
-              once.
+              Set <InlineCode code="sorter: true" /> for the default comparison, or provide{' '}
+              <InlineCode code="sorter: (a, b) => …" /> for custom logic. Clicking a header cycles
+              ascend → descend → unset. Use <InlineCode code="sorter.multiple" /> to sort by more
+              than one column at once.
             </>
           }
         >
@@ -1183,8 +1250,9 @@ const TableComponentOverview = () => (
           chips={['dropdown', 'multi-select', 'filterMultiple']}
           description={
             <>
-              Add a filter dropdown to any column by listing its <InlineCode code="filters" /> and providing an <InlineCode code="onFilter" /> that
-              returns true for rows to keep. Use <InlineCode code="filterMultiple: false" /> for single-value filters, or{' '}
+              Add a filter dropdown to any column by listing its <InlineCode code="filters" /> and
+              providing an <InlineCode code="onFilter" /> that returns true for rows to keep. Use{' '}
+              <InlineCode code="filterMultiple: false" /> for single-value filters, or{' '}
               <InlineCode code="filterDropdown" /> to supply a completely custom UI.
             </>
           }
@@ -1197,7 +1265,15 @@ const TableComponentOverview = () => (
           number="3.3"
           name="Pagination"
           ic="TablePaginationConfig"
-          chips={['topStart', 'topCenter', 'topEnd', 'bottomStart', 'bottomCenter', 'bottomEnd', 'none']}
+          chips={[
+            'topStart',
+            'topCenter',
+            'topEnd',
+            'bottomStart',
+            'bottomCenter',
+            'bottomEnd',
+            'none',
+          ]}
           description="Set pagination to page long lists. placement takes an array — pass both 'topEnd' and 'bottomEnd' to render pagers above and below. Use pagination={false} (or placement: ['none']) to render every row at once."
         >
           <PaginationPreview />
@@ -1211,8 +1287,9 @@ const TableComponentOverview = () => (
           chips={['@tanstack/react-virtual', 'row window', 'column window', 'sticky']}
           description={
             <>
-              Enable <InlineCode code="virtual" /> alongside a fixed <InlineCode code="scroll.y" /> to keep long lists snappy — only visible rows are
-              mounted. For very wide tables, <InlineCode code="scroll.x" /> virtualizes columns the same way.
+              Enable <InlineCode code="virtual" /> alongside a fixed <InlineCode code="scroll.y" />{' '}
+              to keep long lists snappy — only visible rows are mounted. For very wide tables,{' '}
+              <InlineCode code="scroll.x" /> virtualizes columns the same way.
             </>
           }
         >
@@ -1281,9 +1358,10 @@ const TableComponentOverview = () => (
           chips={['headerRow', 'headerColumn', 'headerFill', 'borderColor']}
           description={
             <>
-              Style the header row — and the first-column header when <InlineCode code="headerColumn" /> is on — with brand colours.
-              <InlineCode code="headerFill" /> sets the background; <InlineCode code="borderColor" /> sets the divider colour. Both accept any CSS
-              value.
+              Style the header row — and the first-column header when{' '}
+              <InlineCode code="headerColumn" /> is on — with brand colours.
+              <InlineCode code="headerFill" /> sets the background;{' '}
+              <InlineCode code="borderColor" /> sets the divider colour. Both accept any CSS value.
             </>
           }
         >
@@ -1307,8 +1385,9 @@ const TableComponentOverview = () => (
           chips={['left', 'center', 'right', 'textSize (px)']}
           description={
             <>
-              Align cells per column with <InlineCode code="column.align" />, or set a table-wide default with{' '}
-              <InlineCode code="appearance.cellAlignment" />. <InlineCode code="appearance.textSize" /> bumps the base font size across every cell.
+              Align cells per column with <InlineCode code="column.align" />, or set a table-wide
+              default with <InlineCode code="appearance.cellAlignment" />.{' '}
+              <InlineCode code="appearance.textSize" /> bumps the base font size across every cell.
             </>
           }
         >
@@ -1323,9 +1402,11 @@ const TableComponentOverview = () => (
           chips={['role="table"', 'role="rowgroup"', 'role="row"', 'role="cell"']}
           description={
             <>
-              Under the hood the Table renders a real <InlineCode code="<table>" /> — <InlineCode code="<thead>" />,
-              <InlineCode code="<tbody>" />, <InlineCode code="<tr>" />, <InlineCode code="<th>" />, <InlineCode code="<td>" /> with the correct ARIA
-              roles. Screen readers navigate it as a table, not a grid of divs.
+              Under the hood the Table renders a real <InlineCode code="<table>" /> —{' '}
+              <InlineCode code="<thead>" />,
+              <InlineCode code="<tbody>" />, <InlineCode code="<tr>" />, <InlineCode code="<th>" />,{' '}
+              <InlineCode code="<td>" /> with the correct ARIA roles. Screen readers navigate it as
+              a table, not a grid of divs.
             </>
           }
         >
@@ -1358,8 +1439,10 @@ const TableComponentOverview = () => (
           chips={['empty', 'locale.emptyText']}
           description={
             <>
-              An empty <InlineCode code="dataSource" /> renders the empty-state placeholder. Override the text via
-              <InlineCode code="locale.emptyText" /> or the entire cell via the registry's <InlineCode code="empty" /> renderer.
+              An empty <InlineCode code="dataSource" /> renders the empty-state placeholder.
+              Override the text via
+              <InlineCode code="locale.emptyText" /> or the entire cell via the registry's{' '}
+              <InlineCode code="empty" /> renderer.
             </>
           }
         >
@@ -1374,8 +1457,10 @@ const TableComponentOverview = () => (
           chips={['skeleton (default)', 'spinner', 'loading']}
           description={
             <>
-              Set <InlineCode code="loading" /> to swap the body for shimmering skeleton rows (default) or a centered overlay spinner via
-              <InlineCode code='loading="spinner"' />. Row and column layout stays in place so the page doesn't jump when data arrives.
+              Set <InlineCode code="loading" /> to swap the body for shimmering skeleton rows
+              (default) or a centered overlay spinner via
+              <InlineCode code='loading="spinner"' />. Row and column layout stays in place so the
+              page doesn't jump when data arrives.
             </>
           }
         >
@@ -1390,7 +1475,6 @@ const TableComponentOverview = () => (
             </section>
           </div>
         </SubComponentRow>
-
       </main>
       <aside>
         <TableOfContents items={tocItems} title="Table of contents" />

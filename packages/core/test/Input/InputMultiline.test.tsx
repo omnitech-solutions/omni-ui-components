@@ -1,13 +1,31 @@
 import '@testing-library/jest-dom';
+
+import { Input } from '@oc-tech/omni-ui-components/Input';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 
-import { Input } from '@oc-tech/omni-ui-components/Input';
-
-const Harness = ({ onSubmit, sendOnEnter = true, maxHeight }: { onSubmit?: (v: string) => void; sendOnEnter?: boolean; maxHeight?: number }) => {
+const Harness = ({
+  onSubmit,
+  sendOnEnter = true,
+  maxHeight,
+}: {
+  onSubmit?: (v: string) => void;
+  sendOnEnter?: boolean;
+  maxHeight?: number;
+}) => {
   const [value, setValue] = React.useState('');
-  return <Input multiline aria-label="Message" value={value} onChange={setValue} onSubmit={onSubmit} sendOnEnter={sendOnEnter} maxHeight={maxHeight} />;
+  return (
+    <Input
+      multiline
+      aria-label="Message"
+      value={value}
+      onChange={setValue}
+      onSubmit={onSubmit}
+      sendOnEnter={sendOnEnter}
+      maxHeight={maxHeight}
+    />
+  );
 };
 
 describe('omni-ui-components/Input multiline', () => {

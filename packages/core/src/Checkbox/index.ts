@@ -1,12 +1,12 @@
 export { Checkbox } from './Checkbox';
-export { CheckboxPrimitive } from './CheckboxPrimitive';
-export { CheckboxGroup } from './CheckboxGroup';
-export { CheckboxGroupPrimitive } from './CheckboxGroupPrimitive';
 export type {
+  CheckboxGroupPrimitiveProps,
+  CheckboxGroupProps,
   CheckboxOption,
   CheckboxOrientation,
-  CheckboxProps,
   CheckboxPrimitiveProps,
-  CheckboxGroupProps,
-  CheckboxGroupPrimitiveProps,
+  CheckboxProps,
 } from './Checkbox.types';
+export { CheckboxGroup } from './CheckboxGroup';
+export { CheckboxGroupPrimitive } from './CheckboxGroupPrimitive';
+export { CheckboxPrimitive } from './CheckboxPrimitive';

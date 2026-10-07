@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Collapse } from '@oc-tech/omni-ui-components/Collapse';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Collapse> = {
   title: 'omni-ui-components/Collapse',
@@ -19,7 +18,8 @@ const meta: Meta<typeof Collapse> = {
       {
         key: '1',
         label: 'General',
-        children: 'Control naming, ownership, and default configuration for the current workspace section.',
+        children:
+          'Control naming, ownership, and default configuration for the current workspace section.',
       },
       {
         key: '2',
@@ -41,7 +41,8 @@ export const Accordion: Story = {
       {
         key: '1',
         label: 'Profile',
-        children: 'Profile configuration including owner details, record metadata, and naming conventions.',
+        children:
+          'Profile configuration including owner details, record metadata, and naming conventions.',
       },
       {
         key: '2',

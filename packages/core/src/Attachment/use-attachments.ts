@@ -1,9 +1,8 @@
 import * as React from 'react';
 
 import { useControllableState } from '../lib/use-controllable-state';
-
-import { acceptAttribute, isImageFile, validateFiles } from './validate-files';
 import type { FileLimits, FileRejection } from './Attachment.types';
+import { acceptAttribute, isImageFile, validateFiles } from './validate-files';
 
 export interface AttachmentDropOptions extends FileLimits {
   /** Files already attached: counted against `maxFiles`. Default 0. */
@@ -16,7 +15,8 @@ export interface AttachmentDropOptions extends FileLimits {
   disabled?: boolean;
 }
 
-const hasFiles = (event: React.DragEvent) => Array.from(event.dataTransfer?.types ?? []).includes('Files');
+const hasFiles = (event: React.DragEvent) =>
+  Array.from(event.dataTransfer?.types ?? []).includes('Files');
 
 /**
  * Add-file behaviour for a composer: drag and drop with an overlay flag, paste, and a file picker, all checked against
@@ -36,17 +36,26 @@ export function useAttachmentDrop(options: AttachmentDropOptions) {
   const latest = React.useRef(options);
   latest.current = options;
 
-  const add = React.useCallback(
-    (incoming: File[]) => {
-      if (incoming.length === 0) return;
-      const { current: have = 0, accept: types, maxFiles: count, maxBytes: bytes, onFiles: pass, onReject: reject } = latest.current;
-      // [GUARD] Files already attached count toward the limit.
-      const refusal = validateFiles(incoming, { accept: types, maxFiles: count, maxBytes: bytes, existing: have });
-      if (refusal) reject?.(refusal);
-      else pass?.(incoming);
-    },
-    [],
-  );
+  const add = React.useCallback((incoming: File[]) => {
+    if (incoming.length === 0) return;
+    const {
+      current: have = 0,
+      accept: types,
+      maxFiles: count,
+      maxBytes: bytes,
+      onFiles: pass,
+      onReject: reject,
+    } = latest.current;
+    // [GUARD] Files already attached count toward the limit.
+    const refusal = validateFiles(incoming, {
+      accept: types,
+      maxFiles: count,
+      maxBytes: bytes,
+      existing: have,
+    });
+    if (refusal) reject?.(refusal);
+    else pass?.(incoming);
+  }, []);
 
   const onDragEnter = React.useCallback(
     (event: React.DragEvent) => {
@@ -154,8 +163,14 @@ export function useFilePreviews(files: readonly File[]): ReadonlyMap<File, strin
  * const list = useAttachmentList();
  * const drop = useAttachmentDrop({ current: list.files.length, onFiles: list.add });
  */
-export function useAttachmentList(options: { value?: File[]; defaultValue?: File[]; onChange?: (files: File[]) => void } = {}) {
-  const [files, setFiles] = useControllableState<File[]>(options.value, options.defaultValue ?? [], options.onChange);
+export function useAttachmentList(
+  options: { value?: File[]; defaultValue?: File[]; onChange?: (files: File[]) => void } = {},
+) {
+  const [files, setFiles] = useControllableState<File[]>(
+    options.value,
+    options.defaultValue ?? [],
+    options.onChange,
+  );
   return {
     files,
     add: (incoming: File[]) => setFiles([...files, ...incoming]),

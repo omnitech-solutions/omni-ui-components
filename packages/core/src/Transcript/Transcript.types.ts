@@ -1,8 +1,13 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import type { HighlightFn } from '../Highlight';
 import type { ControlTone } from '../internal/support/controlTone';
-import type { ChatAttachmentPart, ChatVersion, ConversationTurn, TranscriptConversationProps } from './Transcript.conversation.types';
+import type {
+  ChatAttachmentPart,
+  ChatVersion,
+  ConversationTurn,
+  TranscriptConversationProps,
+} from './Transcript.conversation.types';
 
 /** A paragraph of plain text inside a bubble. */
 export interface TranscriptTextBlock {
@@ -96,7 +101,11 @@ export interface TranscriptProps<
    */
   fences?: boolean;
   /** Called with the block, its entry and its index when a code block's copy control is chosen. Set `copiedId` to `codeBlockId(entry.id, index)`. */
-  onCopyCode?: (block: TranscriptCodeBlock, entry: Extract<T, TranscriptBubbleEntry>, index: number) => void;
+  onCopyCode?: (
+    block: TranscriptCodeBlock,
+    entry: Extract<T, TranscriptBubbleEntry>,
+    index: number,
+  ) => void;
   /** Accessible name of a code block's copy control. Default `Copy code`. */
   copyCodeLabel?: string;
   /** Name of a code block's control once copied. Default `Copied`. */

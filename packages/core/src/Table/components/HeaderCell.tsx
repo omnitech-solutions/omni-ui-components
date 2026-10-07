@@ -1,6 +1,6 @@
-import * as React from 'react';
-import classNames from 'classnames';
 import type { SortingState } from '@tanstack/react-table';
+import classNames from 'classnames';
+import type * as React from 'react';
 import { useTable } from '../hooks/useTable';
 import {
   alignStyle,
@@ -10,8 +10,8 @@ import {
   headerCellClass,
   isEllipsisEnabled,
   nextSortOrder,
-  shouldShowEllipsisTitle,
   SortableHeaderCell,
+  shouldShowEllipsisTitle,
   sortDescFromOrder,
   sorterPriority,
   sortOrderFromTanStack,
@@ -61,7 +61,9 @@ export function HeaderCell<TRecord, TRowData>({
     const nextOrder = nextSortOrder(order, sortDirections);
     const nextDesc = sortDescFromOrder(nextOrder);
     const priority = sorterPriority(col);
-    const firstSortColumn = sorting[0] ? mergedLeafColumns.find((item) => item.key === sorting[0].id) : undefined;
+    const firstSortColumn = sorting[0]
+      ? mergedLeafColumns.find((item) => item.key === sorting[0].id)
+      : undefined;
     const firstSortPriority = sorterPriority(firstSortColumn);
     let next: SortingState;
     if (nextDesc == null) {
@@ -69,10 +71,14 @@ export function HeaderCell<TRecord, TRowData>({
     } else if (priority === false || !sorting.length || firstSortPriority === false) {
       next = [{ id: col.key, desc: nextDesc }];
     } else {
-      next = [...sorting.filter((item) => item.id !== col.key), { id: col.key, desc: nextDesc }].sort((a, b) => {
+      next = [
+        ...sorting.filter((item) => item.id !== col.key),
+        { id: col.key, desc: nextDesc },
+      ].sort((a, b) => {
         const left = sorterPriority(mergedLeafColumns.find((item) => item.key === a.id));
         const right = sorterPriority(mergedLeafColumns.find((item) => item.key === b.id));
-        if (typeof left === 'number' && typeof right === 'number' && left !== right) return right - left;
+        if (typeof left === 'number' && typeof right === 'number' && left !== right)
+          return right - left;
         return 0;
       });
     }
@@ -80,18 +86,42 @@ export function HeaderCell<TRecord, TRowData>({
   };
 
   const headerProps = col.onHeaderCell?.(col) ?? {};
-  const { className: headerClassName, style: headerStyle, colSpan: headerColSpan, rowSpan: headerRowSpan, ...restHeaderProps } = headerProps;
-  const { style: extraStyle, colSpan: extraColSpan, rowSpan: extraRowSpan, ...restExtraProps } = extraProps;
+  const {
+    className: headerClassName,
+    style: headerStyle,
+    colSpan: headerColSpan,
+    rowSpan: headerRowSpan,
+    ...restHeaderProps
+  } = headerProps;
+  const {
+    style: extraStyle,
+    colSpan: extraColSpan,
+    rowSpan: extraRowSpan,
+    ...restExtraProps
+  } = extraProps;
   const resolvedColSpan = extraColSpan ?? headerColSpan ?? col.colSpan;
   const resolvedRowSpan = extraRowSpan ?? headerRowSpan;
   if (resolvedColSpan === 0 || resolvedRowSpan === 0) return null;
 
   const width = columnSizing[col.key] ?? col.width;
-  const isPinned = columnPinning.left?.includes(col.key) || columnPinning.right?.includes(col.key) || col.fixed;
-  const pinnedSide = columnPinning.left?.includes(col.key) || col.fixed === 'left' || col.fixed === 'start' || col.fixed === true ? 'left' : 'right';
+  const isPinned =
+    columnPinning.left?.includes(col.key) || columnPinning.right?.includes(col.key) || col.fixed;
+  const pinnedSide =
+    columnPinning.left?.includes(col.key) ||
+    col.fixed === 'left' ||
+    col.fixed === 'start' ||
+    col.fixed === true
+      ? 'left'
+      : 'right';
 
-  const headerTitle = typeof col.title === 'function' ? col.title({ column: col, sortColumns: [], filters: {} }) : col.title;
-  const headerTitleAttribute = isEllipsisEnabled(col) && shouldShowEllipsisTitle(col) ? componentTitle(headerTitle) : undefined;
+  const headerTitle =
+    typeof col.title === 'function'
+      ? col.title({ column: col, sortColumns: [], filters: {} })
+      : col.title;
+  const headerTitleAttribute =
+    isEllipsisEnabled(col) && shouldShowEllipsisTitle(col)
+      ? componentTitle(headerTitle)
+      : undefined;
 
   const titleContent = canSort ? (
     <button
@@ -102,7 +132,9 @@ export function HeaderCell<TRecord, TRowData>({
       onClick={triggerSort}
     >
       {headerTitle}
-      <span aria-hidden="true">{col.sortIcon ? col.sortIcon({ sortOrder: order }) : <DefaultSortIcon order={order} />}</span>
+      <span aria-hidden="true">
+        {col.sortIcon ? col.sortIcon({ sortOrder: order }) : <DefaultSortIcon order={order} />}
+      </span>
     </button>
   ) : (
     headerTitle
@@ -146,7 +178,11 @@ export function HeaderCell<TRecord, TRowData>({
     title: headerTitleAttribute,
     colSpan: resolvedColSpan,
     rowSpan: resolvedRowSpan,
-    'aria-sort': (canSort && order ? (order === 'ascend' ? 'ascending' : 'descending') : undefined) as React.AriaAttributes['aria-sort'],
+    'aria-sort': (canSort && order
+      ? order === 'ascend'
+        ? 'ascending'
+        : 'descending'
+      : undefined) as React.AriaAttributes['aria-sort'],
   };
 
   if (col.draggable) {

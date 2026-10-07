@@ -1,10 +1,13 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
 import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
-import { messageActionsPropsFactory, sampleActions } from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  messageActionsPropsFactory,
+  sampleActions,
+} from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
+import type * as React from 'react';
 
 const stops = () => screen.getAllByRole('button').filter((b) => b.getAttribute('tabindex') === '0');
 
@@ -12,11 +15,18 @@ describe('omni-ui-components/MessageActions roving tabindex', () => {
   it('exposes exactly one tab stop, the first enabled button', () => {
     render(<MessageActions {...messageActionsPropsFactory()} />);
     expect(stops()).toEqual([screen.getByRole('button', { name: 'Copy' })]);
-    for (const button of screen.getAllByRole('button').filter((b) => !(b as HTMLButtonElement).disabled)) if (button !== stops()[0]) expect(button).toHaveAttribute('tabindex', '-1');
+    for (const button of screen
+      .getAllByRole('button')
+      .filter((b) => !(b as HTMLButtonElement).disabled))
+      if (button !== stops()[0]) expect(button).toHaveAttribute('tabindex', '-1');
   });
 
   it('moves the tab stop with arrows, Home and End', async () => {
-    render(<MessageActions {...messageActionsPropsFactory({ actions: sampleActions({ busy: true }) })} />);
+    render(
+      <MessageActions
+        {...messageActionsPropsFactory({ actions: sampleActions({ busy: true }) })}
+      />,
+    );
     const copy = screen.getByRole('button', { name: 'Copy' });
     await userEvent.tab();
     expect(copy).toHaveFocus();
@@ -34,7 +44,9 @@ describe('omni-ui-components/MessageActions roving tabindex', () => {
     render(
       <>
         <button type="button">before</button>
-        <MessageActions {...messageActionsPropsFactory({ actions: sampleActions({ busy: true }) })} />
+        <MessageActions
+          {...messageActionsPropsFactory({ actions: sampleActions({ busy: true }) })}
+        />
         <button type="button">after</button>
       </>,
     );

@@ -1,10 +1,13 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen, within } from '@testing-library/react';
 
 import { Toolbar, useToolbarSize } from '@oc-tech/omni-ui-components/Toolbar';
-import { NativeToolbarDemo, toolbarLabelledVariants, toolbarVariants } from 'factories/omni-ui-components/Toolbar/Toolbar.factories';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  NativeToolbarDemo,
+  toolbarLabelledVariants,
+  toolbarVariants,
+} from 'factories/omni-ui-components/Toolbar/Toolbar.factories';
 
 const SizeProbe = () => <span data-testid="probe">{useToolbarSize() ?? 'none'}</span>;
 
@@ -52,7 +55,9 @@ describe('omni-ui-components/Toolbar', () => {
     const second = screen.getByRole('group', { name: 'Second' });
     expect(within(first).getByRole('button', { name: 'One' })).toBeInTheDocument();
     expect(first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    const separators = document.querySelectorAll('[data-slot="separator"], [data-orientation="vertical"]');
+    const separators = document.querySelectorAll(
+      '[data-slot="separator"], [data-orientation="vertical"]',
+    );
     expect(separators.length).toBe(2);
     separators.forEach((sep) => expect(sep).toHaveClass('h-[var(--oui-control-separator)]'));
   });
@@ -63,7 +68,9 @@ describe('omni-ui-components/Toolbar', () => {
         <i data-testid="mid" />
       </Toolbar>,
     );
-    const order = Array.from(screen.getByRole('toolbar').querySelectorAll('[data-testid]')).map((el) => el.getAttribute('data-testid'));
+    const order = Array.from(screen.getByRole('toolbar').querySelectorAll('[data-testid]')).map(
+      (el) => el.getAttribute('data-testid'),
+    );
     expect(order).toEqual(['lead', 'mid', 'trail']);
   });
 
@@ -89,31 +96,43 @@ describe('omni-ui-components/Toolbar', () => {
   });
 
   describe('Native App toolbar (board 1a)', () => {
-    it.each(toolbarVariants.map((v) => [v.name, v] as const))('%s renders every control in the toolbar', (_name, v) => {
-      render(<NativeToolbarDemo {...v.args} />);
-      const bar = screen.getByRole('toolbar', {
-        name: 'Live session controls',
-      });
-      expect(
-        within(bar)
-          .getAllByRole('group')
-          .map((g) => g.getAttribute('aria-label')),
-      ).toEqual(['Capture and microphone', 'Answer style', 'Panels', 'Tools']);
-      expect(bar.querySelectorAll('[data-slot="split-button"]').length).toBe(2);
-      expect(within(bar).getByTestId('answer-style-trigger')).toHaveTextContent('Data Structures & Algorithms');
-      expect(within(bar).getByRole('button', { name: 'Shortcuts' })).toBeInTheDocument();
-    });
+    it.each(toolbarVariants.map((v) => [v.name, v] as const))(
+      '%s renders every control in the toolbar',
+      (_name, v) => {
+        render(<NativeToolbarDemo {...v.args} />);
+        const bar = screen.getByRole('toolbar', {
+          name: 'Live session controls',
+        });
+        expect(
+          within(bar)
+            .getAllByRole('group')
+            .map((g) => g.getAttribute('aria-label')),
+        ).toEqual(['Capture and microphone', 'Answer style', 'Panels', 'Tools']);
+        expect(bar.querySelectorAll('[data-slot="split-button"]').length).toBe(2);
+        expect(within(bar).getByTestId('answer-style-trigger')).toHaveTextContent(
+          'Data Structures & Algorithms',
+        );
+        expect(within(bar).getByRole('button', { name: 'Shortcuts' })).toBeInTheDocument();
+      },
+    );
 
     it('labelled rows size every split button to the labelled row from context', () => {
       render(<NativeToolbarDemo {...toolbarLabelledVariants[0].args} />);
-      document.querySelectorAll('[data-slot="split-button"]').forEach((el) => expect(el).toHaveAttribute('data-size', 'control-labelled'));
+      document
+        .querySelectorAll('[data-slot="split-button"]')
+        .forEach((el) => expect(el).toHaveAttribute('data-size', 'control-labelled'));
     });
 
     it('paused state: both sensors dim and disabled with a reason; panel toggles stay usable', () => {
       render(<NativeToolbarDemo {...toolbarVariants[6].args} />);
       const dims = document.querySelectorAll('[data-slot="split-button"][data-tone="dim"]');
       expect(dims.length).toBe(2);
-      dims.forEach((el) => expect(el.querySelector('[data-slot="split-button-main"]')).toHaveAttribute('aria-disabled', 'true'));
+      dims.forEach((el) =>
+        expect(el.querySelector('[data-slot="split-button-main"]')).toHaveAttribute(
+          'aria-disabled',
+          'true',
+        ),
+      );
       expect(screen.getByRole('button', { name: 'Chat' })).toHaveAttribute('aria-pressed', 'true');
       expect(screen.getByRole('button', { name: 'Code' })).toHaveAttribute('aria-pressed', 'false');
       expect(screen.getByRole('button', { name: 'Code' })).not.toHaveAttribute('aria-disabled');
@@ -126,7 +145,9 @@ describe('omni-ui-components/Toolbar', () => {
       await user.click(answer);
       expect(answer).toHaveAttribute('aria-pressed', 'true');
       await user.hover(answer);
-      expect((await screen.findAllByText('At least one panel stays visible'))[0]).toBeInTheDocument();
+      expect(
+        (await screen.findAllByText('At least one panel stays visible'))[0],
+      ).toBeInTheDocument();
     });
 
     it('turning another panel on then lets the first be turned off', async () => {
@@ -134,7 +155,10 @@ describe('omni-ui-components/Toolbar', () => {
       render(<NativeToolbarDemo {...toolbarVariants[0].args} panels={['answer']} />);
       await user.click(screen.getByRole('button', { name: 'Chat' }));
       await user.click(screen.getByRole('button', { name: 'Answer' }));
-      expect(screen.getByRole('button', { name: 'Answer' })).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.getByRole('button', { name: 'Answer' })).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
     });
 
     it('see-through and shortcuts use the bright foreground and the filled half-circle glyph', () => {
@@ -142,7 +166,9 @@ describe('omni-ui-components/Toolbar', () => {
       const seeThrough = screen.getByRole('button', { name: 'See-through' });
       expect(seeThrough).toHaveClass('text-[color:var(--oui-tone-neutral-fg)]');
       expect(seeThrough.querySelector('path[fill="currentColor"]')).not.toBeNull();
-      expect(screen.getByRole('button', { name: 'Shortcuts' })).toHaveClass('text-[color:var(--oui-tone-neutral-fg)]');
+      expect(screen.getByRole('button', { name: 'Shortcuts' })).toHaveClass(
+        'text-[color:var(--oui-tone-neutral-fg)]',
+      );
     });
   });
 });

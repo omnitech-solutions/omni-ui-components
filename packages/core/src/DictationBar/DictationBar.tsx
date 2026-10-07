@@ -1,9 +1,14 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { IconButton } from '../IconButton';
 import { DEFAULT_DICTATION_LABELS, type DictationBarProps } from './DictationBar.types';
-import { dictationBarClasses, dictationBarVariants, dictationRecordClasses, dictationTextClasses, dictationWaveClasses } from './DictationBar.variants';
+import {
+  dictationBarClasses,
+  dictationBarVariants,
+  dictationRecordClasses,
+  dictationTextClasses,
+  dictationWaveClasses,
+} from './DictationBar.variants';
 
 /** Bar timings are deterministic (a function of the index), so a render never changes them: ported from the original. */
 const barStyle = (index: number): React.CSSProperties => ({
@@ -43,10 +48,29 @@ export const DictationBar = React.forwardRef<HTMLDivElement, DictationBarProps>(
     const labels = { ...DEFAULT_DICTATION_LABELS, ...labelsProp };
     if (!active) return null;
     return (
-      <div ref={ref} data-slot="dictation-bar" data-variant={variant} className={cn(dictationBarVariants({ variant }), className)} {...rest}>
-        {variant === 'stacked' ? <span data-slot="dictation-record" aria-hidden="true" className={dictationRecordClasses} /> : null}
-        <span data-slot="dictation-text" role="status" aria-live="polite" className={dictationTextClasses}>
-          {text || <span className="text-[color:var(--oui-panel-meta-fg)]">{labels.listening}</span>}
+      <div
+        ref={ref}
+        data-slot="dictation-bar"
+        data-variant={variant}
+        className={cn(dictationBarVariants({ variant }), className)}
+        {...rest}
+      >
+        {variant === 'stacked' ? (
+          <span
+            data-slot="dictation-record"
+            aria-hidden="true"
+            className={dictationRecordClasses}
+          />
+        ) : null}
+        <span
+          data-slot="dictation-text"
+          role="status"
+          aria-live="polite"
+          className={dictationTextClasses}
+        >
+          {text || (
+            <span className="text-[color:var(--oui-panel-meta-fg)]">{labels.listening}</span>
+          )}
         </span>
         {waveform ?? (
           <span data-slot="dictation-wave" aria-hidden="true" className={dictationWaveClasses}>
@@ -57,25 +81,29 @@ export const DictationBar = React.forwardRef<HTMLDivElement, DictationBarProps>(
         )}
         {showActions && (onCancel || onDone) ? (
           <span className="flex flex-none items-center gap-1">
-            {onCancel ? <IconButton
-              variant="ghost"
-              iconSize="md"
-              icon={cancelIcon ?? <span aria-hidden="true">×</span>}
-              label={labels.cancel}
-              data-slot="dictation-cancel"
-              className="size-[30px] rounded-full"
-              onClick={() => void onCancel()}
-            /> : null}
-            {onDone ? <IconButton
-              variant="ghost"
-              iconSize="md"
-              tone="accent"
-              icon={doneIcon ?? <span aria-hidden="true">✓</span>}
-              label={labels.done}
-              data-slot="dictation-done"
-              className="size-[30px] rounded-full"
-              onClick={() => void onDone(text)}
-            /> : null}
+            {onCancel ? (
+              <IconButton
+                variant="ghost"
+                iconSize="md"
+                icon={cancelIcon ?? <span aria-hidden="true">×</span>}
+                label={labels.cancel}
+                data-slot="dictation-cancel"
+                className="size-[30px] rounded-full"
+                onClick={() => void onCancel()}
+              />
+            ) : null}
+            {onDone ? (
+              <IconButton
+                variant="ghost"
+                iconSize="md"
+                tone="accent"
+                icon={doneIcon ?? <span aria-hidden="true">✓</span>}
+                label={labels.done}
+                data-slot="dictation-done"
+                className="size-[30px] rounded-full"
+                onClick={() => void onDone(text)}
+              />
+            ) : null}
           </span>
         ) : null}
       </div>

@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Flex } from '@oc-tech/omni-ui-components/Flex';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Flex> = {
   title: 'omni-ui-components/Flex',

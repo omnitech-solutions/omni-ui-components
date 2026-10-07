@@ -1,6 +1,5 @@
-import * as React from 'react';
-import { createRoot } from 'react-dom/client';
 import { Button, Panel } from '@oc-tech/omni-ui-components';
+import { createRoot } from 'react-dom/client';
 
 import './b.css';
 import '@oc-tech/omni-ui-components/styles.css';

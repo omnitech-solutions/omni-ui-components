@@ -1,9 +1,14 @@
-import * as React from 'react';
+import {
+  IntegrationList,
+  type IntegrationListProps,
+} from '@oc-tech/omni-ui-components/IntegrationList';
 import type { Meta, StoryObj } from '@storybook/react';
+import {
+  IntegrationListDemo,
+  integrationListPropsFactory,
+  integrationListVariants,
+} from 'factories/omni-ui-components/IntegrationList/IntegrationList.factories';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
-import { IntegrationList, type IntegrationListProps } from '@oc-tech/omni-ui-components/IntegrationList';
-import { IntegrationListDemo, integrationListPropsFactory, integrationListVariants } from 'factories/omni-ui-components/IntegrationList/IntegrationList.factories';
 
 const meta: Meta<IntegrationListProps> = {
   title: 'omni-ui-components/IntegrationList',
@@ -13,19 +18,28 @@ const meta: Meta<IntegrationListProps> = {
     docs: {
       description: {
         component:
-          'The tools an assistant may use: rows (<primary>icon tile, name, detail with a status dot, switch, remove</primary>), an <primary>add-by-address</primary> form, loading and empty states. Today\'s rows are MCP servers; an <primary>OAuth variant</primary> fits the same list through `connectAction` (list header) and each row\'s `account` and `connectAction`. Callbacks: `onToggle(id, enabled)`, `onRemove(id)`, `onAdd(url)`.\n\n<primary>Callbacks</primary> (every callback is optional; a control that exists only for a callback is not rendered when it is absent):\n\n| Callback | Fires when | Payload |\n| --- | --- | --- |\n| `onToggle` | a row\n\n<primary>Callbacks</primary> (every callback is optional; a control that exists only for a callback is not rendered when it is absent):\n\n| Callback | Fires when | Payload |\n| --- | --- | --- |\n| `onToggle` | a row\'s switch is flipped | `(integration: I, enabled: boolean)` |\n| `onRemove` | a row\'s remove button is chosen | `(integration: I)` |\n| `onAdd` | the add form is submitted | `(url: string)` |',
+          "The tools an assistant may use: rows (<primary>icon tile, name, detail with a status dot, switch, remove</primary>), an <primary>add-by-address</primary> form, loading and empty states. Today's rows are MCP servers; an <primary>OAuth variant</primary> fits the same list through `connectAction` (list header) and each row's `account` and `connectAction`. Callbacks: `onToggle(id, enabled)`, `onRemove(id)`, `onAdd(url)`.\n\n<primary>Callbacks</primary> (every callback is optional; a control that exists only for a callback is not rendered when it is absent):\n\n| Callback | Fires when | Payload |\n| --- | --- | --- |\n| `onToggle` | a row\n\n<primary>Callbacks</primary> (every callback is optional; a control that exists only for a callback is not rendered when it is absent):\n\n| Callback | Fires when | Payload |\n| --- | --- | --- |\n| `onToggle` | a row's switch is flipped | `(integration: I, enabled: boolean)` |\n| `onRemove` | a row's remove button is chosen | `(integration: I)` |\n| `onAdd` | the add form is submitted | `(url: string)` |",
       },
     },
   },
   args: { ...integrationListPropsFactory(), onToggle: fn(), onRemove: fn(), onAdd: fn() },
   argTypes: {
-    items: { control: 'object', description: '`{ id, name, detail, status, enabled, icon, account, connectAction }`.' },
+    items: {
+      control: 'object',
+      description: '`{ id, name, detail, status, enabled, icon, account, connectAction }`.',
+    },
     loading: { control: 'boolean', description: 'With `items` undefined: shows the loading line.' },
     intro: { control: 'text', description: 'Replaces the intro line; `null` hides it.' },
-    labels: { control: 'object', description: 'Every string; `remove` and `toggle` are functions of the name.' },
+    labels: {
+      control: 'object',
+      description: 'Every string; `remove` and `toggle` are functions of the name.',
+    },
     onToggle: { action: 'toggle' },
     onRemove: { action: 'remove' },
-    onAdd: { action: 'add', description: 'May return a promise: the form is busy while it is pending.' },
+    onAdd: {
+      action: 'add',
+      description: 'May return a promise: the form is busy while it is pending.',
+    },
   },
   decorators: [
     (Story) => (
@@ -60,7 +74,9 @@ export const AddServer: Story = {
     await userEvent.type(field, 'https://tools.example.com/mcp');
     expect(add).toBeEnabled();
     await userEvent.click(add);
-    await waitFor(() => expect(canvas.getByText('tools.example.com')).toBeInTheDocument(), { timeout: 3000 });
+    await waitFor(() => expect(canvas.getByText('tools.example.com')).toBeInTheDocument(), {
+      timeout: 3000,
+    });
     expect(field).toHaveValue('');
   },
 };

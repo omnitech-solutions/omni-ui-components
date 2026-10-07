@@ -1,11 +1,10 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { expectTypeOf } from 'vitest';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
 import { ApprovalCard, type ApprovalItem } from '@oc-tech/omni-ui-components/ApprovalCard';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { approvalCardPropsFactory } from 'factories/omni-ui-components/ApprovalCard/ApprovalCard.factories';
+import { expectTypeOf } from 'vitest';
 
 describe('omni-ui-components/ApprovalCard', () => {
   it('pending: labelled section with title, description, tags (first monospace) and three buttons', () => {
@@ -15,7 +14,11 @@ describe('omni-ui-components/ApprovalCard', () => {
     expect(card).toHaveTextContent('The assistant wants to run code in the sandbox.');
     expect(screen.getByText('runCode')).toHaveClass('font-mono');
     expect(screen.getByText('sandboxed')).not.toHaveClass('font-mono');
-    expect(screen.getAllByRole('button').map((button) => button.textContent)).toEqual(['Deny', 'Always allow in this chat', 'Allow once']);
+    expect(screen.getAllByRole('button').map((button) => button.textContent)).toEqual([
+      'Deny',
+      'Always allow in this chat',
+      'Allow once',
+    ]);
   });
 
   it.each([
@@ -26,7 +29,10 @@ describe('omni-ui-components/ApprovalCard', () => {
     const onDecide = vi.fn();
     render(<ApprovalCard {...approvalCardPropsFactory({ onDecide })} />);
     await userEvent.click(screen.getByRole('button', { name }));
-    expect(onDecide).toHaveBeenCalledWith(decision, expect.objectContaining({ title: 'Run the solution against your tests?' }));
+    expect(onDecide).toHaveBeenCalledWith(
+      decision,
+      expect.objectContaining({ title: 'Run the solution against your tests?' }),
+    );
   });
 
   it('busy disables the buttons', () => {
@@ -51,7 +57,14 @@ describe('omni-ui-components/ApprovalCard', () => {
 
   it('onDecide receives the extended approval item by reference, with its extra fields typed', async () => {
     type RunApproval = ApprovalItem & { callId: string; risk: 'low' | 'high' };
-    const approval: RunApproval = { id: 'a1', title: 'Run it?', tool: 'runCode', tags: ['runCode'], callId: 'call-7', risk: 'high' };
+    const approval: RunApproval = {
+      id: 'a1',
+      title: 'Run it?',
+      tool: 'runCode',
+      tags: ['runCode'],
+      callId: 'call-7',
+      risk: 'high',
+    };
     const onDecide = vi.fn((_decision: 'once' | 'always' | 'deny', given: RunApproval) => {
       expectTypeOf(given.callId).toEqualTypeOf<string>();
       expectTypeOf(given.risk).toEqualTypeOf<'low' | 'high'>();

@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
   collapsibleClosedFixture,
   collapsibleOpenFixture,
@@ -8,6 +6,10 @@ import {
   labelActionSpanFixture,
   staticPanelFixture,
 } from 'factories/dynamic-form/templates/TemplateEnhancements.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<Record<string, unknown>>;
 

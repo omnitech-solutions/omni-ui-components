@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import { zodIssuesToFormErrors } from '@oc-tech/omni-ui-components';
+import { z } from 'zod';
 
 /** Helper — force a Zod parse failure for the given schema/value and return the issues. */
 const failedParse = <T>(schema: z.ZodType<T>, value: unknown): z.ZodError => {
@@ -13,7 +12,9 @@ describe('zodIssuesToFormErrors', () => {
   it('maps each Zod issue to a FormError with source: "zod"', () => {
     const schema = z.object({ name: z.string().min(1, 'name required') });
     const err = failedParse(schema, { name: '' });
-    expect(zodIssuesToFormErrors(err)).toEqual([{ path: ['name'], message: 'name required', source: 'zod' }]);
+    expect(zodIssuesToFormErrors(err)).toEqual([
+      { path: ['name'], message: 'name required', source: 'zod' },
+    ]);
   });
 
   it('stringifies numeric path segments (Zod uses raw numbers for array indices)', () => {

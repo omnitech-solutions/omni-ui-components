@@ -18,7 +18,12 @@ export function closeOpenMarkdown(source: string): string {
     const run = match[1] ?? '';
     if (!fence) fence = { marker: run };
     // A closing fence is the same character, at least as long, with nothing after it.
-    else if (run[0] === fence.marker[0] && run.length >= fence.marker.length && !(match[2] ?? '').trim()) fence = null;
+    else if (
+      run[0] === fence.marker[0] &&
+      run.length >= fence.marker.length &&
+      !(match[2] ?? '').trim()
+    )
+      fence = null;
   }
   if (fence) return `${source}${source.endsWith('\n') ? '' : '\n'}${fence.marker}`;
 

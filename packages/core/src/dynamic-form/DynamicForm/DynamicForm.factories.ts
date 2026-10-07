@@ -1,8 +1,9 @@
 // @ts-nocheck — `@rjsf/utils`'s `UiSchema['ui:rows']` is typed for the
 // (legacy) rowsCount number; the `@rjsf/shadcn` theme uses `string[][]` for
 // the flat-row layout API. The runtime contract is correct.
-import { z } from 'zod';
+
 import type { RJSFSchema, UiSchema } from '@rjsf/utils';
+import { z } from 'zod';
 
 import { COUNTRY_OPTIONS } from '../../Select/countries';
 
@@ -72,7 +73,12 @@ const ADDRESS_FIXTURE: FormFixture<AddressFormData> = {
     },
   },
   uiSchema: {
-    'ui:rows': [[{ value: 'label', span: 2 }], ['address1', 'address2'], ['city', 'postal_code'], ['country', 'region']],
+    'ui:rows': [
+      [{ value: 'label', span: 2 }],
+      ['address1', 'address2'],
+      ['city', 'postal_code'],
+      ['country', 'region'],
+    ],
     label: { 'ui:placeholder': 'Main Office' },
     address1: { 'ui:placeholder': '123 Main St' },
     address2: { 'ui:placeholder': 'Suite 100' },
@@ -101,7 +107,9 @@ const ADDRESS_FIXTURE: FormFixture<AddressFormData> = {
   },
 };
 
-export const addressFormFactory = (overrides: Partial<AddressFormData> = {}): FormFixture<AddressFormData> => ({
+export const addressFormFactory = (
+  overrides: Partial<AddressFormData> = {},
+): FormFixture<AddressFormData> => ({
   ...ADDRESS_FIXTURE,
   defaults: { ...ADDRESS_FIXTURE.defaults, ...overrides },
 });
@@ -168,10 +176,16 @@ export interface KitchenSinkFormData {
   };
 }
 
+import { selectOptions } from '../../../helpers/optionMappers';
 /* Imports for Kitchen Sink enhancements section — grouped options, footer
  * action, derivedText, staticPanel, labelAction, collapsible, hidden. */
-import { SHOWCASE_EXPENSE_CATEGORIES, SHOWCASE_MEMBERS, SHOWCASE_PROJECTS, SHOWCASE_TAX_RATES, SHOWCASE_TASKS } from '../../../showcase/entities';
-import { selectOptions } from '../../../helpers/optionMappers';
+import {
+  SHOWCASE_EXPENSE_CATEGORIES,
+  SHOWCASE_MEMBERS,
+  SHOWCASE_PROJECTS,
+  SHOWCASE_TASKS,
+  SHOWCASE_TAX_RATES,
+} from '../../../showcase/entities';
 
 const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<string, string>> = {
   schema: {
@@ -236,7 +250,11 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
             },
           },
           tos: { type: 'boolean', title: 'I agree to the Terms of Service' },
-          marketing: { type: 'boolean', title: 'Marketing emails', description: 'Occasional product updates + tips.' },
+          marketing: {
+            type: 'boolean',
+            title: 'Marketing emails',
+            description: 'Occasional product updates + tips.',
+          },
         },
       },
       preferences: {
@@ -245,7 +263,13 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
         description: 'A couple of knobs to tune your account.',
         required: ['volume', 'tone', 'pages', 'due_date'],
         properties: {
-          volume: { type: 'integer', title: 'Notification volume', minimum: 0, maximum: 100, multipleOf: 5 },
+          volume: {
+            type: 'integer',
+            title: 'Notification volume',
+            minimum: 0,
+            maximum: 100,
+            multipleOf: 5,
+          },
           pages: { type: 'integer', title: 'Number of pages', minimum: 1, maximum: 50 },
           due_date: { type: 'string', format: 'date', title: 'Due date' },
           tone: {
@@ -262,7 +286,8 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
       extras: {
         type: 'object',
         title: 'Extras',
-        description: 'A few more bits: verification code, tags, daily start time, brand color, portfolio file.',
+        description:
+          'A few more bits: verification code, tags, daily start time, brand color, portfolio file.',
         properties: {
           verification_code: { type: 'string', title: 'Verification code', maxLength: 6 },
           skill_tags: { type: 'array', title: 'Skill tags', items: { type: 'string' } },
@@ -274,13 +299,15 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
       metadata: {
         type: 'object',
         title: 'Custom metadata',
-        description: 'Add arbitrary key/value pairs. Rename the key inline, remove rows with the trash button.',
+        description:
+          'Add arbitrary key/value pairs. Rename the key inline, remove rows with the trash button.',
         additionalProperties: { type: 'string' },
       },
       quick_actions: {
         type: 'string',
         title: 'Quick actions',
-        description: 'Omni IconButtons surfaced via the iconToolbar widget. Trash2 auto-defaults to destructive.',
+        description:
+          'Omni IconButtons surfaced via the iconToolbar widget. Trash2 auto-defaults to destructive.',
       },
       enhancements: {
         type: 'object',
@@ -307,7 +334,16 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
         type: 'object',
         title: 'Address',
         description: 'Where this location lives.',
-        required: ['label', 'address1', 'city', 'postal_code', 'country', 'region', 'website', 'notes'],
+        required: [
+          'label',
+          'address1',
+          'city',
+          'postal_code',
+          'country',
+          'region',
+          'website',
+          'notes',
+        ],
         properties: {
           label: { type: 'string', title: 'Label' },
           address1: { type: 'string', title: 'Address 1' },
@@ -324,10 +360,17 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
   },
   uiSchema: {
     contact_info: {
-      'ui:rows': [['full_name', 'email'], ['password', 'phone'], [{ value: 'recovery_emails', span: 2 }]],
+      'ui:rows': [
+        ['full_name', 'email'],
+        ['password', 'phone'],
+        [{ value: 'recovery_emails', span: 2 }],
+      ],
       full_name: { 'ui:placeholder': 'Ada Lovelace' },
       email: { 'ui:placeholder': 'ada@example.com' },
-      password: { 'ui:widget': 'password', 'ui:placeholder': 'At least 8 chars, 1 uppercase, 1 number' },
+      password: {
+        'ui:widget': 'password',
+        'ui:placeholder': 'At least 8 chars, 1 uppercase, 1 number',
+      },
       phone: { 'ui:placeholder': '+1 555 0100' },
       recovery_emails: {
         'ui:options': { orderable: true, addable: true, removable: true },
@@ -365,7 +408,12 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
       marketing: { 'ui:widget': 'switch' },
     },
     preferences: {
-      'ui:rows': [[{ value: 'volume', span: 2 }], [{ value: 'pages', span: 2 }], [{ value: 'tone', span: 2 }], [{ value: 'due_date', span: 2 }]],
+      'ui:rows': [
+        [{ value: 'volume', span: 2 }],
+        [{ value: 'pages', span: 2 }],
+        [{ value: 'tone', span: 2 }],
+        [{ value: 'due_date', span: 2 }],
+      ],
       volume: { 'ui:widget': 'range' },
       pages: { 'ui:widget': 'stepper', 'ui:options': { unit: 'page', icon: 'fileText' } },
       tone: { 'ui:widget': 'segmented' },
@@ -382,7 +430,10 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
       skill_tags: { 'ui:widget': 'tags' },
       daily_start: { 'ui:widget': 'time' },
       brand_color: { 'ui:widget': 'color' },
-      portfolio: { 'ui:widget': 'file', 'ui:options': { accept: 'image/*,.pdf', maxSize: 5_000_000 } },
+      portfolio: {
+        'ui:widget': 'file',
+        'ui:options': { accept: 'image/*,.pdf', maxSize: 5_000_000 },
+      },
     },
     quick_actions: {
       'ui:widget': 'iconToolbar',
@@ -405,13 +456,31 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
         [{ value: 'salesPriceLabel', span: 2 }],
         [{ value: 'additionalFields', span: 2 }],
       ],
-      panelHeader: { 'ui:field': 'staticPanel', 'ui:options': { panelKey: 'durationLabel', lines: ['dateLabel', 'statusLabel'] } },
-      category: { 'ui:widget': 'select', 'ui:options': { optionSetKey: 'categories', searchable: true } },
-      taxRateId: { 'ui:widget': 'select', 'ui:options': { optionSetKey: 'taxRates', footerActionKey: 'manageTaxRates' } },
-      projectId: { 'ui:widget': 'combobox', 'ui:options': { optionSetKey: 'projects', placeholder: 'Add project' } },
-      memberId: { 'ui:widget': 'combobox', 'ui:options': { optionSetKey: 'members', placeholder: 'Select…' } },
+      panelHeader: {
+        'ui:field': 'staticPanel',
+        'ui:options': { panelKey: 'durationLabel', lines: ['dateLabel', 'statusLabel'] },
+      },
+      category: {
+        'ui:widget': 'select',
+        'ui:options': { optionSetKey: 'categories', searchable: true },
+      },
+      taxRateId: {
+        'ui:widget': 'select',
+        'ui:options': { optionSetKey: 'taxRates', footerActionKey: 'manageTaxRates' },
+      },
+      projectId: {
+        'ui:widget': 'combobox',
+        'ui:options': { optionSetKey: 'projects', placeholder: 'Add project' },
+      },
+      memberId: {
+        'ui:widget': 'combobox',
+        'ui:options': { optionSetKey: 'members', placeholder: 'Select…' },
+      },
       taskUuid: { 'ui:widget': 'text', 'ui:options': { labelActionKey: 'viewTask' } },
-      salesPriceLabel: { 'ui:widget': 'derivedText', 'ui:options': { derivedKey: 'salesPriceLabel', tone: 'default' } },
+      salesPriceLabel: {
+        'ui:widget': 'derivedText',
+        'ui:options': { derivedKey: 'salesPriceLabel', tone: 'default' },
+      },
       hiddenId: { 'ui:widget': 'hidden' },
       additionalFields: {
         'ui:options': { collapsible: { title: 'Additional Fields', defaultOpen: false } },
@@ -435,7 +504,11 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
       country: { 'ui:widget': 'select', 'ui:placeholder': 'Select country…' },
       region: { 'ui:placeholder': 'Region' },
       website: { 'ui:placeholder': 'https://example.com' },
-      notes: { 'ui:widget': 'textarea', 'ui:placeholder': 'Anything we should know?', 'ui:options': { rows: 6 } },
+      notes: {
+        'ui:widget': 'textarea',
+        'ui:placeholder': 'Anything we should know?',
+        'ui:options': { rows: 6 },
+      },
     },
   },
   zodSchema: z.object({
@@ -448,20 +521,28 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
         .regex(/[A-Z]/, 'Password must contain an uppercase letter')
         .regex(/\d/, 'Password must contain a number'),
       phone: z.string().regex(/^[+\d\s()-]{10,}$/, 'Enter a valid phone (10+ digits)'),
-      recovery_emails: z.array(z.string().email('Enter a valid email')).max(3, 'At most 3 recovery emails'),
+      recovery_emails: z
+        .array(z.string().email('Enter a valid email'))
+        .max(3, 'At most 3 recovery emails'),
     }),
     billing: z.object({
-      plan: z.enum(['free', 'pro', 'team'], { errorMap: () => ({ message: 'Pick a billing plan' }) }),
+      plan: z.enum(['free', 'pro', 'team'], {
+        errorMap: () => ({ message: 'Pick a billing plan' }),
+      }),
       monthly_budget: z.coerce.number().nonnegative(),
     }),
     notifications: z.object({
       channels: z.array(z.string()).min(1, 'Pick at least one channel'),
-      tos: z.literal(true, { errorMap: () => ({ message: 'You must agree to the Terms of Service' }) }),
+      tos: z.literal(true, {
+        errorMap: () => ({ message: 'You must agree to the Terms of Service' }),
+      }),
       marketing: z.boolean(),
     }),
     preferences: z.object({
       volume: z.number().int().min(0).max(100),
-      tone: z.enum(['casual', 'friendly', 'professional'], { errorMap: () => ({ message: 'Pick a tone' }) }),
+      tone: z.enum(['casual', 'friendly', 'professional'], {
+        errorMap: () => ({ message: 'Pick a tone' }),
+      }),
       pages: z.number().int().min(1).max(50),
       due_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Pick a due date'),
     }),
@@ -505,11 +586,23 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
       .optional(),
   }) as unknown as z.ZodType<KitchenSinkFormData>,
   defaults: {
-    contact_info: { full_name: '', email: '', password: '', phone: '', recovery_emails: ['backup@example.com'] },
+    contact_info: {
+      full_name: '',
+      email: '',
+      password: '',
+      phone: '',
+      recovery_emails: ['backup@example.com'],
+    },
     billing: { plan: '', monthly_budget: 0 },
     notifications: { channels: [], tos: false, marketing: false },
     preferences: { volume: 35, tone: 'friendly', pages: 7, due_date: '' },
-    extras: { verification_code: '', skill_tags: ['react', 'typescript'], daily_start: '09:00', brand_color: '#22c55e', portfolio: '' },
+    extras: {
+      verification_code: '',
+      skill_tags: ['react', 'typescript'],
+      daily_start: '09:00',
+      brand_color: '#22c55e',
+      portfolio: '',
+    },
     metadata: { environment: 'production', team: 'platform' },
     enhancements: {
       category: '',
@@ -542,21 +635,46 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
   }),
   formContext: {
     optionSets: {
-      categories: selectOptions(SHOWCASE_EXPENSE_CATEGORIES, { value: 'id', label: 'label', group: 'group' }),
-      taxRates: selectOptions(SHOWCASE_TAX_RATES, { value: 'id', label: 'label', group: () => 'SET TAX' }),
-      projects: selectOptions(SHOWCASE_PROJECTS, { value: 'id', label: (p) => `${p.icon} ${p.name}`, description: 'organization', color: 'color' }),
-      members: selectOptions(SHOWCASE_MEMBERS, { value: 'id', label: 'name', group: 'group', color: 'color', initials: 'initials' }),
+      categories: selectOptions(SHOWCASE_EXPENSE_CATEGORIES, {
+        value: 'id',
+        label: 'label',
+        group: 'group',
+      }),
+      taxRates: selectOptions(SHOWCASE_TAX_RATES, {
+        value: 'id',
+        label: 'label',
+        group: () => 'SET TAX',
+      }),
+      projects: selectOptions(SHOWCASE_PROJECTS, {
+        value: 'id',
+        label: (p) => `${p.icon} ${p.name}`,
+        description: 'organization',
+        color: 'color',
+      }),
+      members: selectOptions(SHOWCASE_MEMBERS, {
+        value: 'id',
+        label: 'name',
+        group: 'group',
+        color: 'color',
+        initials: 'initials',
+      }),
       tasks: selectOptions(SHOWCASE_TASKS, { value: 'id', label: 'name' }),
     },
     actions: {
-      manageTaxRates: { label: 'Manage Tax Rates', href: '/settings/tax_rates', actionId: 'manageTaxRates' },
+      manageTaxRates: {
+        label: 'Manage Tax Rates',
+        href: '/settings/tax_rates',
+        actionId: 'manageTaxRates',
+      },
       viewTask: { label: 'View Task', href: '/tasks/res-eval', actionId: 'viewTask' },
     },
     locale: 'en-GB',
   },
 };
 
-export const kitchenSinkFormFactory = (overrides: Partial<KitchenSinkFormData> = {}): DynamicFormFixture<KitchenSinkFormData, Record<string, string>> => ({
+export const kitchenSinkFormFactory = (
+  overrides: Partial<KitchenSinkFormData> = {},
+): DynamicFormFixture<KitchenSinkFormData, Record<string, string>> => ({
   ...KITCHEN_SINK_FIXTURE,
   defaults: { ...KITCHEN_SINK_FIXTURE.defaults, ...overrides },
 });
@@ -586,7 +704,12 @@ const AUTOMATION_FIXTURE: FormFixture<AutomationFormData> = {
     },
   },
   uiSchema: {
-    'ui:rows': [[{ value: 'name', span: 2 }], ['trigger', 'action'], [{ value: 'subject', span: 2 }], [{ value: 'message', span: 2 }]],
+    'ui:rows': [
+      [{ value: 'name', span: 2 }],
+      ['trigger', 'action'],
+      [{ value: 'subject', span: 2 }],
+      [{ value: 'message', span: 2 }],
+    ],
     name: { 'ui:placeholder': 'Internal name for this automation' },
     trigger: { 'ui:placeholder': 'Agreement_countersigned' },
     action: { 'ui:placeholder': 'send_message' },
@@ -609,7 +732,9 @@ const AUTOMATION_FIXTURE: FormFixture<AutomationFormData> = {
   },
 };
 
-export const automationFormFactory = (overrides: Partial<AutomationFormData> = {}): FormFixture<AutomationFormData> => ({
+export const automationFormFactory = (
+  overrides: Partial<AutomationFormData> = {},
+): FormFixture<AutomationFormData> => ({
   ...AUTOMATION_FIXTURE,
   defaults: { ...AUTOMATION_FIXTURE.defaults, ...overrides },
 });

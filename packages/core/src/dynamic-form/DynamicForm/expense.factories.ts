@@ -1,7 +1,11 @@
 import { z } from 'zod';
-
+import {
+  deriveExpense,
+  type ExpenseCurrency,
+  type ExpenseDerived,
+  type ExpenseTaxRateId,
+} from '../../Form/expenseScenario.factories';
 import type { DynamicFormFixture } from './DynamicForm.factories';
-import { deriveExpense, type ExpenseCurrency, type ExpenseDerived, type ExpenseTaxRateId } from '../../Form/expenseScenario.factories';
 
 /**
  * Expense canary fixture — the smallest schema that exercises the
@@ -21,7 +25,9 @@ export interface ExpenseCanaryFormData {
   billable: boolean;
 }
 
-export const deriveExpenseCanary = (formData: Readonly<Partial<ExpenseCanaryFormData>>): ExpenseCanaryDerived =>
+export const deriveExpenseCanary = (
+  formData: Readonly<Partial<ExpenseCanaryFormData>>,
+): ExpenseCanaryDerived =>
   deriveExpense({
     amount: formData.amount,
     currency: formData.currency,
@@ -37,7 +43,10 @@ export const expenseCanaryZod = z.object({
   billable: z.boolean(),
 }) as unknown as z.ZodType<ExpenseCanaryFormData>;
 
-export const expenseCanaryFixture = (): DynamicFormFixture<ExpenseCanaryFormData, ExpenseCanaryDerived> => ({
+export const expenseCanaryFixture = (): DynamicFormFixture<
+  ExpenseCanaryFormData,
+  ExpenseCanaryDerived
+> => ({
   schema: {
     type: 'object',
     required: ['amount', 'currency', 'markupPercent', 'billable'],
@@ -61,14 +70,26 @@ export const expenseCanaryFixture = (): DynamicFormFixture<ExpenseCanaryFormData
     },
   },
   uiSchema: {
-    'ui:rows': [['amount', 'currency'], ['markupPercent', 'taxRateId'], ['billable'], ['excludingTaxLabel'], ['salesPriceLabel']],
+    'ui:rows': [
+      ['amount', 'currency'],
+      ['markupPercent', 'taxRateId'],
+      ['billable'],
+      ['excludingTaxLabel'],
+      ['salesPriceLabel'],
+    ],
     amount: { 'ui:widget': 'currency' },
     currency: { 'ui:widget': 'select' },
     taxRateId: { 'ui:widget': 'select' },
     markupPercent: { 'ui:widget': 'numberInput', 'ui:options': { suffix: '%' } },
     billable: { 'ui:widget': 'switch' },
-    excludingTaxLabel: { 'ui:widget': 'derivedText', 'ui:options': { derivedKey: 'excludingTaxLabel', tone: 'muted' } },
-    salesPriceLabel: { 'ui:widget': 'derivedText', 'ui:options': { derivedKey: 'salesPriceLabel', tone: 'default' } },
+    excludingTaxLabel: {
+      'ui:widget': 'derivedText',
+      'ui:options': { derivedKey: 'excludingTaxLabel', tone: 'muted' },
+    },
+    salesPriceLabel: {
+      'ui:widget': 'derivedText',
+      'ui:options': { derivedKey: 'salesPriceLabel', tone: 'default' },
+    },
   },
   zodSchema: expenseCanaryZod,
   defaults: { amount: 0, currency: 'GBP', taxRateId: 'none', markupPercent: 0, billable: false },

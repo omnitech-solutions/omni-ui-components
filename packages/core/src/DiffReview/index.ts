@@ -1,6 +1,4 @@
 export { DEFAULT_DIFF_REVIEW_LABELS, DiffReview } from './DiffReview';
-export { diffRows, diffStats, sumStats } from './DiffReview.utils';
-export { diffReviewPillVariants, diffRowVariants } from './DiffReview.variants';
 export type {
   DiffChange,
   DiffReviewAction,
@@ -14,3 +12,5 @@ export type {
   DiffRowsOptions,
   DiffStats,
 } from './DiffReview.types';
+export { diffRows, diffStats, sumStats } from './DiffReview.utils';
+export { diffReviewPillVariants, diffRowVariants } from './DiffReview.variants';

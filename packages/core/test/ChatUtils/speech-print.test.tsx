@@ -1,6 +1,10 @@
+import {
+  canSpeak,
+  conversationHtml,
+  printConversation,
+  useSpeech,
+} from '@oc-tech/omni-ui-components/lib/chat';
 import { act, render } from '@testing-library/react';
-
-import { canSpeak, conversationHtml, printConversation, useSpeech } from '@oc-tech/omni-ui-components/lib/chat';
 
 type Utterance = { text: string; onend?: () => void; onerror?: () => void };
 
@@ -8,11 +12,12 @@ const stubSpeech = () => {
   const spoken: Utterance[] = [];
   const synth = { speak: jest.fn((u: Utterance) => spoken.push(u)), cancel: jest.fn() };
   Object.defineProperty(globalThis, 'speechSynthesis', { value: synth, configurable: true });
-  (globalThis as unknown as { SpeechSynthesisUtterance: unknown }).SpeechSynthesisUtterance = class {
-    onend?: () => void;
-    onerror?: () => void;
-    constructor(public text: string) {}
-  };
+  (globalThis as unknown as { SpeechSynthesisUtterance: unknown }).SpeechSynthesisUtterance =
+    class {
+      onend?: () => void;
+      onerror?: () => void;
+      constructor(public text: string) {}
+    };
   return { synth, spoken };
 };
 
@@ -84,7 +89,10 @@ describe('printConversation', () => {
       }
       return el;
     });
-    const messages = [{ role: 'user', text: 'a < b' }, { role: 'assistant', text: 'ok' }];
+    const messages = [
+      { role: 'user', text: 'a < b' },
+      { role: 'assistant', text: 'ok' },
+    ];
     printConversation('Plan', messages);
     expect(document.querySelector('iframe')).not.toBeNull();
     expect(write).toHaveBeenCalledWith(conversationHtml('Plan', messages));

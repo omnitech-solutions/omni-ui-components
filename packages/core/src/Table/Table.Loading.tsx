@@ -7,11 +7,10 @@
  * handler that renders the skeleton rows or the overlay spinner.
  */
 
-import * as React from 'react';
-
-import type { TableColumn, TableLoadingProps } from './Table.types';
+import type * as React from 'react';
 import { TableLoadingSkeletonVariant } from './Table.Loading.Skeleton';
 import { TableLoadingSpinnerVariant } from './Table.Loading.Spinner';
+import type { TableColumn, TableLoadingProps } from './Table.types';
 
 export type TableLoadingVariantName = 'skeleton' | 'spinner';
 
@@ -33,9 +32,13 @@ export interface TableLoadingContext<TRecord = unknown, TRowData = unknown> {
 export interface TableLoadingVariant {
   readonly name: TableLoadingVariantName;
   /** Rendered inside `<tbody>` in place of real rows. Return `null` to skip. */
-  renderRows?: <TRecord, TRowData>(ctx: TableLoadingContext<TRecord, TRowData>) => React.ReactNode | null;
+  renderRows?: <TRecord, TRowData>(
+    ctx: TableLoadingContext<TRecord, TRowData>,
+  ) => React.ReactNode | null;
   /** Rendered as an absolute overlay outside `<tbody>`. Return `null` to skip. */
-  renderOverlay?: <TRecord, TRowData>(ctx: TableLoadingContext<TRecord, TRowData>) => React.ReactNode | null;
+  renderOverlay?: <TRecord, TRowData>(
+    ctx: TableLoadingContext<TRecord, TRowData>,
+  ) => React.ReactNode | null;
   /** When true, Table skips rendering the real body rows while loading. */
   readonly replacesBody: boolean;
 }

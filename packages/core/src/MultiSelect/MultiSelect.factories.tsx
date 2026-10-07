@@ -11,7 +11,9 @@ export const SAMPLE_TAGS: SelectOption[] = [
   { value: 'storybook', label: 'Storybook' },
 ];
 
-export const multiSelectPropsFactory = (overrides: Partial<MultiSelectProps> = {}): MultiSelectProps => ({
+export const multiSelectPropsFactory = (
+  overrides: Partial<MultiSelectProps> = {},
+): MultiSelectProps => ({
   id: 'demo-multi-select',
   label: 'Skills',
   options: SAMPLE_TAGS,
@@ -28,7 +30,13 @@ export const multiSelectVariants: Variant<MultiSelectProps>[] = [
   { name: 'Default', args: { label: 'Default', value: [] } },
   { name: 'Prefilled', args: { label: 'Prefilled', value: ['ruby', 'rails'] } },
   { name: 'Max items', args: { label: 'Max items', value: ['react'], maxItems: 3 } },
-  { name: 'Not searchable', args: { label: 'Not searchable', searchable: false, value: ['react'] } },
+  {
+    name: 'Not searchable',
+    args: { label: 'Not searchable', searchable: false, value: ['react'] },
+  },
   { name: 'Disabled', args: { label: 'Disabled', disabled: true, value: ['ruby', 'rails'] } },
-  { name: 'Invalid', args: { label: 'Invalid', error: 'Pick at least one', required: true, value: [] } },
+  {
+    name: 'Invalid',
+    args: { label: 'Invalid', error: 'Pick at least one', required: true, value: [] },
+  },
 ];

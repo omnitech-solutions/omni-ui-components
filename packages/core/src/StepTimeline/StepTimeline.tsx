@@ -1,8 +1,13 @@
-import * as React from 'react';
+import { useControllableState } from 'lib/use-controllable-state';
 
 import { cn } from 'lib/utils';
-import { useControllableState } from 'lib/use-controllable-state';
-import type { StepTimelineLabels, StepTimelineProps, StepTimelineStatus, StepTimelineStep } from './StepTimeline.types';
+import * as React from 'react';
+import type {
+  StepTimelineLabels,
+  StepTimelineProps,
+  StepTimelineStatus,
+  StepTimelineStep,
+} from './StepTimeline.types';
 import {
   railDotVariants,
   railLineClasses,
@@ -19,13 +24,16 @@ export const DEFAULT_STEP_TIMELINE_LABELS: StepTimelineLabels = {
   runningMore: '{label} + {n} more…',
   waiting: 'Waiting for your approval',
   stopped: 'Stopped while working',
-  done: (count, seconds) => `Used ${count} tool${count === 1 ? '' : 's'}${seconds !== undefined ? ` · ${seconds.toFixed(1)}s` : ''}`,
+  done: (count, seconds) =>
+    `Used ${count} tool${count === 1 ? '' : 's'}${seconds !== undefined ? ` · ${seconds.toFixed(1)}s` : ''}`,
   working: '…',
   parallel: 'parallel',
 };
 
-const labelOf = (step: StepTimelineStep) => (step.state === 'running' ? (step.activeLabel ?? step.label) : step.label);
-const text = (node: React.ReactNode): string => (typeof node === 'string' || typeof node === 'number' ? String(node) : '');
+const labelOf = (step: StepTimelineStep) =>
+  step.state === 'running' ? (step.activeLabel ?? step.label) : step.label;
+const text = (node: React.ReactNode): string =>
+  typeof node === 'string' || typeof node === 'number' ? String(node) : '';
 
 /**
  * Omni StepTimeline: the work a reply did, from plain `steps` (`id`, `icon`, `label`, `detail`, `state`,
@@ -68,14 +76,21 @@ const StepTimelineImpl = React.forwardRef<HTMLDivElement, StepTimelineProps>(
 
     const unfinished = steps.filter((step) => step.state === 'pending' || step.state === 'running');
     const resolved: StepTimelineStatus =
-      status ?? (steps.some((step) => step.state === 'running') ? 'running' : unfinished.length ? 'stopped' : 'done');
+      status ??
+      (steps.some((step) => step.state === 'running')
+        ? 'running'
+        : unfinished.length
+          ? 'stopped'
+          : 'done');
     const working = resolved === 'running' && unfinished.length > 0;
     const firstLabel = text(labelOf(unfinished[0] ?? steps[0]!));
     const line =
       summary ??
       (resolved === 'running' && unfinished.length
         ? unfinished.length > 1
-          ? labels.runningMore.replace('{label}', firstLabel).replace('{n}', String(unfinished.length - 1))
+          ? labels.runningMore
+              .replace('{label}', firstLabel)
+              .replace('{n}', String(unfinished.length - 1))
           : labels.running.replace('{label}', firstLabel)
         : resolved === 'waiting'
           ? labels.waiting
@@ -83,12 +98,21 @@ const StepTimelineImpl = React.forwardRef<HTMLDivElement, StepTimelineProps>(
             ? labels.stopped
             : labels.done(steps.length, seconds));
     const rail = variant === 'rail';
-    const spinner = icons?.spinner ?? <span aria-hidden="true" data-slot="step-timeline-spinner" className={stepSpinnerClasses} />;
+    const spinner = icons?.spinner ?? (
+      <span aria-hidden="true" data-slot="step-timeline-spinner" className={stepSpinnerClasses} />
+    );
 
     const stateIcon = (step: StepTimelineStep) =>
-      step.state === 'running' ? spinner : step.state === 'done' ? icons?.done : step.state === 'failed' ? icons?.failed : null;
+      step.state === 'running'
+        ? spinner
+        : step.state === 'done'
+          ? icons?.done
+          : step.state === 'failed'
+            ? icons?.failed
+            : null;
 
-    const detailOf = (step: StepTimelineStep) => (step.state === 'running' ? labels.working : step.detail);
+    const detailOf = (step: StepTimelineStep) =>
+      step.state === 'running' ? labels.working : step.detail;
 
     return (
       <div
@@ -113,13 +137,22 @@ const StepTimelineImpl = React.forwardRef<HTMLDivElement, StepTimelineProps>(
             {working ? (
               spinner
             ) : resolved === 'done' && icons?.done ? (
-              <span aria-hidden="true" className="inline-flex text-[color:var(--oui-tone-success-fg)]">
+              <span
+                aria-hidden="true"
+                className="inline-flex text-[color:var(--oui-tone-success-fg)]"
+              >
                 {icons.done}
               </span>
             ) : null}
             <span className="min-w-0 truncate">{line}</span>
             {icons?.chevron ? (
-              <span aria-hidden="true" className={cn('inline-flex transition-transform motion-reduce:transition-none', expanded && 'rotate-180')}>
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'inline-flex transition-transform motion-reduce:transition-none',
+                  expanded && 'rotate-180',
+                )}
+              >
                 {icons.chevron}
               </span>
             ) : null}
@@ -127,16 +160,30 @@ const StepTimelineImpl = React.forwardRef<HTMLDivElement, StepTimelineProps>(
         ) : null}
 
         {!rail && expanded ? (
-          <ul id={listId} data-slot="step-timeline-list" className={cn(stepListClasses, 'm-0 list-none')}>
+          <ul
+            id={listId}
+            data-slot="step-timeline-list"
+            className={cn(stepListClasses, 'm-0 list-none')}
+          >
             {steps.map((step) => (
-              <li key={step.id} data-slot="step-timeline-row" data-state={step.state} className={stepRowClasses}>
+              <li
+                key={step.id}
+                data-slot="step-timeline-row"
+                data-state={step.state}
+                className={stepRowClasses}
+              >
                 {step.icon ? (
-                  <span aria-hidden="true" className="inline-flex flex-none text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-4">
+                  <span
+                    aria-hidden="true"
+                    className="inline-flex flex-none text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-4"
+                  >
                     {step.icon}
                   </span>
                 ) : null}
                 <span className="font-medium whitespace-nowrap">{labelOf(step)}</span>
-                <span className="min-w-0 flex-1 truncate text-[color:var(--oui-panel-meta-fg)]">{detailOf(step)}</span>
+                <span className="min-w-0 flex-1 truncate text-[color:var(--oui-panel-meta-fg)]">
+                  {detailOf(step)}
+                </span>
                 {step.parallel ? (
                   <span data-slot="step-timeline-parallel" className={stepParallelClasses}>
                     {labels.parallel}
@@ -160,19 +207,45 @@ const StepTimelineImpl = React.forwardRef<HTMLDivElement, StepTimelineProps>(
         ) : null}
 
         {rail && (working || expanded) ? (
-          <ol id={listId} data-slot="step-timeline-rail" className="m-0 flex list-none flex-col p-0 ps-0.5">
+          <ol
+            id={listId}
+            data-slot="step-timeline-rail"
+            className="m-0 flex list-none flex-col p-0 ps-0.5"
+          >
             {steps.map((step, index) => (
-              <li key={step.id} data-slot="step-timeline-row" data-state={step.state} className="flex gap-2.5">
+              <li
+                key={step.id}
+                data-slot="step-timeline-row"
+                data-state={step.state}
+                className="flex gap-2.5"
+              >
                 <div className="flex w-[18px] flex-none flex-col items-center">
-                  <span data-slot="step-timeline-dot" className={railDotVariants({ state: step.state })}>
+                  <span
+                    data-slot="step-timeline-dot"
+                    className={railDotVariants({ state: step.state })}
+                  >
                     {stateIcon(step)}
                   </span>
-                  {index < steps.length - 1 ? <span aria-hidden="true" data-slot="step-timeline-line" className={railLineClasses} /> : null}
+                  {index < steps.length - 1 ? (
+                    <span
+                      aria-hidden="true"
+                      data-slot="step-timeline-line"
+                      className={railLineClasses}
+                    />
+                  ) : null}
                 </div>
-                <div className={cn('flex min-w-0 flex-1 flex-col', index < steps.length - 1 && 'pb-2.5')}>
+                <div
+                  className={cn(
+                    'flex min-w-0 flex-1 flex-col',
+                    index < steps.length - 1 && 'pb-2.5',
+                  )}
+                >
                   <div className="flex items-center gap-1.5 text-[13px] leading-[18px] font-medium">
                     {step.icon ? (
-                      <span aria-hidden="true" className="inline-flex flex-none text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-3.5">
+                      <span
+                        aria-hidden="true"
+                        className="inline-flex flex-none text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-3.5"
+                      >
                         {step.icon}
                       </span>
                     ) : null}
@@ -183,7 +256,9 @@ const StepTimelineImpl = React.forwardRef<HTMLDivElement, StepTimelineProps>(
                       </span>
                     ) : null}
                   </div>
-                  <div className="text-[12.5px] text-[color:var(--oui-panel-meta-fg)]">{detailOf(step)}</div>
+                  <div className="text-[12.5px] text-[color:var(--oui-panel-meta-fg)]">
+                    {detailOf(step)}
+                  </div>
                 </div>
               </li>
             ))}
@@ -196,6 +271,8 @@ const StepTimelineImpl = React.forwardRef<HTMLDivElement, StepTimelineProps>(
 StepTimelineImpl.displayName = 'StepTimeline';
 
 /** Generic over the step item type, so an extended step keeps its fields in props and slots. */
-export const StepTimeline = StepTimelineImpl as unknown as <T extends StepTimelineStep = StepTimelineStep>(
+export const StepTimeline = StepTimelineImpl as unknown as <
+  T extends StepTimelineStep = StepTimelineStep,
+>(
   props: StepTimelineProps<T> & React.RefAttributes<HTMLDivElement>,
 ) => React.ReactElement | null;

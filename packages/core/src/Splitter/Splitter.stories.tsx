@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Splitter, SplitterPanel } from '@oc-tech/omni-ui-components/Splitter';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Splitter> = {
   title: 'omni-ui-components/Splitter',
@@ -21,7 +20,9 @@ type Story = StoryObj<typeof Splitter>;
 export const Default: Story = {
   render: () => (
     <Splitter className="h-48">
-      <SplitterPanel defaultSize="35%" className="p-4">Left panel</SplitterPanel>
+      <SplitterPanel defaultSize="35%" className="p-4">
+        Left panel
+      </SplitterPanel>
       <SplitterPanel className="p-4">Right panel</SplitterPanel>
     </Splitter>
   ),
@@ -30,8 +31,12 @@ export const Default: Story = {
 export const ThreePanels: Story = {
   render: () => (
     <Splitter className="h-48">
-      <SplitterPanel defaultSize="20%" className="p-4">Nav</SplitterPanel>
-      <SplitterPanel defaultSize="40%" className="p-4">Content</SplitterPanel>
+      <SplitterPanel defaultSize="20%" className="p-4">
+        Nav
+      </SplitterPanel>
+      <SplitterPanel defaultSize="40%" className="p-4">
+        Content
+      </SplitterPanel>
       <SplitterPanel className="p-4">Inspector</SplitterPanel>
     </Splitter>
   ),

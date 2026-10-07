@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { ChevronDown } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
 
 export interface CollapseItem {
   key: React.Key;
@@ -19,7 +18,15 @@ export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   onChange?: (activeKeys: React.Key[]) => void;
 }
 
-export function Collapse({ items, defaultActiveKey, activeKey, accordion, onChange, className, ...props }: CollapseProps) {
+export function Collapse({
+  items,
+  defaultActiveKey,
+  activeKey,
+  accordion,
+  onChange,
+  className,
+  ...props
+}: CollapseProps) {
   const controlled = activeKey !== undefined;
   const [internal, setInternal] = React.useState<React.Key[]>(() => {
     if (defaultActiveKey === undefined) return [];
@@ -28,7 +35,11 @@ export function Collapse({ items, defaultActiveKey, activeKey, accordion, onChan
   const current = controlled ? (Array.isArray(activeKey) ? activeKey : [activeKey]) : internal;
 
   const toggle = (key: React.Key) => {
-    const next = current.includes(key) ? current.filter((value) => value !== key) : accordion ? [key] : [...current, key];
+    const next = current.includes(key)
+      ? current.filter((value) => value !== key)
+      : accordion
+        ? [key]
+        : [...current, key];
     if (!controlled) setInternal(next);
     onChange?.(next);
   };
@@ -84,7 +95,9 @@ export function Collapse({ items, defaultActiveKey, activeKey, accordion, onChan
             </button>
             {open ? (
               <div className="border-t border-[var(--oui-border-field)] bg-background/60 px-4 py-3.5">
-                <div className="font-[family-name:var(--oui-font-sans)] text-sm leading-6 text-[var(--oui-foreground-muted)]">{item.children}</div>
+                <div className="font-[family-name:var(--oui-font-sans)] text-sm leading-6 text-[var(--oui-foreground-muted)]">
+                  {item.children}
+                </div>
               </div>
             ) : null}
           </div>

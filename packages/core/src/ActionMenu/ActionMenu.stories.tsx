@@ -1,10 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { ChevronDown, GraduationCap } from 'lucide-react';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
-
 import { ActionMenu, type ActionMenuProps } from '@oc-tech/omni-ui-components/ActionMenu';
 import { Button } from '@oc-tech/omni-ui-components/Button';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   actionMenuPropsFactory,
   actionMenuVariants,
@@ -17,6 +13,9 @@ import {
   screenPermissionMenu,
   shortcutsMenu,
 } from 'factories/omni-ui-components/ActionMenu/ActionMenu.factories';
+import { ChevronDown, GraduationCap } from 'lucide-react';
+import * as React from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 /** Story-only: top-level action for the notice's fix button. */
 type StoryArgs = ActionMenuProps & { onNoticeAction?: () => void };
@@ -32,21 +31,33 @@ const Renderer: React.FC<StoryArgs> = ({ onNoticeAction, ...props }) => {
     <div className="min-h-[640px] p-6">
       <ActionMenu
         {...props}
-        sections={props.sections.map((section) => ({ ...section, value: values[section.id] ?? section.value }))}
+        sections={props.sections.map((section) => ({
+          ...section,
+          value: values[section.id] ?? section.value,
+        }))}
         onValueChange={(sectionId, itemId) => {
           // A select spanning several groups (answer style) shares one value.
           const owner = props.sections.find((section) => section.id === sectionId);
-          const shared = props.sections.filter((section) => section.items.some((item) => item.id === itemId));
+          const shared = props.sections.filter((section) =>
+            section.items.some((item) => item.id === itemId),
+          );
           setValues((current) => ({
             ...current,
-            ...Object.fromEntries((shared.length ? shared : owner ? [owner] : []).map((s) => [s.id, itemId])),
+            ...Object.fromEntries(
+              (shared.length ? shared : owner ? [owner] : []).map((s) => [s.id, itemId]),
+            ),
             [sectionId]: itemId,
           }));
           props.onValueChange?.(sectionId, itemId);
         }}
         notice={
           notice
-            ? { ...notice, action: notice.action ? { ...notice.action, onSelect: onNoticeAction ?? notice.action.onSelect } : undefined }
+            ? {
+                ...notice,
+                action: notice.action
+                  ? { ...notice.action, onSelect: onNoticeAction ?? notice.action.onSelect }
+                  : undefined,
+              }
             : undefined
         }
       />
@@ -74,8 +85,14 @@ const meta: Meta<StoryArgs> = {
     sideOffset: { control: 'number' },
     collisionPadding: { control: 'number' },
     width: { control: 'text', description: 'px number or any CSS length.' },
-    maxHeight: { control: 'text', description: 'Cap on the height; always also capped to the room left in the viewport.' },
-    portal: { control: 'boolean', description: "Render in a portal (default) or inside the trigger's DOM." },
+    maxHeight: {
+      control: 'text',
+      description: 'Cap on the height; always also capped to the room left in the viewport.',
+    },
+    portal: {
+      control: 'boolean',
+      description: "Render in a portal (default) or inside the trigger's DOM.",
+    },
     modal: { control: 'boolean' },
     returnFocus: {
       control: 'inline-radio',
@@ -85,8 +102,14 @@ const meta: Meta<StoryArgs> = {
     sections: { control: 'object' },
     notice: { control: 'object' },
     hint: { control: 'object' },
-    onSelect: { action: 'row selected', description: "(itemId, item) after the row's own onSelect, once per choice." },
-    onValueChange: { action: 'value changed', description: '(sectionId, itemId) once when a single-select row is chosen.' },
+    onSelect: {
+      action: 'row selected',
+      description: "(itemId, item) after the row's own onSelect, once per choice.",
+    },
+    onValueChange: {
+      action: 'value changed',
+      description: '(sectionId, itemId) once when a single-select row is chosen.',
+    },
     onOpenChange: { action: 'open changed' },
     onNoticeAction: { action: 'notice action', description: 'Story-only: notice.action.onSelect.' },
     trigger: { control: false },
@@ -120,7 +143,8 @@ export const ShortcutsGrouped: Story = {
   parameters: {
     docs: {
       description: {
-        story: '`kind="list"`: a read-only reference list in a Popover dialog; "Clear session memory" is last in the destructive tone.',
+        story:
+          '`kind="list"`: a read-only reference list in a Popover dialog; "Clear session memory" is last in the destructive tone.',
       },
     },
   },
@@ -128,7 +152,13 @@ export const ShortcutsGrouped: Story = {
 
 export const DisabledItemWithReason: Story = {
   args: { ...captureModeMenu },
-  parameters: { docs: { description: { story: '"Add screen to this problem" is disabled and states why in its second line.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: '"Add screen to this problem" is disabled and states why in its second line.',
+      },
+    },
+  },
 };
 
 export const Closed: Story = {
@@ -138,12 +168,19 @@ export const Closed: Story = {
 export const InsideItsOwnRoot: Story = {
   args: { portal: false },
   parameters: {
-    docs: { description: { story: "`portal={false}` keeps the menu in the trigger's DOM (a WKWebView root); `container` targets any element." } },
+    docs: {
+      description: {
+        story:
+          "`portal={false}` keeps the menu in the trigger's DOM (a WKWebView root); `container` targets any element.",
+      },
+    },
   },
 };
 
 /** A select-style menu: the trigger label shows the chosen value; the check moves. */
-const SelectDemo: React.FC<{ onAction?: (name: string, detail?: unknown) => void }> = ({ onAction }) => {
+const SelectDemo: React.FC<{ onAction?: (name: string, detail?: unknown) => void }> = ({
+  onAction,
+}) => {
   const [value, setValue] = React.useState('dsa');
   const label = answerStyleOptions.find((option) => option.id === value)?.label;
   return (
@@ -172,7 +209,13 @@ const SelectDemo: React.FC<{ onAction?: (name: string, detail?: unknown) => void
 };
 
 export const AnswerStyleSelect: Story = {
-  render: (args) => <SelectDemo onAction={(name, detail) => args.onSelect?.(`${name}:${String(detail)}`, { id: String(detail), label: name })} />,
+  render: (args) => (
+    <SelectDemo
+      onAction={(name, detail) =>
+        args.onSelect?.(`${name}:${String(detail)}`, { id: String(detail), label: name })
+      }
+    />
+  ),
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     const trigger = within(canvasElement).getByTestId('select-trigger');
@@ -183,7 +226,10 @@ export const AnswerStyleSelect: Story = {
     await waitFor(() => expect(body.queryByRole('menu')).toBeNull());
     await expect(canvasElement.ownerDocument.activeElement).not.toBe(trigger);
     await userEvent.click(trigger);
-    await expect(await body.findByRole('menuitemradio', { name: 'System Design' })).toHaveAttribute('aria-checked', 'true');
+    await expect(await body.findByRole('menuitemradio', { name: 'System Design' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
     await userEvent.keyboard('{Escape}');
   },
 };
@@ -197,7 +243,13 @@ export const AnswerStyleShortWindow: Story = {
     <iframe
       title="Answer style in a 330px window"
       src="iframe.html?id=omni-ui-components-actionmenu--answer-style-grouped&viewMode=story"
-      style={{ width: 720, height: 330, border: '1px solid var(--oui-border-field)', borderRadius: 12, margin: 24 }}
+      style={{
+        width: 720,
+        height: 330,
+        border: '1px solid var(--oui-border-field)',
+        borderRadius: 12,
+        margin: 24,
+      }}
     />
   ),
 };
@@ -206,7 +258,11 @@ export const Variants: Story = {
   render: () => (
     <div className="flex flex-wrap gap-3 p-8">
       {actionMenuVariants.map((variant) => (
-        <ActionMenu key={variant.name} {...actionMenuPropsFactory(variant.args)} trigger={<Button variant="outline">{variant.name}</Button>} />
+        <ActionMenu
+          key={variant.name}
+          {...actionMenuPropsFactory(variant.args)}
+          trigger={<Button variant="outline">{variant.name}</Button>}
+        />
       ))}
     </div>
   ),

@@ -1,11 +1,8 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
-
-import { CircleStop } from 'lucide-react';
-
 import { ErrorCard, type ErrorCardProps } from '@oc-tech/omni-ui-components/ErrorCard';
+import type { Meta, StoryObj } from '@storybook/react';
 import { errorCardPropsFactory } from 'factories/omni-ui-components/ErrorCard/ErrorCard.factories';
+import { CircleStop } from 'lucide-react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 const meta: Meta<ErrorCardProps> = {
   title: 'omni-ui-components/ErrorCard',

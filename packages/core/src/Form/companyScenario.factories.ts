@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import type { FormFixture } from '@oc-tech/omni-ui-components/Form/Form.types';
+import { z } from 'zod';
 import { NEW_CONTACT_OPTION, SHOWCASE_CONTACTS } from '../../showcase/entities';
 
 /**
@@ -75,8 +74,18 @@ export const companyScenarioZod = z
   })
   .superRefine((data, ctx) => {
     if (data.primaryContactId === NEW_CONTACT_OPTION) {
-      if (!data.primaryContactName.trim()) ctx.addIssue({ code: 'custom', path: ['primaryContactName'], message: 'Contact Name is required' });
-      if (!data.primaryContactEmail.trim()) ctx.addIssue({ code: 'custom', path: ['primaryContactEmail'], message: 'Contact Email is required' });
+      if (!data.primaryContactName.trim())
+        ctx.addIssue({
+          code: 'custom',
+          path: ['primaryContactName'],
+          message: 'Contact Name is required',
+        });
+      if (!data.primaryContactEmail.trim())
+        ctx.addIssue({
+          code: 'custom',
+          path: ['primaryContactEmail'],
+          message: 'Contact Email is required',
+        });
     }
   }) as unknown as z.ZodType<CompanyScenarioFormData>;
 
@@ -85,7 +94,9 @@ export const companyContactOptions = (): { value: string; label: string }[] => [
   ...SHOWCASE_CONTACTS.map((c) => ({ value: c.id, label: c.name })),
 ];
 
-export const companyScenarioFormFactory = (overrides: Partial<CompanyScenarioFormData> = {}): FormFixture<CompanyScenarioFormData> => ({
+export const companyScenarioFormFactory = (
+  overrides: Partial<CompanyScenarioFormData> = {},
+): FormFixture<CompanyScenarioFormData> => ({
   title: 'New Company',
   maxWidth: 'max-w-2xl',
   schema: companyScenarioZod,
@@ -93,10 +104,33 @@ export const companyScenarioFormFactory = (overrides: Partial<CompanyScenarioFor
   rows: [
     [{ name: 'name', label: 'Company Name', placeholder: 'Acme Inc.', required: true }],
     [{ name: 'connectionDomainValue', label: 'Domain', placeholder: 'acme.com' }],
-    [{ name: 'primaryContactId', label: 'Primary Contact', type: 'select', placeholder: 'Select or create a contact…', options: companyContactOptions() }],
+    [
+      {
+        name: 'primaryContactId',
+        label: 'Primary Contact',
+        type: 'select',
+        placeholder: 'Select or create a contact…',
+        options: companyContactOptions(),
+      },
+    ],
     [{ name: 'primaryContactName', label: 'Name', placeholder: 'Contact Name', required: true }],
-    [{ name: 'primaryContactEmail', label: 'Email', placeholder: 'Email', required: true, type: 'email' }],
-    [{ name: 'primaryContactPhoneNumber', label: 'Phone Number', placeholder: '(123) 456-7890', type: 'phone' }],
+    [
+      {
+        name: 'primaryContactEmail',
+        label: 'Email',
+        placeholder: 'Email',
+        required: true,
+        type: 'email',
+      },
+    ],
+    [
+      {
+        name: 'primaryContactPhoneNumber',
+        label: 'Phone Number',
+        placeholder: '(123) 456-7890',
+        type: 'phone',
+      },
+    ],
     [{ name: 'primaryContactRole', label: 'Job Title', placeholder: 'Manager' }],
     /* avatarUrl / description / linkedin / instagram / twitter / facebook /
      * industry / companySize / source are accepted by the API but the

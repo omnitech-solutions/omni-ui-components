@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import type * as React from 'react';
 
 export interface AnchorItem {
   key?: React.Key;
@@ -15,7 +14,11 @@ export interface AnchorProps extends React.HTMLAttributes<HTMLElement> {
 export const Anchor = ({ items, className, ...props }: AnchorProps) => (
   <nav className={cn('space-y-2 text-sm', className)} {...props}>
     {items.map((item, index) => (
-      <a key={item.key ?? index} href={item.href} className="block text-muted-foreground transition-colors hover:text-foreground">
+      <a
+        key={item.key ?? index}
+        href={item.href}
+        className="block text-muted-foreground transition-colors hover:text-foreground"
+      >
         {item.title}
       </a>
     ))}

@@ -1,19 +1,41 @@
-import type { DynamicFormFixture } from './DynamicForm.factories';
 import type { OmniSelectOption } from '../../../../dynamic-form/lib/formContext';
-import { NEW_CONTACT_OPTION, SHOWCASE_CONTACTS } from '../../../showcase/entities';
 import { selectOptions } from '../../../helpers/optionMappers';
-import { companyScenarioInitial, companyScenarioZod, type CompanyScenarioFormData } from '../../Form/companyScenario.factories';
+import { NEW_CONTACT_OPTION, SHOWCASE_CONTACTS } from '../../../showcase/entities';
+import {
+  type CompanyScenarioFormData,
+  companyScenarioInitial,
+  companyScenarioZod,
+} from '../../Form/companyScenario.factories';
+import type { DynamicFormFixture } from './DynamicForm.factories';
 
 export type { CompanyScenarioFormData };
 export { NEW_CONTACT_OPTION };
 export type CompanyScenarioDerived = Record<string, string>;
 
 const CONTACT_OPTIONS: OmniSelectOption[] = [
-  { value: NEW_CONTACT_OPTION, label: '+ New Contact', description: null, initials: '+', color: null, avatarUrl: null, group: null, disabled: false },
-  ...selectOptions(SHOWCASE_CONTACTS, { value: 'id', label: 'name', description: 'email', initials: 'initials', avatarUrl: 'avatarUrl' }),
+  {
+    value: NEW_CONTACT_OPTION,
+    label: '+ New Contact',
+    description: null,
+    initials: '+',
+    color: null,
+    avatarUrl: null,
+    group: null,
+    disabled: false,
+  },
+  ...selectOptions(SHOWCASE_CONTACTS, {
+    value: 'id',
+    label: 'name',
+    description: 'email',
+    initials: 'initials',
+    avatarUrl: 'avatarUrl',
+  }),
 ];
 
-export const companyScenarioFixture = (): DynamicFormFixture<CompanyScenarioFormData, CompanyScenarioDerived> => ({
+export const companyScenarioFixture = (): DynamicFormFixture<
+  CompanyScenarioFormData,
+  CompanyScenarioDerived
+> => ({
   schema: {
     type: 'object',
     required: ['name'],
@@ -39,8 +61,15 @@ export const companyScenarioFixture = (): DynamicFormFixture<CompanyScenarioForm
     dependencies: {
       primaryContactId: {
         oneOf: [
-          { properties: { primaryContactId: { type: 'string', enum: [NEW_CONTACT_OPTION] } }, required: ['primaryContactName', 'primaryContactEmail'] },
-          { properties: { primaryContactId: { type: 'string', not: { enum: [NEW_CONTACT_OPTION] } } } },
+          {
+            properties: { primaryContactId: { type: 'string', enum: [NEW_CONTACT_OPTION] } },
+            required: ['primaryContactName', 'primaryContactEmail'],
+          },
+          {
+            properties: {
+              primaryContactId: { type: 'string', not: { enum: [NEW_CONTACT_OPTION] } },
+            },
+          },
         ],
       },
     },
@@ -57,7 +86,10 @@ export const companyScenarioFixture = (): DynamicFormFixture<CompanyScenarioForm
     ],
     name: { 'ui:widget': 'text', 'ui:placeholder': 'Acme Inc.' },
     connectionDomainValue: { 'ui:widget': 'text', 'ui:placeholder': 'acme.com' },
-    primaryContactId: { 'ui:widget': 'combobox', 'ui:options': { optionSetKey: 'contacts', placeholder: 'Select or create a contact…' } },
+    primaryContactId: {
+      'ui:widget': 'combobox',
+      'ui:options': { optionSetKey: 'contacts', placeholder: 'Select or create a contact…' },
+    },
     primaryContactName: { 'ui:widget': 'text', 'ui:placeholder': 'Contact Name' },
     primaryContactEmail: { 'ui:widget': 'text', 'ui:placeholder': 'Email' },
     primaryContactPhoneNumber: { 'ui:widget': 'phone', 'ui:placeholder': '(123) 456-7890' },

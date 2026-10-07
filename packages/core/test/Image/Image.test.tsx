@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Image } from '@oc-tech/omni-ui-components/Image';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/Image', () => {
   it('renders image element', () => {

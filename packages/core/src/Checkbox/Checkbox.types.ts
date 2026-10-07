@@ -1,7 +1,6 @@
-import * as React from 'react';
-
-import type { RootProps } from '../lib';
+import type * as React from 'react';
 import type { FieldLayoutProps } from '../Input/Input.variants';
+import type { RootProps } from '../lib';
 
 export interface CheckboxOption {
   value: string;

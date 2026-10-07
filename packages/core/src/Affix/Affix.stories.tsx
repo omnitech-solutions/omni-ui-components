@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Affix } from '@oc-tech/omni-ui-components/Affix';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Affix> = {
   title: 'omni-ui-components/Affix',

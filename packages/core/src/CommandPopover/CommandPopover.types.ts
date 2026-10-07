@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** One row of the popover: a slash command or an `@` surface. */
 export interface CommandItem {
@@ -27,7 +27,8 @@ export const DEFAULT_COMMAND_POPOVER_LABELS: CommandPopoverLabels = {
 /** Hint line of the slash popover in the original: `↑↓ navigate · ⏎ select · esc close`. */
 export const DEFAULT_COMMAND_HINT = '↑↓ navigate · ⏎ select · esc close';
 
-export interface CommandPopoverProps<T extends CommandItem = CommandItem> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onSelect' | 'title'> {
+export interface CommandPopoverProps<T extends CommandItem = CommandItem>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onSelect' | 'title'> {
   /** The rows. Extend `CommandItem` with your own fields: `onSelect` hands the same object back. */
   items: readonly T[];
   /** Index of the highlighted row (`aria-selected`). Default 0. */
@@ -82,9 +83,15 @@ export interface CommandTrigger<T extends CommandItem = CommandItem> {
   /** Filter for an array `source`. Default: the label contains the query (case-insensitive). */
   filter?: (item: T, query: string) => boolean;
   /** Called with the chosen row. `draft` is the text at that moment and `match` the trigger's regexp match. */
-  onPick: (item: T, context: { draft: string; query: string; match: RegExpExecArray }) => void | Promise<void>;
+  onPick: (
+    item: T,
+    context: { draft: string; query: string; match: RegExpExecArray },
+  ) => void | Promise<void>;
   /** Props handed to the popover for this trigger (label, title, hint, prefix, empty behaviour). */
-  popover: Pick<CommandPopoverProps<T>, 'label' | 'title' | 'hint' | 'labelPrefix' | 'hideWhenEmpty' | 'labels'>;
+  popover: Pick<
+    CommandPopoverProps<T>,
+    'label' | 'title' | 'hint' | 'labelPrefix' | 'hideWhenEmpty' | 'labels'
+  >;
 }
 
 export interface UseCommandTriggerOptions<T extends CommandItem = CommandItem> {

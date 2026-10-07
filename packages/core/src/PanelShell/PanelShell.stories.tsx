@@ -1,9 +1,11 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
 import { PanelShell, type PanelShellProps } from '@oc-tech/omni-ui-components/PanelShell';
-import { ChatShellDemo, panelShellPropsFactory, panelShellVariants } from 'factories/omni-ui-components/PanelShell/PanelShell.factories';
+import type { Meta, StoryObj } from '@storybook/react';
+import {
+  ChatShellDemo,
+  panelShellPropsFactory,
+  panelShellVariants,
+} from 'factories/omni-ui-components/PanelShell/PanelShell.factories';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta<PanelShellProps> = {
   title: 'omni-ui-components/PanelShell',
@@ -18,15 +20,28 @@ const meta: Meta<PanelShellProps> = {
       },
     },
   },
-  args: { ...panelShellPropsFactory(panelShellVariants[0].args), onOpenChange: fn(), onSidebarOpenChange: fn() },
+  args: {
+    ...panelShellPropsFactory(panelShellVariants[0].args),
+    onOpenChange: fn(),
+    onSidebarOpenChange: fn(),
+  },
   argTypes: {
     mode: { control: 'inline-radio', options: ['panel', 'full'] },
     width: { control: 'number', description: 'Panel width (px or CSS length). Default 440.' },
-    open: { control: 'boolean', description: 'Whether the assistant is shown. Closed in panel mode leaves the host.' },
+    open: {
+      control: 'boolean',
+      description: 'Whether the assistant is shown. Closed in panel mode leaves the host.',
+    },
     sidebarMode: { control: 'inline-radio', options: ['docked', 'overlay'] },
-    sidebarOpen: { control: 'boolean', description: 'Overlay mode: whether the sidebar is showing.' },
+    sidebarOpen: {
+      control: 'boolean',
+      description: 'Overlay mode: whether the sidebar is showing.',
+    },
     sidebarWidth: { control: 'number', description: 'Sidebar width. Default 260.' },
-    closeOnEscape: { control: 'boolean', description: 'Escape in the panel closes it through `onOpenChange`.' },
+    closeOnEscape: {
+      control: 'boolean',
+      description: 'Escape in the panel closes it through `onOpenChange`.',
+    },
     label: { control: 'text', description: 'Accessible name of the region. Default `Chat`.' },
     onOpenChange: { action: 'open change' },
     onSidebarOpenChange: { action: 'sidebar open change' },
@@ -77,9 +92,13 @@ export const ChatShell: Story = {
     await userEvent.click(canvas.getByRole('button', { name: /Conversations/ }));
     expect(await canvas.findByRole('navigation', { name: 'Conversations' })).toBeInTheDocument();
     await userEvent.click(canvas.getByRole('button', { name: 'Debounce vs throttle' }));
-    await waitFor(() => expect(canvas.queryByRole('navigation', { name: 'Conversations' })).not.toBeInTheDocument());
+    await waitFor(() =>
+      expect(canvas.queryByRole('navigation', { name: 'Conversations' })).not.toBeInTheDocument(),
+    );
     await userEvent.click(canvas.getByRole('button', { name: 'Settings' }));
-    expect(await within(document.body).findByRole('dialog', { name: 'Settings' })).toBeInTheDocument();
+    expect(
+      await within(document.body).findByRole('dialog', { name: 'Settings' }),
+    ).toBeInTheDocument();
     await userEvent.keyboard('{Escape}');
   },
 };

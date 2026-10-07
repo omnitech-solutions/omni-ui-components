@@ -1,13 +1,23 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
+
+import { Stepper, type StepperProps } from '@oc-tech/omni-ui-components/Stepper';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileText } from 'lucide-react';
 
-import { Stepper, type StepperProps } from '@oc-tech/omni-ui-components/Stepper';
-
 const renderStepper = (overrides: Partial<StepperProps> = {}) =>
-  render(<Stepper data-testid="s" label="Number of pages" icon={<FileText />} unit="page" min={1} max={50} value={7} {...overrides} />);
+  render(
+    <Stepper
+      data-testid="s"
+      label="Number of pages"
+      icon={<FileText />}
+      unit="page"
+      min={1}
+      max={50}
+      value={7}
+      {...overrides}
+    />,
+  );
 
 describe('omni-ui-components/Stepper', () => {
   describe('shape', () => {

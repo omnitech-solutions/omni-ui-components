@@ -1,9 +1,8 @@
+import type { RJSFSchema, UiSchema } from '@rjsf/utils';
 import { z } from 'zod';
-import type { UiSchema, RJSFSchema } from '@rjsf/utils';
-
-import type { DynamicFormFixture, FormFixture } from '../../DynamicForm/DynamicForm.factories';
-import { SHOWCASE_EXPENSE_CATEGORIES, SHOWCASE_TAX_RATES } from '../../../../showcase/entities';
 import { selectOptions } from '../../../../helpers/optionMappers';
+import { SHOWCASE_EXPENSE_CATEGORIES, SHOWCASE_TAX_RATES } from '../../../../showcase/entities';
+import type { DynamicFormFixture, FormFixture } from '../../DynamicForm/DynamicForm.factories';
 
 export interface CountryFormData {
   country: string;
@@ -37,14 +36,18 @@ const COUNTRY_ZOD_REQUIRED = z.object({
   country: z.string().min(1, 'Pick a country'),
 }) as unknown as z.ZodType<CountryFormData>;
 
-const fixtureFor = (uiSchema: UiSchema, opts: { initial?: string; required?: boolean } = {}): FormFixture<CountryFormData> => ({
+const fixtureFor = (
+  uiSchema: UiSchema,
+  opts: { initial?: string; required?: boolean } = {},
+): FormFixture<CountryFormData> => ({
   schema: COUNTRY_SCHEMA,
   uiSchema,
   zodSchema: opts.required ? COUNTRY_ZOD_REQUIRED : COUNTRY_ZOD,
   defaults: { country: opts.initial ?? '' },
 });
 
-export const plainCountryFixture = (): FormFixture<CountryFormData> => fixtureFor({ country: { 'ui:widget': 'select' } });
+export const plainCountryFixture = (): FormFixture<CountryFormData> =>
+  fixtureFor({ country: { 'ui:widget': 'select' } });
 
 export const placeholderCountryFixture = (): FormFixture<CountryFormData> =>
   fixtureFor({ country: { 'ui:widget': 'select', 'ui:placeholder': 'Pick a country' } });
@@ -57,9 +60,11 @@ export const descriptionCountryFixture = (): FormFixture<CountryFormData> =>
     },
   });
 
-export const prefilledCountryFixture = (): FormFixture<CountryFormData> => fixtureFor({ country: { 'ui:widget': 'select' } }, { initial: 'CA' });
+export const prefilledCountryFixture = (): FormFixture<CountryFormData> =>
+  fixtureFor({ country: { 'ui:widget': 'select' } }, { initial: 'CA' });
 
-export const validationCountryFixture = (): FormFixture<CountryFormData> => fixtureFor({ country: { 'ui:widget': 'select' } }, { required: true });
+export const validationCountryFixture = (): FormFixture<CountryFormData> =>
+  fixtureFor({ country: { 'ui:widget': 'select' } }, { required: true });
 
 export const searchableCountryFixture = (): FormFixture<CountryFormData> =>
   fixtureFor({ country: { 'ui:widget': 'select', 'ui:options': { searchable: true } } });
@@ -81,14 +86,28 @@ const CATEGORY_SCHEMA: RJSFSchema = {
 
 const CATEGORY_ZOD = z.object({ category: z.string() }) as unknown as z.ZodType<CategoryFormData>;
 
-export const groupedSelectFixture = (): DynamicFormFixture<CategoryFormData, Record<string, string>> => ({
+export const groupedSelectFixture = (): DynamicFormFixture<
+  CategoryFormData,
+  Record<string, string>
+> => ({
   schema: CATEGORY_SCHEMA,
-  uiSchema: { category: { 'ui:widget': 'select', 'ui:options': { optionSetKey: 'categories', searchable: true } } },
+  uiSchema: {
+    category: {
+      'ui:widget': 'select',
+      'ui:options': { optionSetKey: 'categories', searchable: true },
+    },
+  },
   zodSchema: CATEGORY_ZOD,
   defaults: { category: '' },
   derive: () => ({}),
   formContext: {
-    optionSets: { categories: selectOptions(SHOWCASE_EXPENSE_CATEGORIES, { value: 'id', label: 'label', group: 'group' }) },
+    optionSets: {
+      categories: selectOptions(SHOWCASE_EXPENSE_CATEGORIES, {
+        value: 'id',
+        label: 'label',
+        group: 'group',
+      }),
+    },
     actions: {},
     locale: 'en-GB',
   },
@@ -106,15 +125,35 @@ const TAX_RATE_SCHEMA: RJSFSchema = {
 
 const TAX_RATE_ZOD = z.object({ taxRateId: z.string() }) as unknown as z.ZodType<TaxRateFormData>;
 
-export const withFooterActionSelectFixture = (): DynamicFormFixture<TaxRateFormData, Record<string, string>> => ({
+export const withFooterActionSelectFixture = (): DynamicFormFixture<
+  TaxRateFormData,
+  Record<string, string>
+> => ({
   schema: TAX_RATE_SCHEMA,
-  uiSchema: { taxRateId: { 'ui:widget': 'select', 'ui:options': { optionSetKey: 'taxRates', footerActionKey: 'manageTaxRates' } } },
+  uiSchema: {
+    taxRateId: {
+      'ui:widget': 'select',
+      'ui:options': { optionSetKey: 'taxRates', footerActionKey: 'manageTaxRates' },
+    },
+  },
   zodSchema: TAX_RATE_ZOD,
   defaults: { taxRateId: '' },
   derive: () => ({}),
   formContext: {
-    optionSets: { taxRates: selectOptions(SHOWCASE_TAX_RATES, { value: 'id', label: 'label', group: () => 'SET TAX' }) },
-    actions: { manageTaxRates: { label: 'Manage Tax Rates', href: '/settings/tax_rates', actionId: 'manageTaxRates' } },
+    optionSets: {
+      taxRates: selectOptions(SHOWCASE_TAX_RATES, {
+        value: 'id',
+        label: 'label',
+        group: () => 'SET TAX',
+      }),
+    },
+    actions: {
+      manageTaxRates: {
+        label: 'Manage Tax Rates',
+        href: '/settings/tax_rates',
+        actionId: 'manageTaxRates',
+      },
+    },
     locale: 'en-GB',
   },
 });

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Affix } from '@oc-tech/omni-ui-components/Affix';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/Affix', () => {
   it('renders children and sticky positioning', () => {

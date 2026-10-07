@@ -1,6 +1,5 @@
-import { Code, Lightbulb, MessageSquare } from 'lucide-react';
-
 import type { SegmentedOption, SegmentedProps } from '@oc-tech/omni-ui-components/Segmented';
+import { Code, Lightbulb, MessageSquare } from 'lucide-react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 export const SAMPLE_TONES: SegmentedOption[] = [
@@ -28,7 +27,10 @@ export const segmentedVariants: Variant<SegmentedProps>[] = [
   { name: 'Empty', args: { label: 'Empty', value: '' } },
   { name: 'Required', args: { label: 'Required', required: true, value: '' } },
   { name: 'Disabled', args: { label: 'Disabled', disabled: true, value: 'casual' } },
-  { name: 'Invalid', args: { label: 'Invalid', error: 'Pick a tone before continuing', required: true, value: '' } },
+  {
+    name: 'Invalid',
+    args: { label: 'Invalid', error: 'Pick a tone before continuing', required: true, value: '' },
+  },
 ];
 
 /** Panel toggles of the Native App toolbar: icon-only options in the control appearance. */
@@ -42,7 +44,13 @@ export const SAMPLE_PANELS: SegmentedOption[] = [
 export const segmentedControlVariants: Variant<SegmentedProps>[] = [
   {
     name: 'Control, multiple (all on)',
-    args: { label: 'Control, multiple', mode: 'multiple', appearance: 'control', options: SAMPLE_PANELS, value: ['chat', 'answer', 'code'] },
+    args: {
+      label: 'Control, multiple',
+      mode: 'multiple',
+      appearance: 'control',
+      options: SAMPLE_PANELS,
+      value: ['chat', 'answer', 'code'],
+    },
   },
   {
     name: 'Control, last one locked',
@@ -72,9 +80,21 @@ export const segmentedControlVariants: Variant<SegmentedProps>[] = [
       label: 'Control, disabledReason',
       mode: 'multiple',
       appearance: 'control',
-      options: SAMPLE_PANELS.map((option) => (option.value === 'code' ? { ...option, disabledReason: 'Starts after the approach' } : option)),
+      options: SAMPLE_PANELS.map((option) =>
+        option.value === 'code'
+          ? { ...option, disabledReason: 'Starts after the approach' }
+          : option,
+      ),
       value: ['chat'],
     },
   },
-  { name: 'Control, single', args: { label: 'Control, single', appearance: 'control', options: SAMPLE_PANELS, value: 'answer' } },
+  {
+    name: 'Control, single',
+    args: {
+      label: 'Control, single',
+      appearance: 'control',
+      options: SAMPLE_PANELS,
+      value: 'answer',
+    },
+  },
 ];

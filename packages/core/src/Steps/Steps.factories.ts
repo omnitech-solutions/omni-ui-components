@@ -1,7 +1,11 @@
-import type { StepItem, StepsProps } from './Steps';
 import type { Variant } from '../internal/support/makeFactory';
+import type { StepItem, StepsProps } from './Steps';
 
-export const stepsFixture = (): StepItem[] => [{ title: 'First' }, { title: 'Second' }, { title: 'Complete' }];
+export const stepsFixture = (): StepItem[] => [
+  { title: 'First' },
+  { title: 'Second' },
+  { title: 'Complete' },
+];
 
 /** Build `<Steps>` props for standalone stories and tests. */
 export const stepsPropsFactory = (overrides: Partial<StepsProps> = {}): StepsProps => ({
@@ -22,10 +26,16 @@ export const stepsVariants: Variant<StepsProps>[] = [
   { name: 'Checklist, analysing', args: { variant: 'checklist', items: stepsChecklistItems() } },
   {
     name: 'Checklist, all pending',
-    args: { variant: 'checklist', items: stepsChecklistItems().map((item) => ({ ...item, state: 'pending' as const })) },
+    args: {
+      variant: 'checklist',
+      items: stepsChecklistItems().map((item) => ({ ...item, state: 'pending' as const })),
+    },
   },
   {
     name: 'Checklist, all done',
-    args: { variant: 'checklist', items: stepsChecklistItems().map((item) => ({ ...item, state: 'done' as const })) },
+    args: {
+      variant: 'checklist',
+      items: stepsChecklistItems().map((item) => ({ ...item, state: 'done' as const })),
+    },
   },
 ];

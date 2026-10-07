@@ -1,33 +1,46 @@
-import * as React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-import { Check, CircleAlert } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Check, CircleAlert } from 'lucide-react';
+import * as React from 'react';
 import { resolvePortalContainer, surfaceProps } from '../internal/support/PortalContainer';
-import type { ActionMenuHint, ActionMenuItem, ActionMenuNotice, ActionMenuProps, ActionMenuSection } from './ActionMenu.types';
+import type {
+  ActionMenuHint,
+  ActionMenuItem,
+  ActionMenuNotice,
+  ActionMenuProps,
+  ActionMenuSection,
+} from './ActionMenu.types';
 
 const SURFACE =
   'z-50 box-border flex flex-col overflow-hidden rounded-xl border border-[color:var(--oui-tone-neutral-border)] bg-[var(--oui-surface-field)] p-1.5 text-[var(--oui-foreground)] shadow-xl outline-none font-[family-name:var(--oui-font-sans)]';
-const ROW = 'relative box-border flex cursor-default select-none items-start gap-2 rounded-[7px] px-2.5 text-[13.5px] outline-none';
+const ROW =
+  'relative box-border flex cursor-default select-none items-start gap-2 rounded-[7px] px-2.5 text-[13.5px] outline-none';
 const ROW_INTERACTIVE =
   'transition-colors data-[highlighted]:bg-muted/50 data-[disabled]:cursor-not-allowed data-[disabled]:text-[var(--oui-foreground-muted)] data-[disabled]:opacity-70';
 const CHECKED_TINT = 'bg-[color-mix(in_srgb,var(--oui-tone-accent-solid-bg)_10%,transparent)]';
 const MONO = 'font-mono';
 
 /** Distinct rule for the fixed leading column: a check mark, or the row's icon, or empty space of the same width. */
-const hasLeadingColumn = (items: ActionMenuItem[]) => items.some((item) => item.checked !== undefined || item.icon !== undefined);
+const hasLeadingColumn = (items: ActionMenuItem[]) =>
+  items.some((item) => item.checked !== undefined || item.icon !== undefined);
 
 const resolveSelection = (section: ActionMenuSection): 'single' | 'multiple' | 'none' =>
-  section.selection ?? (section.items.some((item) => item.checked !== undefined) ? 'single' : 'none');
+  section.selection ??
+  (section.items.some((item) => item.checked !== undefined) ? 'single' : 'none');
 
 /** Fold a section's controlled `value` into per-row `checked`. */
 const withValue = (section: ActionMenuSection): ActionMenuSection =>
   section.value === undefined
     ? section
-    : { ...section, selection: section.selection ?? 'single', items: section.items.map((item) => ({ ...item, checked: item.id === section.value })) };
+    : {
+        ...section,
+        selection: section.selection ?? 'single',
+        items: section.items.map((item) => ({ ...item, checked: item.id === section.value })),
+      };
 
-const cssLength = (value: number | string | undefined) => (typeof value === 'number' ? `${value}px` : value);
+const cssLength = (value: number | string | undefined) =>
+  typeof value === 'number' ? `${value}px` : value;
 
 /** The inside of one row: leading column, label (+ description or reason), shortcut. */
 const RowBody: React.FC<{ item: ActionMenuItem; column: boolean }> = ({ item, column }) => {
@@ -49,13 +62,22 @@ const RowBody: React.FC<{ item: ActionMenuItem; column: boolean }> = ({ item, co
       <span className="min-w-0 flex-1 leading-[1.35]">
         <span className={cn('block truncate', second ? 'font-medium' : '')}>{item.label}</span>
         {second ? (
-          <span data-slot="action-menu-description" className="block text-[12px] font-normal text-[var(--oui-foreground-muted)]">
+          <span
+            data-slot="action-menu-description"
+            className="block text-[12px] font-normal text-[var(--oui-foreground-muted)]"
+          >
             {second}
           </span>
         ) : null}
       </span>
       {item.shortcut?.length ? (
-        <span data-slot="action-menu-shortcut" className={cn('ml-auto shrink-0 pl-3 pt-px text-[11.5px] text-[var(--oui-foreground-muted)]', MONO)}>
+        <span
+          data-slot="action-menu-shortcut"
+          className={cn(
+            'ml-auto shrink-0 pl-3 pt-px text-[11.5px] text-[var(--oui-foreground-muted)]',
+            MONO,
+          )}
+        >
           {item.shortcut.join('')}
         </span>
       ) : null}
@@ -63,7 +85,8 @@ const RowBody: React.FC<{ item: ActionMenuItem; column: boolean }> = ({ item, co
   );
 };
 
-const rowTone = (item: ActionMenuItem) => (item.tone === 'danger' ? 'text-[color:var(--oui-tone-danger-fg)]' : '');
+const rowTone = (item: ActionMenuItem) =>
+  item.tone === 'danger' ? 'text-[color:var(--oui-tone-danger-fg)]' : '';
 
 const SectionLabel: React.FC<{ section: ActionMenuSection }> = ({ section }) =>
   section.label ? (
@@ -71,7 +94,9 @@ const SectionLabel: React.FC<{ section: ActionMenuSection }> = ({ section }) =>
       data-slot="action-menu-label"
       className={cn(
         'px-2.5 text-[var(--oui-foreground-muted)]',
-        section.labelStyle === 'caps' ? 'pt-2 pb-[3px] text-[11px] uppercase tracking-[0.05em]' : 'pt-1.5 pb-1 text-[11.5px]',
+        section.labelStyle === 'caps'
+          ? 'pt-2 pb-[3px] text-[11px] uppercase tracking-[0.05em]'
+          : 'pt-1.5 pb-1 text-[11.5px]',
       )}
     >
       {section.label}
@@ -82,7 +107,11 @@ const sectionHasDivider = (section: ActionMenuSection, index: number) =>
   index > 0 && (section.divider ?? !(section.labelStyle === 'caps' && section.label));
 
 const Divider: React.FC = () => (
-  <div role="separator" data-slot="action-menu-divider" className="mx-1.5 my-1 h-px bg-[color:var(--oui-tone-neutral-border)]" />
+  <div
+    role="separator"
+    data-slot="action-menu-divider"
+    className="mx-1.5 my-1 h-px bg-[color:var(--oui-tone-neutral-border)]"
+  />
 );
 
 const NoticeBlock: React.FC<{
@@ -110,7 +139,10 @@ const NoticeBlock: React.FC<{
         borderColor: `color-mix(in srgb, var(--oui-tone-${tone}-border) 65%, transparent)`,
       }}
     >
-      <span aria-hidden="true" className="mt-px flex size-[17px] shrink-0 items-center justify-center [&_svg]:size-[17px]">
+      <span
+        aria-hidden="true"
+        className="mt-px flex size-[17px] shrink-0 items-center justify-center [&_svg]:size-[17px]"
+      >
         {notice.icon ?? <CircleAlert />}
       </span>
       <span className="min-w-0 flex-1 leading-[1.35]">
@@ -128,11 +160,22 @@ const NoticeBlock: React.FC<{
       </span>
       {action ? (
         interactive ? (
-          <DropdownMenuPrimitive.Item data-slot="action-menu-notice-action" className={actionClass} style={actionStyle} onSelect={onAction}>
+          <DropdownMenuPrimitive.Item
+            data-slot="action-menu-notice-action"
+            className={actionClass}
+            style={actionStyle}
+            onSelect={onAction}
+          >
             {action.label}
           </DropdownMenuPrimitive.Item>
         ) : (
-          <button type="button" data-slot="action-menu-notice-action" className={actionClass} style={actionStyle} onClick={onAction}>
+          <button
+            type="button"
+            data-slot="action-menu-notice-action"
+            className={actionClass}
+            style={actionStyle}
+            onClick={onAction}
+          >
             {action.label}
           </button>
         )
@@ -188,7 +231,11 @@ const MenuSection: React.FC<{
     }
     if (selection === 'multiple') {
       return (
-        <DropdownMenuPrimitive.CheckboxItem key={item.id} {...common} checked={Boolean(item.checked)}>
+        <DropdownMenuPrimitive.CheckboxItem
+          key={item.id}
+          {...common}
+          checked={Boolean(item.checked)}
+        >
           {body}
         </DropdownMenuPrimitive.CheckboxItem>
       );
@@ -205,12 +252,21 @@ const MenuSection: React.FC<{
     <>
       {sectionHasDivider(section, index) ? <Divider /> : null}
       {selection === 'single' ? (
-        <DropdownMenuPrimitive.RadioGroup value={checkedId} aria-label={section.label} data-slot="action-menu-section" data-section-id={section.id}>
+        <DropdownMenuPrimitive.RadioGroup
+          value={checkedId}
+          aria-label={section.label}
+          data-slot="action-menu-section"
+          data-section-id={section.id}
+        >
           <SectionLabel section={section} />
           {rows}
         </DropdownMenuPrimitive.RadioGroup>
       ) : (
-        <DropdownMenuPrimitive.Group aria-label={section.label} data-slot="action-menu-section" data-section-id={section.id}>
+        <DropdownMenuPrimitive.Group
+          aria-label={section.label}
+          data-slot="action-menu-section"
+          data-section-id={section.id}
+        >
           <SectionLabel section={section} />
           {rows}
         </DropdownMenuPrimitive.Group>
@@ -220,16 +276,26 @@ const MenuSection: React.FC<{
 };
 
 /** Read-only reference list: no selection, no menu roles. */
-const ListSection: React.FC<{ section: ActionMenuSection; index: number }> = ({ section, index }) => (
+const ListSection: React.FC<{ section: ActionMenuSection; index: number }> = ({
+  section,
+  index,
+}) => (
   <>
     {sectionHasDivider(section, index) ? <Divider /> : null}
-    <div role="group" aria-label={section.label} data-slot="action-menu-section" data-section-id={section.id}>
+    <div
+      role="group"
+      aria-label={section.label}
+      data-slot="action-menu-section"
+      data-section-id={section.id}
+    >
       {section.label ? (
         <div
           data-slot="action-menu-label"
           className={cn(
             'px-2.5 text-[var(--oui-foreground-muted)]',
-            section.labelStyle === 'caps' ? 'pt-2 pb-[3px] text-[11px] uppercase tracking-[0.05em]' : 'pt-1.5 pb-1 text-[11.5px]',
+            section.labelStyle === 'caps'
+              ? 'pt-2 pb-[3px] text-[11px] uppercase tracking-[0.05em]'
+              : 'pt-1.5 pb-1 text-[11.5px]',
           )}
         >
           {section.label}
@@ -241,13 +307,20 @@ const ListSection: React.FC<{ section: ActionMenuSection; index: number }> = ({ 
           data-slot="action-menu-item"
           data-item-id={item.id}
           data-tone={item.tone}
-          className={cn('flex items-center justify-between gap-3 rounded-[7px] px-2.5 py-[5px] text-[13px]', rowTone(item))}
+          className={cn(
+            'flex items-center justify-between gap-3 rounded-[7px] px-2.5 py-[5px] text-[13px]',
+            rowTone(item),
+          )}
         >
           <span className="min-w-0 truncate">{item.label}</span>
           {item.shortcut?.length ? (
             <kbd
               data-slot="action-menu-shortcut"
-              className={cn('shrink-0 text-[11.5px] font-normal', MONO, item.tone === 'danger' ? '' : 'text-[var(--oui-foreground-muted)]')}
+              className={cn(
+                'shrink-0 text-[11.5px] font-normal',
+                MONO,
+                item.tone === 'danger' ? '' : 'text-[var(--oui-foreground-muted)]',
+              )}
             >
               {item.shortcut.join('')}
             </kbd>
@@ -307,11 +380,16 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
   'data-testid': testId,
 }) => {
   const listKind = kind === 'list';
-  const availableHeight = listKind ? 'var(--radix-popover-content-available-height)' : 'var(--radix-dropdown-menu-content-available-height)';
+  const availableHeight = listKind
+    ? 'var(--radix-popover-content-available-height)'
+    : 'var(--radix-dropdown-menu-content-available-height)';
   const style: React.CSSProperties = {
     width: cssLength(width),
     maxWidth: 'calc(100vw - 16px)',
-    maxHeight: maxHeight !== undefined ? `min(${cssLength(maxHeight)}, ${availableHeight})` : availableHeight,
+    maxHeight:
+      maxHeight !== undefined
+        ? `min(${cssLength(maxHeight)}, ${availableHeight})`
+        : availableHeight,
   };
   const contentClass = cn(SURFACE, className);
   const placement = { side, align, sideOffset, collisionPadding } as const;
@@ -348,10 +426,18 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
 
   const body = (
     <>
-      <div data-slot="action-menu-scroll" className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
-        {notice ? <NoticeBlock notice={notice} interactive={!listKind} onAction={noticeAction} /> : null}
+      <div
+        data-slot="action-menu-scroll"
+        className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden"
+      >
+        {notice ? (
+          <NoticeBlock notice={notice} interactive={!listKind} onAction={noticeAction} />
+        ) : null}
         {title ? (
-          <div data-slot="action-menu-title" className="px-2.5 pt-1.5 pb-1 text-[11.5px] text-[var(--oui-foreground-muted)]">
+          <div
+            data-slot="action-menu-title"
+            className="px-2.5 pt-1.5 pb-1 text-[11.5px] text-[var(--oui-foreground-muted)]"
+          >
             {title}
           </div>
         ) : null}
@@ -359,7 +445,12 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
           listKind ? (
             <ListSection key={section.id} section={section} index={index} />
           ) : (
-            <MenuSection key={section.id} section={section} index={index} onChoose={(item) => choose(item, section)} />
+            <MenuSection
+              key={section.id}
+              section={section}
+              index={index}
+              onChoose={(item) => choose(item, section)}
+            />
           ),
         )}
       </div>
@@ -386,7 +477,13 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
     return (
       <PopoverPrimitive.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
         <PopoverPrimitive.Trigger asChild>{trigger}</PopoverPrimitive.Trigger>
-        {portal ? <PopoverPrimitive.Portal container={resolvePortalContainer(container)}>{content}</PopoverPrimitive.Portal> : content}
+        {portal ? (
+          <PopoverPrimitive.Portal container={resolvePortalContainer(container)}>
+            {content}
+          </PopoverPrimitive.Portal>
+        ) : (
+          content
+        )}
       </PopoverPrimitive.Root>
     );
   }
@@ -409,9 +506,20 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
     </DropdownMenuPrimitive.Content>
   );
   return (
-    <DropdownMenuPrimitive.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange} modal={modal}>
+    <DropdownMenuPrimitive.Root
+      open={open}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
+      modal={modal}
+    >
       <DropdownMenuPrimitive.Trigger asChild>{trigger}</DropdownMenuPrimitive.Trigger>
-      {portal ? <DropdownMenuPrimitive.Portal container={resolvePortalContainer(container)}>{content}</DropdownMenuPrimitive.Portal> : content}
+      {portal ? (
+        <DropdownMenuPrimitive.Portal container={resolvePortalContainer(container)}>
+          {content}
+        </DropdownMenuPrimitive.Portal>
+      ) : (
+        content
+      )}
     </DropdownMenuPrimitive.Root>
   );
 };

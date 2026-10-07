@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
-import { QueuedList, type QueuedItem } from '@oc-tech/omni-ui-components/QueuedList';
+import { type QueuedItem, QueuedList } from '@oc-tech/omni-ui-components/QueuedList';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { queuedListPropsFactory } from 'factories/omni-ui-components/QueuedList/QueuedList.factories';
 
 describe('omni-ui-components/QueuedList', () => {

@@ -1,7 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Button } from '@oc-tech/omni-ui-components/Button';
 import { Popconfirm } from '@oc-tech/omni-ui-components/Popconfirm';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Popconfirm> = {
   title: 'omni-ui-components/Popconfirm',
@@ -30,7 +29,11 @@ export const Default: Story = {
 
 export const Archive: Story = {
   render: () => (
-    <Popconfirm title="Archive project?" description="You can restore it later from archives." confirmText="Archive">
+    <Popconfirm
+      title="Archive project?"
+      description="You can restore it later from archives."
+      confirmText="Archive"
+    >
       <Button variant="outline">Archive</Button>
     </Popconfirm>
   ),

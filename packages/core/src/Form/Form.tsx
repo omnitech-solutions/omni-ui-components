@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { useForm, useStore } from '@tanstack/react-form';
+import * as React from 'react';
 
 import { useStableId } from '../lib';
 import { FormContext } from './Form.context';
@@ -25,8 +25,21 @@ import type { FormError, FormProps } from './Form.types';
  *   <button type="submit">Save</button>
  * </Form>
  */
-function FormImpl<TFormData, TSubmitData = TFormData>(props: FormProps<TFormData, TSubmitData>): JSX.Element {
-  const { zodSchema, formData, onChange, onSubmit, onError, disabled = false, readOnly = false, id: idProp, className, children } = props;
+function FormImpl<TFormData, TSubmitData = TFormData>(
+  props: FormProps<TFormData, TSubmitData>,
+): JSX.Element {
+  const {
+    zodSchema,
+    formData,
+    onChange,
+    onSubmit,
+    onError,
+    disabled = false,
+    readOnly = false,
+    id: idProp,
+    className,
+    children,
+  } = props;
 
   const fallbackId = useStableId('oui-form');
   const formId = idProp ?? fallbackId;
@@ -104,7 +117,10 @@ function FormImpl<TFormData, TSubmitData = TFormData>(props: FormProps<TFormData
 }
 
 /** Form-root memo guard. Handler refs and zodSchema bridge through useRef. */
-function formPropsEqual<TFormData, TSubmitData>(prev: FormProps<TFormData, TSubmitData>, next: FormProps<TFormData, TSubmitData>): boolean {
+function formPropsEqual<TFormData, TSubmitData>(
+  prev: FormProps<TFormData, TSubmitData>,
+  next: FormProps<TFormData, TSubmitData>,
+): boolean {
   return (
     Object.is(prev.formData, next.formData) &&
     prev.disabled === next.disabled &&
@@ -115,6 +131,12 @@ function formPropsEqual<TFormData, TSubmitData>(prev: FormProps<TFormData, TSubm
   );
 }
 
-export const Form = React.memo(FormImpl, formPropsEqual as (prev: Readonly<FormProps<unknown, unknown>>, next: Readonly<FormProps<unknown, unknown>>) => boolean) as typeof FormImpl;
+export const Form = React.memo(
+  FormImpl,
+  formPropsEqual as (
+    prev: Readonly<FormProps<unknown, unknown>>,
+    next: Readonly<FormProps<unknown, unknown>>,
+  ) => boolean,
+) as typeof FormImpl;
 
 export type OmniFormApi = any;

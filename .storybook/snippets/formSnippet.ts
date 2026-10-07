@@ -1,10 +1,22 @@
-import type { FieldDef, FormFixture, FormRow, FormSectionHeading, FormToolbarRow } from '@oc-tech/omni-ui-components/Form/Form.types';
+import type {
+  FieldDef,
+  FormFixture,
+  FormRow,
+  FormSectionHeading,
+  FormToolbarRow,
+} from '@oc-tech/omni-ui-components/Form/Form.types';
 import { formatValue } from './formatValue';
 
 const isSectionHeading = (r: unknown): r is FormSectionHeading =>
-  !Array.isArray(r) && typeof r === 'object' && r !== null && (r as { kind?: string }).kind === 'heading';
+  !Array.isArray(r) &&
+  typeof r === 'object' &&
+  r !== null &&
+  (r as { kind?: string }).kind === 'heading';
 const isToolbarRow = (r: unknown): r is FormToolbarRow =>
-  !Array.isArray(r) && typeof r === 'object' && r !== null && (r as { kind?: string }).kind === 'toolbar';
+  !Array.isArray(r) &&
+  typeof r === 'object' &&
+  r !== null &&
+  (r as { kind?: string }).kind === 'toolbar';
 
 const renderField = (field: FieldDef, indent: string): string => {
   const typeAttr = field.type && field.type !== 'text' ? ` type="${field.type}"` : '';
@@ -17,7 +29,10 @@ const renderField = (field: FieldDef, indent: string): string => {
 };
 
 /** Build a runnable JSX snippet from a `FormFixture` and optional `formData` override. */
-export function buildFormSnippet<T>(fixture: FormFixture<T>, opts: { formData?: Partial<T>; submitLabel?: string } = {}): string {
+export function buildFormSnippet<T>(
+  fixture: FormFixture<T>,
+  opts: { formData?: Partial<T>; submitLabel?: string } = {},
+): string {
   const rows = (fixture.rows as FormRow[]).map((r) => {
     if (isSectionHeading(r)) {
       const desc = r.description ? ` ${JSON.stringify(r.description)}` : '';
@@ -25,12 +40,18 @@ export function buildFormSnippet<T>(fixture: FormFixture<T>, opts: { formData?: 
     }
     if (isToolbarRow(r)) {
       const actions = r.actions
-        .map((a) => `{ icon: ${JSON.stringify(a.icon)}, label: ${JSON.stringify(a.label)}${a.variant ? `, variant: ${JSON.stringify(a.variant)}` : ''} }`)
+        .map(
+          (a) =>
+            `{ icon: ${JSON.stringify(a.icon)}, label: ${JSON.stringify(a.label)}${a.variant ? `, variant: ${JSON.stringify(a.variant)}` : ''} }`,
+        )
         .join(', ');
       return `  {/* toolbar: [${actions}] */}`;
     }
     const fields = Array.isArray(r) ? r : (r as { fields: FieldDef[] }).fields;
-    const cols = !Array.isArray(r) && (r as { cols?: number }).cols ? ` cols={${(r as { cols?: number }).cols}}` : '';
+    const cols =
+      !Array.isArray(r) && (r as { cols?: number }).cols
+        ? ` cols={${(r as { cols?: number }).cols}}`
+        : '';
     const inner = fields.map((f) => renderField(f, '    ')).join('\n');
     return `  <FormRow${cols}>\n${inner}\n  </FormRow>`;
   });

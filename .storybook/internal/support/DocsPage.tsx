@@ -1,9 +1,9 @@
-import * as React from 'react';
 import { Controls, Primary, Stories, useOf } from '@storybook/addon-docs/blocks';
-import { resolveDocsHeroPreset, type DocsHeroSegmentOverride } from './docsHero';
+import * as React from 'react';
+import { type DocsHeroSegmentOverride, resolveDocsHeroPreset } from './docsHero';
 import { InlineCode } from './InlineCode';
-import { SignatureCode } from './SignatureCode';
 import { SegmentedPill } from './SegmentedPill';
+import { SignatureCode } from './SignatureCode';
 
 interface DocsArgType {
   name?: string;
@@ -42,8 +42,10 @@ const splitTitle = (title: string | undefined) => {
 
 const inferSummary = (title: string | undefined) => {
   const { name, section } = splitTitle(title);
-  if (section === 'Getting Started') return `${name} reference, usage guidance, and implementation notes.`;
-  if (section.includes('dynamic-form')) return `${name} schema-driven behavior, supported options, and authored examples.`;
+  if (section === 'Getting Started')
+    return `${name} reference, usage guidance, and implementation notes.`;
+  if (section.includes('dynamic-form'))
+    return `${name} schema-driven behavior, supported options, and authored examples.`;
   return `${name} usage guidance, supported props, and representative states.`;
 };
 
@@ -56,7 +58,12 @@ const renderCodeAwareText = (value: React.ReactNode) => {
     }
 
     if (segment.startsWith('<code>') && segment.endsWith('</code>')) {
-      return <SignatureCode key={segmentIndex} code={segment.slice('<code>'.length, -'</code>'.length)} />;
+      return (
+        <SignatureCode
+          key={segmentIndex}
+          code={segment.slice('<code>'.length, -'</code>'.length)}
+        />
+      );
     }
 
     if (segment.startsWith('<primary>') && segment.endsWith('</primary>')) {
@@ -132,7 +139,8 @@ function normalizeApiRows(argTypes: Record<string, unknown> | undefined) {
     })
     .filter((row): row is NonNullable<typeof row> => Boolean(row))
     .sort((a, b) => {
-      if (a.category && b.category && a.category !== b.category) return a.category.localeCompare(b.category);
+      if (a.category && b.category && a.category !== b.category)
+        return a.category.localeCompare(b.category);
       if (a.required !== b.required) return a.required ? -1 : 1;
       return a.prop.localeCompare(b.prop);
     });
@@ -149,7 +157,8 @@ export const DocsPage: React.FC = () => {
           heroPillClassName?: string;
           heroNameSegment?: DocsHeroSegmentOverride;
           heroSignatureSegment?: DocsHeroSegmentOverride;
-          propsReference?: ApiSection[] | ApiRow[]; api?: ApiSection[] | ApiRow[];
+          propsReference?: ApiSection[] | ApiRow[];
+          api?: ApiSection[] | ApiRow[];
         };
       };
       argTypes?: Record<string, unknown>;
@@ -166,7 +175,9 @@ export const DocsPage: React.FC = () => {
     heroNameSegment: resolved.preparedMeta?.parameters?.docs?.heroNameSegment,
     heroSignatureSegment: resolved.preparedMeta?.parameters?.docs?.heroSignatureSegment,
   });
-  const configuredApi = resolved.preparedMeta?.parameters?.docs?.propsReference ?? resolved.preparedMeta?.parameters?.docs?.api;
+  const configuredApi =
+    resolved.preparedMeta?.parameters?.docs?.propsReference ??
+    resolved.preparedMeta?.parameters?.docs?.api;
   const apiSections: ApiSection[] = Array.isArray(configuredApi)
     ? configuredApi.length > 0 && 'rows' in configuredApi[0]
       ? (configuredApi as ApiSection[])
@@ -206,7 +217,8 @@ export const DocsPage: React.FC = () => {
                 style: heroPreset.heroNameSegment.style,
               },
               {
-                content: typeof signature === 'string' ? <SignatureCode code={signature} /> : signature,
+                content:
+                  typeof signature === 'string' ? <SignatureCode code={signature} /> : signature,
                 className: [
                   'px-3 py-1.5 bg-[color:color-mix(in_srgb,var(--color-background)_82%,white_18%)]',
                   heroPreset.heroSignatureSegment.className ?? '',
@@ -230,20 +242,30 @@ export const DocsPage: React.FC = () => {
       </section>
 
       <section className="rounded-[24px] border border-border bg-card px-6 py-6 shadow-sm md:px-8">
-        <div className="mb-4 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground/75">Preview</div>
+        <div className="mb-4 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground/75">
+          Preview
+        </div>
         <Primary />
       </section>
 
       {hasPropsReference ? (
         <section className="omni-docs-api-wrap rounded-[24px] border border-border bg-card px-6 py-6 shadow-sm md:px-8">
-          <div className="mb-5 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground/75">API</div>
+          <div className="mb-5 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground/75">
+            API
+          </div>
           <div className="space-y-10">
             {apiSections
               .filter((section) => section.rows.length > 0)
               .map((section) => (
                 <section key={section.title ?? 'api-section'} className="space-y-3">
-                  {section.title ? <h3 className="text-sm font-semibold text-foreground">{section.title}</h3> : null}
-                  {section.description ? <div className="max-w-3xl text-sm leading-6 text-muted-foreground">{renderCodeAwareText(section.description)}</div> : null}
+                  {section.title ? (
+                    <h3 className="text-sm font-semibold text-foreground">{section.title}</h3>
+                  ) : null}
+                  {section.description ? (
+                    <div className="max-w-3xl text-sm leading-6 text-muted-foreground">
+                      {renderCodeAwareText(section.description)}
+                    </div>
+                  ) : null}
                   <div className="overflow-x-auto">
                     <table style={apiTableStyle}>
                       <colgroup>
@@ -264,16 +286,25 @@ export const DocsPage: React.FC = () => {
                         {section.rows.map((row) => (
                           <tr key={row.prop}>
                             <td style={apiPropCell}>
-                              <InlineCode code={row.prop} className="text-xs text-[var(--color-primary)]" />
+                              <InlineCode
+                                code={row.prop}
+                                className="text-xs text-[var(--color-primary)]"
+                              />
                               {row.required ? ' *' : ''}
                             </td>
                             <td style={apiCellBase}>{row.description}</td>
                             <td style={apiCellBase}>
-                              <InlineCode code={row.type} className="text-xs text-[var(--color-foreground)]" />
+                              <InlineCode
+                                code={row.type}
+                                className="text-xs text-[var(--color-foreground)]"
+                              />
                             </td>
                             {row.default && row.default !== '—' ? (
                               <td style={apiCellBase}>
-                                <InlineCode code={row.default} className="text-xs text-[var(--color-foreground)]" />
+                                <InlineCode
+                                  code={row.default}
+                                  className="text-xs text-[var(--color-foreground)]"
+                                />
                               </td>
                             ) : (
                               <td style={apiEmptyCell}>—</td>
@@ -290,12 +321,16 @@ export const DocsPage: React.FC = () => {
       ) : null}
 
       <section className="rounded-[24px] border border-border bg-card px-6 py-6 shadow-sm md:px-8">
-        <div className="mb-4 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground/75">Playground</div>
+        <div className="mb-4 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground/75">
+          Playground
+        </div>
         <Controls />
       </section>
 
       <section className="rounded-[24px] border border-border bg-card px-6 py-6 shadow-sm md:px-8">
-        <div className="mb-4 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground/75">Variants</div>
+        <div className="mb-4 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground/75">
+          Variants
+        </div>
         <Stories includePrimary={false} />
       </section>
     </div>

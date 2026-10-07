@@ -1,9 +1,7 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
-
 import { QueuedList, type QueuedListProps } from '@oc-tech/omni-ui-components/QueuedList';
+import type { Meta, StoryObj } from '@storybook/react';
 import { queuedListPropsFactory } from 'factories/omni-ui-components/QueuedList/QueuedList.factories';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 const meta: Meta<QueuedListProps> = {
   title: 'omni-ui-components/QueuedList',
@@ -20,7 +18,10 @@ const meta: Meta<QueuedListProps> = {
   args: queuedListPropsFactory({ onRemove: fn() }),
   argTypes: {
     items: { control: 'object', description: '`{ id, text }[]`.' },
-    onRemove: { action: 'removed', description: 'Called with the full item. Without it rows have no remove button.' },
+    onRemove: {
+      action: 'removed',
+      description: 'Called with the full item. Without it rows have no remove button.',
+    },
     labels: { control: 'object', description: '{ queued, remove, list }.' },
   },
   render: (args) => (

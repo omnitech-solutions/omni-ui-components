@@ -1,16 +1,31 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
-import { prefilledPhoneFixture, ukPhoneFixture, usPhoneFixture, type PhoneFormData } from 'factories/dynamic-form/widgets/PhoneWidget/PhoneWidget.factories';
+import {
+  type PhoneFormData,
+  prefilledPhoneFixture,
+  ukPhoneFixture,
+  usPhoneFixture,
+} from 'factories/dynamic-form/widgets/PhoneWidget/PhoneWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<PhoneFormData>;
 
 const config = defineDynamicFormStories<PhoneFormData>({
   title: 'dynamic-form/widgets/PhoneWidget',
   fixtures: { us: usPhoneFixture, uk: ukPhoneFixture, prefilled: prefilledPhoneFixture },
-  titles: { us: 'PhoneWidget · US', uk: 'PhoneWidget · UK (+44)', prefilled: 'PhoneWidget · prefilled' },
+  titles: {
+    us: 'PhoneWidget · US',
+    uk: 'PhoneWidget · UK (+44)',
+    prefilled: 'PhoneWidget · prefilled',
+  },
   defaultArgs: { fixture: 'us' },
-  docs: { name: 'PhoneWidget', whenToUse: 'Formatted phone input. `ui:options.defaultDialCode` switches to international grouping (e.g. `+44`).' },
+  docs: {
+    name: 'PhoneWidget',
+    whenToUse:
+      'Formatted phone input. `ui:options.defaultDialCode` switches to international grouping (e.g. `+44`).',
+  },
   stories: { US: { fixture: 'us' }, UK: { fixture: 'uk' }, Prefilled: { fixture: 'prefilled' } },
 });
 

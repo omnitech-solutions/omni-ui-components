@@ -1,6 +1,6 @@
-import * as React from 'react';
 import classNames from 'classnames';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import type * as React from 'react';
 import { useTable } from '../hooks/useTable';
 import { bodyCellClass } from '../internal';
 import type { TableColumn, TableProps, TableResolvedRow } from '../Table.types';
@@ -81,11 +81,18 @@ export function ExpandCell<TRecord, TRowData>({
         {indent > 0 && (
           <span className="bui-table-expand-guides" aria-hidden="true">
             {Array.from({ length: indent }).map((_, guideIndex) => (
-              <span key={guideIndex} className="bui-table-expand-guide" style={{ left: `${guideIndex * indentSize + Math.floor(indentSize / 2)}px` }} />
+              <span
+                key={guideIndex}
+                className="bui-table-expand-guide"
+                style={{ left: `${guideIndex * indentSize + Math.floor(indentSize / 2)}px` }}
+              />
             ))}
           </span>
         )}
-        <span className="bui-table-expand-trigger-slot" data-expandable={canExpand ? 'true' : 'false'}>
+        <span
+          className="bui-table-expand-trigger-slot"
+          data-expandable={canExpand ? 'true' : 'false'}
+        >
           {canExpand ? (
             expandable.expandIcon ? (
               expandable.expandIcon({

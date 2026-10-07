@@ -1,13 +1,16 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { Divider } from '../Divider';
-import { ToolbarSizeContext } from './ToolbarContext';
 import type { ToolbarProps } from './Toolbar.types';
+import { ToolbarSizeContext } from './ToolbarContext';
 
 /** The 20px control separator: a vertical Divider on the neutral tone border, with 3px side margins (6px gap + 3 = 9px spacing). */
 const Separator: React.FC = () => (
-  <Divider orientation="vertical" decorative className="mx-[3px] h-[var(--oui-control-separator)] bg-[color:var(--oui-tone-neutral-border)]" />
+  <Divider
+    orientation="vertical"
+    decorative
+    className="mx-[3px] h-[var(--oui-control-separator)] bg-[color:var(--oui-tone-neutral-border)]"
+  />
 );
 
 /**
@@ -27,7 +30,18 @@ const Separator: React.FC = () => (
  */
 export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>(
   (
-    { label, size = 'control', leading, groups = [], children, trailing, separators = true, variant = 'plain', className, 'data-testid': testId },
+    {
+      label,
+      size = 'control',
+      leading,
+      groups = [],
+      children,
+      trailing,
+      separators = true,
+      variant = 'plain',
+      className,
+      'data-testid': testId,
+    },
     ref,
   ) => {
     const sections: Array<{
@@ -77,7 +91,9 @@ export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>(
                 className={cn(
                   'flex items-center gap-[var(--oui-control-gap)]',
                   variant === 'bar' && section.key === 'leading' && 'min-w-0 flex-[1_1_auto]',
-                  variant === 'bar' && section.key === 'trailing' && 'ml-auto flex-wrap justify-end',
+                  variant === 'bar' &&
+                    section.key === 'trailing' &&
+                    'ml-auto flex-wrap justify-end',
                 )}
               >
                 {section.node}

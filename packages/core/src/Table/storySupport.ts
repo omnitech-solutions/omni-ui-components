@@ -1,3 +1,11 @@
+export type {
+  BuildTableSnippetOptions,
+  CodePanelProps,
+  ComponentWrapperProps,
+  ShowCodeInput,
+  TocItem,
+  UseDynamicSnippetOptions,
+} from '../../../../.storybook/internal/support';
 export {
   buildDynamicSnippet,
   buildTableSnippet,
@@ -13,12 +21,4 @@ export {
   TableOfContents,
   useDynamicSnippet,
   useIsDark,
-} from '../../../../.storybook/internal/support';
-export type {
-  BuildTableSnippetOptions,
-  CodePanelProps,
-  ComponentWrapperProps,
-  ShowCodeInput,
-  TocItem,
-  UseDynamicSnippetOptions,
 } from '../../../../.storybook/internal/support';

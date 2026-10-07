@@ -1,9 +1,8 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import type * as React from 'react';
+import type { FieldLayoutProps } from '../Input/Input.variants';
 import { fieldGroupVariants, fieldLabelVariants } from '../Input/Input.variants';
 import { useStableId } from './use-stable-id';
-import type { FieldLayoutProps } from '../Input/Input.variants';
 
 export interface FieldChromeArgs {
   id?: string;
@@ -25,7 +24,14 @@ export interface FieldChrome {
 
 // Derives the id, invalid flag, and aria-describedby ids used by every
 // chrome-wrapped Omni field. Stable per call.
-export function useFieldChrome({ id, label: _label, description, error, invalid, prefix }: FieldChromeArgs): FieldChrome {
+export function useFieldChrome({
+  id,
+  label: _label,
+  description,
+  error,
+  invalid,
+  prefix,
+}: FieldChromeArgs): FieldChrome {
   const fallbackId = useStableId(prefix);
   const resolvedId = id ?? fallbackId;
   const isInvalid = Boolean(error) || Boolean(invalid);
@@ -93,19 +99,31 @@ export const FieldShell: React.FC<FieldShellProps> = ({
   ) : null;
   const helpers =
     description && !error ? (
-      <p id={descriptionId} className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]">
+      <p
+        id={descriptionId}
+        className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]"
+      >
         {description}
       </p>
     ) : null;
   const errorNode = error ? (
-    <p id={errorId} role="alert" className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-border-invalid)]">
+    <p
+      id={errorId}
+      role="alert"
+      className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-border-invalid)]"
+    >
       {error}
     </p>
   ) : null;
 
   if (layout === 'horizontal') {
     return (
-      <div className={cn(fieldGroupVariants({ layout }), wrapperClassName)} data-layout="horizontal" role={role} aria-labelledby={ariaLabelledBy}>
+      <div
+        className={cn(fieldGroupVariants({ layout }), wrapperClassName)}
+        data-layout="horizontal"
+        role={role}
+        aria-labelledby={ariaLabelledBy}
+      >
         {labelNode}
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           {children}
@@ -117,7 +135,12 @@ export const FieldShell: React.FC<FieldShellProps> = ({
   }
 
   return (
-    <div className={cn(fieldGroupVariants({ layout }), wrapperClassName)} data-layout="vertical" role={role} aria-labelledby={ariaLabelledBy}>
+    <div
+      className={cn(fieldGroupVariants({ layout }), wrapperClassName)}
+      data-layout="vertical"
+      role={role}
+      aria-labelledby={ariaLabelledBy}
+    >
       {labelNode}
       {children}
       {helpers}

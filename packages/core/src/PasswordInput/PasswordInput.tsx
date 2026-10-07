@@ -1,11 +1,10 @@
-import * as React from 'react';
-import { Eye, EyeOff } from 'lucide-react';
-
 import { cn } from 'lib/utils';
-import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { InputPrimitive } from '../Input/InputPrimitive';
-import { PasswordInputPrimitive } from './PasswordInputPrimitive';
+import { Eye, EyeOff } from 'lucide-react';
+import * as React from 'react';
 import type { InputProps } from '../Input';
+import { InputPrimitive } from '../Input/InputPrimitive';
+import { FieldShell, useFieldChrome } from '../lib/FieldShell';
+import { PasswordInputPrimitive } from './PasswordInputPrimitive';
 
 export interface PasswordInputProps extends Omit<InputProps, 'type'> {
   /** Show the eye toggle to reveal/hide the password. Default true. */

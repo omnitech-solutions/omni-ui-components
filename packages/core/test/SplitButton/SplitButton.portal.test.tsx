@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { SplitButton } from '@oc-tech/omni-ui-components/SplitButton';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { splitButtonPropsFactory } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
 
 const openCaret = async (container?: HTMLElement) => {
@@ -25,7 +25,9 @@ describe('omni-ui-components/SplitButton portal', () => {
 
   it('mounts the menu in body by default', async () => {
     const surface = await openCaret();
-    expect((surface.closest('[data-radix-popper-content-wrapper]') ?? surface).parentElement).toBe(document.body);
+    expect((surface.closest('[data-radix-popper-content-wrapper]') ?? surface).parentElement).toBe(
+      document.body,
+    );
     expect(surface).toHaveAttribute('data-oui-surface');
   });
 });

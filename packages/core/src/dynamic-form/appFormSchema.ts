@@ -1,4 +1,10 @@
-import type { RJSFSchema, RegistryFieldsType, RegistryWidgetsType, TemplatesType, UiSchema } from '@rjsf/utils';
+import type {
+  RegistryFieldsType,
+  RegistryWidgetsType,
+  RJSFSchema,
+  TemplatesType,
+  UiSchema,
+} from '@rjsf/utils';
 import type { z } from 'zod';
 
 /**

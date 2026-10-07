@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { Tag } from '@oc-tech/omni-ui-components/Tag';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { tagVariants } from 'factories/omni-ui-components/Tag/Tag.factories';
 
 const SHA = '3f9a1c2d4e5b6a7f8091a2b3c4d5e6f708192a3b';
@@ -36,7 +36,9 @@ describe('omni-ui-components/Tag variations', () => {
         </Tag>,
       );
       const el = screen.getByRole('button', { name: /Leak/ });
-      ['mono', 'tooltip', 'copyvalue', 'copyValue', 'oncopy'].forEach((a) => expect(el).not.toHaveAttribute(a));
+      ['mono', 'tooltip', 'copyvalue', 'copyValue', 'oncopy'].forEach((a) =>
+        expect(el).not.toHaveAttribute(a),
+      );
     });
   });
 

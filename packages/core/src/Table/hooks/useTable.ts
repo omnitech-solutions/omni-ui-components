@@ -1,7 +1,21 @@
+import type {
+  ColumnPinningState,
+  ColumnSizingState,
+  ExpandedState,
+  SortingState,
+  Table as TanStackTable,
+} from '@tanstack/react-table';
 import * as React from 'react';
-import type { Table as TanStackTable, ColumnPinningState, ColumnSizingState, ExpandedState, SortingState } from '@tanstack/react-table';
 import type { RowDataType } from '../Table.RowData';
-import type { TableColumn, TableEditableConfig, TableProps, TableRegistry, TableResolvedRow, TableSemanticDOM, TableSorterResult } from '../Table.types';
+import type {
+  TableColumn,
+  TableEditableConfig,
+  TableProps,
+  TableRegistry,
+  TableResolvedRow,
+  TableSemanticDOM,
+  TableSorterResult,
+} from '../Table.types';
 
 // Every derived Table state + plumbing published in one shape. Child
 // components read via `useTable()` instead of drilling props. The value
@@ -36,7 +50,11 @@ export interface TableContextShape<TRecord = unknown, TRowData = unknown> {
   columnSizing: ColumnSizingState;
   columnPinning: ColumnPinningState;
   tableSortDirections: readonly TableSorterResult<unknown>['order'][];
-  applySortingChange: (next: SortingState, changedColumn?: TableColumn<TRecord, TRowData>, changedOrder?: TableSorterResult<TRecord>['order']) => void;
+  applySortingChange: (
+    next: SortingState,
+    changedColumn?: TableColumn<TRecord, TRowData>,
+    changedOrder?: TableSorterResult<TRecord>['order'],
+  ) => void;
   moveColumnByKeyboard: (columnKey: string, direction: -1 | 1) => void;
   moveRowByKeyboard: (rowKey: string, direction: -1 | 1) => void;
 }
@@ -45,7 +63,10 @@ const TableContext = React.createContext<TableContextShape | null>(null);
 
 export const TableProvider = TableContext.Provider;
 
-export function useTable<TRecord = unknown, TRowData = unknown>(): TableContextShape<TRecord, TRowData> {
+export function useTable<TRecord = unknown, TRowData = unknown>(): TableContextShape<
+  TRecord,
+  TRowData
+> {
   const ctx = React.useContext(TableContext);
   if (!ctx) throw new Error('useTable must be called from inside a <Table> render tree');
   return ctx as TableContextShape<TRecord, TRowData>;

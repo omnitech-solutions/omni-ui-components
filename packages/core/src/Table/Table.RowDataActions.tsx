@@ -1,5 +1,5 @@
-import { renderActionsField } from './Table.registry';
 import type { RowDataType } from './Table.RowData';
+import { renderActionsField } from './Table.registry';
 
 export const RowDataActionsType: RowDataType = {
   type: 'actions',

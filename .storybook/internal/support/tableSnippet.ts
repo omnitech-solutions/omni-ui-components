@@ -26,11 +26,15 @@ export interface BuildTableSnippetOptions {
   serializeProp?: (key: string, value: unknown) => string | null;
 }
 
-const DEFAULT_IMPORTS = ["import { Table } from '@oc-tech/omni-ui-components/Table';", "import type { TableColumn, TableDataRow } from '@oc-tech/omni-ui-components/Table';"];
+const DEFAULT_IMPORTS = [
+  "import { Table } from '@oc-tech/omni-ui-components/Table';",
+  "import type { TableColumn, TableDataRow } from '@oc-tech/omni-ui-components/Table';",
+];
 
 const DEFAULT_OMIT = ['testIdPrefix', 'key', 'ref'];
 
-const isComponent = (v: unknown): boolean => v === null || typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean';
+const isComponent = (v: unknown): boolean =>
+  v === null || typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean';
 
 const attrLines = (props: UnknownRecord, opts: BuildTableSnippetOptions): string[] => {
   const omit = new Set([...DEFAULT_OMIT, ...(opts.omit ?? [])]);
@@ -49,7 +53,10 @@ const attrLines = (props: UnknownRecord, opts: BuildTableSnippetOptions): string
 };
 
 /** Build a runnable JSX snippet for a Bonsai <Table /> render. */
-export const buildTableSnippet = (props: UnknownRecord, opts: BuildTableSnippetOptions = {}): string => {
+export const buildTableSnippet = (
+  props: UnknownRecord,
+  opts: BuildTableSnippetOptions = {},
+): string => {
   const componentName = opts.componentName ?? 'Table';
   const typeArgs = opts.typeArgs ? `<${opts.typeArgs}>` : '';
   const imports = opts.imports ?? DEFAULT_IMPORTS;

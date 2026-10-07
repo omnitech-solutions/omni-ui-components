@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type * as React from 'react';
 
 import { Table } from '../../src/Table';
 import { currentResponsiveScreens, useResponsiveScreens } from '../../src/Table/internal';

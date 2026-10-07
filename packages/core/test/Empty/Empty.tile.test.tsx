@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { MonitorUp } from 'lucide-react';
 
 import { Empty } from '@oc-tech/omni-ui-components/Empty';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { emptyVariants } from 'factories/omni-ui-components/Empty/Empty.factories';
+import { MonitorUp } from 'lucide-react';
 
 describe('omni-ui-components/Empty tile', () => {
   it('keeps the dashed box as the default', () => {
@@ -15,7 +15,11 @@ describe('omni-ui-components/Empty tile', () => {
 
   it('renders a 40px icon tile with the supplied icon, and a single line of copy', () => {
     const { container } = render(
-      <Empty variant="tile" icon={<MonitorUp data-testid="ic" />} description="Starts automatically after the approach." />,
+      <Empty
+        variant="tile"
+        icon={<MonitorUp data-testid="ic" />}
+        description="Starts automatically after the approach."
+      />,
     );
     const tile = container.querySelector('[data-slot="empty-tile"]')!;
     expect(tile).toHaveClass('size-10');
@@ -36,7 +40,9 @@ describe('omni-ui-components/Empty tile', () => {
   });
 
   it('falls back to the image prop, then the inbox glyph, for the tile icon', () => {
-    const { rerender, container } = render(<Empty variant="tile" image={<span data-testid="img" />} description="x" />);
+    const { rerender, container } = render(
+      <Empty variant="tile" image={<span data-testid="img" />} description="x" />,
+    );
     expect(screen.getByTestId('img')).toBeInTheDocument();
     rerender(<Empty variant="tile" description="x" />);
     expect(container.querySelector('[data-slot="empty-tile"] svg')).not.toBeNull();
@@ -51,7 +57,9 @@ describe('omni-ui-components/Empty tile', () => {
     it('renders the library Button (control size, accent tone by default) and calls onClick', async () => {
       const user = userEvent.setup();
       const onClick = jest.fn();
-      render(<Empty variant="tile" description="x" action={{ label: 'Capture screen', onClick }} />);
+      render(
+        <Empty variant="tile" description="x" action={{ label: 'Capture screen', onClick }} />,
+      );
       const button = screen.getByRole('button', { name: 'Capture screen' });
       expect(button).toHaveAttribute('data-slot', 'button');
       expect(button).toHaveAttribute('data-button-size', 'control');
@@ -65,7 +73,13 @@ describe('omni-ui-components/Empty tile', () => {
         <Empty
           variant="tile"
           description="x"
-          action={{ label: 'Retry', tone: 'warning', icon: <MonitorUp data-testid="aic" />, shortcut: ['⌘', '⇧', 'S'], onClick: () => undefined }}
+          action={{
+            label: 'Retry',
+            tone: 'warning',
+            icon: <MonitorUp data-testid="aic" />,
+            shortcut: ['⌘', '⇧', 'S'],
+            onClick: () => undefined,
+          }}
         />,
       );
       const button = screen.getByRole('button', { name: /Retry/ });

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Typography } from '@oc-tech/omni-ui-components/Typography';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/Typography', () => {
   it('renders title, paragraph, and link', () => {

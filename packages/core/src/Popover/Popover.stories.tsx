@@ -1,7 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Button } from '@oc-tech/omni-ui-components/Button';
 import { Popover, PopoverPanel, PopoverTrigger } from '@oc-tech/omni-ui-components/Popover';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Popover> = {
   title: 'omni-ui-components/Popover',
@@ -31,7 +30,9 @@ export const Default: Story = {
       <PopoverPanel>
         <div className="space-y-1">
           <div className="text-sm font-medium">Share link</div>
-          <div className="text-sm text-muted-foreground">Anyone with access can open this record.</div>
+          <div className="text-sm text-muted-foreground">
+            Anyone with access can open this record.
+          </div>
         </div>
       </PopoverPanel>
     </Popover>
@@ -47,7 +48,9 @@ export const WiderContent: Story = {
       <PopoverPanel className="w-96">
         <div className="space-y-2">
           <div className="text-sm font-medium">Share settings</div>
-          <div className="text-sm text-muted-foreground">Workspace members can view, comment, or edit based on the selected permission level.</div>
+          <div className="text-sm text-muted-foreground">
+            Workspace members can view, comment, or edit based on the selected permission level.
+          </div>
         </div>
       </PopoverPanel>
     </Popover>

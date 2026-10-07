@@ -1,16 +1,30 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { CheckboxGroupPrimitive } from './CheckboxGroupPrimitive';
 import type { CheckboxGroupProps } from './Checkbox.types';
+import { CheckboxGroupPrimitive } from './CheckboxGroupPrimitive';
 
 /**
  * Chrome-wrapped Omni checkbox group. Composes
  * {@link CheckboxGroupPrimitive} with {@link FieldShell}.
  */
 const CheckboxGroupInner = React.forwardRef<HTMLDivElement, CheckboxGroupProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

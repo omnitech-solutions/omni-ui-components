@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** The base item of a follow-up: extend it with your own fields and they reach every callback and slot. */
 export interface SuggestionItem {
@@ -6,10 +6,8 @@ export interface SuggestionItem {
   label: string;
 }
 
-export interface SuggestionsProps<T extends SuggestionItem = SuggestionItem> extends Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  'children' | 'onSelect'
-> {
+export interface SuggestionsProps<T extends SuggestionItem = SuggestionItem>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onSelect'> {
   items: T[];
   /** Fires when a chip is chosen, with the full item (the same object passed in `items`) and its index. Without it nothing is rendered. */
   onSelect?: (item: T, index: number) => void | Promise<void>;

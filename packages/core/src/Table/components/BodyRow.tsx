@@ -1,5 +1,5 @@
-import * as React from 'react';
 import classNames from 'classnames';
+import * as React from 'react';
 import { useTable } from '../hooks/useTable';
 import { isExpandedKey, SortableBodyRow } from '../internal';
 import type { TableColumn, TableProps, TableResolvedRow } from '../Table.types';
@@ -20,8 +20,15 @@ export interface BodyRowProps<TRecord, TRowData> {
   rowSelection: TableProps<TRecord, TRowData>['rowSelection'];
   toggleExpanded: (resolved: TableResolvedRow<TRecord, TRowData>) => void;
   renderRowDragCell: (resolved: TableResolvedRow<TRecord, TRowData>) => React.ReactNode;
-  renderSelectionCell: (resolved: TableResolvedRow<TRecord, TRowData>, rowIndex: number) => React.ReactNode;
-  renderExpandCell: (resolved: TableResolvedRow<TRecord, TRowData>, rowIndex: number, indent: number) => React.ReactNode;
+  renderSelectionCell: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    rowIndex: number,
+  ) => React.ReactNode;
+  renderExpandCell: (
+    resolved: TableResolvedRow<TRecord, TRowData>,
+    rowIndex: number,
+    indent: number,
+  ) => React.ReactNode;
   renderBodyCell: (
     resolved: TableResolvedRow<TRecord, TRowData>,
     col: TableColumn<TRecord, TRowData>,
@@ -51,15 +58,28 @@ export function BodyRow<TRecord, TRowData>({
   renderExpandCell,
   renderBodyCell,
 }: BodyRowProps<TRecord, TRowData>) {
-  const { table, props, registry, testIdPrefix, classMap, styleMap, renderedLeafColumns, mergedLeafColumns, expanded, moveRowByKeyboard } = useTable<
-    TRecord,
-    TRowData
-  >();
+  const {
+    table,
+    props,
+    registry,
+    testIdPrefix,
+    classMap,
+    styleMap,
+    renderedLeafColumns,
+    mergedLeafColumns,
+    expanded,
+    moveRowByKeyboard,
+  } = useTable<TRecord, TRowData>();
   const { BodyRow: TBRow } = registry.components;
 
   const rowKey = String(resolved.key);
   // onRow / row.onRow may return any <tr> attribute or listener; only these three are merged with Table's own.
-  const { className: _rowPropsClass, style: _rowPropsStyle, onClick: _rowPropsOnClick, ...restRowProps } = rowProps;
+  const {
+    className: _rowPropsClass,
+    style: _rowPropsStyle,
+    onClick: _rowPropsOnClick,
+    ...restRowProps
+  } = rowProps;
   const rowClassName = classNames(
     selected && 'bg-[var(--bui-table-row-selected-bg)]',
     classMap['body.row'],
@@ -67,7 +87,11 @@ export function BodyRow<TRecord, TRowData>({
     resolved.row.className,
     rowProps.className,
   );
-  const rowStyle: React.CSSProperties = { ...resolved.row.style, ...styleMap['body.row'], ...rowProps.style };
+  const rowStyle: React.CSSProperties = {
+    ...resolved.row.style,
+    ...styleMap['body.row'],
+    ...rowProps.style,
+  };
   const handleRowClick: React.MouseEventHandler<HTMLTableRowElement> = (event) => {
     rowProps.onClick?.(event);
     if (!event.defaultPrevented && canClickExpand) toggleExpanded(resolved);
@@ -97,12 +121,21 @@ export function BodyRow<TRecord, TRowData>({
   );
 
   const isDraggable = resolved.row.draggable && !resolved.row.disabled;
-  const shouldRenderExpandedRow = Boolean(expandable?.expandedRowRender) && isExpandedKey(expanded, resolved.key);
+  const shouldRenderExpandedRow =
+    Boolean(expandable?.expandedRowRender) && isExpandedKey(expanded, resolved.key);
 
   return (
     <React.Fragment key={rowKey}>
       {isDraggable ? (
-        <SortableBodyRow rowKey={rowKey} onKeyboardMove={moveRowByKeyboard} {...restRowProps} {...dataAttrs} className={rowClassName} style={rowStyle} onClick={handleRowClick}>
+        <SortableBodyRow
+          rowKey={rowKey}
+          onKeyboardMove={moveRowByKeyboard}
+          {...restRowProps}
+          {...dataAttrs}
+          className={rowClassName}
+          style={rowStyle}
+          onClick={handleRowClick}
+        >
           {cells}
         </SortableBodyRow>
       ) : (
@@ -136,7 +169,10 @@ export function BodyRow<TRecord, TRowData>({
         >
           <td
             colSpan={
-              renderedLeafColumns.length + (hasDraggableRows ? 1 : 0) + (rowSelection ? 1 : 0) + (!treeMode && expandable!.showExpandColumn !== false ? 1 : 0)
+              renderedLeafColumns.length +
+              (hasDraggableRows ? 1 : 0) +
+              (rowSelection ? 1 : 0) +
+              (!treeMode && expandable!.showExpandColumn !== false ? 1 : 0)
             }
             data-testid={`${testIdPrefix}-expanded-cell-${rowKey}`}
           >

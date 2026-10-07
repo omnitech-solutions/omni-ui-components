@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 import type { Components } from 'react-markdown';
 
 import type { HighlightFn } from '../Highlight';
@@ -23,7 +23,8 @@ export interface CitationSource {
   n: number;
 }
 
-export interface MarkdownProps<T extends CitationSource = CitationSource> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onCopy'> {
+export interface MarkdownProps<T extends CitationSource = CitationSource>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onCopy'> {
   /** The markdown source: GitHub-flavoured (tables, task lists, strikethrough). */
   text: string;
   /**

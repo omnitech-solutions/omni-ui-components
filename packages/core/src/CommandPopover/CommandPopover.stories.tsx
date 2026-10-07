@@ -1,10 +1,15 @@
-import * as React from 'react';
+import {
+  CommandPopover,
+  type CommandPopoverProps,
+} from '@oc-tech/omni-ui-components/CommandPopover';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
-import { CommandPopover, type CommandPopoverProps } from '@oc-tech/omni-ui-components/CommandPopover';
+import {
+  commandPopoverPropsFactory,
+  surfaceItems,
+} from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
 import { ComposerDemo } from 'factories/omni-ui-components/Composer/Composer.factories';
-import { commandPopoverPropsFactory, surfaceItems } from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
+import * as React from 'react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta<CommandPopoverProps> = {
   title: 'omni-ui-components/CommandPopover',
@@ -26,7 +31,10 @@ const meta: Meta<CommandPopoverProps> = {
     title: { control: 'text', description: 'Visible heading.' },
     labelPrefix: { control: 'text', description: 'Text before each label, e.g. `/`.' },
     hint: { control: 'text', description: 'Footer hint line.' },
-    hideWhenEmpty: { control: 'boolean', description: 'Render nothing when empty (slash). Off: show `labels.empty` (mentions).' },
+    hideWhenEmpty: {
+      control: 'boolean',
+      description: 'Render nothing when empty (slash). Off: show `labels.empty` (mentions).',
+    },
     loading: { control: 'boolean', description: 'An async source is still answering.' },
     placement: { control: 'inline-radio', options: ['above', 'below'] },
     labels: { control: 'object', description: '{ empty, loading }.' },
@@ -57,13 +65,39 @@ export const Default: Story = {
 };
 
 /** `@` mentions: icon, name and description, no prefix and no hint. */
-export const Mentions: Story = { args: { items: surfaceItems(), label: 'Add from Studio', title: 'Add from Studio', labelPrefix: undefined, hint: undefined, activeIndex: 1 } };
+export const Mentions: Story = {
+  args: {
+    items: surfaceItems(),
+    label: 'Add from Studio',
+    title: 'Add from Studio',
+    labelPrefix: undefined,
+    hint: undefined,
+    activeIndex: 1,
+  },
+};
 
 /** No rows: `Nothing matches`. */
-export const NothingMatches: Story = { args: { items: [], label: 'Add from Studio', title: 'Add from Studio', labelPrefix: undefined, hint: undefined } };
+export const NothingMatches: Story = {
+  args: {
+    items: [],
+    label: 'Add from Studio',
+    title: 'Add from Studio',
+    labelPrefix: undefined,
+    hint: undefined,
+  },
+};
 
 /** An async source still answering with nothing to list yet. */
-export const Loading: Story = { args: { items: [], loading: true, label: 'Add from Studio', title: 'Add from Studio', labelPrefix: undefined, hint: undefined } };
+export const Loading: Story = {
+  args: {
+    items: [],
+    loading: true,
+    label: 'Add from Studio',
+    title: 'Add from Studio',
+    labelPrefix: undefined,
+    hint: undefined,
+  },
+};
 
 /**
  * In a composer: type `/` for commands (filtered by prefix as you type), `@` for an async list of surfaces. ArrowDown/Up move,
@@ -85,7 +119,11 @@ export const InComposer: StoryObj = {
     await expect(within(list).getAllByRole('option')).toHaveLength(4);
     await userEvent.type(box, 'm');
     // Clicking the box asked the popover to close; typing reopens it as a new element.
-    await waitFor(() => expect(within(page.getByRole('listbox', { name: 'Commands' })).getAllByRole('option')).toHaveLength(1));
+    await waitFor(() =>
+      expect(
+        within(page.getByRole('listbox', { name: 'Commands' })).getAllByRole('option'),
+      ).toHaveLength(1),
+    );
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(page.queryByRole('listbox')).toBeNull());
     await expect(box).toHaveFocus();
@@ -105,7 +143,11 @@ const ClippedDemo: React.FC = () => {
   return (
     <div className="p-6">
       {/* The clip: overflow hidden and short, like the Panel dock. The anchored popover must still show above it. */}
-      <div data-testid="clip" className="overflow-hidden rounded-xl border p-3" style={{ height: 70, marginTop: 220 }}>
+      <div
+        data-testid="clip"
+        className="overflow-hidden rounded-xl border p-3"
+        style={{ height: 70, marginTop: 220 }}
+      >
         <div ref={setAnchor} data-slot="composer" className="rounded-lg border p-2 text-sm">
           Composer (inside an overflow-hidden container)
         </div>
@@ -131,6 +173,9 @@ export const NotClippedInPortal: StoryObj = {
     // It sits above the clipped box and is fully visible (not cut to the 70px clip).
     await expect(rect.bottom).toBeLessThanOrEqual(clipRect.top + 20);
     await expect(rect.height).toBeGreaterThan(100);
-    await expect(within(popover).getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true');
+    await expect(within(popover).getAllByRole('option')[0]).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
   },
 };

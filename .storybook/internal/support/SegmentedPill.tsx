@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 export interface PillSegment {
   content: React.ReactNode;
@@ -23,8 +23,12 @@ export const SegmentedPill: React.FC<SegmentedPillProps> = ({ segments, classNam
     {segments.map((segment, index) => {
       const classes = [
         'flex items-center justify-center px-2.5 py-1',
-        index > 0 ? 'border-l border-[color:color-mix(in_srgb,var(--oui-border-field)_84%,white_16%)]' : '',
-        segment.tinted ? 'bg-[color:color-mix(in_srgb,var(--color-border)_70%,transparent)] tabular-nums text-muted-foreground' : '',
+        index > 0
+          ? 'border-l border-[color:color-mix(in_srgb,var(--oui-border-field)_84%,white_16%)]'
+          : '',
+        segment.tinted
+          ? 'bg-[color:color-mix(in_srgb,var(--color-border)_70%,transparent)] tabular-nums text-muted-foreground'
+          : '',
         segment.uppercase ? 'uppercase tracking-wider text-foreground/90' : '',
         segment.className ?? '',
       ];

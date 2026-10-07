@@ -13,7 +13,12 @@ beforeAll(() => {
   }
 });
 
-import { Select, type SelectProps, type SelectSize, type SelectVariant } from '@oc-tech/omni-ui-components/Select';
+import {
+  Select,
+  type SelectProps,
+  type SelectSize,
+  type SelectVariant,
+} from '@oc-tech/omni-ui-components/Select';
 
 const baseOptions = [
   { value: 'US', label: 'United States' },
@@ -21,7 +26,8 @@ const baseOptions = [
   { value: 'UK', label: 'United Kingdom' },
 ];
 
-const renderSelect = (overrides: Partial<SelectProps> = {}) => render(<Select data-testid="s" options={baseOptions} {...overrides} />);
+const renderSelect = (overrides: Partial<SelectProps> = {}) =>
+  render(<Select data-testid="s" options={baseOptions} {...overrides} />);
 
 /* The combobox renders BOTH a Popover-trigger <button> (visible) and a
  * hidden native <select> (for form data + tests). `screen.getByTestId('s')`
@@ -156,14 +162,18 @@ describe('omni-ui-components/Select', () => {
       const user = userEvent.setup();
       renderSelect();
       await user.click(screen.getByTestId('s'));
-      expect(within(screen.getByTestId('s-popover')).queryByPlaceholderText(/search/i)).not.toBeInTheDocument();
+      expect(
+        within(screen.getByTestId('s-popover')).queryByPlaceholderText(/search/i),
+      ).not.toBeInTheDocument();
     });
 
     it('renders the search input when searchable=true', async () => {
       const user = userEvent.setup();
       renderSelect({ searchable: true });
       await user.click(screen.getByTestId('s'));
-      expect(within(screen.getByTestId('s-popover')).getByPlaceholderText(/search/i)).toBeInTheDocument();
+      expect(
+        within(screen.getByTestId('s-popover')).getByPlaceholderText(/search/i),
+      ).toBeInTheDocument();
     });
 
     it('renders an empty state when searchable + search filters everything', async () => {

@@ -1,36 +1,58 @@
-import * as React from 'react';
-import { ArrowUp, Check, CircleCheck, Copy, EyeOff, Mic, Pencil, RefreshCw, ThumbsDown, ThumbsUp, Wrench, Brain, CircleStop, ChevronDown, ChevronLeft, ChevronRight, Loader, FileText, Image as ImageIcon, LayoutGrid } from 'lucide-react';
-
-import { IconButton } from '@oc-tech/omni-ui-components/IconButton';
-import { Input } from '@oc-tech/omni-ui-components/Input';
-import { Panel, type PanelProps } from '@oc-tech/omni-ui-components/Panel';
-import { highlightLines } from '@oc-tech/omni-ui-components/Highlight';
-import {
-  buildTurns,
-  codeBlockId,
-  conversationScroll,
-  Transcript,
-  type ChatMessage,
-  type ChatRun,
-  type ConversationTurn,
-  type TranscriptEntry,
-  type TranscriptProps,
-} from '@oc-tech/omni-ui-components/Transcript';
 import { ApprovalCard } from '@oc-tech/omni-ui-components/ApprovalCard';
 import { ErrorCard } from '@oc-tech/omni-ui-components/ErrorCard';
+import { highlightLines } from '@oc-tech/omni-ui-components/Highlight';
+import { IconButton } from '@oc-tech/omni-ui-components/IconButton';
+import { Input } from '@oc-tech/omni-ui-components/Input';
 import { Markdown } from '@oc-tech/omni-ui-components/Markdown';
 import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
+import { Panel, type PanelProps } from '@oc-tech/omni-ui-components/Panel';
 import { Sources } from '@oc-tech/omni-ui-components/Sources';
 import { StepTimeline } from '@oc-tech/omni-ui-components/StepTimeline';
 import { Suggestions } from '@oc-tech/omni-ui-components/Suggestions';
 import { Thinking } from '@oc-tech/omni-ui-components/Thinking';
+import {
+  buildTurns,
+  type ChatMessage,
+  type ChatRun,
+  type ConversationTurn,
+  codeBlockId,
+  conversationScroll,
+  Transcript,
+  type TranscriptEntry,
+  type TranscriptProps,
+} from '@oc-tech/omni-ui-components/Transcript';
 import { VersionPager } from '@oc-tech/omni-ui-components/VersionPager';
+import {
+  ArrowUp,
+  Brain,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  CircleCheck,
+  CircleStop,
+  Copy,
+  EyeOff,
+  FileText,
+  Image as ImageIcon,
+  LayoutGrid,
+  Loader,
+  Mic,
+  Pencil,
+  RefreshCw,
+  ThumbsDown,
+  ThumbsUp,
+  Wrench,
+} from 'lucide-react';
+import * as React from 'react';
+import type { Variant } from '../../internal/support/makeFactory';
 import { ComposerDemo } from '../Composer/Composer.factories';
 import type { OnAction } from '../SplitButton/SplitButton.factories';
-import type { Variant } from '../../internal/support/makeFactory';
 
 /** Build `<Transcript>` props for standalone stories and tests (icons are nodes, so the factory supplies them). */
-export const transcriptPropsFactory = (overrides: Partial<TranscriptProps> = {}): TranscriptProps => ({
+export const transcriptPropsFactory = (
+  overrides: Partial<TranscriptProps> = {},
+): TranscriptProps => ({
   entries: [],
   copyIcon: <Copy />,
   copiedIcon: <Check />,
@@ -39,26 +61,50 @@ export const transcriptPropsFactory = (overrides: Partial<TranscriptProps> = {})
 
 /** Board 1d, ready state: two interviewer lines around a "no question found" event chip. */
 export const readyEntries = (): TranscriptEntry[] => [
-  { id: 'a', kind: 'speech', speaker: 'Mic', time: '08:21', text: "Love to hear why you're interested in the role you're applying for." },
+  {
+    id: 'a',
+    kind: 'speech',
+    speaker: 'Mic',
+    time: '08:21',
+    text: "Love to hear why you're interested in the role you're applying for.",
+  },
   { id: 'b', kind: 'event', icon: <EyeOff />, text: 'S1 · no question found · 08:33' },
   { id: 'c', kind: 'speech', speaker: 'Mic', time: '08:34', text: 'Just kick things off.' },
 ];
 
 /** Board 1d, analysing: an interviewer line and the person's own message. */
 export const analysingEntries = (): TranscriptEntry[] => [
-  { id: 'a', kind: 'speech', speaker: 'Mic', time: '10:56', text: "Let's do a coding one. It's on your screen now." },
+  {
+    id: 'a',
+    kind: 'speech',
+    speaker: 'Mic',
+    time: '10:56',
+    text: "Let's do a coding one. It's on your screen now.",
+  },
   { id: 'b', kind: 'message', text: 'Assume the input is sorted' },
 ];
 
 /** Board 1d, answer ready: an "answered" event chip, then the next interviewer line. */
 export const answeredEntries = (): TranscriptEntry[] => [
   { id: 'a', kind: 'event', icon: <CircleCheck />, text: 'S2 · Two Sum · answered' },
-  { id: 'b', kind: 'speech', speaker: 'Mic', time: '10:58', text: 'Walk me through your approach first.' },
+  {
+    id: 'b',
+    kind: 'speech',
+    speaker: 'Mic',
+    time: '10:58',
+    text: 'Walk me through your approach first.',
+  },
 ];
 
 /** A merged phrase that was flagged edited, with the updated time. */
 export const editedEntries = (): TranscriptEntry[] => [
-  { id: 'a', kind: 'speech', speaker: 'Mic', time: '08:21', text: "Love to hear why you're interested in the role." },
+  {
+    id: 'a',
+    kind: 'speech',
+    speaker: 'Mic',
+    time: '08:21',
+    text: "Love to hear why you're interested in the role.",
+  },
   {
     id: 'b',
     kind: 'speech',
@@ -67,14 +113,32 @@ export const editedEntries = (): TranscriptEntry[] => [
     edited: true,
     text: "Love to hear why you're interested in the role you're applying for, and what you know about the team.",
   },
-  { id: 'c', kind: 'speech', speaker: 'Interviewer', tone: 'accent', time: '08:23', interim: true, text: 'And how did you hear about' },
+  {
+    id: 'c',
+    kind: 'speech',
+    speaker: 'Interviewer',
+    tone: 'accent',
+    time: '08:23',
+    interim: true,
+    text: 'And how did you hear about',
+  },
 ];
 
 /** Own messages beside interviewer lines. */
 export const userMessageEntries = (): TranscriptEntry[] => [
-  { id: 'a', kind: 'speech', speaker: 'Mic', time: '10:56', text: "Let's do a coding one. It's on your screen now." },
+  {
+    id: 'a',
+    kind: 'speech',
+    speaker: 'Mic',
+    time: '10:56',
+    text: "Let's do a coding one. It's on your screen now.",
+  },
   { id: 'b', kind: 'message', text: 'Assume the input is sorted' },
-  { id: 'c', kind: 'message', text: 'Can the array hold duplicates, or are the values distinct? I want to settle that before I pick a data structure.' },
+  {
+    id: 'c',
+    kind: 'message',
+    text: 'Can the array hold duplicates, or are the values distinct? I want to settle that before I pick a data structure.',
+  },
 ];
 
 /** The two-sum answer as explicit blocks: your question, then a reply with prose around a TypeScript code block. */
@@ -96,7 +160,10 @@ export const transcriptVariants: Variant<TranscriptProps>[] = [
   { name: 'Own message', args: { entries: analysingEntries() } },
   { name: 'Answered event', args: { entries: answeredEntries() } },
   { name: 'Edited and interim', args: { entries: editedEntries() } },
-  { name: 'Code block (fences)', args: { entries: codeEntries(), fences: true, onCopyCode: () => undefined } },
+  {
+    name: 'Code block (fences)',
+    args: { entries: codeEntries(), fences: true, onCopyCode: () => undefined },
+  },
 ];
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -161,7 +228,9 @@ export const ComposerExample: React.FC<ComposerExampleProps> = ({
             tone={dictating ? 'danger' : undefined}
             pressed={dictating}
             // Neutral at rest: the board's quiet tinted square, no border; the danger tone replaces it while dictating.
-            className={dictating ? BOARD_BUTTON : `${BOARD_BUTTON} bg-[color:var(--oui-tone-accent-bg)]`}
+            className={
+              dictating ? BOARD_BUTTON : `${BOARD_BUTTON} bg-[color:var(--oui-tone-accent-bg)]`
+            }
             onClick={toggleDictation}
           />
           <IconButton
@@ -278,7 +347,8 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
 // Conversation mode (turns): messages -> buildTurns -> Transcript, with the other library parts in the slots.
 // ---------------------------------------------------------------------------------------------------------------
 
-const at = (minute: number, second = 0) => new Date(Date.UTC(2026, 9, 6, 9, minute, second)).toISOString();
+const at = (minute: number, second = 0) =>
+  new Date(Date.UTC(2026, 9, 6, 9, minute, second)).toISOString();
 
 /** A finished exchange with a tool call, thinking, a cited answer, sources, follow-ups, two versions of the question. */
 export const chatMessages = (): ChatMessage[] => [
@@ -289,28 +359,66 @@ export const chatMessages = (): ChatMessage[] => [
     siblings: [{ id: 'u1' }, { id: 'u1b' }],
     parts: [
       { type: 'attachment', kind: 'file', id: 'att-1', name: 'two-sum-notes.md' },
-      { type: 'text', text: 'Explain two sum in TypeScript and why a hash map beats the nested loop.' },
+      {
+        type: 'text',
+        text: 'Explain two sum in TypeScript and why a hash map beats the nested loop.',
+      },
     ],
   },
-  { id: 'a1', role: 'assistant', createdAt: at(0, 2), parts: [{ type: 'tool-call', id: 'call-1', name: 'searchEvidence', input: { query: 'two sum' } }] },
-  { id: 't1', role: 'tool', createdAt: at(0, 3), parts: [{ type: 'tool-result', id: 'call-1', output: { passages: 3 } }] },
+  {
+    id: 'a1',
+    role: 'assistant',
+    createdAt: at(0, 2),
+    parts: [
+      { type: 'tool-call', id: 'call-1', name: 'searchEvidence', input: { query: 'two sum' } },
+    ],
+  },
+  {
+    id: 't1',
+    role: 'tool',
+    createdAt: at(0, 3),
+    parts: [{ type: 'tool-result', id: 'call-1', output: { passages: 3 } }],
+  },
   {
     id: 'a2',
     role: 'assistant',
     createdAt: at(0, 9),
     siblings: [{ id: 'a2' }, { id: 'a2b' }],
     parts: [
-      { type: 'reasoning', text: 'The hash map stores each value with its index, so each lookup is O(1).', seconds: 4 },
+      {
+        type: 'reasoning',
+        text: 'The hash map stores each value with its index, so each lookup is O(1).',
+        seconds: 4,
+      },
       {
         type: 'text',
         text: 'Keep a **map** of value to index and look up the complement as you scan [1].\n\n```ts\nfunction twoSum(nums: number[], target: number) {\n  const seen = new Map<number, number>();\n  for (let i = 0; i < nums.length; i++) {\n    const j = seen.get(target - nums[i]);\n    if (j !== undefined) return [j, i];\n    seen.set(nums[i], i);\n  }\n  return [];\n}\n```\n\nTime is **O(n)** and space is **O(n)**.',
       },
-      { type: 'sources', items: [{ n: 1, id: 'src-1', title: 'Two Sum, the hash map pass', meta: 'two-sum-notes.md', quote: 'Store each number with its index and check target - n before inserting it.' }] },
-      { type: 'suggestions', items: ['What if the input is sorted?', 'Show the two pointer version'] },
+      {
+        type: 'sources',
+        items: [
+          {
+            n: 1,
+            id: 'src-1',
+            title: 'Two Sum, the hash map pass',
+            meta: 'two-sum-notes.md',
+            quote: 'Store each number with its index and check target - n before inserting it.',
+          },
+        ],
+      },
+      {
+        type: 'suggestions',
+        items: ['What if the input is sorted?', 'Show the two pointer version'],
+      },
       { type: 'usage', usage: { total: 1280 } },
     ],
   },
-  { id: 'u2', role: 'user', createdAt: at(1), parts: [{ type: 'text', text: 'What changes if the array holds duplicates?' }] },
+  {
+    id: 'u2',
+    role: 'user',
+    createdAt: at(1),
+    parts: [{ type: 'text', text: 'What changes if the array holds duplicates?' }],
+  },
 ];
 
 /** The second answer, finished (used for the fully answered conversation). */
@@ -318,7 +426,12 @@ const secondAnswer = (): ChatMessage => ({
   id: 'a3',
   role: 'assistant',
   createdAt: at(1, 6),
-  parts: [{ type: 'text', text: 'Nothing: the map keeps the **latest** index for a value, and the complement check runs before the insert, so `[3, 3]` with target `6` still returns `[0, 1]`.' }],
+  parts: [
+    {
+      type: 'text',
+      text: 'Nothing: the map keeps the **latest** index for a value, and the complement check runs before the insert, so `[3, 3]` with target `6` still returns `[0, 1]`.',
+    },
+  ],
 });
 
 export const chatRuns = (): ChatRun[] => [
@@ -331,23 +444,42 @@ export const chatRuns = (): ChatRun[] => [
 export const longHistoryTurns = (count = 3000): ConversationTurn[] =>
   buildTurns(
     Array.from({ length: count }, (_, n): ChatMessage[] => [
-      { id: `lu${n}`, role: 'user', createdAt: '2026-10-06T09:00:00Z', parts: [{ type: 'text', text: `Question ${n + 1}: how does case ${n + 1} behave?` }] },
-      { id: `la${n}`, role: 'assistant', createdAt: '2026-10-06T09:00:05Z', parts: [{ type: 'text', text: `Answer ${n + 1}: a short reply for case ${n + 1}.` }] },
+      {
+        id: `lu${n}`,
+        role: 'user',
+        createdAt: '2026-10-06T09:00:00Z',
+        parts: [{ type: 'text', text: `Question ${n + 1}: how does case ${n + 1} behave?` }],
+      },
+      {
+        id: `la${n}`,
+        role: 'assistant',
+        createdAt: '2026-10-06T09:00:05Z',
+        parts: [{ type: 'text', text: `Answer ${n + 1}: a short reply for case ${n + 1}.` }],
+      },
     ]).flat(),
     [],
   );
 
-export const answeredTurns = (): ConversationTurn[] => buildTurns([...chatMessages(), secondAnswer()], chatRuns());
+export const answeredTurns = (): ConversationTurn[] =>
+  buildTurns([...chatMessages(), secondAnswer()], chatRuns());
 /** The same conversation with the last question still waiting for its answer (streams when `busy`). */
 /** The first question carries four files as read-only cards: a document, an image thumbnail, one still uploading and one "Not sent". */
 export const attachmentTurns = (): ConversationTurn[] => {
   const messages = chatMessages();
-  const thumb = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='%233b6fe0'/><circle cx='22' cy='24' r='8' fill='%23ffffff' opacity='.85'/><path d='M0 56 L22 34 L40 50 L52 40 L64 52 V64 H0Z' fill='%231a3a7a'/></svg>";
+  const thumb =
+    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='%233b6fe0'/><circle cx='22' cy='24' r='8' fill='%23ffffff' opacity='.85'/><path d='M0 56 L22 34 L40 50 L52 40 L64 52 V64 H0Z' fill='%231a3a7a'/></svg>";
   messages[0] = {
     ...messages[0],
     parts: [
       { type: 'attachment', kind: 'file', id: 'att-1', name: 'two-sum-notes.md', meta: 'File' },
-      { type: 'attachment', kind: 'image', id: 'att-2', name: 'whiteboard.png', meta: 'Image', previewUrl: thumb },
+      {
+        type: 'attachment',
+        kind: 'image',
+        id: 'att-2',
+        name: 'whiteboard.png',
+        meta: 'Image',
+        previewUrl: thumb,
+      },
       { type: 'attachment', kind: 'file', id: 'att-3', name: 'big-spec.pdf', status: 'uploading' },
       { type: 'attachment', kind: 'file', id: 'att-4', name: 'scan.pdf', status: 'failed' },
       ...messages[0].parts.filter((part) => part.type !== 'attachment'),
@@ -356,12 +488,25 @@ export const attachmentTurns = (): ConversationTurn[] => {
   return buildTurns([...messages, secondAnswer()], chatRuns());
 };
 
-export const streamingTurns = (): ConversationTurn[] => buildTurns(chatMessages(), [chatRuns()[0], { id: 'r2', userMessageId: 'u2', status: 'running' }]);
+export const streamingTurns = (): ConversationTurn[] =>
+  buildTurns(chatMessages(), [chatRuns()[0], { id: 'r2', userMessageId: 'u2', status: 'running' }]);
 /** The last run failed: the error slot shows. */
 export const failedTurns = (): ConversationTurn[] =>
-  buildTurns(chatMessages(), [chatRuns()[0], { id: 'r2', userMessageId: 'u2', status: 'failed', error: { code: 'model-unavailable', message: 'The model did not answer in time.' } }]);
+  buildTurns(chatMessages(), [
+    chatRuns()[0],
+    {
+      id: 'r2',
+      userMessageId: 'u2',
+      status: 'failed',
+      error: { code: 'model-unavailable', message: 'The model did not answer in time.' },
+    },
+  ]);
 /** The last run was cancelled. */
-export const stoppedTurns = (): ConversationTurn[] => buildTurns([...chatMessages(), { ...secondAnswer(), status: 'partial' }], [chatRuns()[0], { id: 'r2', userMessageId: 'u2', status: 'cancelled' }]);
+export const stoppedTurns = (): ConversationTurn[] =>
+  buildTurns(
+    [...chatMessages(), { ...secondAnswer(), status: 'partial' }],
+    [chatRuns()[0], { id: 'r2', userMessageId: 'u2', status: 'cancelled' }],
+  );
 
 const kindIcons = { file: <FileText />, image: <ImageIcon />, surface: <LayoutGrid /> };
 
@@ -391,7 +536,8 @@ export interface ConversationDemoProps {
   onAction?: OnAction;
 }
 
-const LIVE_TEXT = 'Duplicates are fine: the map keeps the latest index for a value, and the complement check runs before the insert.';
+const LIVE_TEXT =
+  'Duplicates are fine: the map keeps the latest index for a value, and the complement check runs before the insert.';
 
 /**
  * A whole chat: `Panel` + conversation `Transcript` + `ComposerDemo` dock. The parts built elsewhere plug into the
@@ -429,7 +575,10 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
   React.useEffect(() => {
     if (editingProp) {
       const turn = turns.find((candidate) => candidate.id === editingProp);
-      if (turn) setEditValue(turn.user.parts.flatMap((part) => (part.type === 'text' ? [part.text] : [])).join('\n'));
+      if (turn)
+        setEditValue(
+          turn.user.parts.flatMap((part) => (part.type === 'text' ? [part.text] : [])).join('\n'),
+        );
     }
   }, [editingProp, turns]);
 
@@ -453,12 +602,14 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
     clearTimeout(timer.current);
     timer.current = setTimeout(() => setCopied(null), 1500);
   };
-  const promptOfTurn = (turn: ConversationTurn) => turn.user.parts.flatMap((part) => (part.type === 'text' ? [part.text] : [])).join('\n');
+  const promptOfTurn = (turn: ConversationTurn) =>
+    turn.user.parts.flatMap((part) => (part.type === 'text' ? [part.text] : [])).join('\n');
 
   const pager = (message: ChatMessage | undefined) => {
     const siblings = message?.siblings ?? [];
     if (!message || siblings.length < 2) return null;
-    const index = version[message.id] ?? siblings.findIndex((candidate) => candidate.id === message.id);
+    const index =
+      version[message.id] ?? siblings.findIndex((candidate) => candidate.id === message.id);
     return (
       <VersionPager
         index={index}
@@ -475,7 +626,10 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
   };
 
   return (
-    <div className="box-border flex rounded-xl p-3.5" style={{ background: '#1a4f96', height, ['--oui-panel-see-through' as string]: seeThrough }}>
+    <div
+      className="box-border flex rounded-xl p-3.5"
+      style={{ background: '#1a4f96', height, ['--oui-panel-see-through' as string]: seeThrough }}
+    >
       <Panel
         title="Chat"
         width={width}
@@ -489,13 +643,21 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
           turns={empty ? [] : turns}
           busy={busy}
           waiting={waiting}
-          live={busy ? { text: live, reasoning: 'Comparing the nested loop with a map lookup…' } : undefined}
+          live={
+            busy
+              ? { text: live, reasoning: 'Comparing the nested loop with a map lookup…' }
+              : undefined
+          }
           hasEarlier={hasEarlier}
           windowSize={windowSize}
           windowStep={windowStep}
           onLoadEarlier={(oldest) => onAction?.('load-earlier', oldest?.id)}
           readOnly={readOnly}
-          empty={<div className="py-10 text-center text-sm text-[color:var(--oui-panel-meta-fg)]">What are we working on?</div>}
+          empty={
+            <div className="py-10 text-center text-sm text-[color:var(--oui-panel-meta-fg)]">
+              What are we working on?
+            </div>
+          }
           copyIcon={<Copy />}
           editIcon={<Pencil />}
           stoppedIcon={<CircleStop />}
@@ -519,7 +681,9 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
           }}
           onRetry={(turn) => onAction?.('retry', turn.id)}
           onRegenerate={(turn) => onAction?.('regenerate', turn.id)}
-          onSelectVersion={(turn, version) => onAction?.('select-version', { turn: turn.id, version: version.id })}
+          onSelectVersion={(turn, version) =>
+            onAction?.('select-version', { turn: turn.id, version: version.id })
+          }
           onAttachmentClick={(attachment) => onAction?.('attachment', attachment.id)}
           onCopyUser={(turn) => copy(promptOfTurn(turn), `u-${turn.id}`)}
           renderMarkdown={(text, context) => (
@@ -546,7 +710,15 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
                     detail: step.done ? '3 passages' : undefined,
                     state: step.failed ? 'failed' : step.done ? 'done' : 'running',
                   }))}
-                  status={context.waiting ? 'waiting' : context.running ? 'running' : context.stopped ? 'stopped' : 'done'}
+                  status={
+                    context.waiting
+                      ? 'waiting'
+                      : context.running
+                        ? 'running'
+                        : context.stopped
+                          ? 'stopped'
+                          : 'done'
+                  }
                   seconds={turn.answer.seconds}
                   icons={{ done: <Check />, chevron: <ChevronDown />, spinner: <Loader /> }}
                 />
@@ -562,23 +734,67 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
                   chevron={<ChevronDown />}
                 />
               ) : null,
-            sources: (turn) => (turn.answer?.sources.length ? <Sources items={turn.answer.sources} cardIcon={<FileText />} /> : null),
+            sources: (turn) =>
+              turn.answer?.sources.length ? (
+                <Sources items={turn.answer.sources} cardIcon={<FileText />} />
+              ) : null,
             actions: (turn, context) => (
               <MessageActions
                 meta={turn.answer?.usage ? 'Sonnet · 1.3k tokens' : undefined}
                 actions={[
-                  { id: 'copy', icon: copied === turn.id ? <Check /> : <Copy />, label: copied === turn.id ? 'Copied' : 'Copy', onClick: () => copy(turn.answer?.text ?? '', turn.id) },
-                  ...(context.regenerate ? [{ id: 'regen', icon: <RefreshCw />, label: 'Regenerate', disabled: context.running, onClick: context.regenerate }] : []),
-                  ...(turn.answer?.final?.siblings && turn.answer.final.siblings.length > 1 ? [{ id: 'versions', node: pager(turn.answer.final) }] : []),
-                  { id: 'up', icon: <ThumbsUp />, label: 'Good answer', pressed: sent === 'up', onClick: () => setSent('up') },
-                  { id: 'down', icon: <ThumbsDown />, label: 'Bad answer', pressed: sent === 'down', onClick: () => setSent('down') },
+                  {
+                    id: 'copy',
+                    icon: copied === turn.id ? <Check /> : <Copy />,
+                    label: copied === turn.id ? 'Copied' : 'Copy',
+                    onClick: () => copy(turn.answer?.text ?? '', turn.id),
+                  },
+                  ...(context.regenerate
+                    ? [
+                        {
+                          id: 'regen',
+                          icon: <RefreshCw />,
+                          label: 'Regenerate',
+                          disabled: context.running,
+                          onClick: context.regenerate,
+                        },
+                      ]
+                    : []),
+                  ...(turn.answer?.final?.siblings && turn.answer.final.siblings.length > 1
+                    ? [{ id: 'versions', node: pager(turn.answer.final) }]
+                    : []),
+                  {
+                    id: 'up',
+                    icon: <ThumbsUp />,
+                    label: 'Good answer',
+                    pressed: sent === 'up',
+                    onClick: () => setSent('up'),
+                  },
+                  {
+                    id: 'down',
+                    icon: <ThumbsDown />,
+                    label: 'Bad answer',
+                    pressed: sent === 'down',
+                    onClick: () => setSent('down'),
+                  },
                 ]}
               />
             ),
-            suggestions: (turn) => (turn.answer?.suggestions.length ? <Suggestions items={turn.answer.suggestions.map((label) => ({ id: label, label }))} onSelect={(item) => onAction?.('suggestion', item.label)} /> : null),
+            suggestions: (turn) =>
+              turn.answer?.suggestions.length ? (
+                <Suggestions
+                  items={turn.answer.suggestions.map((label) => ({ id: label, label }))}
+                  onSelect={(item) => onAction?.('suggestion', item.label)}
+                />
+              ) : null,
             approvalsAfter: (_turn, context) =>
               approval && context.last ? (
-                <ApprovalCard title="Allow the assistant to run the tests?" tool="runTests" tags={['runTests', 'sandbox']} status="pending" onDecide={(decision) => onAction?.('approval', decision)} />
+                <ApprovalCard
+                  title="Allow the assistant to run the tests?"
+                  tool="runTests"
+                  tags={['runTests', 'sandbox']}
+                  status="pending"
+                  onDecide={(decision) => onAction?.('approval', decision)}
+                />
               ) : null,
             error: (turn, context) => (
               <ErrorCard
@@ -598,6 +814,13 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
 /** Conversation configurations for the overview. */
 export const conversationVariants: Variant<TranscriptProps>[] = [
   { name: 'Conversation (turns)', args: { turns: answeredTurns(), copyIcon: <Copy /> } },
-  { name: 'Streaming', args: { turns: streamingTurns(), busy: true, live: { text: 'Duplicates are fine: the map keeps the latest index' } } },
+  {
+    name: 'Streaming',
+    args: {
+      turns: streamingTurns(),
+      busy: true,
+      live: { text: 'Duplicates are fine: the map keeps the latest index' },
+    },
+  },
   { name: 'Read only', args: { turns: answeredTurns(), readOnly: true } },
 ];

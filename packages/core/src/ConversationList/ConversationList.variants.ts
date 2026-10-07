@@ -7,7 +7,8 @@ export const conversationListVariants = cva(
     variants: {
       docked: {
         true: 'h-full w-full border-r border-solid border-[color:var(--oui-panel-divider)]',
-        false: 'h-full w-full rounded-[var(--oui-panel-radius)] border border-solid border-[color:var(--oui-panel-border)] shadow-xl',
+        false:
+          'h-full w-full rounded-[var(--oui-panel-radius)] border border-solid border-[color:var(--oui-panel-border)] shadow-xl',
       },
     },
     defaultVariants: { docked: true },
@@ -19,7 +20,10 @@ export const conversationRowVariants = cva(
   'group/row relative flex items-center gap-0.5 rounded-lg px-1 transition-colors hover:bg-[color:var(--oui-tone-neutral-bg)] focus-within:bg-[color:var(--oui-tone-neutral-bg)]',
   {
     variants: {
-      active: { true: 'bg-[color:var(--oui-tone-accent-bg)] hover:bg-[color:var(--oui-tone-accent-bg)]', false: '' },
+      active: {
+        true: 'bg-[color:var(--oui-tone-accent-bg)] hover:bg-[color:var(--oui-tone-accent-bg)]',
+        false: '',
+      },
     },
     defaultVariants: { active: false },
   },

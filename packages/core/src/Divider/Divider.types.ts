@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 export interface DividerProps extends React.ComponentPropsWithoutRef<'div'> {
   orientation?: 'horizontal' | 'vertical';

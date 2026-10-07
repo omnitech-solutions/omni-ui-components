@@ -12,12 +12,22 @@ export const sampleShortcuts = (): ShortcutItem[] => [
 ];
 
 /** Build `<ShortcutList>` props for standalone stories and tests. */
-export const shortcutListPropsFactory = (overrides: Partial<ShortcutListProps> = {}): ShortcutListProps => ({
+export const shortcutListPropsFactory = (
+  overrides: Partial<ShortcutListProps> = {},
+): ShortcutListProps => ({
   items: sampleShortcuts(),
   ...overrides,
 });
 
 export const shortcutListVariants: Variant<ShortcutListProps>[] = [
   { name: 'With heading', args: { title: 'Keyboard shortcuts' } },
-  { name: 'Windows / Linux glyphs', args: { describe: (shortcut) => shortcut.split('+').map((p) => (p === 'mod' ? 'Ctrl' : p === 'shift' ? 'Shift' : p.toUpperCase())) } },
+  {
+    name: 'Windows / Linux glyphs',
+    args: {
+      describe: (shortcut) =>
+        shortcut
+          .split('+')
+          .map((p) => (p === 'mod' ? 'Ctrl' : p === 'shift' ? 'Shift' : p.toUpperCase())),
+    },
+  },
 ];

@@ -19,7 +19,8 @@ export const isImageFile = (file: Pick<File, 'type'>): boolean => file.type.star
  * The value of an `<input type="file" accept>`: the same allowlist the validation uses, so a file the picker
  * offers is never refused afterwards (and one the picker hides is refused when dropped or pasted).
  */
-export const acceptAttribute = (accept: readonly string[] = DEFAULT_ATTACHMENT_TYPES): string => accept.join(',');
+export const acceptAttribute = (accept: readonly string[] = DEFAULT_ATTACHMENT_TYPES): string =>
+  accept.join(',');
 
 /**
  * Checks a list of files (the new ones, with `existing` counting those already attached) against the limits: at most
@@ -30,8 +31,16 @@ export const acceptAttribute = (accept: readonly string[] = DEFAULT_ATTACHMENT_T
  * @example
  * validateFiles([{ size: 20_000_000, type: 'application/pdf' }]); // { code: 'too-large', file }
  */
-export function validateFiles(files: readonly Pick<File, 'name' | 'size' | 'type'>[], limits: FileLimits = {}): FileRejection | null {
-  const { accept = DEFAULT_ATTACHMENT_TYPES, maxFiles = DEFAULT_MAX_FILES, maxBytes = DEFAULT_MAX_BYTES, existing = 0 } = limits;
+export function validateFiles(
+  files: readonly Pick<File, 'name' | 'size' | 'type'>[],
+  limits: FileLimits = {},
+): FileRejection | null {
+  const {
+    accept = DEFAULT_ATTACHMENT_TYPES,
+    maxFiles = DEFAULT_MAX_FILES,
+    maxBytes = DEFAULT_MAX_BYTES,
+    existing = 0,
+  } = limits;
   if (existing + files.length > maxFiles) return { code: 'too-many' };
   const big = files.find((file) => file.size > maxBytes);
   if (big) return { code: 'too-large', file: big };

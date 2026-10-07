@@ -9,7 +9,14 @@
  */
 export type ControlTone = 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'dim';
 
-export const CONTROL_TONES: readonly ControlTone[] = ['neutral', 'accent', 'success', 'warning', 'danger', 'dim'];
+export const CONTROL_TONES: readonly ControlTone[] = [
+  'neutral',
+  'accent',
+  'success',
+  'warning',
+  'danger',
+  'dim',
+];
 
 /** Filled: solid tone fill (neutral and dim are tinted surfaces with a border). */
 export const toneSolidClasses: Record<ControlTone, string> = {
@@ -58,10 +65,13 @@ export const toneTintClasses: Record<ControlTone, string> = {
 
 /** Badge fill per tone: the solid fill and its foreground. */
 export const toneBadgeClasses: Record<ControlTone, string> = {
-  neutral: 'bg-[color:var(--oui-tone-neutral-solid-bg)] text-[color:var(--oui-tone-neutral-solid-fg)]',
+  neutral:
+    'bg-[color:var(--oui-tone-neutral-solid-bg)] text-[color:var(--oui-tone-neutral-solid-fg)]',
   accent: 'bg-[color:var(--oui-tone-accent-solid-bg)] text-[color:var(--oui-tone-accent-solid-fg)]',
-  success: 'bg-[color:var(--oui-tone-success-solid-bg)] text-[color:var(--oui-tone-success-solid-fg)]',
-  warning: 'bg-[color:var(--oui-tone-warning-solid-bg)] text-[color:var(--oui-tone-warning-solid-fg)]',
+  success:
+    'bg-[color:var(--oui-tone-success-solid-bg)] text-[color:var(--oui-tone-success-solid-fg)]',
+  warning:
+    'bg-[color:var(--oui-tone-warning-solid-bg)] text-[color:var(--oui-tone-warning-solid-fg)]',
   danger: 'bg-[color:var(--oui-tone-danger-solid-bg)] text-[color:var(--oui-tone-danger-solid-fg)]',
   dim: 'bg-[color:var(--oui-tone-dim-border)] text-[color:var(--oui-tone-dim-fg)]',
 };
@@ -72,11 +82,15 @@ export const pressedClasses =
 
 /** Pressed look per tone, so a `danger` toggle (a live mic) is red when pressed instead of the default accent. */
 export const tonePressedClasses: Record<ControlTone, string> = {
-  neutral: 'aria-pressed:border-[color:var(--oui-tone-neutral-border)] aria-pressed:bg-[color:var(--oui-tone-neutral-bg)] aria-pressed:text-[color:var(--oui-tone-neutral-fg)]',
+  neutral:
+    'aria-pressed:border-[color:var(--oui-tone-neutral-border)] aria-pressed:bg-[color:var(--oui-tone-neutral-bg)] aria-pressed:text-[color:var(--oui-tone-neutral-fg)]',
   accent: '',
-  success: 'aria-pressed:border-[color:var(--oui-tone-success-border)] aria-pressed:bg-[color:var(--oui-tone-success-bg)] aria-pressed:text-[color:var(--oui-tone-success-fg)]',
-  warning: 'aria-pressed:border-[color:var(--oui-tone-warning-border)] aria-pressed:bg-[color:var(--oui-tone-warning-bg)] aria-pressed:text-[color:var(--oui-tone-warning-fg)]',
-  danger: 'aria-pressed:border-[color:var(--oui-tone-danger-border)] aria-pressed:bg-[color:var(--oui-tone-danger-bg)] aria-pressed:text-[color:var(--oui-tone-danger-fg)]',
+  success:
+    'aria-pressed:border-[color:var(--oui-tone-success-border)] aria-pressed:bg-[color:var(--oui-tone-success-bg)] aria-pressed:text-[color:var(--oui-tone-success-fg)]',
+  warning:
+    'aria-pressed:border-[color:var(--oui-tone-warning-border)] aria-pressed:bg-[color:var(--oui-tone-warning-bg)] aria-pressed:text-[color:var(--oui-tone-warning-fg)]',
+  danger:
+    'aria-pressed:border-[color:var(--oui-tone-danger-border)] aria-pressed:bg-[color:var(--oui-tone-danger-bg)] aria-pressed:text-[color:var(--oui-tone-danger-fg)]',
   dim: 'aria-pressed:border-[color:var(--oui-tone-dim-border)] aria-pressed:bg-[color:var(--oui-tone-dim-bg)] aria-pressed:text-[color:var(--oui-tone-dim-fg)]',
 };
 

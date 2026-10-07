@@ -1,16 +1,30 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { SelectPrimitive } from './SelectPrimitive';
 import type { SelectProps } from './Select.types';
+import { SelectPrimitive } from './SelectPrimitive';
 
 /**
  * Chrome-wrapped Omni Select. Composes {@link SelectPrimitive} with
  * label / description / error rows via {@link FieldShell}.
  */
 const SelectInner = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

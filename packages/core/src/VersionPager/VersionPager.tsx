@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { IconButton } from '../IconButton';
 import type { VersionItem, VersionPagerLabels, VersionPagerProps } from './VersionPager.types';
 
@@ -24,7 +23,19 @@ export const DEFAULT_VERSION_PAGER_LABELS: VersionPagerLabels = {
  */
 const VersionPagerImpl = React.forwardRef<HTMLDivElement, VersionPagerProps>(
   (
-    { index, count: countProp, versions, onMove, onSelect, disabled = false, previousIcon, nextIcon, labels: labelOverrides, className, ...rest },
+    {
+      index,
+      count: countProp,
+      versions,
+      onMove,
+      onSelect,
+      disabled = false,
+      previousIcon,
+      nextIcon,
+      labels: labelOverrides,
+      className,
+      ...rest
+    },
     ref,
   ) => {
     const labels = { ...DEFAULT_VERSION_PAGER_LABELS, ...labelOverrides };

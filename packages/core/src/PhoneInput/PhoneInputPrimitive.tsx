@@ -1,10 +1,10 @@
 import * as React from 'react';
-
-import { InputPrimitive } from '../Input/InputPrimitive';
 import type { InputPrimitiveProps } from '../Input/Input.types';
+import { InputPrimitive } from '../Input/InputPrimitive';
 import { formatPhone } from './formatPhone';
 
-export interface PhoneInputPrimitiveProps extends Omit<InputPrimitiveProps, 'type' | 'inputMode' | 'value' | 'onChange'> {
+export interface PhoneInputPrimitiveProps
+  extends Omit<InputPrimitiveProps, 'type' | 'inputMode' | 'value' | 'onChange'> {
   value?: string;
   onChange?: (next: string) => void;
   /** Default dial code (e.g. `+1`) — switches to international format. */
@@ -25,7 +25,9 @@ const PhoneInputPrimitiveInner = React.forwardRef<HTMLInputElement, PhoneInputPr
         ref={ref}
         type="tel"
         inputMode="tel"
-        placeholder={placeholder ?? (defaultDialCode ? `${defaultDialCode} 555 555 0100` : '(555) 555-0100')}
+        placeholder={
+          placeholder ?? (defaultDialCode ? `${defaultDialCode} 555 555 0100` : '(555) 555-0100')
+        }
         value={value}
         onChange={handleChange}
         {...rest}
@@ -35,4 +37,6 @@ const PhoneInputPrimitiveInner = React.forwardRef<HTMLInputElement, PhoneInputPr
 );
 PhoneInputPrimitiveInner.displayName = 'PhoneInputPrimitive';
 
-export const PhoneInputPrimitive = React.memo(PhoneInputPrimitiveInner) as typeof PhoneInputPrimitiveInner;
+export const PhoneInputPrimitive = React.memo(
+  PhoneInputPrimitiveInner,
+) as typeof PhoneInputPrimitiveInner;

@@ -1,5 +1,5 @@
-import * as React from 'react';
 import type { WidgetProps } from '@rjsf/utils';
+import * as React from 'react';
 
 export interface StableRjsfCallbacks<T = unknown> {
   onChange: (next: T) => void;
@@ -13,7 +13,8 @@ export interface StableRjsfCallbacks<T = unknown> {
 // ref and exposes constant-identity callbacks.
 export function useStableRjsfCallbacks<T = unknown>(
   props: Pick<WidgetProps, 'id' | 'onChange' | 'onBlur' | 'onFocus' | 'options'>,
-  transform: (next: T, emptyValue: unknown) => unknown = (next, empty) => (next === '' ? (empty ?? '') : next),
+  transform: (next: T, emptyValue: unknown) => unknown = (next, empty) =>
+    next === '' ? (empty ?? '') : next,
 ): StableRjsfCallbacks<T> {
   const refs = React.useRef({
     onChange: props.onChange,

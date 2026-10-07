@@ -1,17 +1,36 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 
-import { CommandPopover, type CommandItem, MENTION_PATTERN, mentionTrigger, SAVED_PROMPTS_PATTERN, savedPromptsTrigger, SLASH_PATTERN, slashTrigger, useCommandTrigger } from '@oc-tech/omni-ui-components/CommandPopover';
-import { commandPopoverPropsFactory, slashCommands, surfaceItems } from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
+import {
+  type CommandItem,
+  CommandPopover,
+  MENTION_PATTERN,
+  mentionTrigger,
+  SAVED_PROMPTS_PATTERN,
+  SLASH_PATTERN,
+  savedPromptsTrigger,
+  slashTrigger,
+  useCommandTrigger,
+} from '@oc-tech/omni-ui-components/CommandPopover';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  commandPopoverPropsFactory,
+  slashCommands,
+  surfaceItems,
+} from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
+import * as React from 'react';
 
 const ClippedHost: React.FC = () => {
   const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
   return (
     <>
       <div ref={setAnchor} />
-      <CommandPopover items={slashCommands()} label="x" anchor={anchor} onSelect={() => undefined} />
+      <CommandPopover
+        items={slashCommands()}
+        label="x"
+        anchor={anchor}
+        onSelect={() => undefined}
+      />
     </>
   );
 };
@@ -20,7 +39,11 @@ describe('omni-ui-components/CommandPopover', () => {
   it('is a labelled listbox with aria-selected options, a hint and hover highlight', async () => {
     const onActiveChange = vi.fn();
     const onSelect = vi.fn();
-    render(<CommandPopover {...commandPopoverPropsFactory({ onActiveChange, onSelect, hint: '↑↓ navigate' })} />);
+    render(
+      <CommandPopover
+        {...commandPopoverPropsFactory({ onActiveChange, onSelect, hint: '↑↓ navigate' })}
+      />,
+    );
     const list = screen.getByRole('listbox', { name: 'Commands' });
     const options = within(list).getAllByRole('option');
     expect(options[0]).toHaveAttribute('aria-selected', 'true');
@@ -34,7 +57,9 @@ describe('omni-ui-components/CommandPopover', () => {
   it('shows Nothing matches, or nothing when hideWhenEmpty', () => {
     const { rerender } = render(<CommandPopover {...commandPopoverPropsFactory({ items: [] })} />);
     expect(screen.getByText('Nothing matches')).toBeInTheDocument();
-    rerender(<CommandPopover {...commandPopoverPropsFactory({ items: [], hideWhenEmpty: true })} />);
+    rerender(
+      <CommandPopover {...commandPopoverPropsFactory({ items: [], hideWhenEmpty: true })} />,
+    );
     expect(document.querySelector('[data-slot="command-popover"]')).toBeNull();
   });
   it('trigger patterns are the original ones', () => {
@@ -56,7 +81,14 @@ describe('omni-ui-components/CommandPopover', () => {
       const hotkeys: string[] = [];
       const onSelect = vi.fn((item: Mine, _index: number): void => void hotkeys.push(item.hotkey));
       const onActiveChange = vi.fn();
-      const { rerender } = render(<CommandPopover items={mine} label="x" onSelect={onSelect} onActiveChange={onActiveChange} />);
+      const { rerender } = render(
+        <CommandPopover
+          items={mine}
+          label="x"
+          onSelect={onSelect}
+          onActiveChange={onActiveChange}
+        />,
+      );
       const options = screen.getAllByRole('option');
       await userEvent.hover(options[1]);
       expect(onActiveChange).toHaveBeenCalledWith(1);
@@ -65,7 +97,15 @@ describe('omni-ui-components/CommandPopover', () => {
       expect(onSelect.mock.calls[0][0]).toBe(mine[1]);
       expect(onSelect.mock.calls[0][1]).toBe(1);
       expect(hotkeys).toEqual(['B']);
-      rerender(<CommandPopover items={mine} label="x" activeIndex={0} onSelect={onSelect} onActiveChange={onActiveChange} />);
+      rerender(
+        <CommandPopover
+          items={mine}
+          label="x"
+          activeIndex={0}
+          onSelect={onSelect}
+          onActiveChange={onActiveChange}
+        />,
+      );
       await userEvent.hover(screen.getAllByRole('option')[1]);
       expect(onActiveChange).toHaveBeenLastCalledWith(1);
       expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true');
@@ -93,7 +133,13 @@ describe('omni-ui-components/CommandPopover', () => {
             <div data-slot="composer" ref={setAnchor}>
               <textarea aria-label="box" />
             </div>
-            <CommandPopover items={mine} label="x" anchor={anchor} onSelect={() => undefined} onClose={onClose} />
+            <CommandPopover
+              items={mine}
+              label="x"
+              anchor={anchor}
+              onSelect={() => undefined}
+              onClose={onClose}
+            />
           </div>
         );
       };
@@ -128,7 +174,14 @@ describe('omni-ui-components/CommandPopover', () => {
         });
         return (
           <div>
-            <textarea aria-label="p" value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={(e) => { command.onKeyDown(e); }} />
+            <textarea
+              aria-label="p"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              onKeyDown={(e) => {
+                command.onKeyDown(e);
+              }}
+            />
             {command.open ? <CommandPopover {...command.popoverProps} /> : null}
           </div>
         );
@@ -150,10 +203,25 @@ describe('omni-ui-components/CommandPopover', () => {
       const command = useCommandTrigger({
         value,
         triggers: [
-          slashTrigger({ source: slashCommands(), onPick: (item) => { onPick(item.id); setValue(''); }, popover: { label: 'Commands' } }),
+          slashTrigger({
+            source: slashCommands(),
+            onPick: (item) => {
+              onPick(item.id);
+              setValue('');
+            },
+            popover: { label: 'Commands' },
+          }),
           mentionTrigger({
-            source: asyncMention ? async (query) => surfaceItems().filter((item) => item.label.toLowerCase().includes(query.toLowerCase())) : surfaceItems(),
-            onPick: (item, { draft }) => { onPick(item.id); setValue(draft.replace(/@[^\s@]*$/, '')); },
+            source: asyncMention
+              ? async (query) =>
+                  surfaceItems().filter((item) =>
+                    item.label.toLowerCase().includes(query.toLowerCase()),
+                  )
+              : surfaceItems(),
+            onPick: (item, { draft }) => {
+              onPick(item.id);
+              setValue(draft.replace(/@[^\s@]*$/, ''));
+            },
             popover: { label: 'Add from Studio' },
           }),
         ],
@@ -164,7 +232,9 @@ describe('omni-ui-components/CommandPopover', () => {
             aria-label="box"
             value={value}
             onChange={(event) => setValue(event.target.value)}
-            onKeyDown={(event) => { command.onKeyDown(event); }}
+            onKeyDown={(event) => {
+              command.onKeyDown(event);
+            }}
             aria-activedescendant={command.activeDescendant}
           />
           {command.open ? <CommandPopover {...command.popoverProps} /> : null}
@@ -239,7 +309,12 @@ describe('omni-ui-components/CommandPopover saved prompts', () => {
     text: string;
   }
   const prompts: SavedPrompt[] = [
-    { id: 'star', label: 'STAR answer', description: 'Situation, task, action, result', text: 'Answer as STAR' },
+    {
+      id: 'star',
+      label: 'STAR answer',
+      description: 'Situation, task, action, result',
+      text: 'Answer as STAR',
+    },
     { id: 'edge', label: 'Edge cases', text: 'List the edge cases' },
   ];
 
@@ -250,15 +325,29 @@ describe('omni-ui-components/CommandPopover saved prompts', () => {
     expect(SAVED_PROMPTS_PATTERN.test('say /prompts x')).toBe(false);
   });
 
-  const Host: React.FC<{ onPick: (item: SavedPrompt) => void; source?: (query: string) => readonly SavedPrompt[] | Promise<readonly SavedPrompt[]> }> = ({ onPick, source }) => {
+  const Host: React.FC<{
+    onPick: (item: SavedPrompt) => void;
+    source?: (query: string) => readonly SavedPrompt[] | Promise<readonly SavedPrompt[]>;
+  }> = ({ onPick, source }) => {
     const [value, setValue] = React.useState('/prompts ');
     const command = useCommandTrigger<SavedPrompt>({
       value,
-      triggers: [savedPromptsTrigger<SavedPrompt>({ source: source ?? prompts, onPick: (item) => (onPick(item), setValue(item.text)), popover: { label: 'Saved prompts' } })],
+      triggers: [
+        savedPromptsTrigger<SavedPrompt>({
+          source: source ?? prompts,
+          onPick: (item) => (onPick(item), setValue(item.text)),
+          popover: { label: 'Saved prompts' },
+        }),
+      ],
     });
     return (
       <>
-        <textarea aria-label="m" value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={(e) => void command.onKeyDown(e)} />
+        <textarea
+          aria-label="m"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => void command.onKeyDown(e)}
+        />
         {command.open ? <CommandPopover<SavedPrompt> {...command.popoverProps} /> : null}
       </>
     );
@@ -277,7 +366,9 @@ describe('omni-ui-components/CommandPopover saved prompts', () => {
 
   it('a function source answers asynchronously and Enter picks the highlighted row', async () => {
     const onPick = vi.fn();
-    const source = vi.fn((query: string) => Promise.resolve(prompts.filter((p) => p.label.toLowerCase().includes(query.toLowerCase()))));
+    const source = vi.fn((query: string) =>
+      Promise.resolve(prompts.filter((p) => p.label.toLowerCase().includes(query.toLowerCase()))),
+    );
     render(<Host onPick={onPick} source={source} />);
     await waitFor(() => expect(screen.getAllByRole('option')).toHaveLength(2));
     const area = screen.getByLabelText('m');

@@ -1,11 +1,10 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { expectTypeOf } from 'vitest';
-import userEvent from '@testing-library/user-event';
-import { render, screen, within } from '@testing-library/react';
 
-import { Suggestions, type SuggestionItem } from '@oc-tech/omni-ui-components/Suggestions';
+import { type SuggestionItem, Suggestions } from '@oc-tech/omni-ui-components/Suggestions';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { suggestionsPropsFactory } from 'factories/omni-ui-components/Suggestions/Suggestions.factories';
+import { expectTypeOf } from 'vitest';
 
 describe('omni-ui-components/Suggestions', () => {
   it('draws a labelled column of chips with the icon node', () => {
@@ -31,7 +30,13 @@ describe('omni-ui-components/Suggestions', () => {
     const onSelect = vi.fn((item: Followup) => {
       expectTypeOf(item.prompt).toEqualTypeOf<string>();
     });
-    render(<Suggestions<Followup> items={items} onSelect={onSelect} renderItem={(item) => <i>{item.prompt}</i>} />);
+    render(
+      <Suggestions<Followup>
+        items={items}
+        onSelect={onSelect}
+        renderItem={(item) => <i>{item.prompt}</i>}
+      />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Write a test for it' }));
     expect(onSelect.mock.calls[0]![0]).toBe(items[0]);
   });

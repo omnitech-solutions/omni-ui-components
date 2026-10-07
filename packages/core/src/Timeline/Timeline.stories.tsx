@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Timeline } from '@oc-tech/omni-ui-components/Timeline';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Timeline> = {
   title: 'omni-ui-components/Timeline',

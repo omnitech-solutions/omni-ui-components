@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { SettingsDialog } from '@oc-tech/omni-ui-components/SettingsDialog';
+import { render, screen } from '@testing-library/react';
 import { settingsDialogPropsFactory } from 'factories/omni-ui-components/SettingsDialog/SettingsDialog.factories';
 
 describe('omni-ui-components/SettingsDialog portal', () => {

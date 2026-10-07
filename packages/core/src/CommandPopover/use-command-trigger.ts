@@ -1,9 +1,15 @@
 import * as React from 'react';
 
 import { useStableId } from '../lib';
-import type { CommandItem, CommandPopoverProps, CommandTrigger, UseCommandTriggerOptions } from './CommandPopover.types';
+import type {
+  CommandItem,
+  CommandPopoverProps,
+  CommandTrigger,
+  UseCommandTriggerOptions,
+} from './CommandPopover.types';
 
-const labelContains = (item: CommandItem, query: string) => item.label.toLowerCase().includes(query.toLowerCase());
+const labelContains = (item: CommandItem, query: string) =>
+  item.label.toLowerCase().includes(query.toLowerCase());
 const NO_ITEMS: readonly never[] = [];
 
 /**
@@ -18,7 +24,14 @@ const NO_ITEMS: readonly never[] = [];
  * <textarea onKeyDown={(e) => { if (command.onKeyDown(e)) return; … }} aria-activedescendant={command.activeDescendant} />
  * {command.open && <CommandPopover {...command.popoverProps} />}
  */
-export function useCommandTrigger<T extends CommandItem = CommandItem>({ value, triggers, disabled = false, onAfterPick, onClose, id: idProp }: UseCommandTriggerOptions<T>) {
+export function useCommandTrigger<T extends CommandItem = CommandItem>({
+  value,
+  triggers,
+  disabled = false,
+  onAfterPick,
+  onClose,
+  id: idProp,
+}: UseCommandTriggerOptions<T>) {
   const generatedId = useStableId('oui-command');
   const listboxId = idProp ?? generatedId;
   const [index, setIndex] = React.useState(0);
@@ -38,7 +51,9 @@ export function useCommandTrigger<T extends CommandItem = CommandItem>({ value, 
   const query = matched?.query ?? '';
 
   // Rows: an array filters synchronously; a function may answer later.
-  const [asyncState, setAsyncState] = React.useState<{ key: string; items: readonly T[] } | null>(null);
+  const [asyncState, setAsyncState] = React.useState<{ key: string; items: readonly T[] } | null>(
+    null,
+  );
   const [loading, setLoading] = React.useState(false);
   const source = trigger?.source;
   const syncItems = React.useMemo(() => {
@@ -77,7 +92,10 @@ export function useCommandTrigger<T extends CommandItem = CommandItem>({ value, 
   }, [trigger?.id, query, typeof source === 'function' ? 'fn' : 'arr']);
 
   const items: readonly T[] = syncItems ?? asyncState?.items ?? NO_ITEMS;
-  const open = Boolean(trigger) && dismissed !== value && !(trigger?.popover.hideWhenEmpty && items.length === 0 && !loading);
+  const open =
+    Boolean(trigger) &&
+    dismissed !== value &&
+    !(trigger?.popover.hideWhenEmpty && items.length === 0 && !loading);
 
   // A new query or trigger starts at the first row.
   React.useEffect(() => setIndex(0), [trigger?.id, query]);

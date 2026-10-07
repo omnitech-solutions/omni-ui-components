@@ -1,5 +1,5 @@
-import * as React from 'react';
 import classNames from 'classnames';
+import type * as React from 'react';
 import { useTable } from '../hooks/useTable';
 import { leafColumns } from '../internal';
 import type { TableColumn, TableProps } from '../Table.types';
@@ -10,7 +10,11 @@ export interface HeaderRowsProps<TRecord, TRowData> {
   renderRowDragHeader: () => React.ReactNode;
   renderSelectionHeader: () => React.ReactNode;
   renderExpandHeader: () => React.ReactNode;
-  renderHeaderCell: (col: TableColumn<TRecord, TRowData>, columnIndex: number, extraProps?: React.ThHTMLAttributes<HTMLTableCellElement>) => React.ReactNode;
+  renderHeaderCell: (
+    col: TableColumn<TRecord, TRowData>,
+    columnIndex: number,
+    extraProps?: React.ThHTMLAttributes<HTMLTableCellElement>,
+  ) => React.ReactNode;
   leafCount: (col: TableColumn<TRecord, TRowData>) => number;
   treeMode?: boolean;
 }
@@ -25,7 +29,17 @@ export function HeaderRows<TRecord, TRowData>({
   leafCount,
   treeMode = false,
 }: HeaderRowsProps<TRecord, TRowData>) {
-  const { table, props, registry, testIdPrefix, classMap, styleMap, mergedColumns, mergedLeafColumns, renderedLeafColumns } = useTable<TRecord, TRowData>();
+  const {
+    table,
+    props,
+    registry,
+    testIdPrefix,
+    classMap,
+    styleMap,
+    mergedColumns,
+    mergedLeafColumns,
+    renderedLeafColumns,
+  } = useTable<TRecord, TRowData>();
   const hasGroups = mergedColumns.some((col) => col.children?.length);
   const { HeaderRow } = registry.components;
 
@@ -68,7 +82,9 @@ export function HeaderRows<TRecord, TRowData>({
         {renderSelectionHeader()}
         {renderExpandHeader()}
         {mergedColumns.map((col, index) =>
-          col.children?.length ? renderHeaderCell(col, index, { colSpan: leafCount(col) }) : renderHeaderCell(col, index, { rowSpan: 2 }),
+          col.children?.length
+            ? renderHeaderCell(col, index, { colSpan: leafCount(col) })
+            : renderHeaderCell(col, index, { rowSpan: 2 }),
         )}
       </HeaderRow>
       <HeaderRow
@@ -81,8 +97,14 @@ export function HeaderRows<TRecord, TRowData>({
       >
         {hasDraggableRows && <th data-testid={`${testIdPrefix}-row-drag-header-cell-leaf`} />}
         {props.rowSelection && <th data-testid={`${testIdPrefix}-selection-header-cell-leaf`} />}
-        {!treeMode && props.expandable && props.expandable.showExpandColumn !== false && <th data-testid={`${testIdPrefix}-expand-header-cell-leaf`} />}
-        {mergedColumns.flatMap((col) => (col.children?.length ? leafColumns([col]).map((leaf, index) => renderHeaderCell(leaf, index)) : []))}
+        {!treeMode && props.expandable && props.expandable.showExpandColumn !== false && (
+          <th data-testid={`${testIdPrefix}-expand-header-cell-leaf`} />
+        )}
+        {mergedColumns.flatMap((col) =>
+          col.children?.length
+            ? leafColumns([col]).map((leaf, index) => renderHeaderCell(leaf, index))
+            : [],
+        )}
       </HeaderRow>
     </>
   );

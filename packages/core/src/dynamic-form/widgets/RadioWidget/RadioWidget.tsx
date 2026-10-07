@@ -1,7 +1,6 @@
-import * as React from 'react';
+import { type RadioOption, RadioPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
-
-import { RadioPrimitive, type RadioOption } from '@oc-tech/omni-ui-components';
+import * as React from 'react';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Radio widget. */
@@ -10,7 +9,8 @@ export const RadioWidget = (props: WidgetProps) => {
   const { onChange, onBlur, onFocus } = useStableRjsfCallbacks<string>(props, (next) => next);
 
   const radioOptions: RadioOption[] = React.useMemo(() => {
-    const enumOptions = (options?.enumOptions as { value: unknown; label: string }[] | undefined) ?? [];
+    const enumOptions =
+      (options?.enumOptions as { value: unknown; label: string }[] | undefined) ?? [];
     const enumDisabled = (options?.enumDisabled as unknown[] | undefined) ?? [];
     const descriptions = (options?.optionDescriptions as Record<string, string> | undefined) ?? {};
     return enumOptions.map((opt) => ({

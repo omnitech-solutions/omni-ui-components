@@ -1,5 +1,5 @@
-import * as React from 'react';
 import type { ColumnOrderState, VisibilityState } from '@tanstack/react-table';
+import * as React from 'react';
 import { filterVisibleColumns, useResponsiveScreens, visibleLeafColumns } from '../internal';
 import { detectTreeMode } from '../Table.tree';
 import type { TableColumn, TableProps } from '../Table.types';
@@ -26,10 +26,18 @@ export function useDerivedColumns<TRecord, TRowData>({
   const responsiveScreens = useResponsiveScreens();
   const childrenColumnName = expandable?.childrenColumnName ?? 'children';
   const treeMode = React.useMemo(
-    () => detectTreeMode(dataSource, childrenColumnName, expandable as TableProps<TRecord, unknown>['expandable']),
+    () =>
+      detectTreeMode(
+        dataSource,
+        childrenColumnName,
+        expandable as TableProps<TRecord, unknown>['expandable'],
+      ),
     [dataSource, childrenColumnName, expandable],
   );
-  const effectiveColumns = React.useMemo(() => (appendedColumns.length ? [...columns, ...appendedColumns] : columns), [columns, appendedColumns]);
+  const effectiveColumns = React.useMemo(
+    () => (appendedColumns.length ? [...columns, ...appendedColumns] : columns),
+    [columns, appendedColumns],
+  );
   const mergedColumns = React.useMemo(
     () =>
       filterVisibleColumns(

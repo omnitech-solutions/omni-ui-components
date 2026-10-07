@@ -1,16 +1,24 @@
-import * as React from 'react';
+import type { FormError } from '@oc-tech/omni-ui-components';
 
 import { DynamicForm } from '@oc-tech/omni-ui-components/dynamic-form';
-import { buildFormContext, EMPTY_FORM_CONTEXT_BASE } from '@oc-tech/omni-ui-components/dynamic-form/lib/formContext';
-import type { FormError } from '@oc-tech/omni-ui-components';
-import type { DynamicFormFixture, FormFixture } from 'factories/dynamic-form/DynamicForm/DynamicForm.factories';
-export type { FormFixture, DynamicFormFixture };
+import {
+  buildFormContext,
+  EMPTY_FORM_CONTEXT_BASE,
+} from '@oc-tech/omni-ui-components/dynamic-form/lib/formContext';
+import type {
+  DynamicFormFixture,
+  FormFixture,
+} from 'factories/dynamic-form/DynamicForm/DynamicForm.factories';
+import * as React from 'react';
+
+export type { DynamicFormFixture, FormFixture };
 
 const EMPTY_DERIVE = () => ({});
 
 const isDynamicFormFixture = <T,>(
   fixture: FormFixture<T> | DynamicFormFixture<T & Record<string, unknown>>,
-): fixture is DynamicFormFixture<T & Record<string, unknown>> => typeof (fixture as DynamicFormFixture<T & Record<string, unknown>>).derive === 'function';
+): fixture is DynamicFormFixture<T & Record<string, unknown>> =>
+  typeof (fixture as DynamicFormFixture<T & Record<string, unknown>>).derive === 'function';
 
 export interface DynamicFormStoryShellProps<TFormData> {
   fixture: FormFixture<TFormData>;
@@ -58,16 +66,24 @@ export function DynamicFormStoryShell<TFormData>({
   /* Controlled formData so the shell can recompute `derive(formData)` on
    * every change. RJSF onChange flows through `DynamicForm.onChange` →
    * here → re-render with new derived values in `formContext`. */
-  const [controlledFormData, setControlledFormData] = React.useState<TFormData>(() => (formData ?? fixture.defaults) as TFormData);
+  const [controlledFormData, setControlledFormData] = React.useState<TFormData>(
+    () => (formData ?? fixture.defaults) as TFormData,
+  );
   React.useEffect(() => {
     if (formData !== undefined) setControlledFormData(formData);
   }, [formData]);
 
   const dynamicFixture = isDynamicFormFixture(fixture) ? fixture : null;
-  const derive = (dynamicFixture?.derive ?? EMPTY_DERIVE) as (data: Readonly<Partial<TFormData>>) => Record<string, unknown>;
+  const derive = (dynamicFixture?.derive ?? EMPTY_DERIVE) as (
+    data: Readonly<Partial<TFormData>>,
+  ) => Record<string, unknown>;
   const formContextBase = dynamicFixture?.formContext ?? EMPTY_FORM_CONTEXT_BASE;
   const composedFormContext = React.useMemo(
-    () => buildFormContext(formContextBase as never, derive(controlledFormData as Readonly<Partial<TFormData>>)),
+    () =>
+      buildFormContext(
+        formContextBase as never,
+        derive(controlledFormData as Readonly<Partial<TFormData>>),
+      ),
     [controlledFormData, derive, formContextBase],
   );
 
@@ -81,12 +97,19 @@ export function DynamicFormStoryShell<TFormData>({
   return (
     <div ref={containerRef} className="mx-auto w-full max-w-2xl">
       {showErrors && errors.length ? (
-        <section data-testid="errors" className="mb-3 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-xs">
-          <h3 className="mb-2 text-sm font-semibold text-destructive">Validation errors ({errors.length})</h3>
+        <section
+          data-testid="errors"
+          className="mb-3 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-xs"
+        >
+          <h3 className="mb-2 text-sm font-semibold text-destructive">
+            Validation errors ({errors.length})
+          </h3>
           <ul className="divide-y divide-destructive/20 font-mono">
             {errors.map((e, i) => (
               <li key={i} className="flex items-baseline gap-3 py-1">
-                <span className="min-w-[8rem] shrink-0 font-semibold text-destructive">{e.path.length ? e.path.join('.') : '(form)'}</span>
+                <span className="min-w-[8rem] shrink-0 font-semibold text-destructive">
+                  {e.path.length ? e.path.join('.') : '(form)'}
+                </span>
                 <span className="flex-1 text-destructive/90">{e.message}</span>
               </li>
             ))}
@@ -94,7 +117,10 @@ export function DynamicFormStoryShell<TFormData>({
         </section>
       ) : null}
       {showSubmitted && submitted ? (
-        <section data-testid="submitted" className="mb-3 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs">
+        <section
+          data-testid="submitted"
+          className="mb-3 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs"
+        >
           <h3 className="mb-2 text-sm font-semibold text-emerald-300">Submitted payload</h3>
           <pre className="font-mono text-emerald-200/90">{JSON.stringify(submitted, null, 2)}</pre>
         </section>

@@ -1,11 +1,7 @@
 export { Transcript } from './Transcript';
-export { TranscriptEditor } from './Transcript.conversation';
-export type { TranscriptEditorProps } from './Transcript.conversation';
-export { buildTurns, promptOf } from './Transcript.turns';
-export { conversationScroll } from './Transcript.scroll';
 export { codeBlockId, parseFencedBlocks } from './Transcript.blocks';
-export { transcriptBubbleVariants } from './Transcript.variants';
-export { CONVERSATION_STICK_THRESHOLD, DEFAULT_TRANSCRIPT_LABELS } from './Transcript.conversation.types';
+export type { TranscriptEditorProps } from './Transcript.conversation';
+export { TranscriptEditor } from './Transcript.conversation';
 export type {
   ChatAttachmentPart,
   ChatMessage,
@@ -23,6 +19,12 @@ export type {
   TurnContext,
   TurnSlot,
 } from './Transcript.conversation.types';
+export {
+  CONVERSATION_STICK_THRESHOLD,
+  DEFAULT_TRANSCRIPT_LABELS,
+} from './Transcript.conversation.types';
+export { conversationScroll } from './Transcript.scroll';
+export { buildTurns, promptOf } from './Transcript.turns';
 export type {
   TranscriptBlock,
   TranscriptBubbleEntry,
@@ -34,3 +36,4 @@ export type {
   TranscriptSpeech,
   TranscriptTextBlock,
 } from './Transcript.types';
+export { transcriptBubbleVariants } from './Transcript.variants';

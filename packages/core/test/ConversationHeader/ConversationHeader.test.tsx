@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { ConversationHeader } from '@oc-tech/omni-ui-components/ConversationHeader';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   ConversationHeaderDemo,
   conversationHeaderPropsFactory,
@@ -20,17 +19,28 @@ describe('omni-ui-components/ConversationHeader', () => {
   it('renders a named toolbar with the title as a menu button and the actions', () => {
     render(<ConversationHeader {...conversationHeaderPropsFactory()} />);
     expect(screen.getByRole('toolbar', { name: 'Conversation' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Two Sum with a hash map/ })).toHaveAttribute('aria-haspopup', 'menu');
+    expect(screen.getByRole('button', { name: /Two Sum with a hash map/ })).toHaveAttribute(
+      'aria-haspopup',
+      'menu',
+    );
     expect(screen.getByRole('button', { name: 'Conversations' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Close' })).toHaveAttribute('title', 'Close (⌘ J)');
   });
 
   it('opens the conversation menu with danger and separated rows from menuItems', async () => {
     const onClick = jest.fn();
-    render(<ConversationHeader {...conversationHeaderPropsFactory({ menuItems: conversationMenuItems(onClick) })} />);
+    render(
+      <ConversationHeader
+        {...conversationHeaderPropsFactory({ menuItems: conversationMenuItems(onClick) })}
+      />,
+    );
     await userEvent.click(screen.getByRole('button', { name: /Two Sum with a hash map/ }));
     const menu = await screen.findByRole('menu', { name: 'Conversation menu' });
-    expect(within(menu).getAllByRole('menuitem').map((item) => item.textContent)).toEqual([
+    expect(
+      within(menu)
+        .getAllByRole('menuitem')
+        .map((item) => item.textContent),
+    ).toEqual([
       'Rename',
       'Pin',
       'Share read-only link',
@@ -45,10 +55,14 @@ describe('omni-ui-components/ConversationHeader', () => {
   });
 
   it('is plain text without menu rows or without a title', () => {
-    const { rerender } = render(<ConversationHeader {...conversationHeaderPropsFactory({ menuItems: [] })} />);
+    const { rerender } = render(
+      <ConversationHeader {...conversationHeaderPropsFactory({ menuItems: [] })} />,
+    );
     expect(screen.queryByRole('button', { name: /Two Sum/ })).not.toBeInTheDocument();
     expect(screen.getByText('Two Sum with a hash map')).toBeInTheDocument();
-    rerender(<ConversationHeader {...conversationHeaderPropsFactory({ conversation: undefined })} />);
+    rerender(
+      <ConversationHeader {...conversationHeaderPropsFactory({ conversation: undefined })} />,
+    );
     expect(screen.getByText('New conversation')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /New conversation/ })).not.toBeInTheDocument();
   });
@@ -57,7 +71,9 @@ describe('omni-ui-components/ConversationHeader', () => {
     const onRename = jest.fn();
     render(<ConversationHeader {...conversationHeaderPropsFactory({ onRename })} />);
     await openRename();
-    const field = (await screen.findByRole('textbox', { name: 'Conversation title' })) as HTMLInputElement;
+    const field = (await screen.findByRole('textbox', {
+      name: 'Conversation title',
+    })) as HTMLInputElement;
     expect(field).toHaveAttribute('maxlength', '256');
     await waitFor(() => expect(field).toHaveFocus());
     expect(field.value).toBe('Two Sum with a hash map');
@@ -97,7 +113,9 @@ describe('omni-ui-components/ConversationHeader', () => {
     const onRename = jest.fn();
     render(<ConversationHeader {...conversationHeaderPropsFactory({ onRename })} />);
     await openRename();
-    const field = (await screen.findByRole('textbox', { name: 'Conversation title' })) as HTMLInputElement;
+    const field = (await screen.findByRole('textbox', {
+      name: 'Conversation title',
+    })) as HTMLInputElement;
     await userEvent.keyboard('Renamed');
     // A blur right after opening is the menu returning focus: the field stays and takes focus back.
     field.blur();
@@ -112,8 +130,13 @@ describe('omni-ui-components/ConversationHeader', () => {
   });
 
   it('renaming can be controlled and honours maxLength', () => {
-    const { rerender } = render(<ConversationHeader {...conversationHeaderPropsFactory({ renaming: true, maxLength: 10 })} />);
-    expect(screen.getByRole('textbox', { name: 'Conversation title' })).toHaveAttribute('maxlength', '10');
+    const { rerender } = render(
+      <ConversationHeader {...conversationHeaderPropsFactory({ renaming: true, maxLength: 10 })} />,
+    );
+    expect(screen.getByRole('textbox', { name: 'Conversation title' })).toHaveAttribute(
+      'maxlength',
+      '10',
+    );
     rerender(<ConversationHeader {...conversationHeaderPropsFactory({ renaming: false })} />);
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
@@ -141,17 +164,23 @@ describe('omni-ui-components/ConversationHeader', () => {
 
   it('onHistoryToggle fires from the history button; the button is not rendered without it', async () => {
     const onHistoryToggle = jest.fn();
-    const { rerender } = render(<ConversationHeader {...conversationHeaderPropsFactory({ onHistoryToggle })} />);
+    const { rerender } = render(
+      <ConversationHeader {...conversationHeaderPropsFactory({ onHistoryToggle })} />,
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Conversations' }));
     expect(onHistoryToggle).toHaveBeenCalledTimes(1);
-    rerender(<ConversationHeader {...conversationHeaderPropsFactory({ onHistoryToggle: undefined })} />);
+    rerender(
+      <ConversationHeader {...conversationHeaderPropsFactory({ onHistoryToggle: undefined })} />,
+    );
     expect(screen.queryByRole('button', { name: 'Conversations' })).not.toBeInTheDocument();
   });
 
   it('onRenameStart and onRenameCancel fire with the conversation', async () => {
     const onRenameStart = jest.fn();
     const onRenameCancel = jest.fn();
-    render(<ConversationHeader {...conversationHeaderPropsFactory({ onRenameStart, onRenameCancel })} />);
+    render(
+      <ConversationHeader {...conversationHeaderPropsFactory({ onRenameStart, onRenameCancel })} />,
+    );
     await openRename();
     expect(onRenameStart).toHaveBeenCalledWith(expect.objectContaining({ id: 'c1' }));
     await screen.findByRole('textbox', { name: 'Conversation title' });
@@ -160,14 +189,24 @@ describe('omni-ui-components/ConversationHeader', () => {
   });
 
   it('every string is translatable through labels', () => {
-    render(<ConversationHeader {...conversationHeaderPropsFactory({ conversation: undefined, menuItems: [], labels: { toolbar: 'Conversación', untitled: 'Nueva conversación' } })} />);
+    render(
+      <ConversationHeader
+        {...conversationHeaderPropsFactory({
+          conversation: undefined,
+          menuItems: [],
+          labels: { toolbar: 'Conversación', untitled: 'Nueva conversación' },
+        })}
+      />,
+    );
     expect(screen.getByRole('toolbar', { name: 'Conversación' })).toBeInTheDocument();
     expect(screen.getByText('Nueva conversación')).toBeInTheDocument();
   });
 
   it('renders every factory variant and the demo renames', async () => {
     conversationHeaderVariants.forEach((variant) => {
-      const { unmount } = render(<ConversationHeader {...conversationHeaderPropsFactory(variant.args)} />);
+      const { unmount } = render(
+        <ConversationHeader {...conversationHeaderPropsFactory(variant.args)} />,
+      );
       expect(screen.getByRole('toolbar')).toBeInTheDocument();
       unmount();
     });
@@ -179,7 +218,14 @@ describe('omni-ui-components/ConversationHeader', () => {
   });
 
   it('keeps a gap between the model control and the trailing buttons', () => {
-    render(<ConversationHeader {...conversationHeaderPropsFactory({ modelControl: <span>Model chip</span> })} />);
-    expect(screen.getByText('Model chip').closest('[data-slot="conversation-model"]')).toHaveClass('mr-2', '[&>*]:whitespace-nowrap');
+    render(
+      <ConversationHeader
+        {...conversationHeaderPropsFactory({ modelControl: <span>Model chip</span> })}
+      />,
+    );
+    expect(screen.getByText('Model chip').closest('[data-slot="conversation-model"]')).toHaveClass(
+      'mr-2',
+      '[&>*]:whitespace-nowrap',
+    );
   });
 });

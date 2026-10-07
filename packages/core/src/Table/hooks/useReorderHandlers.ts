@@ -1,7 +1,7 @@
-import * as React from 'react';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import type { ColumnOrderState } from '@tanstack/react-table';
+import * as React from 'react';
 import type { TableColumn, TableProps, TableResolvedRow } from '../Table.types';
 
 export interface UseReorderHandlersInput<TRecord, TRowData> {
@@ -23,10 +23,19 @@ export function useReorderHandlers<TRecord, TRowData>({
   onRowOrderChange,
   onColumnOrderChange,
 }: UseReorderHandlersInput<TRecord, TRowData>) {
-  const draggableRows = React.useMemo(() => resolvedRows.filter((item) => item.row.draggable && !item.row.disabled), [resolvedRows]);
-  const draggableRowKeys = React.useMemo(() => draggableRows.map((item) => `row:${String(item.key)}`), [draggableRows]);
+  const draggableRows = React.useMemo(
+    () => resolvedRows.filter((item) => item.row.draggable && !item.row.disabled),
+    [resolvedRows],
+  );
+  const draggableRowKeys = React.useMemo(
+    () => draggableRows.map((item) => `row:${String(item.key)}`),
+    [draggableRows],
+  );
   const hasDraggableRows = draggableRowKeys.length > 0;
-  const draggableColumnKeys = React.useMemo(() => mergedLeafColumns.filter((col) => col.draggable).map((col) => `column:${col.key}`), [mergedLeafColumns]);
+  const draggableColumnKeys = React.useMemo(
+    () => mergedLeafColumns.filter((col) => col.draggable).map((col) => `column:${col.key}`),
+    [mergedLeafColumns],
+  );
 
   const emitRowOrder = (nextRows: TableResolvedRow<TRecord, TRowData>[]) => {
     const nextKeys = nextRows.map((item) => String(item.key));
@@ -45,7 +54,13 @@ export function useReorderHandlers<TRecord, TRowData>({
     if (activeIndex < 0 || overIndex < 0) return;
     const activeRow = resolvedRows[activeIndex];
     const overRow = resolvedRows[overIndex];
-    if (!activeRow?.row.draggable || activeRow.row.disabled || !overRow?.row.draggable || overRow.row.disabled) return;
+    if (
+      !activeRow?.row.draggable ||
+      activeRow.row.disabled ||
+      !overRow?.row.draggable ||
+      overRow.row.disabled
+    )
+      return;
     emitRowOrder(arrayMove(resolvedRows, activeIndex, overIndex));
   };
 
@@ -86,9 +101,19 @@ export function useReorderHandlers<TRecord, TRowData>({
     const activeId = String(event.active.id);
     const overId = event.over?.id == null ? null : String(event.over.id);
     if (!overId || activeId === overId) return;
-    if (activeId.startsWith('row:') && overId.startsWith('row:')) reorderRows(activeId.slice(4), overId.slice(4));
-    if (activeId.startsWith('column:') && overId.startsWith('column:')) reorderColumns(activeId.slice(7), overId.slice(7));
+    if (activeId.startsWith('row:') && overId.startsWith('row:'))
+      reorderRows(activeId.slice(4), overId.slice(4));
+    if (activeId.startsWith('column:') && overId.startsWith('column:'))
+      reorderColumns(activeId.slice(7), overId.slice(7));
   };
 
-  return { draggableRows, draggableRowKeys, hasDraggableRows, draggableColumnKeys, moveRowByKeyboard, moveColumnByKeyboard, handleDragEnd };
+  return {
+    draggableRows,
+    draggableRowKeys,
+    hasDraggableRows,
+    draggableColumnKeys,
+    moveRowByKeyboard,
+    moveColumnByKeyboard,
+    handleDragEnd,
+  };
 }

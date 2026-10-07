@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { ContextMeter } from '@oc-tech/omni-ui-components';
+import { render, screen } from '@testing-library/react';
 import { contextMeterPropsFactory } from 'factories/omni-ui-components/ContextMeter/ContextMeter.factories';
 
 describe('omni-ui-components/ContextMeter portal', () => {

@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { Segmented, type SegmentedProps } from '@oc-tech/omni-ui-components/Segmented';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 const baseOptions = [
   { value: 'casual', label: 'Casual' },
@@ -10,7 +10,8 @@ const baseOptions = [
   { value: 'professional', label: 'Professional' },
 ];
 
-const renderSegmented = (overrides: Partial<SegmentedProps> = {}) => render(<Segmented data-testid="s" label="Tone" options={baseOptions} {...overrides} />);
+const renderSegmented = (overrides: Partial<SegmentedProps> = {}) =>
+  render(<Segmented data-testid="s" label="Tone" options={baseOptions} {...overrides} />);
 
 describe('omni-ui-components/Segmented', () => {
   describe('shape', () => {
@@ -28,7 +29,9 @@ describe('omni-ui-components/Segmented', () => {
 
     it('groups options under aria-labelledby when label is provided', () => {
       renderSegmented({ id: 'tone' });
-      const group = screen.getAllByRole('group').find((el) => el.getAttribute('aria-labelledby') === 'tone-label');
+      const group = screen
+        .getAllByRole('group')
+        .find((el) => el.getAttribute('aria-labelledby') === 'tone-label');
       expect(group).toBeDefined();
     });
   });
@@ -60,7 +63,9 @@ describe('omni-ui-components/Segmented', () => {
   describe('disabled', () => {
     it('disables every option when the group is disabled', () => {
       renderSegmented({ disabled: true });
-      baseOptions.forEach((opt) => expect(screen.getByTestId(`s-option-${opt.value}`)).toBeDisabled());
+      baseOptions.forEach((opt) =>
+        expect(screen.getByTestId(`s-option-${opt.value}`)).toBeDisabled(),
+      );
     });
 
     it('disables only the per-option flagged item', () => {

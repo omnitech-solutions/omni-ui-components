@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-
 import { VersionPager, type VersionPagerProps } from '@oc-tech/omni-ui-components/VersionPager';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import * as React from 'react';
 import type { Variant } from '../../internal/support/makeFactory';
 
 /** Build `<VersionPager>` props for stories and tests. */
-export const versionPagerPropsFactory = (overrides: Partial<VersionPagerProps> = {}): VersionPagerProps => ({
+export const versionPagerPropsFactory = (
+  overrides: Partial<VersionPagerProps> = {},
+): VersionPagerProps => ({
   index: 1,
   count: 3,
   onMove: () => undefined,

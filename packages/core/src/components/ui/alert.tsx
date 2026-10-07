@@ -1,28 +1,30 @@
-import React, { forwardRef } from 'react';
 import { cva } from 'class-variance-authority';
-import { Loader2 } from 'lucide-react';
-
 import { cn } from 'lib/utils';
+import { Loader2 } from 'lucide-react';
+import React, { forwardRef } from 'react';
 
-const alertVariants = cva('relative mb-5 text-sm font-normal text-foreground border rounded-md leading-[1.43]', {
-  variants: {
-    variant: {
-      info: 'bg-grey-fc border-border',
-      warning: 'bg-danger/10 border-danger',
-      error: 'bg-danger-light border-danger/20',
-      success: 'bg-primary/10 border-primary',
-      loading: 'bg-grey-fc border-border',
+const alertVariants = cva(
+  'relative mb-5 text-sm font-normal text-foreground border rounded-md leading-[1.43]',
+  {
+    variants: {
+      variant: {
+        info: 'bg-grey-fc border-border',
+        warning: 'bg-danger/10 border-danger',
+        error: 'bg-danger-light border-danger/20',
+        success: 'bg-primary/10 border-primary',
+        loading: 'bg-grey-fc border-border',
+      },
+      size: {
+        default: 'p-4 pl-12',
+        sm: 'py-2.5 px-4 pl-12',
+      },
     },
-    size: {
-      default: 'p-4 pl-12',
-      sm: 'py-2.5 px-4 pl-12',
+    defaultVariants: {
+      variant: 'info',
+      size: 'default',
     },
   },
-  defaultVariants: {
-    variant: 'info',
-    size: 'default',
-  },
-});
+);
 
 const alertNoIconVariants = cva('', {
   variants: {
@@ -57,11 +59,20 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>((props, ref) => {
   const role = variant === 'warning' || variant === 'error' ? 'alert' : 'status';
   const ariaLive = variant === 'warning' || variant === 'error' ? 'assertive' : 'polite';
 
-  const iconColorClass = variant === 'warning' || variant === 'error' ? 'text-danger' : variant === 'success' ? 'text-primary' : 'text-light-foreground';
+  const iconColorClass =
+    variant === 'warning' || variant === 'error'
+      ? 'text-danger'
+      : variant === 'success'
+        ? 'text-primary'
+        : 'text-light-foreground';
 
   return (
     <div
-      className={cn(alertVariants({ variant, size }), !hasIcon && alertNoIconVariants({ size }), className)}
+      className={cn(
+        alertVariants({ variant, size }),
+        !hasIcon && alertNoIconVariants({ size }),
+        className,
+      )}
       ref={ref}
       role={role}
       aria-live={ariaLive}
@@ -70,7 +81,10 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>((props, ref) => {
       {hasIcon && (
         <>
           {isLoading ? (
-            <Loader2 className="absolute left-4 top-4 size-5 opacity-50 animate-spin" aria-hidden="true" />
+            <Loader2
+              className="absolute left-4 top-4 size-5 opacity-50 animate-spin"
+              aria-hidden="true"
+            />
           ) : (
             icon &&
             React.isValidElement(icon) &&

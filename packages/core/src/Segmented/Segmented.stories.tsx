@@ -1,12 +1,20 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Segmented, type SegmentedProps } from '@oc-tech/omni-ui-components/Segmented';
-import { SAMPLE_PANELS, segmentedControlVariants, segmentedPropsFactory } from 'factories/omni-ui-components/Segmented/Segmented.factories';
+import type { Meta, StoryObj } from '@storybook/react';
+import {
+  SAMPLE_PANELS,
+  segmentedControlVariants,
+  segmentedPropsFactory,
+} from 'factories/omni-ui-components/Segmented/Segmented.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<SegmentedProps> = (args) => {
-  const [value, setValue] = React.useState<string | string[]>(args.value ?? (args.mode === 'multiple' ? [] : ''));
-  React.useEffect(() => setValue(args.value ?? (args.mode === 'multiple' ? [] : '')), [args.value, args.mode]);
+  const [value, setValue] = React.useState<string | string[]>(
+    args.value ?? (args.mode === 'multiple' ? [] : ''),
+  );
+  React.useEffect(
+    () => setValue(args.value ?? (args.mode === 'multiple' ? [] : '')),
+    [args.value, args.mode],
+  );
   const props = {
     ...args,
     value,
@@ -25,9 +33,20 @@ const meta: Meta<typeof Segmented> = {
   args: segmentedPropsFactory({ wrapperClassName: 'mx-auto max-w-md' }),
   argTypes: {
     layout: { control: 'inline-radio', options: ['vertical', 'horizontal'] },
-    mode: { control: 'inline-radio', options: ['single', 'multiple'], description: 'multiple: value and onChange carry string[].' },
-    appearance: { control: 'inline-radio', options: ['pill', 'control'], description: 'control: the 36px bordered toolbar group.' },
-    minActive: { control: { type: 'number', min: 0, max: 3 }, description: 'Multiple mode: the last on-option(s) cannot be turned off.' },
+    mode: {
+      control: 'inline-radio',
+      options: ['single', 'multiple'],
+      description: 'multiple: value and onChange carry string[].',
+    },
+    appearance: {
+      control: 'inline-radio',
+      options: ['pill', 'control'],
+      description: 'control: the 36px bordered toolbar group.',
+    },
+    minActive: {
+      control: { type: 'number', min: 0, max: 3 },
+      description: 'Multiple mode: the last on-option(s) cannot be turned off.',
+    },
     minActiveReason: { control: 'text', description: 'Tooltip on an option locked by minActive.' },
     onChange: { action: 'changed' },
   },
@@ -63,7 +82,13 @@ export const HorizontalSidebar: Story = {
 };
 
 export const MultipleControl: Story = {
-  args: { label: 'Panels', mode: 'multiple', appearance: 'control', options: SAMPLE_PANELS, value: ['chat', 'answer', 'code'] },
+  args: {
+    label: 'Panels',
+    mode: 'multiple',
+    appearance: 'control',
+    options: SAMPLE_PANELS,
+    value: ['chat', 'answer', 'code'],
+  },
 };
 
 export const MultipleMinActive: Story = {

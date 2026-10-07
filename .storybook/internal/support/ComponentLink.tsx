@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { ExternalLink } from 'lucide-react';
+import * as React from 'react';
 
 interface StoryEntry {
   id: string;
@@ -9,7 +9,13 @@ interface StoryEntry {
 let indexRequest: Promise<StoryEntry[]> | undefined;
 
 /** Resolve the component's main page from Storybook's actual index. */
-export function ComponentLink({ component, children }: { component: string; children?: React.ReactNode }) {
+export function ComponentLink({
+  component,
+  children,
+}: {
+  component: string;
+  children?: React.ReactNode;
+}) {
   const [entry, setEntry] = React.useState<StoryEntry>();
   React.useEffect(() => {
     let active = true;

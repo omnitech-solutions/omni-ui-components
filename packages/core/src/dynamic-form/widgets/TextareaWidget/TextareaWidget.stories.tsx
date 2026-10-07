@@ -1,15 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { defineDynamicFormStories, type DynamicFormStoryArgs } from 'storybook-helpers/defineDynamicFormStories';
 import {
   descriptionMessageFixture,
+  type MessageFormData,
   placeholderMessageFixture,
   plainMessageFixture,
   prefilledMessageFixture,
   tallMessageFixture,
   validationMessageFixture,
-  type MessageFormData,
 } from 'factories/dynamic-form/widgets/TextareaWidget/TextareaWidget.factories';
+import {
+  type DynamicFormStoryArgs,
+  defineDynamicFormStories,
+} from 'storybook-helpers/defineDynamicFormStories';
 
 type Args = DynamicFormStoryArgs<MessageFormData>;
 

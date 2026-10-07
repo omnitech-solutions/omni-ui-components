@@ -1,8 +1,13 @@
-import * as React from 'react';
-import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
-
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { cn } from 'lib/utils';
+import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
+import * as React from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 
 type PageEntry = number | 'ellipsis';
 
@@ -103,7 +108,9 @@ export const Pagination = ({
             <span
               key={`ellipsis-${index}`}
               className="inline-flex h-9 min-w-9 items-center justify-center text-[var(--oui-foreground-muted)]"
-              data-testid={testIdPrefix ? `${testIdPrefix}-pagination-ellipsis-${index}` : undefined}
+              data-testid={
+                testIdPrefix ? `${testIdPrefix}-pagination-ellipsis-${index}` : undefined
+              }
             >
               <MoreHorizontal className="h-4 w-4" />
             </span>
@@ -146,8 +153,13 @@ export const Pagination = ({
         ) : null}
       </div>
       {showSizeChanger ? (
-        <div className="flex items-center gap-2" data-testid={testIdPrefix ? `${testIdPrefix}-pagination-size` : undefined}>
-          <span className="text-xs font-medium uppercase tracking-wide text-[var(--oui-foreground-muted)]">Rows</span>
+        <div
+          className="flex items-center gap-2"
+          data-testid={testIdPrefix ? `${testIdPrefix}-pagination-size` : undefined}
+        >
+          <span className="text-xs font-medium uppercase tracking-wide text-[var(--oui-foreground-muted)]">
+            Rows
+          </span>
           <Select value={String(pageSize)} disabled={disabled} onValueChange={handlePageSizeChange}>
             <SelectTrigger
               aria-label="Rows per page"

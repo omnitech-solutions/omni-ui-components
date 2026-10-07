@@ -11,9 +11,9 @@
  * output reads top-to-bottom and can be pasted as-is.
  */
 import { useMemo } from 'react';
-import { oneLine } from './formatValue';
-import { buildTableSnippet, type BuildTableSnippetOptions } from './tableSnippet';
 import { getRegisteredFixtures } from './fixtureRegistry';
+import { oneLine } from './formatValue';
+import { type BuildTableSnippetOptions, buildTableSnippet } from './tableSnippet';
 
 export interface UseDynamicSnippetOptions {
   /** Component name (with optional generic args). Rendered as the JSX tag. */
@@ -34,7 +34,15 @@ export interface UseDynamicSnippetOptions {
 // Storybook-scaffolding props that every story bakes into its render but that
 // a real consumer wouldn't type. Stripped from the emitted Show code by
 // default so the snippet reads like the minimum API surface.
-const DEFAULT_OMIT = ['testIdPrefix', 'size', 'bordered', 'showHeader', 'tableLayout', 'appearance', 'rowKey'];
+const DEFAULT_OMIT = [
+  'testIdPrefix',
+  'size',
+  'bordered',
+  'showHeader',
+  'tableLayout',
+  'appearance',
+  'rowKey',
+];
 
 export function buildDynamicSnippet(input: UseDynamicSnippetOptions): string {
   const { componentName, props, fixtures = {}, extraPreamble = [], omit, serializeProp } = input;
@@ -48,7 +56,8 @@ export function buildDynamicSnippet(input: UseDynamicSnippetOptions): string {
   const registered = getRegisteredFixtures();
   const explicit = fixtures;
   const propDerived: Record<string, unknown> = {};
-  const isReactElement = (v: unknown): boolean => Boolean(v && typeof v === 'object' && '$$typeof' in (v as object));
+  const isReactElement = (v: unknown): boolean =>
+    Boolean(v && typeof v === 'object' && '$$typeof' in (v as object));
   const containsReactElement = (v: unknown): boolean => Array.isArray(v) && v.some(isReactElement);
   for (const [key, value] of Object.entries(props)) {
     if (omitSet.has(key)) continue;
@@ -85,7 +94,8 @@ export function buildDynamicSnippet(input: UseDynamicSnippetOptions): string {
 
   const preambleLines: string[] = [];
   const ordered = Array.from(referenced).sort((a, b) => jsx.indexOf(a) - jsx.indexOf(b));
-  for (const name of ordered) preambleLines.push(`const ${name} = ${oneLine(mergedFixtures[name])};`);
+  for (const name of ordered)
+    preambleLines.push(`const ${name} = ${oneLine(mergedFixtures[name])};`);
   if (extraPreamble.length) preambleLines.push('', ...extraPreamble);
   if (!preambleLines.length) return jsx;
   return `${preambleLines.join('\n')}\n\n${jsx}`;

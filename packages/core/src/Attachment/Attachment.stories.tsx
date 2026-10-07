@@ -1,10 +1,12 @@
-import * as React from 'react';
+import {
+  AttachmentCard,
+  AttachmentDropzone,
+  type AttachmentItem,
+  AttachmentStrip,
+  type AttachmentStripProps,
+  validateFiles,
+} from '@oc-tech/omni-ui-components/Attachment';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-import { Paperclip } from 'lucide-react';
-
-import { AttachmentCard, AttachmentDropzone, AttachmentStrip, validateFiles, type AttachmentItem, type AttachmentStripProps } from '@oc-tech/omni-ui-components/Attachment';
-import { ComposerDemo } from 'factories/omni-ui-components/Composer/Composer.factories';
 import {
   attachmentIcons,
   attachmentItem,
@@ -15,6 +17,10 @@ import {
   statusItems,
   useAttachmentUploads,
 } from 'factories/omni-ui-components/Attachment/Attachment.factories';
+import { ComposerDemo } from 'factories/omni-ui-components/Composer/Composer.factories';
+import { Paperclip } from 'lucide-react';
+import * as React from 'react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 type StoryArgs = AttachmentStripProps;
 
@@ -32,12 +38,32 @@ const meta: Meta<StoryArgs> = {
   },
   args: { items: readyItems(), removeIcon: attachmentRemoveIcon, onRemove: fn() },
   argTypes: {
-    items: { control: 'object', description: '`AttachmentItem[]`: { id, name, kind, meta, previewUrl, icon, status, progress, error }.' },
-    onRemove: { action: 'removed', description: 'Called with the item id. Without it (or with `readOnly`) there is no remove button.' },
+    items: {
+      control: 'object',
+      description:
+        '`AttachmentItem[]`: { id, name, kind, meta, previewUrl, icon, status, progress, error }.',
+    },
+    onRemove: {
+      action: 'removed',
+      description:
+        'Called with the item id. Without it (or with `readOnly`) there is no remove button.',
+    },
     readOnly: { control: 'boolean', description: 'A sent message: never shows the remove button.' },
-    layout: { control: 'inline-radio', options: ['scroll', 'wrap'], description: '`scroll` (default): one scrolling row. `wrap`: wraps.' },
-    variant: { control: 'inline-radio', options: ['card', 'chip'], description: '`card`: thumbnail + name + meta. `chip`: compact pill (a sent message).' },
-    labels: { control: 'object', description: 'Strings: remove (`Remove {name}`), uploading, extracting, failed, strip, dropHere.' },
+    layout: {
+      control: 'inline-radio',
+      options: ['scroll', 'wrap'],
+      description: '`scroll` (default): one scrolling row. `wrap`: wraps.',
+    },
+    variant: {
+      control: 'inline-radio',
+      options: ['card', 'chip'],
+      description: '`card`: thumbnail + name + meta. `chip`: compact pill (a sent message).',
+    },
+    labels: {
+      control: 'object',
+      description:
+        'Strings: remove (`Remove {name}`), uploading, extracting, failed, strip, dropHere.',
+    },
   },
   render: (args) => (
     <div className="max-w-md p-6">
@@ -75,7 +101,9 @@ export const Lifecycle: Story = {
 export const ManyFiles: Story = { args: { items: manyItems() } };
 
 /** Read-only chips, as on a sent message. */
-export const ReadOnlyChips: Story = { args: { variant: 'chip', readOnly: true, layout: 'wrap', items: readyItems() } };
+export const ReadOnlyChips: Story = {
+  args: { variant: 'chip', readOnly: true, layout: 'wrap', items: readyItems() },
+};
 
 /** A single card with an image thumbnail (`previewUrl`). */
 export const SingleCard: StoryObj<React.ComponentProps<typeof AttachmentCard>> = {
@@ -84,13 +112,27 @@ export const SingleCard: StoryObj<React.ComponentProps<typeof AttachmentCard>> =
       <AttachmentCard {...args} />
     </div>
   ),
-  args: { item: { id: 'x', name: 'whiteboard-photo.png', kind: 'image', meta: 'Image', previewUrl: sampleThumbnail }, removeIcon: attachmentRemoveIcon, onRemove: fn(), onClick: fn() },
+  args: {
+    item: {
+      id: 'x',
+      name: 'whiteboard-photo.png',
+      kind: 'image',
+      meta: 'Image',
+      previewUrl: sampleThumbnail,
+    },
+    removeIcon: attachmentRemoveIcon,
+    onRemove: fn(),
+    onClick: fn(),
+  },
 };
 
 /** Without `previewUrl` the caller's icon node stands in. */
 export const WithIcon: StoryObj<React.ComponentProps<typeof AttachmentCard>> = {
   ...SingleCard,
-  args: { ...SingleCard.args, item: { id: 'y', name: 'notes.md', kind: 'file', meta: 'File', icon: attachmentIcons.file } },
+  args: {
+    ...SingleCard.args,
+    item: { id: 'y', name: 'notes.md', kind: 'file', meta: 'File', icon: attachmentIcons.file },
+  },
 };
 
 const DropDemo: React.FC<{ onReject: (code: string) => void }> = ({ onReject }) => {
@@ -100,17 +142,34 @@ const DropDemo: React.FC<{ onReject: (code: string) => void }> = ({ onReject }) 
       <AttachmentDropzone
         current={items.length}
         maxFiles={3}
-        onFiles={(files) => setItems((all) => [...all, ...files.map((file, i) => attachmentItem({ id: `${all.length + i}-${file.name}`, name: file.name }))])}
+        onFiles={(files) =>
+          setItems((all) => [
+            ...all,
+            ...files.map((file, i) =>
+              attachmentItem({ id: `${all.length + i}-${file.name}`, name: file.name }),
+            ),
+          ])
+        }
         onReject={(reason) => onReject(reason.code)}
         className="rounded-xl border border-dashed border-[color:var(--oui-panel-border)] p-6"
       >
         {(drop) => (
           <div className="flex flex-col gap-3">
-            <button type="button" className="inline-flex items-center gap-2 self-start rounded-md border px-3 py-1.5 text-sm" onClick={drop.openPicker}>
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 self-start rounded-md border px-3 py-1.5 text-sm"
+              onClick={drop.openPicker}
+            >
               <Paperclip className="size-4" /> Choose files
             </button>
-            <AttachmentStrip items={items} removeIcon={attachmentRemoveIcon} onRemove={(removed) => setItems((all) => all.filter((item) => item !== removed))} />
-            <p className="m-0 text-xs text-[color:var(--oui-panel-meta-fg)]">Drop files here (max 3, text, Markdown, PDF or images, 10 MB each).</p>
+            <AttachmentStrip
+              items={items}
+              removeIcon={attachmentRemoveIcon}
+              onRemove={(removed) => setItems((all) => all.filter((item) => item !== removed))}
+            />
+            <p className="m-0 text-xs text-[color:var(--oui-panel-meta-fg)]">
+              Drop files here (max 3, text, Markdown, PDF or images, 10 MB each).
+            </p>
           </div>
         )}
       </AttachmentDropzone>
@@ -128,14 +187,22 @@ export const DropZone: StoryObj = {
     const drag = (type: 'dragenter' | 'drop', files: File[]) => {
       const transfer = new DataTransfer();
       for (const item of files) transfer.items.add(item);
-      zone.dispatchEvent(new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: transfer }));
+      zone.dispatchEvent(
+        new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: transfer }),
+      );
     };
     drag('dragenter', [file('a.txt')]);
-    await waitFor(() => expect(canvasElement.querySelector('[data-slot="attachment-drop-overlay"]')).not.toBeNull());
+    await waitFor(() =>
+      expect(canvasElement.querySelector('[data-slot="attachment-drop-overlay"]')).not.toBeNull(),
+    );
     drag('drop', [file('a.txt'), file('b.md', 'text/markdown')]);
-    await waitFor(() => expect(canvasElement.querySelector('[data-slot="attachment-drop-overlay"]')).toBeNull());
+    await waitFor(() =>
+      expect(canvasElement.querySelector('[data-slot="attachment-drop-overlay"]')).toBeNull(),
+    );
     await expect(within(canvasElement).getByText('a.txt')).toBeVisible();
-    await expect(validateFiles([file('big.pdf', 'application/pdf')], { maxBytes: 0 })?.code).toBe('too-large');
+    await expect(validateFiles([file('big.pdf', 'application/pdf')], { maxBytes: 0 })?.code).toBe(
+      'too-large',
+    );
   },
 };
 
@@ -143,12 +210,25 @@ export const DropZone: StoryObj = {
 export const InComposer: StoryObj = {
   render: () => (
     <div className="max-w-md p-6">
-      <ComposerDemo initialItems={[attachmentItem({ id: 'i', name: 'screenshot.png', kind: 'image', meta: 'Image', previewUrl: sampleThumbnail })]} />
+      <ComposerDemo
+        initialItems={[
+          attachmentItem({
+            id: 'i',
+            name: 'screenshot.png',
+            kind: 'image',
+            meta: 'Image',
+            previewUrl: sampleThumbnail,
+          }),
+        ]}
+      />
     </div>
   ),
 };
 
-const UploadsDemo: React.FC<{ onReject: (code: string) => void; onRetry: (id: string) => void }> = ({ onReject, onRetry }) => {
+const UploadsDemo: React.FC<{
+  onReject: (code: string) => void;
+  onRetry: (id: string) => void;
+}> = ({ onReject, onRetry }) => {
   const uploads = useAttachmentUploads();
   return (
     <div className="max-w-md p-6">
@@ -160,7 +240,11 @@ const UploadsDemo: React.FC<{ onReject: (code: string) => void; onRetry: (id: st
       >
         {(drop) => (
           <div className="flex flex-col gap-3">
-            <button type="button" className="inline-flex items-center gap-2 self-start rounded-md border px-3 py-1.5 text-sm" onClick={drop.openPicker}>
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 self-start rounded-md border px-3 py-1.5 text-sm"
+              onClick={drop.openPicker}
+            >
               <Paperclip className="size-4" /> Choose files
             </button>
             <AttachmentStrip
@@ -174,7 +258,9 @@ const UploadsDemo: React.FC<{ onReject: (code: string) => void; onRetry: (id: st
               }}
             />
             <p className="m-0 text-xs text-[color:var(--oui-panel-meta-fg)]">
-              Each file goes uploading, extracting (PDF and images), then ready. A name starting <code>fail-upload</code> or <code>fail-extract</code> ends failed; choose a failed card to retry it.
+              Each file goes uploading, extracting (PDF and images), then ready. A name starting{' '}
+              <code>fail-upload</code> or <code>fail-extract</code> ends failed; choose a failed
+              card to retry it.
             </p>
           </div>
         )}
@@ -190,7 +276,9 @@ export const Uploads: StoryObj = {
     const zone = canvasElement.querySelector('[data-slot="attachment-dropzone"]') as HTMLElement;
     const transfer = new DataTransfer();
     transfer.items.add(new File(['x'], 'fail-upload.txt', { type: 'text/plain' }));
-    zone.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: transfer }));
+    zone.dispatchEvent(
+      new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: transfer }),
+    );
     const canvas = within(canvasElement);
     await expect(await canvas.findByText('Uploading…')).toBeVisible();
     await expect(canvas.getByRole('button', { name: 'Remove fail-upload.txt' })).toBeDisabled();

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { ApprovalCard } from '@oc-tech/omni-ui-components/ApprovalCard';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/ApprovalCard focus', () => {
   it('does not move focus by default', () => {

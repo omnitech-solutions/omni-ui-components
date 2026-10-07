@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render, screen, waitFor } from '@testing-library/react';
 
 import { ActionMenu } from '@oc-tech/omni-ui-components/ActionMenu';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 const menu = (returnFocus?: 'keyboard' | 'always') => (
   <ActionMenu

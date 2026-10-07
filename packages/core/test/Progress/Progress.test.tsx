@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
 
 import { Progress } from '@oc-tech/omni-ui-components/Progress';
+import { render, screen } from '@testing-library/react';
 
 describe('omni-ui-components/Progress', () => {
   it('renders percent text', () => {

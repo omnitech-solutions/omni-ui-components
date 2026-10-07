@@ -1,11 +1,14 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { IconAction } from '../internal/support/IconAction';
 import { SettingRow } from '../SettingsDialog/SettingRow';
 import { SwitchPrimitive } from '../Switch';
 import { TextareaPrimitive } from '../Textarea';
-import type { MemoryItem, PreferencesFormLabels, PreferencesFormProps } from './PreferencesForm.types';
+import type {
+  MemoryItem,
+  PreferencesFormLabels,
+  PreferencesFormProps,
+} from './PreferencesForm.types';
 
 export const DEFAULT_PREFERENCES_FORM_LABELS: PreferencesFormLabels = {
   instructionsTitle: 'Custom instructions',
@@ -52,7 +55,10 @@ export const PreferencesForm = <M extends MemoryItem = MemoryItem>({
 
   if (loading) {
     return (
-      <div data-slot="preferences-form" className={cn('text-[13px] text-[color:var(--oui-panel-meta-fg)]', className)}>
+      <div
+        data-slot="preferences-form"
+        className={cn('text-[13px] text-[color:var(--oui-panel-meta-fg)]', className)}
+      >
         {labels.loading}
       </div>
     );
@@ -61,7 +67,12 @@ export const PreferencesForm = <M extends MemoryItem = MemoryItem>({
   return (
     <div data-slot="preferences-form" className={cn('flex flex-col gap-5', className)}>
       <div data-slot="preferences-instructions">
-        <SettingRow layout="stack" htmlFor={fieldId} title={labels.instructionsTitle} description={labels.instructionsDescription}>
+        <SettingRow
+          layout="stack"
+          htmlFor={fieldId}
+          title={labels.instructionsTitle}
+          description={labels.instructionsDescription}
+        >
           <TextareaPrimitive
             id={fieldId}
             rows={rows}
@@ -77,19 +88,45 @@ export const PreferencesForm = <M extends MemoryItem = MemoryItem>({
 
       {memories ? (
         <div data-slot="preferences-memory" className="flex flex-col gap-2.5">
-          <SettingRow tone="boxed" title={labels.memoryTitle} description={labels.memoryDescription}>
-            {onMemoryToggle ? <SwitchPrimitive aria-label={labels.memorySwitch} checked={memoryEnabled} onChange={(next) => void onMemoryToggle(next)} /> : null}
+          <SettingRow
+            tone="boxed"
+            title={labels.memoryTitle}
+            description={labels.memoryDescription}
+          >
+            {onMemoryToggle ? (
+              <SwitchPrimitive
+                aria-label={labels.memorySwitch}
+                checked={memoryEnabled}
+                onChange={(next) => void onMemoryToggle(next)}
+              />
+            ) : null}
           </SettingRow>
-          <ul aria-label={labels.memoryList} className="m-0 flex list-none flex-col overflow-hidden rounded-xl border border-solid border-[color:var(--oui-panel-border)] p-0">
+          <ul
+            aria-label={labels.memoryList}
+            className="m-0 flex list-none flex-col overflow-hidden rounded-xl border border-solid border-[color:var(--oui-panel-border)] p-0"
+          >
             {memories.map((item) => (
-              <li key={item.id} data-slot="preferences-memory-item" className="flex items-center gap-2 border-b border-solid border-[color:var(--oui-panel-divider)] px-3 py-2 text-[13px] last:border-b-0">
+              <li
+                key={item.id}
+                data-slot="preferences-memory-item"
+                className="flex items-center gap-2 border-b border-solid border-[color:var(--oui-panel-divider)] px-3 py-2 text-[13px] last:border-b-0"
+              >
                 <span className="flex-1">{item.text}</span>
                 {onForget ? (
-                  <IconAction icon={forgetIcon} label={labels.forget} aria-label={`${labels.forget}: ${item.text}`} onClick={() => void onForget(item)} />
+                  <IconAction
+                    icon={forgetIcon}
+                    label={labels.forget}
+                    aria-label={`${labels.forget}: ${item.text}`}
+                    onClick={() => void onForget(item)}
+                  />
                 ) : null}
               </li>
             ))}
-            {memories.length === 0 ? <li className="px-3 py-3 text-[13px] text-[color:var(--oui-panel-meta-fg)]">{labels.memoryEmpty}</li> : null}
+            {memories.length === 0 ? (
+              <li className="px-3 py-3 text-[13px] text-[color:var(--oui-panel-meta-fg)]">
+                {labels.memoryEmpty}
+              </li>
+            ) : null}
           </ul>
         </div>
       ) : null}

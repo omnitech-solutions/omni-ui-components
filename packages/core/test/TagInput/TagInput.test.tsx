@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { TagInput, type TagInputProps } from '@oc-tech/omni-ui-components/TagInput';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import * as React from 'react';
 
 const Controlled: React.FC<Partial<TagInputProps>> = (props) => {
   const [value, setValue] = React.useState<string[]>(props.value ?? []);

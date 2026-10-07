@@ -1,2 +1,2 @@
-export { Tree } from './Tree';
 export type { TreeNode, TreeProps } from './Tree';
+export { Tree } from './Tree';

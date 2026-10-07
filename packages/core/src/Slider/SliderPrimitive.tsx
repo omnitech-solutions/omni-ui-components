@@ -1,7 +1,6 @@
-import * as React from 'react';
 import { Slider as ShadcnSlider } from 'components/ui/slider';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import type { SliderPrimitiveProps } from './Slider.types';
 
 /**
@@ -39,9 +38,13 @@ const SliderPrimitiveInner = React.forwardRef<HTMLSpanElement, SliderPrimitivePr
     _ref,
   ) => {
     const restAny = rest as Record<string, unknown>;
-    const testId = typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0 ? (restAny['data-testid'] as string) : id;
+    const testId =
+      typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
+        ? (restAny['data-testid'] as string)
+        : id;
 
-    const toArray = (v: number | number[] | undefined): number[] | undefined => (v === undefined ? undefined : Array.isArray(v) ? v : [v]);
+    const toArray = (v: number | number[] | undefined): number[] | undefined =>
+      v === undefined ? undefined : Array.isArray(v) ? v : [v];
 
     const valueArr = toArray(value);
     const defaultValueArr = toArray(defaultValue);

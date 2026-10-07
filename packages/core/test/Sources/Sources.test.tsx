@@ -1,11 +1,13 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { expectTypeOf } from 'vitest';
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
 
-import { Sources, type SourceItem } from '@oc-tech/omni-ui-components/Sources';
-import { sampleSources, sourcesPropsFactory } from 'factories/omni-ui-components/Sources/Sources.factories';
+import { type SourceItem, Sources } from '@oc-tech/omni-ui-components/Sources';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+  sampleSources,
+  sourcesPropsFactory,
+} from 'factories/omni-ui-components/Sources/Sources.factories';
+import { expectTypeOf } from 'vitest';
 
 describe('omni-ui-components/Sources', () => {
   it('draws one chip per source with number, title and meta, none pressed', () => {
@@ -22,7 +24,10 @@ describe('omni-ui-components/Sources', () => {
     render(<Sources {...sourcesPropsFactory({ onToggle })} />);
     await userEvent.click(screen.getByRole('button', { name: /Two Sum notes/ }));
     expect(screen.getByText(/single lookup/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Two Sum notes/ })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: /Two Sum notes/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     await userEvent.click(screen.getByRole('button', { name: /Map reference/ }));
     expect(screen.queryByText(/single lookup/)).toBeNull();
     expect(screen.getByText(/insertion order/)).toBeInTheDocument();
@@ -91,7 +96,10 @@ describe('omni-ui-components/Sources', () => {
 
   it('callbacks and renderCard receive the extended source by reference; its extra fields are typed', async () => {
     type Doc = SourceItem & { url: string };
-    const items: Doc[] = sampleSources().map((source) => ({ ...source, url: `https://x.example/${source.id}` }));
+    const items: Doc[] = sampleSources().map((source) => ({
+      ...source,
+      url: `https://x.example/${source.id}`,
+    }));
     const onToggle = vi.fn((source: Doc) => {
       expectTypeOf(source.url).toEqualTypeOf<string>();
     });

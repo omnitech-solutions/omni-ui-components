@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
+import {
+  type ExpenseScenarioFormData,
+  expenseScenarioFormFactory,
+} from 'factories/omni-ui-components/Form/expenseScenario.factories';
 import { defineFormStories, type FormStoryArgs } from 'storybook-helpers/defineFormStories';
-import { expenseScenarioFormFactory, type ExpenseScenarioFormData } from 'factories/omni-ui-components/Form/expenseScenario.factories';
 
 type Args = FormStoryArgs<ExpenseScenarioFormData>;
 
@@ -9,7 +11,10 @@ const config = defineFormStories<ExpenseScenarioFormData>({
   title: 'omni-ui-components/Showcase/NewExpense',
   fixtures: { default: expenseScenarioFormFactory },
   defaultArgs: { fixture: 'default', disabled: false },
-  docs: { name: 'NewExpense (Form)', whenToUse: 'Non-interactive hand-composed mirror of the schema-driven NewExpense scenario.' },
+  docs: {
+    name: 'NewExpense (Form)',
+    whenToUse: 'Non-interactive hand-composed mirror of the schema-driven NewExpense scenario.',
+  },
   stories: { Default: { fixture: 'default', disabled: false } },
 });
 

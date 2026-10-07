@@ -1,6 +1,5 @@
-import { act, render } from '@testing-library/react';
-
 import { useDebouncedCallback } from '@oc-tech/omni-ui-components/lib/chat';
+import { act, render } from '@testing-library/react';
 
 describe('useDebouncedCallback', () => {
   beforeEach(() => jest.useFakeTimers());
@@ -8,7 +7,9 @@ describe('useDebouncedCallback', () => {
 
   const setup = (delay = 600) => {
     const callback = jest.fn();
-    const ref: { current: ReturnType<typeof useDebouncedCallback<[string]>> | null } = { current: null };
+    const ref: { current: ReturnType<typeof useDebouncedCallback<[string]>> | null } = {
+      current: null,
+    };
     const Probe = () => {
       ref.current = useDebouncedCallback(callback, delay);
       return null;

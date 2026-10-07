@@ -1,16 +1,30 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { SegmentedPrimitive } from './SegmentedPrimitive';
 import type { SegmentedProps } from './Segmented.types';
+import { SegmentedPrimitive } from './SegmentedPrimitive';
 
 /**
  * Chrome-wrapped Omni Segmented control. Composes
  * {@link SegmentedPrimitive} with {@link FieldShell}.
  */
 const SegmentedInner = React.forwardRef<HTMLDivElement, SegmentedProps>(
-  ({ id: idProp, wrapperClassName, labelClassName, layout = 'vertical', label, description, error, required, invalid, className, ...primitiveProps }, ref) => {
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      className,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
     const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
       id: idProp,
       label,

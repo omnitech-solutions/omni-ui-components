@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { AutoFlipDropdown } from '../Table.AutoFlipDropdown';
 import { useTable } from '../hooks/useTable';
 import { DefaultFilterIcon, filterItemMatchesSearch } from '../internal';
+import { AutoFlipDropdown } from '../Table.AutoFlipDropdown';
 import type { TableColumn, TableFilterItem, TableKey } from '../Table.types';
 
 export interface FilterControlProps<TRecord, TRowData> {
@@ -23,11 +23,18 @@ export function FilterControl<TRecord, TRowData>({
   const locale = tableProps.locale;
   const controlledOpen = col.filterDropdownProps?.open;
   const hasFilters = Boolean(col.filters?.length || col.filterDropdown);
-  const icon = typeof col.filterIcon === 'function' ? col.filterIcon(filtered) : (col.filterIcon ?? <DefaultFilterIcon filtered={filtered} />);
+  const icon =
+    typeof col.filterIcon === 'function'
+      ? col.filterIcon(filtered)
+      : (col.filterIcon ?? <DefaultFilterIcon filtered={filtered} />);
 
   if (!hasFilters) {
     return (
-      <span className="bui-table-filter-indicator" data-testid={`${testIdPrefix}-filter-icon-${col.key}`} data-filtered={filtered ? 'true' : 'false'}>
+      <span
+        className="bui-table-filter-indicator"
+        data-testid={`${testIdPrefix}-filter-icon-${col.key}`}
+        data-filtered={filtered ? 'true' : 'false'}
+      >
         {icon}
       </span>
     );
@@ -100,21 +107,28 @@ export function FilterControl<TRecord, TRowData>({
     },
     confirm: () => commitAndClose(draftKeys),
     clearFilters: () => {
-      const defaults = col.filterResetToDefaultFilteredValue ? (col.defaultFilteredValue ?? []) : [];
+      const defaults = col.filterResetToDefaultFilteredValue
+        ? (col.defaultFilteredValue ?? [])
+        : [];
       setDraftKeys(defaults);
       commitAndClose(defaults);
     },
     close: () => setOpen(false),
   };
 
-  const selfMatches = (filter: TableFilterItem) => filterItemMatchesSearch(filter, searchValue, col.filterSearch);
+  const selfMatches = (filter: TableFilterItem) =>
+    filterItemMatchesSearch(filter, searchValue, col.filterSearch);
   const hasDescendantMatch = (filter: TableFilterItem): boolean => {
     if (selfMatches(filter)) return true;
     return Boolean(filter.children?.some(hasDescendantMatch));
   };
 
   // `showAll` is set below a group whose own label matched the search: its whole subtree stays visible.
-  const renderFilterItems = (items: TableFilterItem[], depth = 0, showAll = false): React.ReactNode =>
+  const renderFilterItems = (
+    items: TableFilterItem[],
+    depth = 0,
+    showAll = false,
+  ): React.ReactNode =>
     items
       .filter((filter) => {
         if (showAll) return true;
@@ -131,11 +145,21 @@ export function FilterControl<TRecord, TRowData>({
         const visibleChildren = filter.children?.filter(hasDescendantMatch);
         if (filter.children?.length) {
           return (
-            <div key={key} className="bui-table-filter-group" data-testid={`${testIdPrefix}-filter-group-${col.key}-${key}`}>
+            <div
+              key={key}
+              className="bui-table-filter-group"
+              data-testid={`${testIdPrefix}-filter-group-${col.key}-${key}`}
+            >
               <div className="bui-table-filter-group-label" style={{ paddingLeft: depth * 12 }}>
                 {filter.text}
               </div>
-              <div>{renderFilterItems(searchValue && !groupLabelMatches ? (visibleChildren ?? []) : filter.children, depth + 1, groupLabelMatches)}</div>
+              <div>
+                {renderFilterItems(
+                  searchValue && !groupLabelMatches ? (visibleChildren ?? []) : filter.children,
+                  depth + 1,
+                  groupLabelMatches,
+                )}
+              </div>
             </div>
           );
         }
@@ -184,7 +208,9 @@ export function FilterControl<TRecord, TRowData>({
               type="button"
               className="bui-table-filter-action"
               onClick={() => {
-                const defaults = col.filterResetToDefaultFilteredValue ? (col.defaultFilteredValue ?? []) : [];
+                const defaults = col.filterResetToDefaultFilteredValue
+                  ? (col.defaultFilteredValue ?? [])
+                  : [];
                 setDraftKeys(defaults);
                 commitAndClose(defaults);
               }}
@@ -213,7 +239,9 @@ export function FilterControl<TRecord, TRowData>({
         className="bui-table-filter-trigger"
         aria-label={`Filter ${typeof col.title === 'string' ? col.title : col.key}`}
         aria-expanded={isOpen}
-        onClick={() => setOpen(!isOpen, isOpen && !col.filterDropdown && col.filterOnClose !== false)}
+        onClick={() =>
+          setOpen(!isOpen, isOpen && !col.filterDropdown && col.filterOnClose !== false)
+        }
         data-testid={`${testIdPrefix}-filter-trigger-${col.key}`}
         data-filtered={filtered ? 'true' : 'false'}
       >

@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 import { cn } from 'lib/utils';
+import * as React from 'react';
 import { IconButton } from '../IconButton';
 import { DEFAULT_COMPOSER_LABELS, type SendButtonProps } from './Composer.types';
 import { composerRoundClasses } from './Composer.variants';
@@ -14,25 +13,36 @@ import { composerRoundClasses } from './Composer.variants';
  * @example
  * <SendButton state={sendStateOf({ streaming, hasDraft })} sendIcon={<ArrowUp />} stopIcon={<Square />} queueIcon={<ListPlus />} onClick={submit} />
  */
-export const SendButton = React.forwardRef<HTMLButtonElement, SendButtonProps>(({ state, sendIcon, stopIcon, queueIcon, labels: labelsProp, className, disabled, ...rest }, ref) => {
-  const labels = { ...DEFAULT_COMPOSER_LABELS, ...labelsProp };
-  const label = state === 'streaming' ? labels.stop : state === 'queue' ? labels.queue : labels.send;
-  const icon = state === 'streaming' ? (stopIcon ?? sendIcon) : state === 'queue' ? (queueIcon ?? sendIcon) : sendIcon;
-  const muted = state === 'idle';
-  return (
-    <IconButton
-      ref={ref}
-      variant="ghost"
-      iconSize="md"
-      icon={icon}
-      label={label}
-      tone={muted ? undefined : 'accent'}
-      disabled={disabled ?? muted}
-      data-slot="send-button"
-      data-state={state}
-      className={cn(composerRoundClasses, className)}
-      {...rest}
-    />
-  );
-});
+export const SendButton = React.forwardRef<HTMLButtonElement, SendButtonProps>(
+  (
+    { state, sendIcon, stopIcon, queueIcon, labels: labelsProp, className, disabled, ...rest },
+    ref,
+  ) => {
+    const labels = { ...DEFAULT_COMPOSER_LABELS, ...labelsProp };
+    const label =
+      state === 'streaming' ? labels.stop : state === 'queue' ? labels.queue : labels.send;
+    const icon =
+      state === 'streaming'
+        ? (stopIcon ?? sendIcon)
+        : state === 'queue'
+          ? (queueIcon ?? sendIcon)
+          : sendIcon;
+    const muted = state === 'idle';
+    return (
+      <IconButton
+        ref={ref}
+        variant="ghost"
+        iconSize="md"
+        icon={icon}
+        label={label}
+        tone={muted ? undefined : 'accent'}
+        disabled={disabled ?? muted}
+        data-slot="send-button"
+        data-state={state}
+        className={cn(composerRoundClasses, className)}
+        {...rest}
+      />
+    );
+  },
+);
 SendButton.displayName = 'SendButton';

@@ -1,14 +1,17 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
 import { readFileSync } from 'node:fs';
-import { render, screen } from '@testing-library/react';
-import { Camera } from 'lucide-react';
-
 import { Button } from '@oc-tech/omni-ui-components/Button';
 import { IconButton } from '@oc-tech/omni-ui-components/IconButton';
 import { Segmented } from '@oc-tech/omni-ui-components/Segmented';
 import { SplitButton } from '@oc-tech/omni-ui-components/SplitButton';
-import { hitAreaBoth, hitAreaEnd, hitAreaStart, hitAreaY } from '../../src/internal/support/hitArea';
+import { render, screen } from '@testing-library/react';
+import { Camera } from 'lucide-react';
+import {
+  hitAreaBoth,
+  hitAreaEnd,
+  hitAreaStart,
+  hitAreaY,
+} from '../../src/internal/support/hitArea';
 
 const tokens = readFileSync(`${import.meta.dirname}/../../src/styles/tokens.css`, 'utf8');
 const token = (name: string) => Number(new RegExp(`--oui-${name}:\\s*(\\d+)px`).exec(tokens)?.[1]);
@@ -31,8 +34,11 @@ describe('omni-ui-components/hit area (40px target on the control row)', () => {
   });
 
   it('clamps the pseudo-element offset at zero and keeps it out of flow', () => {
-    for (const classes of [hitAreaBoth, hitAreaY, hitAreaStart, hitAreaEnd]) expect(classes).toContain('oui-hit');
-    expect(tokens).toMatch(/min\(0px, \(var\(--oui-hit-base, var\(--oui-control-height\)\) - var\(--oui-control-hit\)\) \/ 2\)/);
+    for (const classes of [hitAreaBoth, hitAreaY, hitAreaStart, hitAreaEnd])
+      expect(classes).toContain('oui-hit');
+    expect(tokens).toMatch(
+      /min\(0px, \(var\(--oui-hit-base, var\(--oui-control-height\)\) - var\(--oui-control-hit\)\) \/ 2\)/,
+    );
     expect(tokens).toMatch(/\.oui-hit::before \{\s*content: '';\s*position: absolute;/);
     expect(hitAreaStart).toContain('oui-hit-start');
     expect(hitAreaEnd).toContain('oui-hit-end');
@@ -55,10 +61,18 @@ describe('omni-ui-components/hit area (40px target on the control row)', () => {
 
   it('applies it to both SplitButton segments (compact only) and to Segmented control options', () => {
     const menu = { label: 'Options', sections: [] };
-    const { rerender } = render(<SplitButton main={{ label: 'Capture', icon: <Camera /> }} menu={menu} />);
+    const { rerender } = render(
+      <SplitButton main={{ label: 'Capture', icon: <Camera /> }} menu={menu} />,
+    );
     expect(screen.getByRole('button', { name: 'Capture' })).toHaveClass('oui-hit');
     expect(screen.getByRole('button', { name: 'More options' })).toHaveClass('oui-hit');
-    rerender(<SplitButton size="control-labelled" main={{ label: 'Capture', icon: <Camera /> }} menu={menu} />);
+    rerender(
+      <SplitButton
+        size="control-labelled"
+        main={{ label: 'Capture', icon: <Camera /> }}
+        menu={menu}
+      />,
+    );
     expect(screen.getByRole('button', { name: 'Capture' })).not.toHaveClass('oui-hit');
     expect(screen.getByRole('button', { name: 'More options' })).not.toHaveClass('oui-hit');
   });
@@ -68,7 +82,9 @@ describe('omni-ui-components/hit area (40px target on the control row)', () => {
       { value: 'a', ariaLabel: 'Alpha', icon: <Camera /> },
       { value: 'b', ariaLabel: 'Beta', icon: <Camera /> },
     ];
-    const { rerender } = render(<Segmented label="Mode" appearance="control" options={options} value="a" />);
+    const { rerender } = render(
+      <Segmented label="Mode" appearance="control" options={options} value="a" />,
+    );
     expect(screen.getByRole('radio', { name: 'Alpha' })).toHaveClass('oui-hit');
     rerender(<Segmented label="Mode" appearance="pill" options={options} value="a" />);
     expect(screen.getByRole('radio', { name: 'Alpha' })).not.toHaveClass('oui-hit');

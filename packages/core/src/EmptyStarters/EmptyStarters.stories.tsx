@@ -1,9 +1,10 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
-
 import { EmptyStarters, type EmptyStartersProps } from '@oc-tech/omni-ui-components/EmptyStarters';
-import { emptyStartersPropsFactory, emptyStartersVariants } from 'factories/omni-ui-components/EmptyStarters/EmptyStarters.factories';
+import type { Meta, StoryObj } from '@storybook/react';
+import {
+  emptyStartersPropsFactory,
+  emptyStartersVariants,
+} from 'factories/omni-ui-components/EmptyStarters/EmptyStarters.factories';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 const meta: Meta<EmptyStartersProps> = {
   title: 'omni-ui-components/EmptyStarters',
@@ -22,10 +23,20 @@ const meta: Meta<EmptyStartersProps> = {
   argTypes: {
     title: { control: 'text' },
     description: { control: 'text' },
-    starters: { control: 'object', description: 'Cards `{ key?, icon, title, subtitle?, prompt }`.' },
-    columns: { control: 'inline-radio', options: [1, 2, 3], description: 'Card columns from `sm` up.' },
+    starters: {
+      control: 'object',
+      description: 'Cards `{ key?, icon, title, subtitle?, prompt }`.',
+    },
+    columns: {
+      control: 'inline-radio',
+      options: [1, 2, 3],
+      description: 'Card columns from `sm` up.',
+    },
     labels: { control: 'object', description: '`starters`: accessible name of the card group.' },
-    onStart: { action: 'start', description: '(starter): the full starter item, which carries its `prompt`.' },
+    onStart: {
+      action: 'start',
+      description: '(starter): the full starter item, which carries its `prompt`.',
+    },
   },
   decorators: [
     (Story) => (
@@ -46,7 +57,9 @@ export const Default: Story = {
     const canvas = within(canvasElement);
     expect(canvas.getByRole('heading', { name: 'What are we working on?' })).toBeInTheDocument();
     await userEvent.click(canvas.getByRole('button', { name: /Explain a concept/ }));
-    expect(args.onStart).toHaveBeenCalledWith(expect.objectContaining({ title: 'Explain a concept', prompt: 'Explain closures' }));
+    expect(args.onStart).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Explain a concept', prompt: 'Explain closures' }),
+    );
   },
 };
 export const ThreeColumns: Story = { args: emptyStartersVariants[1].args };

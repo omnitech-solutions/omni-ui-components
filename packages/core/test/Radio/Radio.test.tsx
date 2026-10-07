@@ -18,7 +18,8 @@ const baseOptions = [
   { value: 'team', label: 'Team' },
 ];
 
-const renderRadio = (overrides: Partial<RadioProps> = {}) => render(<Radio data-testid="r" options={baseOptions} {...overrides} />);
+const renderRadio = (overrides: Partial<RadioProps> = {}) =>
+  render(<Radio data-testid="r" options={baseOptions} {...overrides} />);
 
 describe('omni-ui-components/Radio', () => {
   describe('shape', () => {

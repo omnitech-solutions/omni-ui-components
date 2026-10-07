@@ -1,8 +1,10 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { Wizard, type WizardProps } from '@oc-tech/omni-ui-components/Wizard';
-import { SAMPLE_STEPS, wizardPropsFactory } from 'factories/omni-ui-components/Wizard/Wizard.factories';
+import type { Meta, StoryObj } from '@storybook/react';
+import {
+  SAMPLE_STEPS,
+  wizardPropsFactory,
+} from 'factories/omni-ui-components/Wizard/Wizard.factories';
+import * as React from 'react';
 
 const Renderer: React.FC<WizardProps> = (args) => {
   const [step, setStep] = React.useState<string>(args.defaultStep ?? args.steps[0]?.name ?? '');
@@ -34,7 +36,11 @@ export const BlockedStep: Story = {
   args: {
     steps: [
       ...SAMPLE_STEPS.slice(0, 2),
-      { ...SAMPLE_STEPS[2], canAdvance: false, content: <p className="text-sm text-destructive">Cannot advance — agree to terms first.</p> },
+      {
+        ...SAMPLE_STEPS[2],
+        canAdvance: false,
+        content: <p className="text-sm text-destructive">Cannot advance — agree to terms first.</p>,
+      },
     ],
     defaultStep: 'review',
   },

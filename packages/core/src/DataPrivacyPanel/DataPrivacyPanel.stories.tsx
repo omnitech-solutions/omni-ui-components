@@ -1,13 +1,14 @@
-import * as React from 'react';
+import {
+  DataPrivacyPanel,
+  type DataPrivacyPanelProps,
+} from '@oc-tech/omni-ui-components/DataPrivacyPanel';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
-
-import { DataPrivacyPanel, type DataPrivacyPanelProps } from '@oc-tech/omni-ui-components/DataPrivacyPanel';
 import {
   DataPrivacyPanelDemo,
   dataPrivacyPanelPropsFactory,
   dataPrivacyPanelVariants,
 } from 'factories/omni-ui-components/DataPrivacyPanel/DataPrivacyPanel.factories';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta<DataPrivacyPanelProps> = {
   title: 'omni-ui-components/DataPrivacyPanel',
@@ -21,9 +22,18 @@ const meta: Meta<DataPrivacyPanelProps> = {
       },
     },
   },
-  args: { ...dataPrivacyPanelPropsFactory(), onRetentionChange: fn(), onShowActivityChange: fn(), onExport: fn(), onDeleteAll: fn() },
+  args: {
+    ...dataPrivacyPanelPropsFactory(),
+    onRetentionChange: fn(),
+    onShowActivityChange: fn(),
+    onExport: fn(),
+    onDeleteAll: fn(),
+  },
   argTypes: {
-    retention: { control: 'text', description: 'Current retention value (`forever`, `90d`, `30d` by default).' },
+    retention: {
+      control: 'text',
+      description: 'Current retention value (`forever`, `90d`, `30d` by default).',
+    },
     retentionOptions: { control: 'object', description: '`{ value, label }[]`.' },
     activity: { control: 'object', description: 'Log rows `{ id?, summary, context?, at }`.' },
     activityOpen: { control: 'boolean' },
@@ -32,8 +42,14 @@ const meta: Meta<DataPrivacyPanelProps> = {
     onRetentionChange: { action: 'retention' },
     onShowActivityChange: { action: 'activity open' },
     onExport: { action: 'export' },
-    onDeleteAll: { action: 'delete all', description: 'Called only after the Popconfirm is confirmed.' },
-    formatDate: { control: false, description: 'Date text of a log row. Default `toLocaleString`.' },
+    onDeleteAll: {
+      action: 'delete all',
+      description: 'Called only after the Popconfirm is confirmed.',
+    },
+    formatDate: {
+      control: false,
+      description: 'Date text of a log row. Default `toLocaleString`.',
+    },
   },
   decorators: [
     (Story) => (
@@ -79,7 +95,9 @@ export const ActivityLog: Story = {
     const list = await canvas.findByRole('list', { name: 'Activity log' });
     expect(list).toHaveClass('max-h-[220px]');
     await userEvent.click(canvas.getByRole('button', { name: 'Hide log' }));
-    await waitFor(() => expect(canvas.queryByRole('list', { name: 'Activity log' })).not.toBeInTheDocument());
+    await waitFor(() =>
+      expect(canvas.queryByRole('list', { name: 'Activity log' })).not.toBeInTheDocument(),
+    );
   },
 };
 

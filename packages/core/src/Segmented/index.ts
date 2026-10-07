@@ -1,5 +1,4 @@
 export { Segmented } from './Segmented';
-export { SegmentedPrimitive } from './SegmentedPrimitive';
 export type {
   SegmentedAppearance,
   SegmentedMultipleProps,
@@ -8,3 +7,4 @@ export type {
   SegmentedProps,
   SegmentedSingleProps,
 } from './Segmented.types';
+export { SegmentedPrimitive } from './SegmentedPrimitive';

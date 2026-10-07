@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import type { FormFixture } from '@oc-tech/omni-ui-components/Form/Form.types';
+import { z } from 'zod';
 import { NEW_COMPANY_OPTION, SHOWCASE_COMPANIES } from '../../showcase/entities';
 
 /**
@@ -56,7 +55,11 @@ export const contactScenarioZod = z
   })
   .superRefine((data, ctx) => {
     if (data.connectionId === NEW_COMPANY_OPTION && !data.connectionName.trim()) {
-      ctx.addIssue({ code: 'custom', path: ['connectionName'], message: 'Company Name is required' });
+      ctx.addIssue({
+        code: 'custom',
+        path: ['connectionName'],
+        message: 'Company Name is required',
+      });
     }
   }) as unknown as z.ZodType<ContactScenarioFormData>;
 
@@ -66,7 +69,9 @@ export const contactCompanyOptions = (): { value: string; label: string }[] => [
   ...SHOWCASE_COMPANIES.map((c) => ({ value: c.id, label: c.name })),
 ];
 
-export const contactScenarioFormFactory = (overrides: Partial<ContactScenarioFormData> = {}): FormFixture<ContactScenarioFormData> => ({
+export const contactScenarioFormFactory = (
+  overrides: Partial<ContactScenarioFormData> = {},
+): FormFixture<ContactScenarioFormData> => ({
   title: 'New Contact',
   maxWidth: 'max-w-2xl',
   schema: contactScenarioZod,
@@ -75,8 +80,23 @@ export const contactScenarioFormFactory = (overrides: Partial<ContactScenarioFor
     [{ name: 'name', label: 'Name', placeholder: 'Name', required: true }],
     [{ name: 'email', label: 'Email', placeholder: 'Email', required: true, type: 'email' }],
     [{ name: 'phoneNumber', label: 'Phone', placeholder: '(123) 456-7890', type: 'phone' }],
-    [{ name: 'connectionId', label: 'Company', type: 'select', placeholder: 'Select or create a company…', options: contactCompanyOptions() }],
-    [{ name: 'connectionName', label: 'Company Name', placeholder: 'Company name', required: true }],
+    [
+      {
+        name: 'connectionId',
+        label: 'Company',
+        type: 'select',
+        placeholder: 'Select or create a company…',
+        options: contactCompanyOptions(),
+      },
+    ],
+    [
+      {
+        name: 'connectionName',
+        label: 'Company Name',
+        placeholder: 'Company name',
+        required: true,
+      },
+    ],
     [{ name: 'connectionDomainValue', label: 'Domain', placeholder: 'acme.com' }],
     [{ name: 'role', label: 'Job Title', placeholder: 'Manager' }],
     /* Hidden fields are accepted by the API but the modal does not

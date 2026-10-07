@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 /** One suggested first message. Extend it with your own fields; `onStart` gets the full starter back. */
 export interface StarterItem {
@@ -17,7 +17,8 @@ export interface EmptyStartersLabels {
   starters: string;
 }
 
-export interface EmptyStartersProps<S extends StarterItem = StarterItem> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+export interface EmptyStartersProps<S extends StarterItem = StarterItem>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   /** Heading: `What are we working on?` */
   title: React.ReactNode;
   /** One line under the heading (the product description). */

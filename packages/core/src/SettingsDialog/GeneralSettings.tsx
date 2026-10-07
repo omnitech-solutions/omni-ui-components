@@ -1,9 +1,7 @@
-import * as React from 'react';
-
+import { useControllableState } from '../lib/use-controllable-state';
 import { SegmentedPrimitive } from '../Segmented';
 import { ShortcutList } from '../ShortcutList';
 import { SwitchPrimitive } from '../Switch';
-import { useControllableState } from '../lib/use-controllable-state';
 import { SettingRow } from './SettingRow';
 import type { GeneralSettingsLabels, GeneralSettingsProps } from './SettingsDialog.types';
 
@@ -39,7 +37,11 @@ export const GeneralSettings = ({
 }: GeneralSettingsProps) => {
   const labels = { ...DEFAULT_GENERAL_SETTINGS_LABELS, ...labelOverrides };
   const [theme, setTheme] = useControllableState<string>(themeProp, defaultTheme, onThemeChange);
-  const [sendOnEnter, setSendOnEnter] = useControllableState<boolean>(sendProp, defaultSendOnEnter, onSendOnEnterChange);
+  const [sendOnEnter, setSendOnEnter] = useControllableState<boolean>(
+    sendProp,
+    defaultSendOnEnter,
+    onSendOnEnterChange,
+  );
   const options = themeOptions ?? [
     { value: 'light', label: labels.light },
     { value: 'dark', label: labels.dark },
@@ -53,7 +55,11 @@ export const GeneralSettings = ({
       ) : null}
       {onSendOnEnterChange ? (
         <SettingRow title={labels.sendOnEnterTitle} description={labels.sendOnEnterDescription}>
-          <SwitchPrimitive aria-label={labels.sendOnEnterSwitch} checked={sendOnEnter} onChange={setSendOnEnter} />
+          <SwitchPrimitive
+            aria-label={labels.sendOnEnterSwitch}
+            checked={sendOnEnter}
+            onChange={setSendOnEnter}
+          />
         </SettingRow>
       ) : null}
       {shortcuts?.length ? <ShortcutList title={labels.shortcutsTitle} items={shortcuts} /> : null}

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 import { Pagination as PaginationControl } from '../../Pagination';
 import { useTable } from '../hooks/useTable';
 import type { TablePaginationPlacement, TablePaginationState } from '../Table.types';

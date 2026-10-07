@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
-import * as React from 'react';
-import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
 
 import { AT_END_PX, isAtEnd, useFollowLatest } from '@oc-tech/omni-ui-components';
+import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
+import * as React from 'react';
 
 describe('isAtEnd (ported from the studio follow-latest tests)', () => {
   const box = (scrollTop: number) => ({
@@ -149,7 +149,9 @@ describe('useFollowLatest', () => {
   });
 
   it('keeps the identity of every callback and the ref across renders', () => {
-    const { result, rerender } = renderHook(({ lines }) => useFollowLatest(lines), { initialProps: { lines: 1 } });
+    const { result, rerender } = renderHook(({ lines }) => useFollowLatest(lines), {
+      initialProps: { lines: 1 },
+    });
     const first = result.current;
     rerender({ lines: 2 });
     act(() => result.current.jump());

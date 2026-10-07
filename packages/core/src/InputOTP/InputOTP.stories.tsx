@@ -1,7 +1,6 @@
-import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-
 import { InputOTP, type InputOTPProps } from '@oc-tech/omni-ui-components/InputOTP';
+import type { Meta, StoryObj } from '@storybook/react';
+import * as React from 'react';
 
 const Renderer: React.FC<InputOTPProps> = (args) => {
   const [value, setValue] = React.useState<string>(args.value ?? '');
@@ -22,7 +21,12 @@ const meta: Meta<typeof InputOTP> = {
   title: 'omni-ui-components/InputOTP',
   component: InputOTP,
   tags: ['autodocs'],
-  args: { id: 'demo-otp', label: 'Verification code', length: 6, wrapperClassName: 'mx-auto max-w-md' },
+  args: {
+    id: 'demo-otp',
+    label: 'Verification code',
+    length: 6,
+    wrapperClassName: 'mx-auto max-w-md',
+  },
   argTypes: { onChange: { action: 'changed' } },
   render: (args) => <Renderer {...(args as InputOTPProps)} />,
 };
