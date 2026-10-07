@@ -121,5 +121,7 @@ export interface ModelPickerProps<M extends ModelInfo = ModelInfo> extends Omit<
   className?: string;
   /** Classes of the menu. */
   menuClassName?: string;
+  /** Portal target for the menu; default `document.body`. Lets a native host render it inside its own root. */
+  container?: HTMLElement | null;
   'data-testid'?: string;
 }

@@ -29,6 +29,8 @@ export interface SettingsDialogProps<Tab extends SettingsTab<Tab> = SettingsTab>
   onTabChange?: (tab: Tab) => void;
   /** Close button icon (caller node). */
   closeIcon?: React.ReactNode;
+  /** Portal target for the dialog and its backdrop; default `document.body`. Lets a native host render it inside its own root. */
+  container?: HTMLElement | null;
   labels?: Partial<SettingsDialogLabels>;
   className?: string;
   'data-testid'?: string;

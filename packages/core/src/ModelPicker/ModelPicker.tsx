@@ -153,7 +153,7 @@ export const ModelMenu = ModelMenuInner as <M extends ModelInfo = ModelInfo>(pro
  * <ModelPicker models={models} selectedId={id} effort={effort} onPick={setId} onEffortChange={setEffort} icons={{ check: <Check />, expand: <ChevronDown /> }} />
  */
 const ModelPickerInner = React.forwardRef<HTMLButtonElement, ModelPickerProps>(
-  ({ open: openProp, defaultOpen = false, onOpenChange, disabled, align = 'start', side = 'top', className, menuClassName, onPick, onEffortChange, selectedId: selectedProp, defaultSelectedId, effort: effortProp, defaultEffort = 'medium', labels: labelsProp, icons, 'data-testid': testId, ...menu }, ref) => {
+  ({ open: openProp, defaultOpen = false, onOpenChange, disabled, align = 'start', side = 'top', className, menuClassName, container, onPick, onEffortChange, selectedId: selectedProp, defaultSelectedId, effort: effortProp, defaultEffort = 'medium', labels: labelsProp, icons, 'data-testid': testId, ...menu }, ref) => {
     const labels = React.useMemo(() => withLabelDefaults(DEFAULT_MODEL_PICKER_LABELS, labelsProp), [labelsProp]);
     const [open, setOpen] = useControllableState<boolean>(openProp, defaultOpen, onOpenChange);
     // The popover returns focus to the chip only after its exit animation; picking or Escape puts it there at once.
@@ -187,7 +187,7 @@ const ModelPickerInner = React.forwardRef<HTMLButtonElement, ModelPickerProps>(
             <span className="truncate">{text}</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent align={align} side={side} sideOffset={6} aria-label={labels.dialog} className={cn(modelMenuClasses, menuClassName)} onEscapeKeyDown={() => chipRef.current?.focus()}>
+        <PopoverContent container={container} data-oui-surface="model-picker" align={align} side={side} sideOffset={6} aria-label={labels.dialog} className={cn(modelMenuClasses, menuClassName)} onEscapeKeyDown={() => chipRef.current?.focus()}>
           {/* The popover content is the dialog (role and name), so the menu inside is a plain container. */}
           <ModelMenu
             {...menu}
