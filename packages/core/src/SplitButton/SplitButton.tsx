@@ -136,7 +136,7 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>{mainButton}</TooltipTrigger>
-          <TooltipContent>{mainTipContent}</TooltipContent>
+          <TooltipContent container={menu.container}>{mainTipContent}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     ) : (
@@ -168,7 +168,7 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>{caretButton}</TooltipTrigger>
-            <TooltipContent>{caret?.disabledReason}</TooltipContent>
+            <TooltipContent container={menu.container}>{caret?.disabledReason}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       );
@@ -177,7 +177,7 @@ export const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
         <TooltipProvider>
           <Tooltip>
             <ActionMenu {...menu} open={isOpen} onOpenChange={setOpen} trigger={<TooltipTrigger asChild>{caretButton}</TooltipTrigger>} />
-            <TooltipContent>{caret.tooltip}</TooltipContent>
+            <TooltipContent container={menu.container}>{caret.tooltip}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       );
