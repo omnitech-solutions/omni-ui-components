@@ -35,10 +35,16 @@ import { getDefaultTableRegistry } from '../../src/Table/Table.registry';
 import type { TableColumn, TableProps } from '../../src/Table/Table.types';
 
 type Rec = Record<string, unknown>;
-const col = (key: string, extra: Partial<TableColumn<Rec>> = {}): TableColumn<Rec> => ({ key, ...extra });
+const col = (key: string, extra: Partial<TableColumn<Rec>> = {}): TableColumn<Rec> => ({
+  key,
+  ...extra,
+});
 
 describe('column helpers', () => {
-  const grouped: TableColumn<Rec>[] = [col('a'), { key: 'g', children: [col('b'), { key: 'g2', children: [col('c')] }] }];
+  const grouped: TableColumn<Rec>[] = [
+    col('a'),
+    { key: 'g', children: [col('b'), { key: 'g2', children: [col('c')] }] },
+  ];
 
   it('flattens nested columns to leaves and counts leaves per column', () => {
     expect(leafColumns(grouped).map((c) => c.key)).toEqual(['a', 'b', 'c']);
@@ -54,11 +60,24 @@ describe('column helpers', () => {
   });
 
   it('hides columns by hidden flag, visibility map and responsive breakpoints, then applies order', () => {
-    const columns = [col('a'), col('b', { hidden: true }), col('c'), col('d', { responsive: ['lg'] }), col('e')];
+    const columns = [
+      col('a'),
+      col('b', { hidden: true }),
+      col('c'),
+      col('d', { responsive: ['lg'] }),
+      col('e'),
+    ];
     const screens = { sm: true, md: true, lg: false, xl: false };
     expect(visibleLeafColumns(columns, {}, [], screens).map((c) => c.key)).toEqual(['a', 'c', 'e']);
-    expect(visibleLeafColumns(columns, { c: false }, [], screens).map((c) => c.key)).toEqual(['a', 'e']);
-    expect(visibleLeafColumns(columns, {}, ['e', 'ghost', 'a'], { ...screens, lg: true }).map((c) => c.key)).toEqual(['e', 'a', 'c', 'd']);
+    expect(visibleLeafColumns(columns, { c: false }, [], screens).map((c) => c.key)).toEqual([
+      'a',
+      'e',
+    ]);
+    expect(
+      visibleLeafColumns(columns, {}, ['e', 'ghost', 'a'], { ...screens, lg: true }).map(
+        (c) => c.key,
+      ),
+    ).toEqual(['e', 'a', 'c', 'd']);
   });
 
   it('filterVisibleColumns prunes groups whose children are all hidden', () => {
@@ -190,10 +209,18 @@ describe('appearance helpers', () => {
     const base = { columns: [] } as TableProps<Rec>;
     expect(resolveClassNames(base)).toEqual({});
     expect(resolveClassNames({ ...base, classNames: { root: 'r' } })).toEqual({ root: 'r' });
-    const fn = vi.fn(({ props }: { props: TableProps<Rec> }) => ({ title: props.bordered ? 'bordered' : 'plain' }));
-    expect(resolveClassNames({ ...base, bordered: true, classNames: fn })).toEqual({ title: 'bordered' });
-    expect(resolveStyles({ ...base, styles: { root: { color: 'red' } } })).toEqual({ root: { color: 'red' } });
-    expect(resolveStyles({ ...base, styles: () => ({ footer: { margin: 1 } }) })).toEqual({ footer: { margin: 1 } });
+    const fn = vi.fn(({ props }: { props: TableProps<Rec> }) => ({
+      title: props.bordered ? 'bordered' : 'plain',
+    }));
+    expect(resolveClassNames({ ...base, bordered: true, classNames: fn })).toEqual({
+      title: 'bordered',
+    });
+    expect(resolveStyles({ ...base, styles: { root: { color: 'red' } } })).toEqual({
+      root: { color: 'red' },
+    });
+    expect(resolveStyles({ ...base, styles: () => ({ footer: { margin: 1 } }) })).toEqual({
+      footer: { margin: 1 },
+    });
     expect(resolveStyles(base)).toEqual({});
   });
 
@@ -222,7 +249,12 @@ describe('editable helpers', () => {
     const rowCfg = { mode: 'row' as const, onSave: vi.fn() };
     expect(editableRowConfig(rowCfg)).toBe(rowCfg);
     expect(tableEditableConfig(undefined)).toBeNull();
-    expect(tableEditableConfig(true)).toEqual({ headerColumns: true, bodyRows: true, appendRowOnTab: true, controls: true });
+    expect(tableEditableConfig(true)).toEqual({
+      headerColumns: true,
+      bodyRows: true,
+      appendRowOnTab: true,
+      controls: true,
+    });
     const custom = { bodyRows: false };
     expect(tableEditableConfig(custom)).toBe(custom);
   });
@@ -231,10 +263,20 @@ describe('editable helpers', () => {
     const editableCol = col('a', { editable: { mode: 'row', validate: () => null } });
     expect(resolvedCellEditableConfig(undefined, col('a'))).toBeNull();
     expect(resolvedCellEditableConfig({ editable: false }, editableCol)).toBeNull();
-    expect(resolvedCellEditableConfig({ editable: true }, col('a'))).toEqual({ mode: 'cell', source: 'cell', cellConfig: {} });
+    expect(resolvedCellEditableConfig({ editable: true }, col('a'))).toEqual({
+      mode: 'cell',
+      source: 'cell',
+      cellConfig: {},
+    });
     const cellCfg = { validate: () => 'bad' };
-    expect(resolvedCellEditableConfig({ editable: cellCfg }, editableCol)).toMatchObject({ source: 'cell', cellConfig: cellCfg });
-    expect(resolvedCellEditableConfig(undefined, editableCol)).toMatchObject({ mode: 'row', source: 'column' });
+    expect(resolvedCellEditableConfig({ editable: cellCfg }, editableCol)).toMatchObject({
+      source: 'cell',
+      cellConfig: cellCfg,
+    });
+    expect(resolvedCellEditableConfig(undefined, editableCol)).toMatchObject({
+      mode: 'row',
+      source: 'column',
+    });
   });
 
   it('turns null and undefined into an empty input string and stringifies the rest', () => {
@@ -252,12 +294,35 @@ describe('editable helpers', () => {
     const typeEd = vi.fn();
     registry.editors = { custom: kindEd, number: typeEd, text: typeEd };
     const column = col('a', { valueType: 'number' });
-    const config = (extra: object) => ({ mode: 'cell' as const, source: 'column' as const, ...extra });
-    expect(editableRenderer(registry, column, undefined, config({ cellConfig: { renderEditor: cellEd }, columnConfig: { mode: 'cell', renderEditor: colEd } }))).toBe(cellEd);
-    expect(editableRenderer(registry, column, undefined, config({ columnConfig: { mode: 'cell', renderEditor: colEd } }))).toBe(colEd);
+    const config = (extra: object) => ({
+      mode: 'cell' as const,
+      source: 'column' as const,
+      ...extra,
+    });
+    expect(
+      editableRenderer(
+        registry,
+        column,
+        undefined,
+        config({
+          cellConfig: { renderEditor: cellEd },
+          columnConfig: { mode: 'cell', renderEditor: colEd },
+        }),
+      ),
+    ).toBe(cellEd);
+    expect(
+      editableRenderer(
+        registry,
+        column,
+        undefined,
+        config({ columnConfig: { mode: 'cell', renderEditor: colEd } }),
+      ),
+    ).toBe(colEd);
     expect(editableRenderer(registry, column, { kind: 'custom' }, config({}))).toBe(kindEd);
     expect(editableRenderer(registry, column, undefined, config({}))).toBe(typeEd);
-    expect(editableRenderer(registry, col('b', { valueType: 'string' }), undefined, config({}))).toBe(typeEd);
+    expect(
+      editableRenderer(registry, col('b', { valueType: 'string' }), undefined, config({})),
+    ).toBe(typeEd);
     expect(editableRenderer(registry, col('c'), undefined, config({}))).toBeUndefined();
   });
 });

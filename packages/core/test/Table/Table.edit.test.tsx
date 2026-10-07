@@ -17,7 +17,8 @@ const renderTable = (props: Partial<TableProps<Person>> = {}) =>
   render(<Table<Person> columns={editableColumns()} dataSource={rows3} rowKey="id" {...props} />);
 
 const cell = (id: number, key: string) => screen.getByTestId(`table-body-cell-${id}-${key}`);
-const input = (id: number, key: string) => screen.getByTestId(`table-edit-input-${id}-${key}`) as HTMLInputElement;
+const input = (id: number, key: string) =>
+  screen.getByTestId(`table-edit-input-${id}-${key}`) as HTMLInputElement;
 
 describe('Table cell editing', () => {
   it('marks editable cells and leaves the others plain', () => {
@@ -42,7 +43,9 @@ describe('Table cell editing', () => {
     await waitFor(() => expect(cell(1, 'name')).toHaveTextContent('Ada L.'));
     expect(cell(1, 'name')).not.toHaveAttribute('data-editing');
     expect(onSave).toHaveBeenCalledWith('Ada L.', people[0], expect.objectContaining({ key: 1 }));
-    expect(onEdit).toHaveBeenCalledWith(expect.objectContaining({ key: 'name', value: 'Ada L.', rowKey: '1', record: people[0] }));
+    expect(onEdit).toHaveBeenCalledWith(
+      expect.objectContaining({ key: 'name', value: 'Ada L.', rowKey: '1', record: people[0] }),
+    );
     // the source record is not mutated: the edit is held by the table
     expect(people[0].name).toBe('Ada');
   });
@@ -127,12 +130,27 @@ describe('Table cell editing', () => {
   });
 
   it('editable.onAppendRow supplies the row appended on Tab', async () => {
-    const onAppendRow = vi.fn(() => ({ key: 'extra', record: { id: 99, name: '', role: '', age: 0, salary: 0, joined: '' } }));
-    const { container } = renderTable({ editable: { appendRowOnTab: true, onAppendRow }, extendable: { rows: { onAppend: () => ({ key: 'extra', record: { id: 99, name: '', role: '', age: 0, salary: 0, joined: '' } }) } } });
+    const onAppendRow = vi.fn(() => ({
+      key: 'extra',
+      record: { id: 99, name: '', role: '', age: 0, salary: 0, joined: '' },
+    }));
+    const { container } = renderTable({
+      editable: { appendRowOnTab: true, onAppendRow },
+      extendable: {
+        rows: {
+          onAppend: () => ({
+            key: 'extra',
+            record: { id: 99, name: '', role: '', age: 0, salary: 0, joined: '' },
+          }),
+        },
+      },
+    });
     fireEvent.click(cell(3, 'role'));
     fireEvent.keyDown(input(3, 'role'), { key: 'Tab' });
     await waitFor(() => expect(onAppendRow).toHaveBeenCalled());
-    expect(onAppendRow.mock.calls[0]).toEqual([expect.objectContaining({ rows: expect.any(Array), columns: expect.any(Array) })]);
+    expect(onAppendRow.mock.calls[0]).toEqual([
+      expect.objectContaining({ rows: expect.any(Array), columns: expect.any(Array) }),
+    ]);
     // the consumer owns the data: the table does not add the returned row itself, and extendable's own append is skipped
     expect(container.querySelectorAll('tbody tr')).toHaveLength(3);
   });
@@ -164,7 +182,9 @@ describe('Table cell editing', () => {
     expect(screen.queryByTestId('editor')).not.toBeInTheDocument();
     fireEvent.click(cell(1, 'name'));
     fireEvent.click(screen.getByText('save-direct'));
-    await waitFor(() => expect(onSave).toHaveBeenLastCalledWith('direct', people[0], expect.anything()));
+    await waitFor(() =>
+      expect(onSave).toHaveBeenLastCalledWith('direct', people[0], expect.anything()),
+    );
     fireEvent.click(cell(1, 'name'));
     fireEvent.click(screen.getByText('next'));
     await waitFor(() => expect(cell(1, 'role')).toHaveAttribute('data-editing', 'true'));
@@ -175,7 +195,9 @@ describe('Table cell editing', () => {
     const numberEditor = vi.fn(() => <span data-testid="num-editor" />);
     render(
       <Table<Person>
-        columns={[{ key: 'age', title: 'Age', dataIndex: 'age', valueType: 'number', editable: true }]}
+        columns={[
+          { key: 'age', title: 'Age', dataIndex: 'age', valueType: 'number', editable: true },
+        ]}
         dataSource={rows3}
         rowKey="id"
         registry={{ editors: { number: numberEditor } }}
@@ -187,7 +209,11 @@ describe('Table cell editing', () => {
 
   it('cell override editable=false wins over the column; editable=true on a cell enables it', () => {
     const rows = [
-      { key: 'a', record: people[0], cells: { name: { editable: false }, age: { editable: true } } },
+      {
+        key: 'a',
+        record: people[0],
+        cells: { name: { editable: false }, age: { editable: true } },
+      },
     ];
     render(<Table<Person> columns={editableColumns()} rows={rows} />);
     expect(cell('a' as never, 'name')).not.toHaveAttribute('data-editable');
@@ -202,19 +228,34 @@ describe('Table cell editing', () => {
       { key: 'r2', record: people[1], disabled: true },
       { key: 'r3', record: people[2] },
     ];
-    render(<Table<Person> columns={[{ key: 'name', dataIndex: 'name', title: 'Name' }]} rows={rows} editable />);
+    render(
+      <Table<Person>
+        columns={[{ key: 'name', dataIndex: 'name', title: 'Name' }]}
+        rows={rows}
+        editable
+      />,
+    );
     fireEvent.click(cell('r1' as never, 'name'));
     fireEvent.keyDown(screen.getByTestId('table-edit-input-r1-name'), { key: 'Tab' });
     await waitFor(() => expect(screen.getByTestId('table-edit-input-r3-name')).toBeInTheDocument());
   });
 
   it('editable.bodyRows=false turns the table-level switch off for plain columns', () => {
-    render(<Table<Person> columns={[{ key: 'name', dataIndex: 'name', title: 'Name' }]} dataSource={rows3} rowKey="id" editable={{ bodyRows: false }} />);
+    render(
+      <Table<Person>
+        columns={[{ key: 'name', dataIndex: 'name', title: 'Name' }]}
+        dataSource={rows3}
+        rowKey="id"
+        editable={{ bodyRows: false }}
+      />,
+    );
     expect(cell(1, 'name')).not.toHaveAttribute('data-editable');
   });
 
   it('a cell onClick that prevents default stops editing from starting', () => {
-    renderTable({ columns: editableColumns({ onCell: () => ({ onClick: (event) => event.preventDefault() }) }) });
+    renderTable({
+      columns: editableColumns({ onCell: () => ({ onClick: (event) => event.preventDefault() }) }),
+    });
     fireEvent.click(cell(1, 'name'));
     expect(screen.queryByTestId('table-edit-input-1-name')).not.toBeInTheDocument();
   });
@@ -222,7 +263,12 @@ describe('Table cell editing', () => {
 
 describe('Table row editing', () => {
   const rowColumns: TableColumn<Person>[] = [
-    { key: 'name', title: 'Name', dataIndex: 'name', editable: { mode: 'row', validate: (value) => (String(value) ? null : 'Required') } },
+    {
+      key: 'name',
+      title: 'Name',
+      dataIndex: 'name',
+      editable: { mode: 'row', validate: (value) => (String(value) ? null : 'Required') },
+    },
     { key: 'role', title: 'Role', dataIndex: 'role', editable: { mode: 'row' } },
     { key: 'age', title: 'Age', dataIndex: 'age' },
   ];
@@ -233,7 +279,10 @@ describe('Table row editing', () => {
     render(
       <Table<Person>
         columns={rowColumns}
-        rows={[{ key: 1, record: people[0], editable: { mode: 'row', onSave } }, { key: 2, record: people[1] }]}
+        rows={[
+          { key: 1, record: people[0], editable: { mode: 'row', onSave } },
+          { key: 2, record: people[1] },
+        ]}
         onEdit={onEdit}
       />,
     );
@@ -244,7 +293,9 @@ describe('Table row editing', () => {
     fireEvent.change(input(1, 'name'), { target: { value: 'Ada L.' } });
     fireEvent.change(input(1, 'role'), { target: { value: 'Lead' } });
     fireEvent.keyDown(input(1, 'role'), { key: 'Enter' });
-    await waitFor(() => expect(screen.getByTestId('table-body-cell-1-name')).toHaveTextContent('Ada L.'));
+    await waitFor(() =>
+      expect(screen.getByTestId('table-body-cell-1-name')).toHaveTextContent('Ada L.'),
+    );
     expect(screen.getByTestId('table-body-cell-1-role')).toHaveTextContent('Lead');
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave.mock.calls[0][0]).toMatchObject({ name: 'Ada L.', role: 'Lead', age: 36 });
@@ -254,7 +305,12 @@ describe('Table row editing', () => {
   it('validation blocks a row save, and Escape cancels with onCancel and no changes', async () => {
     const onSave = vi.fn();
     const onCancel = vi.fn();
-    render(<Table<Person> columns={rowColumns} rows={[{ key: 1, record: people[0], editable: { mode: 'row', onSave, onCancel } }]} />);
+    render(
+      <Table<Person>
+        columns={rowColumns}
+        rows={[{ key: 1, record: people[0], editable: { mode: 'row', onSave, onCancel } }]}
+      />,
+    );
     fireEvent.click(screen.getByTestId('table-body-cell-1-name'));
     fireEvent.change(input(1, 'name'), { target: { value: '' } });
     fireEvent.keyDown(input(1, 'name'), { key: 'Enter' });
@@ -270,7 +326,13 @@ describe('Table row editing', () => {
     render(
       <Table<Person>
         columns={rowColumns}
-        rows={[{ key: 1, record: people[0], editable: { mode: 'row', initialValues: (record) => ({ name: `${record.name}!` }) } }]}
+        rows={[
+          {
+            key: 1,
+            record: people[0],
+            editable: { mode: 'row', initialValues: (record) => ({ name: `${record.name}!` }) },
+          },
+        ]}
       />,
     );
     fireEvent.click(screen.getByTestId('table-body-cell-1-name'));
@@ -285,13 +347,22 @@ describe('Table row editing', () => {
     ));
     render(
       <Table<Person>
-        columns={[{ key: 'name', title: 'Name', dataIndex: 'name', editable: { mode: 'row', renderEditor } }]}
+        columns={[
+          {
+            key: 'name',
+            title: 'Name',
+            dataIndex: 'name',
+            editable: { mode: 'row', renderEditor },
+          },
+        ]}
         rows={[{ key: 1, record: people[0], editable: true }]}
       />,
     );
     fireEvent.click(screen.getByTestId('table-body-cell-1-name'));
     expect(screen.getByTestId('ed-name')).toHaveTextContent('row');
     fireEvent.click(screen.getByTestId('ed-name'));
-    await waitFor(() => expect(screen.getByTestId('table-body-cell-1-name')).toHaveTextContent('X'));
+    await waitFor(() =>
+      expect(screen.getByTestId('table-body-cell-1-name')).toHaveTextContent('X'),
+    );
   });
 });

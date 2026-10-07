@@ -26,10 +26,25 @@ import {
 } from '../../src/Table/internal';
 import type { TableColumn, TableDataRow, TableResolvedRow } from '../../src/Table/Table.types';
 
-type Rec = { id?: number; key?: string; name?: string; n?: unknown; nested?: { deep?: number }; children?: Rec[] };
+type Rec = {
+  id?: number;
+  key?: string;
+  name?: string;
+  n?: unknown;
+  nested?: { deep?: number };
+  children?: Rec[];
+};
 
-const col = (key: string, extra: Partial<TableColumn<Rec>> = {}): TableColumn<Rec> => ({ key, dataIndex: key, ...extra });
-const resolve = (record: Rec, index = 0, row: Partial<TableDataRow<Rec>> = {}): TableResolvedRow<Rec> => ({
+const col = (key: string, extra: Partial<TableColumn<Rec>> = {}): TableColumn<Rec> => ({
+  key,
+  dataIndex: key,
+  ...extra,
+});
+const resolve = (
+  record: Rec,
+  index = 0,
+  row: Partial<TableDataRow<Rec>> = {},
+): TableResolvedRow<Rec> => ({
   key: record.id ?? index,
   record,
   row: { key: record.id ?? index, record, ...row },
@@ -128,7 +143,10 @@ describe('sortable value parsing', () => {
 describe('rawCellValue / cellValue', () => {
   it('prefers the cell override value (even undefined) over the record path', () => {
     const record: Rec = { name: 'rec', nested: { deep: 3 } };
-    const row: TableDataRow<Rec> = { key: 1, cells: { name: { value: 'override' }, nested: { value: undefined } } };
+    const row: TableDataRow<Rec> = {
+      key: 1,
+      cells: { name: { value: 'override' }, nested: { value: undefined } },
+    };
     expect(rawCellValue(record, row, col('name'))).toBe('override');
     expect(rawCellValue(record, row, col('nested'))).toBeUndefined();
     expect(rawCellValue(record, { key: 1 }, { key: 'd', dataIndex: ['nested', 'deep'] })).toBe(3);
@@ -137,7 +155,9 @@ describe('rawCellValue / cellValue', () => {
   it('normalises using the column valueType, falling back to the cell kind', () => {
     const record: Rec = { n: '$1,000' };
     expect(cellValue(record, { key: 1 }, col('n', { valueType: 'money' }))).toBe(1000);
-    expect(cellValue(record, { key: 1, cells: { n: { kind: 'string' } } }, col('n'))).toBe('$1,000');
+    expect(cellValue(record, { key: 1, cells: { n: { kind: 'string' } } }, col('n'))).toBe(
+      '$1,000',
+    );
   });
 });
 
@@ -158,7 +178,11 @@ describe('sorting helpers', () => {
     expect(compareComponent(1, null)).toBe(-1);
     expect(compareComponent(2, 10)).toBeLessThan(0);
     expect(compareComponent(new Date(2020, 0, 1), new Date(2021, 0, 1))).toBeLessThan(0);
-    expect(['item10', 'item2', 'Item1'].sort(compareComponent)).toEqual(['Item1', 'item2', 'item10']);
+    expect(['item10', 'item2', 'Item1'].sort(compareComponent)).toEqual([
+      'Item1',
+      'item2',
+      'item10',
+    ]);
   });
 
   it('derives sorting state from controlled sortOrder first, then defaults, honouring multiple priority', () => {
@@ -174,17 +198,29 @@ describe('sorting helpers', () => {
       { id: 'c', desc: false },
     ]);
     const controlled = [col('x', { sortOrder: 'descend' }), col('y', { sortOrder: null })];
-    expect(sortingFromColumnSortOrders(controlled, 'controlled')).toEqual([{ id: 'x', desc: true }]);
+    expect(sortingFromColumnSortOrders(controlled, 'controlled')).toEqual([
+      { id: 'x', desc: true },
+    ]);
     expect(hasControlledSorter(controlled)).toBe(true);
     expect(hasControlledSorter(columns)).toBe(false);
   });
 
   it('initial sorting precedence: state > controlled columns > defaultState > column defaults', () => {
     const columns = [col('a', { sortOrder: 'ascend', defaultSortOrder: 'descend' })];
-    expect(initialSortingState(columns, [{ id: 's', desc: true }], [{ id: 'd', desc: false }])).toEqual([{ id: 's', desc: true }]);
-    expect(initialSortingState(columns, undefined, [{ id: 'd', desc: false }])).toEqual([{ id: 'a', desc: false }]);
-    expect(initialSortingState([col('a', { defaultSortOrder: 'descend' })], undefined, [{ id: 'd', desc: false }])).toEqual([{ id: 'd', desc: false }]);
-    expect(initialSortingState([col('a', { defaultSortOrder: 'descend' })])).toEqual([{ id: 'a', desc: true }]);
+    expect(
+      initialSortingState(columns, [{ id: 's', desc: true }], [{ id: 'd', desc: false }]),
+    ).toEqual([{ id: 's', desc: true }]);
+    expect(initialSortingState(columns, undefined, [{ id: 'd', desc: false }])).toEqual([
+      { id: 'a', desc: false },
+    ]);
+    expect(
+      initialSortingState([col('a', { defaultSortOrder: 'descend' })], undefined, [
+        { id: 'd', desc: false },
+      ]),
+    ).toEqual([{ id: 'd', desc: false }]);
+    expect(initialSortingState([col('a', { defaultSortOrder: 'descend' })])).toEqual([
+      { id: 'a', desc: true },
+    ]);
   });
 });
 
@@ -202,28 +238,61 @@ describe('filter helpers', () => {
       { id: 'b', value: ['y'] },
       { id: 'e', value: ['z'] },
     ]);
-    expect(initialColumnFilters(columns, [{ id: 'q', value: ['1'] }])).toEqual([{ id: 'q', value: ['1'] }]);
+    expect(initialColumnFilters(columns, [{ id: 'q', value: ['1'] }])).toEqual([
+      { id: 'q', value: ['1'] },
+    ]);
   });
 
   it('serialises filters to a record with null for empty and wraps scalars', () => {
-    expect(filtersRecord([{ id: 'a', value: ['x'] }, { id: 'b', value: [] }, { id: 'c', value: null }, { id: 'd', value: 'solo' }])).toEqual({
+    expect(
+      filtersRecord([
+        { id: 'a', value: ['x'] },
+        { id: 'b', value: [] },
+        { id: 'c', value: null },
+        { id: 'd', value: 'solo' },
+      ]),
+    ).toEqual({
       a: ['x'],
       b: null,
       c: null,
       d: ['solo'],
     });
-    expect(filtersRecordForColumn([{ id: 'a', value: ['x'] }], col('z'))).toEqual({ a: ['x'], z: null });
+    expect(filtersRecordForColumn([{ id: 'a', value: ['x'] }], col('z'))).toEqual({
+      a: ['x'],
+      z: null,
+    });
     expect(filtersRecordForColumn([{ id: 'a', value: ['x'] }], col('a'))).toEqual({ a: ['x'] });
   });
 
   it('filters rows by string-equal cell value, by onFilter, by OR across values and AND across columns', () => {
-    const rows = [resolve({ id: 1, name: 'ann', n: 1 }), resolve({ id: 2, name: 'bob', n: 2 }), resolve({ id: 3, name: 'cy', n: 2 })];
-    const columns = [col('name'), col('n'), col('custom', { onFilter: (value, record) => record.name?.startsWith(String(value)) ?? false })];
+    const rows = [
+      resolve({ id: 1, name: 'ann', n: 1 }),
+      resolve({ id: 2, name: 'bob', n: 2 }),
+      resolve({ id: 3, name: 'cy', n: 2 }),
+    ];
+    const columns = [
+      col('name'),
+      col('n'),
+      col('custom', {
+        onFilter: (value, record) => record.name?.startsWith(String(value)) ?? false,
+      }),
+    ];
     expect(rowsForFilters(rows, columns, [])).toBe(rows);
-    expect(rowsForFilters(rows, columns, [{ id: 'n', value: [2] }]).map((r) => r.key)).toEqual([2, 3]);
-    expect(rowsForFilters(rows, columns, [{ id: 'name', value: ['ann', 'cy'] }]).map((r) => r.key)).toEqual([1, 3]);
-    expect(rowsForFilters(rows, columns, [{ id: 'n', value: [2] }, { id: 'name', value: ['bob'] }]).map((r) => r.key)).toEqual([2]);
-    expect(rowsForFilters(rows, columns, [{ id: 'custom', value: ['c'] }]).map((r) => r.key)).toEqual([3]);
+    expect(rowsForFilters(rows, columns, [{ id: 'n', value: [2] }]).map((r) => r.key)).toEqual([
+      2, 3,
+    ]);
+    expect(
+      rowsForFilters(rows, columns, [{ id: 'name', value: ['ann', 'cy'] }]).map((r) => r.key),
+    ).toEqual([1, 3]);
+    expect(
+      rowsForFilters(rows, columns, [
+        { id: 'n', value: [2] },
+        { id: 'name', value: ['bob'] },
+      ]).map((r) => r.key),
+    ).toEqual([2]);
+    expect(
+      rowsForFilters(rows, columns, [{ id: 'custom', value: ['c'] }]).map((r) => r.key),
+    ).toEqual([3]);
   });
 
   it('ignores empty filter values and filters for unknown columns', () => {
@@ -240,13 +309,20 @@ describe('filter helpers', () => {
     expect(filterItemMatchesSearch(item, 'beta', true)).toBe(true);
     expect(filterItemMatchesSearch(item, 'gamma', true)).toBe(false);
     expect(filterItemMatchesSearch(item, 'gamma', undefined)).toBe(true);
-    expect(filterItemMatchesSearch(item, 'zzz', (input, f) => f.value === 'ab' && input === 'zzz')).toBe(true);
-    expect(filterItemMatchesSearch({ text: undefined as never, value: 'v' }, 'a', true)).toBe(false);
+    expect(
+      filterItemMatchesSearch(item, 'zzz', (input, f) => f.value === 'ab' && input === 'zzz'),
+    ).toBe(true);
+    expect(filterItemMatchesSearch({ text: undefined as never, value: 'v' }, 'a', true)).toBe(
+      false,
+    );
   });
 });
 
 describe('row helpers', () => {
-  const people: Rec[] = [{ id: 1, name: 'a', children: [{ id: 11, name: 'a1', children: [{ id: 111, name: 'a11' }] }] }, { id: 2, name: 'b' }];
+  const people: Rec[] = [
+    { id: 1, name: 'a', children: [{ id: 11, name: 'a1', children: [{ id: 111, name: 'a11' }] }] },
+    { id: 2, name: 'b' },
+  ];
 
   it('builds tree rows from dataSource using the children column name', () => {
     const rows = normalizeRows(people, undefined, { className: 'base' }, 'id', 'children');
@@ -261,11 +337,7 @@ describe('row helpers', () => {
   it('uses explicit rows, dropping hidden ones, taking their record or the dataSource entry by position', () => {
     const rows = normalizeRows(
       people,
-      [
-        { key: 'x', hidden: true },
-        { key: 'y', record: { id: 5 } },
-        { key: 'z' },
-      ],
+      [{ key: 'x', hidden: true }, { key: 'y', record: { id: 5 } }, { key: 'z' }],
       { className: 'base' },
       'id',
       'children',

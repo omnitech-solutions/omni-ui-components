@@ -16,7 +16,12 @@ import {
   resizeTableMatrixRows,
   syncTableMatrixRowToColumns,
 } from '../../src/Table/Table.matrix';
-import { AppendControlButton, makeEmptyColumn, makeEmptyRow, resolveExtendable } from '../../src/Table/Table.append';
+import {
+  AppendControlButton,
+  makeEmptyColumn,
+  makeEmptyRow,
+  resolveExtendable,
+} from '../../src/Table/Table.append';
 import { detectTreeMode, TreeExpandToggle } from '../../src/Table/Table.tree';
 import { createRowDataTypeMap } from '../../src/Table/Table.RowData';
 import { RowDataIcon, RowDataIconType } from '../../src/Table/Table.RowDataIcon';
@@ -28,27 +33,67 @@ import { RowDataLinkType } from '../../src/Table/Table.RowDataLink';
 import { RowDataMoneyType } from '../../src/Table/Table.RowDataMoney';
 import { RowDataNumberType } from '../../src/Table/Table.RowDataNumber';
 import { RowDataTextType } from '../../src/Table/Table.RowDataText';
-import { BUILT_IN_ROW_DATA_TYPES, renderCellContent, useRowDataTypeMap, useLoadingState, useAppendControls, useDragState, useResolvedRows } from '../../src/Table/internal';
+import {
+  BUILT_IN_ROW_DATA_TYPES,
+  renderCellContent,
+  useRowDataTypeMap,
+  useLoadingState,
+  useAppendControls,
+  useDragState,
+  useResolvedRows,
+} from '../../src/Table/internal';
 import { SortableHandle, SortableRowHandleCell } from '../../src/Table/internal/dragHandle';
 import { BulkActionsButton } from '../../src/Table/internal/components';
 import { getDefaultTableRegistry } from '../../src/Table/Table.registry';
-import type { TableCellRenderContext, TableColumn, TableDataRow } from '../../src/Table/Table.types';
+import type {
+  TableCellRenderContext,
+  TableColumn,
+  TableDataRow,
+} from '../../src/Table/Table.types';
 
 type Rec = Record<string, unknown>;
 
 describe('AutoFlipDropdown', () => {
-  const rect = (r: Partial<DOMRect>): DOMRect => ({ x: 0, y: 0, top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0, toJSON: () => ({}), ...r }) as DOMRect;
+  const rect = (r: Partial<DOMRect>): DOMRect =>
+    ({
+      x: 0,
+      y: 0,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: 0,
+      height: 0,
+      toJSON: () => ({}),
+      ...r,
+    }) as DOMRect;
 
-  const mount = (trigger: DOMRect, dropdown: DOMRect, viewport = { w: 1000, h: 800 }, boundary?: DOMRect) => {
-    Object.defineProperty(document.documentElement, 'clientWidth', { configurable: true, value: viewport.w });
-    Object.defineProperty(document.documentElement, 'clientHeight', { configurable: true, value: viewport.h });
-    const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+  const mount = (
+    trigger: DOMRect,
+    dropdown: DOMRect,
+    viewport = { w: 1000, h: 800 },
+    boundary?: DOMRect,
+  ) => {
+    Object.defineProperty(document.documentElement, 'clientWidth', {
+      configurable: true,
+      value: viewport.w,
+    });
+    Object.defineProperty(document.documentElement, 'clientHeight', {
+      configurable: true,
+      value: viewport.h,
+    });
+    const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (
+      this: Element,
+    ) {
       if (this.getAttribute('data-role') === 'trigger') return trigger;
       if (this.getAttribute('data-role') === 'boundary') return boundary ?? rect({});
       return dropdown;
     });
     const view = render(
-      <div data-role={boundary ? 'boundary' : undefined} data-dropdown-boundary={boundary ? '' : undefined}>
+      <div
+        data-role={boundary ? 'boundary' : undefined}
+        data-dropdown-boundary={boundary ? '' : undefined}
+      >
         <span data-role="trigger">
           <AutoFlipDropdown data-testid="menu" className="menu">
             <p>content</p>
@@ -62,30 +107,48 @@ describe('AutoFlipDropdown', () => {
   afterEach(() => vi.restoreAllMocks());
 
   it('portals the content into body, hidden until measured, then visible and anchored under the trigger', () => {
-    const { menu, view } = mount(rect({ top: 100, bottom: 120, left: 50, right: 90, width: 40, height: 20 }), rect({ width: 200, height: 150 }));
+    const { menu, view } = mount(
+      rect({ top: 100, bottom: 120, left: 50, right: 90, width: 40, height: 20 }),
+      rect({ width: 200, height: 150 }),
+    );
     expect(menu.parentElement).toBe(document.body);
     expect(view.container).not.toContainElement(menu);
     expect(menu).toHaveClass('menu');
     expect(menu).toHaveAttribute('data-align-x', 'left');
     expect(menu).toHaveAttribute('data-align-y', 'bottom');
-    expect(menu).toHaveStyle({ position: 'fixed', top: '120px', left: '50px', visibility: 'visible' });
+    expect(menu).toHaveStyle({
+      position: 'fixed',
+      top: '120px',
+      left: '50px',
+      visibility: 'visible',
+    });
   });
 
   it('flips to the right edge when it would overflow the viewport horizontally', () => {
-    const { menu } = mount(rect({ top: 10, bottom: 30, left: 900, right: 960, width: 60, height: 20 }), rect({ width: 200, height: 100 }));
+    const { menu } = mount(
+      rect({ top: 10, bottom: 30, left: 900, right: 960, width: 60, height: 20 }),
+      rect({ width: 200, height: 100 }),
+    );
     expect(menu).toHaveAttribute('data-align-x', 'right');
     // right-aligned: dropdown right edge meets trigger right edge (960 - 200)
     expect(menu).toHaveStyle({ left: '760px' });
   });
 
   it('flips above the trigger when there is no room below but more above', () => {
-    const { menu } = mount(rect({ top: 700, bottom: 720, left: 10, right: 50, width: 40, height: 20 }), rect({ width: 100, height: 300 }));
+    const { menu } = mount(
+      rect({ top: 700, bottom: 720, left: 10, right: 50, width: 40, height: 20 }),
+      rect({ width: 100, height: 300 }),
+    );
     expect(menu).toHaveAttribute('data-align-y', 'top');
     expect(menu).toHaveStyle({ top: '400px' });
   });
 
   it('stays below when neither side has room but below has more', () => {
-    const { menu } = mount(rect({ top: 100, bottom: 120, left: 10, right: 50, width: 40, height: 20 }), rect({ width: 100, height: 900 }), { w: 1000, h: 800 });
+    const { menu } = mount(
+      rect({ top: 100, bottom: 120, left: 10, right: 50, width: 40, height: 20 }),
+      rect({ width: 100, height: 900 }),
+      { w: 1000, h: 800 },
+    );
     expect(menu).toHaveAttribute('data-align-y', 'bottom');
   });
 
@@ -100,7 +163,10 @@ describe('AutoFlipDropdown', () => {
   });
 
   it('re-measures on window resize and scroll, and stops listening on unmount', () => {
-    const { spy, view } = mount(rect({ top: 10, bottom: 30, left: 10, right: 50, width: 40, height: 20 }), rect({ width: 100, height: 100 }));
+    const { spy, view } = mount(
+      rect({ top: 10, bottom: 30, left: 10, right: 50, width: 40, height: 20 }),
+      rect({ width: 100, height: 100 }),
+    );
     const before = spy.mock.calls.length;
     act(() => {
       window.dispatchEvent(new Event('resize'));
@@ -133,7 +199,11 @@ describe('loading resolution', () => {
     expect(resolveLoading('spinner')).toEqual({ active: true, variant: 'spinner' });
     const props = { variant: 'spinner' as const, text: 'Wait' };
     expect(resolveLoading(props)).toEqual({ active: true, variant: 'spinner', props });
-    expect(resolveLoading({ spinning: true })).toEqual({ active: true, variant: 'skeleton', props: { spinning: true } });
+    expect(resolveLoading({ spinning: true })).toEqual({
+      active: true,
+      variant: 'skeleton',
+      props: { spinning: true },
+    });
   });
 
   it('picks the matching variant and falls back to skeleton for an unknown name', () => {
@@ -146,26 +216,57 @@ describe('loading resolution', () => {
 
   it('skeleton renders at least two rows and pads extra cells for utility columns', () => {
     const cols = [{ key: 'a' }, { key: 'b' }] as TableColumn<Rec>[];
-    const rows = TableLoadingSkeletonVariant.renderRows!({ rowCount: 0, columnCount: 3, columns: cols, testIdPrefix: 't', Spinner: () => null });
-    const { container } = render(<table><tbody>{rows}</tbody></table>);
+    const rows = TableLoadingSkeletonVariant.renderRows!({
+      rowCount: 0,
+      columnCount: 3,
+      columns: cols,
+      testIdPrefix: 't',
+      Spinner: () => null,
+    });
+    const { container } = render(
+      <table>
+        <tbody>{rows}</tbody>
+      </table>,
+    );
     expect(container.querySelectorAll('tr')).toHaveLength(2);
     expect(container.querySelector('tr')!.querySelectorAll('td')).toHaveLength(3);
-    const many = TableLoadingSkeletonVariant.renderRows!({ rowCount: 5, columnCount: 2, columns: cols, testIdPrefix: 't', Spinner: () => null });
+    const many = TableLoadingSkeletonVariant.renderRows!({
+      rowCount: 5,
+      columnCount: 2,
+      columns: cols,
+      testIdPrefix: 't',
+      Spinner: () => null,
+    });
     expect((many as unknown[]).length).toBe(5);
   });
 
   it('spinner overlay renders the Spinner with the supplied props', () => {
     const Spinner = vi.fn(({ text }: { text?: React.ReactNode }) => <span>{text}</span>);
-    const overlay = TableLoadingSpinnerVariant.renderOverlay!({ rowCount: 0, columnCount: 1, columns: [], testIdPrefix: 'tt', Spinner, props: { text: 'Hold on' } });
+    const overlay = TableLoadingSpinnerVariant.renderOverlay!({
+      rowCount: 0,
+      columnCount: 1,
+      columns: [],
+      testIdPrefix: 'tt',
+      Spinner,
+      props: { text: 'Hold on' },
+    });
     render(<div>{overlay}</div>);
     expect(screen.getByTestId('tt-loading')).toHaveTextContent('Hold on');
-    const bare = TableLoadingSpinnerVariant.renderOverlay!({ rowCount: 0, columnCount: 1, columns: [], testIdPrefix: 'u', Spinner });
+    const bare = TableLoadingSpinnerVariant.renderOverlay!({
+      rowCount: 0,
+      columnCount: 1,
+      columns: [],
+      testIdPrefix: 'u',
+      Spinner,
+    });
     render(<div>{bare}</div>);
     expect(screen.getByTestId('u-loading')).toBeInTheDocument();
   });
 
   it('useLoadingState is stable while the loading prop is unchanged', () => {
-    const { result, rerender } = renderHook(({ loading }) => useLoadingState(loading), { initialProps: { loading: 'spinner' as const } });
+    const { result, rerender } = renderHook(({ loading }) => useLoadingState(loading), {
+      initialProps: { loading: 'spinner' as const },
+    });
     const first = result.current;
     rerender({ loading: 'spinner' });
     expect(result.current.state).toBe(first.state);
@@ -175,8 +276,11 @@ describe('loading resolution', () => {
 
 describe('matrix helpers', () => {
   const options = {
-    createColumn: ({ index, key }: { index: number; key: string }) => ({ key, title: `C${index}` }) as TableColumn<Rec>,
-    createCell: ({ rowIndex, columnIndex }: { rowIndex: number; columnIndex: number }) => ({ value: `${rowIndex}:${columnIndex}` }),
+    createColumn: ({ index, key }: { index: number; key: string }) =>
+      ({ key, title: `C${index}` }) as TableColumn<Rec>,
+    createCell: ({ rowIndex, columnIndex }: { rowIndex: number; columnIndex: number }) => ({
+      value: `${rowIndex}:${columnIndex}`,
+    }),
   };
 
   it('counts are floored and clamped to a minimum', () => {
@@ -188,8 +292,16 @@ describe('matrix helpers', () => {
 
   it('next keys continue after the highest existing number', () => {
     expect(nextTableMatrixColumnKey([])).toBe('col-1');
-    expect(nextTableMatrixColumnKey([{ key: 'col-1' }, { key: 'col-7' }, { key: 'custom' }] as TableColumn<Rec>[])).toBe('col-8');
-    expect(nextTableMatrixRowKey([{ key: 'row-2' }, { key: 'row-10' }] as TableDataRow<Rec>[])).toBe('row-11');
+    expect(
+      nextTableMatrixColumnKey([
+        { key: 'col-1' },
+        { key: 'col-7' },
+        { key: 'custom' },
+      ] as TableColumn<Rec>[]),
+    ).toBe('col-8');
+    expect(
+      nextTableMatrixRowKey([{ key: 'row-2' }, { key: 'row-10' }] as TableDataRow<Rec>[]),
+    ).toBe('row-11');
   });
 
   it('creates columns and rows with a cell for every column', () => {
@@ -202,7 +314,10 @@ describe('matrix helpers', () => {
 
   it('syncing a row keeps existing cells, creates missing ones and drops cells of removed columns', () => {
     const columns = createTableMatrixColumns(2, options);
-    const row = { key: 'r', cells: { 'col-1': { value: 'keep' }, gone: { value: 'x' } } } as TableDataRow<Rec>;
+    const row = {
+      key: 'r',
+      cells: { 'col-1': { value: 'keep' }, gone: { value: 'x' } },
+    } as TableDataRow<Rec>;
     const synced = syncTableMatrixRowToColumns(row, columns, options.createCell, 4);
     expect(synced.cells).toEqual({ 'col-1': { value: 'keep' }, 'col-2': { value: '4:1' } });
     expect(row.cells).toHaveProperty('gone');
@@ -238,20 +353,40 @@ describe('append helpers', () => {
     expect(resolveExtendable(false)).toEqual({ rows: null, columns: null, controls: false });
     expect(resolveExtendable(true)).toEqual({ rows: {}, columns: {}, controls: true });
     const onAppend = vi.fn();
-    expect(resolveExtendable({ rows: { onAppend }, columns: false, controls: false })).toEqual({ rows: { onAppend }, columns: null, controls: false });
-    expect(resolveExtendable({ columns: true })).toEqual({ rows: null, columns: {}, controls: true });
+    expect(resolveExtendable({ rows: { onAppend }, columns: false, controls: false })).toEqual({
+      rows: { onAppend },
+      columns: null,
+      controls: false,
+    });
+    expect(resolveExtendable({ columns: true })).toEqual({
+      rows: null,
+      columns: {},
+      controls: true,
+    });
   });
 
   it('builds an empty row with an empty cell per column and a unique new column key', () => {
     const columns = [{ key: 'a' }, { key: 'b' }] as TableColumn<Rec>[];
-    expect(makeEmptyRow(columns, 'n1')).toEqual({ key: 'n1', cells: { a: { value: '' }, b: { value: '' } } });
-    expect(makeEmptyColumn(columns)).toEqual({ key: 'column-3', title: 'Column 3', dataIndex: 'column_3' });
-    expect(makeEmptyColumn([...columns, { key: 'column-3' }] as TableColumn<Rec>[]).key).toBe('column-4');
+    expect(makeEmptyRow(columns, 'n1')).toEqual({
+      key: 'n1',
+      cells: { a: { value: '' }, b: { value: '' } },
+    });
+    expect(makeEmptyColumn(columns)).toEqual({
+      key: 'column-3',
+      title: 'Column 3',
+      dataIndex: 'column_3',
+    });
+    // existing.length + 1 = 3 is already taken, so the next free number is used
+    expect(makeEmptyColumn([{ key: 'a' }, { key: 'column-3' }] as TableColumn<Rec>[]).key).toBe(
+      'column-4',
+    );
   });
 
   it('AppendControlButton is a labelled button that calls onClick', () => {
     const onClick = vi.fn();
-    render(<AppendControlButton label="Add thing" onClick={onClick} testId="add" className="extra" />);
+    render(
+      <AppendControlButton label="Add thing" onClick={onClick} testId="add" className="extra" />,
+    );
     const button = screen.getByRole('button', { name: 'Add thing' });
     expect(button).toHaveClass('bui-table-append-control', 'extra');
     fireEvent.click(button);
@@ -278,7 +413,15 @@ describe('tree helpers', () => {
     const onRowClick = vi.fn();
     const { container, rerender } = render(
       <div onClick={onRowClick}>
-        <TreeExpandToggle indent={2} indentSize={10} canExpand isExpanded={false} onToggle={onToggle} rowKey="k" testId="tg" />
+        <TreeExpandToggle
+          indent={2}
+          indentSize={10}
+          canExpand
+          isExpanded={false}
+          onToggle={onToggle}
+          rowKey="k"
+          testId="tg"
+        />
       </div>,
     );
     expect(container.querySelector('span')).toHaveStyle({ paddingLeft: '20px' });
@@ -292,11 +435,22 @@ describe('tree helpers', () => {
         <TreeExpandToggle indent={0} canExpand isExpanded onToggle={onToggle} rowKey="k" />
       </div>,
     );
-    expect(screen.getByRole('button', { name: 'Collapse row k' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: 'Collapse row k' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
   });
 
   it('renders a spacer when the row cannot expand, and a caller icon when given', () => {
-    const { container, rerender } = render(<TreeExpandToggle indent={0} canExpand={false} isExpanded={false} onToggle={() => {}} rowKey="k" />);
+    const { container, rerender } = render(
+      <TreeExpandToggle
+        indent={0}
+        canExpand={false}
+        isExpanded={false}
+        onToggle={() => {}}
+        rowKey="k"
+      />,
+    );
     expect(container.querySelector('button')).toBeNull();
     expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
     const onToggle = vi.fn();
@@ -320,14 +474,30 @@ describe('tree helpers', () => {
 });
 
 describe('row-data types', () => {
-  const ctx = (value: unknown, column: Partial<TableColumn<Rec>> = {}) => ({ value, record: {}, row: { key: 1 }, column: { key: 'c', ...column }, rowIndex: 0 });
+  const ctx = (value: unknown, column: Partial<TableColumn<Rec>> = {}) => ({
+    value,
+    record: {},
+    row: { key: 1 },
+    column: { key: 'c', ...column },
+    rowIndex: 0,
+  });
   const html = (node: React.ReactNode) => render(<div>{node}</div>).container.innerHTML;
 
   it('createRowDataTypeMap indexes by type and the last duplicate wins', () => {
     const a = { type: 'x', render: () => 'a' };
     const b = { type: 'x', render: () => 'b' };
     expect(createRowDataTypeMap(a, b).x).toBe(b);
-    expect(Object.keys(BUILT_IN_ROW_DATA_TYPES).sort()).toEqual(['actions', 'avatar', 'date', 'file', 'icon', 'link', 'money', 'number', 'text']);
+    expect(Object.keys(BUILT_IN_ROW_DATA_TYPES).sort()).toEqual([
+      'actions',
+      'avatar',
+      'date',
+      'file',
+      'icon',
+      'link',
+      'money',
+      'number',
+      'text',
+    ]);
   });
 
   it('each descriptor formats the value it is handed, as the matching field renderer would', () => {
@@ -339,13 +509,25 @@ describe('row-data types', () => {
     expect(html(RowDataFileType.render(ctx({ name: 'f.txt', href: '/f' })))).toContain('f.txt');
     expect(html(RowDataAvatarType.render(ctx({ name: 'Ada Lovelace' })))).toContain('AL');
     expect(html(RowDataActionsType.render(ctx([{ key: 'a', label: 'Go' }])))).toContain('Go');
-    expect([RowDataTextType, RowDataNumberType, RowDataMoneyType, RowDataDateType, RowDataLinkType, RowDataFileType, RowDataAvatarType, RowDataActionsType, RowDataIconType].map((t) => t.type)).toEqual(
-      ['text', 'number', 'money', 'date', 'link', 'file', 'avatar', 'actions', 'icon'],
-    );
+    expect(
+      [
+        RowDataTextType,
+        RowDataNumberType,
+        RowDataMoneyType,
+        RowDataDateType,
+        RowDataLinkType,
+        RowDataFileType,
+        RowDataAvatarType,
+        RowDataActionsType,
+        RowDataIconType,
+      ].map((t) => t.type),
+    ).toEqual(['text', 'number', 'money', 'date', 'link', 'file', 'avatar', 'actions', 'icon']);
   });
 
   it('icon prefers column.icon over the value, accepts any alias and ignores unknown names', () => {
-    expect(html(RowDataIconType.render(ctx('folder', { icon: 'check' } as never)))).toContain('lucide-check');
+    expect(html(RowDataIconType.render(ctx('folder', { icon: 'check' } as never)))).toContain(
+      'lucide-check',
+    );
     expect(html(RowDataIconType.render(ctx('folder-open')))).toContain('lucide-folder-open');
     expect(html(RowDataIconType.render(ctx('checkmark')))).toContain('lucide-check');
     expect(RowDataIconType.render(ctx(undefined))).toBeNull();
@@ -356,9 +538,16 @@ describe('row-data types', () => {
   });
 
   it('useRowDataTypeMap returns the built-ins untouched, or overlays overrides identity-stably', () => {
-    const { result, rerender } = renderHook(({ overrides }) => useRowDataTypeMap(overrides), { initialProps: { overrides: undefined as { type: string; render: () => string }[] | undefined } });
+    const { result, rerender } = renderHook(({ overrides }) => useRowDataTypeMap(overrides), {
+      initialProps: {
+        overrides: undefined as { type: string; render: () => string }[] | undefined,
+      },
+    });
     expect(result.current).toBe(BUILT_IN_ROW_DATA_TYPES);
-    const custom = [{ type: 'money', render: () => 'custom-money' }, { type: 'badge', render: () => 'b' }];
+    const custom = [
+      { type: 'money', render: () => 'custom-money' },
+      { type: 'badge', render: () => 'b' },
+    ];
     rerender({ overrides: custom });
     expect(result.current.money.render(ctx(1))).toBe('custom-money');
     expect(result.current.badge).toBeDefined();
@@ -373,7 +562,10 @@ describe('row-data types', () => {
 
 describe('renderCellContent precedence', () => {
   const registry = getDefaultTableRegistry<Rec>();
-  const base = (column: Partial<TableColumn<Rec>>, cells?: TableDataRow<Rec>['cells']): TableCellRenderContext<Rec> => ({
+  const base = (
+    column: Partial<TableColumn<Rec>>,
+    cells?: TableDataRow<Rec>['cells'],
+  ): TableCellRenderContext<Rec> => ({
     record: { v: 1 },
     row: { key: 1, cells },
     column: { key: 'v', ...column } as TableColumn<Rec>,
@@ -383,11 +575,20 @@ describe('renderCellContent precedence', () => {
   });
 
   it('cell kind renderer > cell render > column render > type > plain string', () => {
-    const kind = base({ render: () => 'col' }, { v: { kind: 'money', value: 9, render: () => 'cell' } });
+    const kind = base(
+      { render: () => 'col' },
+      { v: { kind: 'money', value: 9, render: () => 'cell' } },
+    );
     expect(renderCellContent(kind, 9, kind.row.cells!.v)).toBe('$9.00');
-    const cell = base({ render: () => 'col' }, { v: { render: (value) => `cell:${String(value)}` } });
+    const cell = base(
+      { render: () => 'col' },
+      { v: { render: (value) => `cell:${String(value)}` } },
+    );
     expect(renderCellContent(cell, 2, cell.row.cells!.v)).toBe('cell:2');
-    const column = base({ render: (value, _r, index) => `col:${String(value)}:${index}`, type: 'money' });
+    const column = base({
+      render: (value, _r, index) => `col:${String(value)}:${index}`,
+      type: 'money',
+    });
     expect(renderCellContent(column, 2, undefined)).toBe('col:2:3');
     expect(renderCellContent(base({ type: 'money' }), 2, undefined)).toBe('$2.00');
     expect(renderCellContent(base({ valueType: 'string' }), 'plain', undefined)).toBe('plain');
@@ -402,18 +603,27 @@ describe('renderCellContent precedence', () => {
   });
 
   it('uses the supplied type map instead of the built-ins', () => {
-    const map = createRowDataTypeMap({ type: 'money', render: ({ value }) => `custom ${String(value)}` });
+    const map = createRowDataTypeMap({
+      type: 'money',
+      render: ({ value }) => `custom ${String(value)}`,
+    });
     expect(renderCellContent(base({ type: 'money' }), 4, undefined, map)).toBe('custom 4');
   });
 });
 
 describe('drag handles and bulk button', () => {
-  const binding = (extra = {}) => ({ setActivatorNodeRef: vi.fn(), attributes: {}, listeners: undefined, isDragging: false, onKeyboardMove: vi.fn(), ...extra });
-
   it('SortableHandle maps arrows to its axis only and delegates other keys to the drag listeners', () => {
     const onKeyboardMove = vi.fn();
     const listenerKeyDown = vi.fn();
-    const props = { label: 'grip', testId: 'g', setActivatorNodeRef: vi.fn(), attributes: {}, isDragging: false, onKeyboardMove, listeners: { onKeyDown: listenerKeyDown } };
+    const props = {
+      label: 'grip',
+      testId: 'g',
+      setActivatorNodeRef: vi.fn(),
+      attributes: {},
+      isDragging: false,
+      onKeyboardMove,
+      listeners: { onKeyDown: listenerKeyDown },
+    };
     const { rerender } = render(<SortableHandle {...props} axis="vertical" />);
     const handle = screen.getByRole('button', { name: 'grip' });
     fireEvent.keyDown(handle, { key: 'ArrowUp' });
@@ -457,7 +667,15 @@ describe('internal hooks', () => {
     const data = [{ id: 1 }, { id: 2 }];
     const appended = [{ key: 'a', cells: {} }] as TableDataRow<{ id?: number }>[];
     const { result } = renderHook(() =>
-      useResolvedRows({ dataSource: data, rows: undefined, row: undefined, rowKey: 'id', childrenColumnName: 'children', appendedRows: appended, rowOrder: ['a', '2'] }),
+      useResolvedRows({
+        dataSource: data,
+        rows: undefined,
+        row: undefined,
+        rowKey: 'id',
+        childrenColumnName: 'children',
+        appendedRows: appended,
+        rowOrder: ['a', '2'],
+      }),
     );
     expect(result.current.resolvedRows.map((r) => r.key)).toEqual(['a', 2, 1]);
     expect(result.current.rowByKey.get('2')?.record).toEqual({ id: 2 });
@@ -468,7 +686,15 @@ describe('internal hooks', () => {
     const rows = [{ key: 'x', record: { id: 1 } }] as TableDataRow<{ id?: number }>[];
     const appended = [{ key: 'y' }] as TableDataRow<{ id?: number }>[];
     const { result } = renderHook(() =>
-      useResolvedRows({ dataSource: [], rows, row: undefined, rowKey: undefined, childrenColumnName: 'children', appendedRows: appended, rowOrder: [] }),
+      useResolvedRows({
+        dataSource: [],
+        rows,
+        row: undefined,
+        rowKey: undefined,
+        childrenColumnName: 'children',
+        appendedRows: appended,
+        rowOrder: [],
+      }),
     );
     expect(result.current.resolvedRows.map((r) => r.key)).toEqual(['x', 'y']);
     expect(result.current.effectiveRows).toHaveLength(2);
@@ -476,7 +702,9 @@ describe('internal hooks', () => {
 
   it('useAppendControls appends rows with sequential keys and columns without clashing keys', async () => {
     const columns = [{ key: 'a' }] as TableColumn<Rec>[];
-    const { result } = renderHook(() => useAppendControls<Rec, unknown>({ extendable: true, columns, rows: undefined }));
+    const { result } = renderHook(() =>
+      useAppendControls<Rec, unknown>({ extendable: true, columns, rows: undefined }),
+    );
     let first!: TableDataRow<Rec>;
     await act(async () => {
       first = await result.current.appendRow();

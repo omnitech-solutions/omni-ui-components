@@ -50,7 +50,10 @@ describe('Table sorting', () => {
     renderTable();
     fireEvent.click(screen.getByRole('button', { name: 'Sort Age' }));
     fireEvent.click(screen.getByRole('button', { name: 'Sort Name' }));
-    expect(screen.getByRole('button', { name: 'Sort Name' })).toHaveAttribute('aria-sort', 'ascending');
+    expect(screen.getByRole('button', { name: 'Sort Name' })).toHaveAttribute(
+      'aria-sort',
+      'ascending',
+    );
     expect(screen.getByRole('button', { name: 'Sort Age' })).not.toHaveAttribute('aria-sort');
   });
 
@@ -61,14 +64,28 @@ describe('Table sorting', () => {
       { id: 3, name: 'A', role: 'x', age: 1, salary: 0, joined: '' },
     ];
     const columns: TableColumn<Person>[] = [
-      { key: 'name', title: 'Name', dataIndex: 'name', sorter: { compare: (a, b) => a.name.localeCompare(b.name), multiple: 2 } },
-      { key: 'age', title: 'Age', dataIndex: 'age', sorter: { compare: (a, b) => a.age - b.age, multiple: 1 } },
+      {
+        key: 'name',
+        title: 'Name',
+        dataIndex: 'name',
+        sorter: { compare: (a, b) => a.name.localeCompare(b.name), multiple: 2 },
+      },
+      {
+        key: 'age',
+        title: 'Age',
+        dataIndex: 'age',
+        sorter: { compare: (a, b) => a.age - b.age, multiple: 1 },
+      },
     ];
     const { container } = render(<Table<Person> columns={columns} dataSource={data} rowKey="id" />);
     fireEvent.click(screen.getByRole('button', { name: 'Sort Age' }));
     fireEvent.click(screen.getByRole('button', { name: 'Sort Name' }));
     // name (priority 2) first, then age
-    expect(Array.from(container.querySelectorAll('tbody tr')).map((tr) => tr.getAttribute('data-row-key'))).toEqual(['3', '2', '1']);
+    expect(
+      Array.from(container.querySelectorAll('tbody tr')).map((tr) =>
+        tr.getAttribute('data-row-key'),
+      ),
+    ).toEqual(['3', '2', '1']);
   });
 
   it('honours sortDirections on the table and on the column', () => {
@@ -81,17 +98,40 @@ describe('Table sorting', () => {
   });
 
   it('column.sortDirections overrides the table setting', () => {
-    const columns: TableColumn<Person>[] = [{ key: 'age', title: 'Age', dataIndex: 'age', sorter: true, sortDirections: ['descend', 'ascend'] }];
+    const columns: TableColumn<Person>[] = [
+      {
+        key: 'age',
+        title: 'Age',
+        dataIndex: 'age',
+        sorter: true,
+        sortDirections: ['descend', 'ascend'],
+      },
+    ];
     render(<Table<Person> columns={columns} dataSource={people} rowKey="id" />);
     fireEvent.click(screen.getByRole('button', { name: 'Sort Age' }));
-    expect(screen.getByRole('button', { name: 'Sort Age' })).toHaveAttribute('aria-sort', 'descending');
+    expect(screen.getByRole('button', { name: 'Sort Age' })).toHaveAttribute(
+      'aria-sort',
+      'descending',
+    );
   });
 
   it('starts sorted from defaultSortOrder and from a controlled sortOrder', () => {
-    const { container, unmount } = renderTable({ columns: sortable.map((c) => (c.key === 'age' ? { ...c, defaultSortOrder: 'descend' as const } : c)) });
+    const { container, unmount } = renderTable({
+      columns: sortable.map((c) =>
+        c.key === 'age' ? { ...c, defaultSortOrder: 'descend' as const } : c,
+      ),
+    });
     expect(bodyNames(container)).toEqual(['Margaret', 'Grace', 'Ada', 'Linus']);
     unmount();
-    const controlled = render(<Table<Person> columns={sortable.map((c) => (c.key === 'age' ? { ...c, sortOrder: 'ascend' as const } : c))} dataSource={people} rowKey="id" />);
+    const controlled = render(
+      <Table<Person>
+        columns={sortable.map((c) =>
+          c.key === 'age' ? { ...c, sortOrder: 'ascend' as const } : c,
+        )}
+        dataSource={people}
+        rowKey="id"
+      />,
+    );
     expect(bodyNames(controlled.container)).toEqual(['Linus', 'Ada', 'Grace', 'Margaret']);
   });
 
@@ -107,12 +147,18 @@ describe('Table sorting', () => {
     expect(sorter).toMatchObject({ columnKey: 'age', order: 'ascend' });
     expect(extra.action).toBe('sort');
     expect(extra.currentDataSource).toHaveLength(4);
-    expect(onStateChange).toHaveBeenCalledWith(expect.objectContaining({ sorting: [{ id: 'age', desc: false }] }));
+    expect(onStateChange).toHaveBeenCalledWith(
+      expect.objectContaining({ sorting: [{ id: 'age', desc: false }] }),
+    );
   });
 
   it('renders a custom sortIcon with the current order', () => {
-    const sortIcon = vi.fn(({ sortOrder }: { sortOrder: string | null }) => <i data-testid="icon">{String(sortOrder)}</i>);
-    renderTable({ columns: [{ key: 'age', title: 'Age', dataIndex: 'age', sorter: true, sortIcon }] });
+    const sortIcon = vi.fn(({ sortOrder }: { sortOrder: string | null }) => (
+      <i data-testid="icon">{String(sortOrder)}</i>
+    ));
+    renderTable({
+      columns: [{ key: 'age', title: 'Age', dataIndex: 'age', sorter: true, sortIcon }],
+    });
     expect(screen.getByTestId('icon')).toHaveTextContent('null');
     fireEvent.click(screen.getByRole('button', { name: 'Sort Age' }));
     expect(screen.getByTestId('icon')).toHaveTextContent('ascend');
@@ -125,10 +171,19 @@ describe('Table sorting', () => {
       { id: 3, amount: '$30' },
     ];
     const { container } = render(
-      <Table columns={[{ key: 'amount', title: 'Amount', dataIndex: 'amount', valueType: 'money', sorter: true }]} dataSource={data} />,
+      <Table
+        columns={[
+          { key: 'amount', title: 'Amount', dataIndex: 'amount', valueType: 'money', sorter: true },
+        ]}
+        dataSource={data}
+      />,
     );
     fireEvent.click(screen.getByRole('button', { name: 'Sort Amount' }));
-    expect(Array.from(container.querySelectorAll('tbody tr')).map((tr) => tr.getAttribute('data-row-key'))).toEqual(['3', '2', '1']);
+    expect(
+      Array.from(container.querySelectorAll('tbody tr')).map((tr) =>
+        tr.getAttribute('data-row-key'),
+      ),
+    ).toEqual(['3', '2', '1']);
   });
 });
 
@@ -155,21 +210,37 @@ describe('Table filtering', () => {
     const { container } = renderFiltered();
     expect(screen.queryByTestId('table-filter-dropdown-role')).not.toBeInTheDocument();
     openRoleFilter();
-    expect(screen.getByRole('button', { name: 'Filter Role' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: 'Filter Role' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
     fireEvent.click(screen.getByTestId('table-filter-option-role-Engineer'));
     // nothing applied until confirm
     expect(bodyNames(container)).toHaveLength(4);
     fireEvent.click(screen.getByTestId('table-filter-confirm-role'));
     expect(bodyNames(container)).toEqual(['Ada', 'Linus']);
     expect(screen.queryByTestId('table-filter-dropdown-role')).not.toBeInTheDocument();
-    expect(screen.getByTestId('table-filter-trigger-role')).toHaveAttribute('data-filtered', 'true');
+    expect(screen.getByTestId('table-filter-trigger-role')).toHaveAttribute(
+      'data-filtered',
+      'true',
+    );
   });
 
   it('regression: a numeric filter value matches equal numbers, not a "number range" or a substring', () => {
     const columns: TableColumn<Person>[] = [
-      { key: 'age', title: 'Age', dataIndex: 'age', filters: [{ text: '28', value: 28 }, { text: '45', value: 45 }] },
+      {
+        key: 'age',
+        title: 'Age',
+        dataIndex: 'age',
+        filters: [
+          { text: '28', value: 28 },
+          { text: '45', value: 45 },
+        ],
+      },
     ];
-    const { container } = render(<Table<Person> columns={columns} dataSource={people} rowKey="id" />);
+    const { container } = render(
+      <Table<Person> columns={columns} dataSource={people} rowKey="id" />,
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Filter Age' }));
     fireEvent.click(screen.getByTestId('table-filter-option-age-28'));
     fireEvent.click(screen.getByTestId('table-filter-option-age-45'));
@@ -178,7 +249,9 @@ describe('Table filtering', () => {
   });
 
   it('regression: a text filter is an exact match, so "Eng" does not select Engineer', () => {
-    const columns: TableColumn<Person>[] = [{ key: 'role', title: 'Role', dataIndex: 'role', filters: [{ text: 'Eng', value: 'Eng' }] }];
+    const columns: TableColumn<Person>[] = [
+      { key: 'role', title: 'Role', dataIndex: 'role', filters: [{ text: 'Eng', value: 'Eng' }] },
+    ];
     render(<Table<Person> columns={columns} dataSource={people} rowKey="id" />);
     fireEvent.click(screen.getByRole('button', { name: 'Filter Role' }));
     fireEvent.click(screen.getByTestId('table-filter-option-role-Eng'));
@@ -194,14 +267,22 @@ describe('Table filtering', () => {
     fireEvent.click(screen.getByTestId('table-filter-confirm-role'));
     expect(bodyNames(container)).toEqual(['Ada', 'Linus', 'Margaret']);
     openRoleFilter();
-    expect((screen.getByTestId('table-filter-option-role-Engineer') as HTMLInputElement).checked).toBe(true);
+    expect(
+      (screen.getByTestId('table-filter-option-role-Engineer') as HTMLInputElement).checked,
+    ).toBe(true);
     fireEvent.click(screen.getByTestId('table-filter-reset-role'));
     expect(bodyNames(container)).toHaveLength(4);
-    expect(screen.getByTestId('table-filter-trigger-role')).toHaveAttribute('data-filtered', 'false');
+    expect(screen.getByTestId('table-filter-trigger-role')).toHaveAttribute(
+      'data-filtered',
+      'false',
+    );
   });
 
   it('filterMultiple=false renders radios that hold a single value', () => {
-    const { container } = renderFiltered({}, [filterColumns[0], { ...filterColumns[1], filterMultiple: false }]);
+    const { container } = renderFiltered({}, [
+      filterColumns[0],
+      { ...filterColumns[1], filterMultiple: false },
+    ]);
     openRoleFilter();
     const engineer = screen.getByTestId('table-filter-option-role-Engineer') as HTMLInputElement;
     expect(engineer.type).toBe('radio');
@@ -210,17 +291,29 @@ describe('Table filtering', () => {
     fireEvent.click(screen.getByTestId('table-filter-confirm-role'));
     expect(bodyNames(container)).toEqual(['Margaret']);
     openRoleFilter();
-    expect((screen.getByTestId('table-filter-option-role-Manager') as HTMLInputElement).checked).toBe(true);
-    expect((screen.getByTestId('table-filter-option-role-Engineer') as HTMLInputElement).checked).toBe(false);
+    expect(
+      (screen.getByTestId('table-filter-option-role-Manager') as HTMLInputElement).checked,
+    ).toBe(true);
+    expect(
+      (screen.getByTestId('table-filter-option-role-Engineer') as HTMLInputElement).checked,
+    ).toBe(false);
     fireEvent.click(screen.getByTestId('table-filter-reset-role'));
     expect(bodyNames(container)).toHaveLength(4);
   });
 
   it('uses onFilter when provided', () => {
     const columns: TableColumn<Person>[] = [
-      { key: 'age', title: 'Age', dataIndex: 'age', filters: [{ text: '40+', value: 40 }], onFilter: (value, record) => record.age >= Number(value) },
+      {
+        key: 'age',
+        title: 'Age',
+        dataIndex: 'age',
+        filters: [{ text: '40+', value: 40 }],
+        onFilter: (value, record) => record.age >= Number(value),
+      },
     ];
-    const { container } = render(<Table<Person> columns={columns} dataSource={people} rowKey="id" />);
+    const { container } = render(
+      <Table<Person> columns={columns} dataSource={people} rowKey="id" />,
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Filter Age' }));
     fireEvent.click(screen.getByTestId('table-filter-option-age-40'));
     fireEvent.click(screen.getByTestId('table-filter-confirm-age'));
@@ -228,13 +321,26 @@ describe('Table filtering', () => {
   });
 
   it('starts filtered from defaultFilteredValue and a controlled filteredValue', () => {
-    const { container } = renderFiltered({}, [filterColumns[0], { ...filterColumns[1], defaultFilteredValue: ['Manager'] }]);
+    const { container } = renderFiltered({}, [
+      filterColumns[0],
+      { ...filterColumns[1], defaultFilteredValue: ['Manager'] },
+    ]);
     expect(bodyNames(container)).toEqual(['Margaret']);
-    expect(screen.getByTestId('table-filter-trigger-role')).toHaveAttribute('data-filtered', 'true');
+    expect(screen.getByTestId('table-filter-trigger-role')).toHaveAttribute(
+      'data-filtered',
+      'true',
+    );
   });
 
   it('Reset returns to defaultFilteredValue when filterResetToDefaultFilteredValue is set', () => {
-    const { container } = renderFiltered({}, [filterColumns[0], { ...filterColumns[1], defaultFilteredValue: ['Manager'], filterResetToDefaultFilteredValue: true }]);
+    const { container } = renderFiltered({}, [
+      filterColumns[0],
+      {
+        ...filterColumns[1],
+        defaultFilteredValue: ['Manager'],
+        filterResetToDefaultFilteredValue: true,
+      },
+    ]);
     openRoleFilter();
     fireEvent.click(screen.getByTestId('table-filter-option-role-Manager'));
     fireEvent.click(screen.getByTestId('table-filter-confirm-role'));
@@ -254,7 +360,13 @@ describe('Table filtering', () => {
   });
 
   it('custom filterSearch decides what matches', () => {
-    renderFiltered({}, [filterColumns[0], { ...filterColumns[1], filterSearch: (input, item) => item.value === 'Admiral' && input === 'x' }]);
+    renderFiltered({}, [
+      filterColumns[0],
+      {
+        ...filterColumns[1],
+        filterSearch: (input, item) => item.value === 'Admiral' && input === 'x',
+      },
+    ]);
     openRoleFilter();
     fireEvent.change(screen.getByTestId('table-filter-search-role'), { target: { value: 'x' } });
     expect(screen.getAllByRole('checkbox')).toHaveLength(1);
@@ -270,7 +382,14 @@ describe('Table filtering', () => {
         filterMode: 'tree',
         filterSearch: true,
         filters: [
-          { text: 'Tech', value: 'tech', children: [{ text: 'Engineer', value: 'Engineer' }, { text: 'Designer', value: 'Designer' }] },
+          {
+            text: 'Tech',
+            value: 'tech',
+            children: [
+              { text: 'Engineer', value: 'Engineer' },
+              { text: 'Designer', value: 'Designer' },
+            ],
+          },
           { text: 'Other', value: 'other', children: [{ text: 'Manager', value: 'Manager' }] },
         ],
       },
@@ -288,7 +407,10 @@ describe('Table filtering', () => {
   });
 
   it('filterOnChange commits as soon as an option is toggled', () => {
-    const { container } = renderFiltered({}, [filterColumns[0], { ...filterColumns[1], filterOnChange: true }]);
+    const { container } = renderFiltered({}, [
+      filterColumns[0],
+      { ...filterColumns[1], filterOnChange: true },
+    ]);
     openRoleFilter();
     fireEvent.click(screen.getByTestId('table-filter-option-role-Admiral'));
     expect(bodyNames(container)).toEqual(['Grace']);
@@ -311,7 +433,10 @@ describe('Table filtering', () => {
     expect(bodyNames(second.container)).toEqual(['Margaret']);
     second.unmount();
 
-    const third = renderFiltered({}, [filterColumns[0], { ...filterColumns[1], filterOnClose: false }]);
+    const third = renderFiltered({}, [
+      filterColumns[0],
+      { ...filterColumns[1], filterOnClose: false },
+    ]);
     openRoleFilter();
     fireEvent.click(screen.getByTestId('table-filter-option-role-Manager'));
     fireEvent.pointerDown(document.body);
@@ -343,7 +468,9 @@ describe('Table filtering', () => {
         ),
       },
     ];
-    const { container } = render(<Table<Person> columns={columns} dataSource={people} rowKey="id" />);
+    const { container } = render(
+      <Table<Person> columns={columns} dataSource={people} rowKey="id" />,
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Filter Name' }));
     fireEvent.click(screen.getByText('pick'));
     expect(screen.getByTestId('selected')).toHaveTextContent('Ada');
@@ -358,14 +485,25 @@ describe('Table filtering', () => {
   });
 
   it('a static ReactNode filterDropdown is rendered as is', () => {
-    render(<Table<Person> columns={[{ key: 'name', title: 'Name', dataIndex: 'name', filterDropdown: <p>static panel</p> }]} dataSource={people} rowKey="id" />);
+    render(
+      <Table<Person>
+        columns={[
+          { key: 'name', title: 'Name', dataIndex: 'name', filterDropdown: <p>static panel</p> },
+        ]}
+        dataSource={people}
+        rowKey="id"
+      />,
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Filter Name' }));
     expect(screen.getByText('static panel')).toBeInTheDocument();
   });
 
   it('controlled dropdown open state is driven by filterDropdownProps and reports changes', () => {
     const onOpenChange = vi.fn();
-    const columns = [filterColumns[0], { ...filterColumns[1], filterDropdownProps: { open: true, onOpenChange } }];
+    const columns = [
+      filterColumns[0],
+      { ...filterColumns[1], filterDropdownProps: { open: true, onOpenChange } },
+    ];
     renderFiltered({}, columns);
     expect(screen.getByTestId('table-filter-dropdown-role')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Filter Role' }));
@@ -376,7 +514,15 @@ describe('Table filtering', () => {
 
   it('a filterIcon without filters renders an indicator only; a function icon receives the filtered flag', () => {
     const icon = vi.fn((filtered: boolean) => <u data-testid="fi">{filtered ? 'on' : 'off'}</u>);
-    render(<Table<Person> columns={[{ key: 'name', title: 'Name', dataIndex: 'name', filterIcon: icon, filtered: true }]} dataSource={people} rowKey="id" />);
+    render(
+      <Table<Person>
+        columns={[
+          { key: 'name', title: 'Name', dataIndex: 'name', filterIcon: icon, filtered: true },
+        ]}
+        dataSource={people}
+        rowKey="id"
+      />,
+    );
     const indicator = screen.getByTestId('table-filter-icon-name');
     expect(indicator).toHaveAttribute('data-filtered', 'true');
     expect(within(indicator).getByTestId('fi')).toHaveTextContent('on');
@@ -402,7 +548,10 @@ describe('Table filtering', () => {
   });
 
   it('shows the empty state when the filter removes every row', () => {
-    const columns = [filterColumns[0], { ...filterColumns[1], filters: [{ text: 'Ghost', value: 'Ghost' }] }];
+    const columns = [
+      filterColumns[0],
+      { ...filterColumns[1], filters: [{ text: 'Ghost', value: 'Ghost' }] },
+    ];
     renderFiltered({}, columns);
     openRoleFilter();
     fireEvent.click(screen.getByTestId('table-filter-option-role-Ghost'));

@@ -45,7 +45,12 @@ export function Pagination({
       showPrevNext={showPrevNext}
       showSizeChanger={showSizeChanger}
       pageSizeOptions={sizeOptions}
-      onChange={(page) => onGoToPage(page)}
+      // The control reports a size change through onShowSizeChange and again through onChange(1, newSize);
+      // routing the second call to onGoToPage would put the old page size back, so only same-size calls are page moves.
+      onChange={(page, nextPageSize) => {
+        if (nextPageSize !== state.pageSize) return;
+        onGoToPage(page);
+      }}
       onShowSizeChange={(_, pageSize) => onPageSizeChange(pageSize)}
       className={className}
       style={style as React.CSSProperties}

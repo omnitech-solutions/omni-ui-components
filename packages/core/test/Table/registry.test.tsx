@@ -19,7 +19,10 @@ import type { TableCellRenderContext, TableColumn } from '../../src/Table/Table.
 
 type Rec = Record<string, unknown>;
 
-const ctxFor = (value: unknown, column: Partial<TableColumn<Rec>> = {}): TableCellRenderContext<Rec> => {
+const ctxFor = (
+  value: unknown,
+  column: Partial<TableColumn<Rec>> = {},
+): TableCellRenderContext<Rec> => {
   const col = { key: 'c', ...column } as TableColumn<Rec>;
   return {
     record: {},
@@ -56,7 +59,9 @@ describe('Table.registry field renderers', () => {
     it('passes React elements through untouched and serialises dates as ISO', () => {
       const el = <b>bold</b>;
       expect(renderStringField(ctxFor(el))).toBe(el);
-      expect(renderStringField(ctxFor(new Date('2024-01-02T03:04:05.000Z')))).toBe('2024-01-02T03:04:05.000Z');
+      expect(renderStringField(ctxFor(new Date('2024-01-02T03:04:05.000Z')))).toBe(
+        '2024-01-02T03:04:05.000Z',
+      );
     });
   });
 
@@ -68,7 +73,9 @@ describe('Table.registry field renderers', () => {
 
     it('reads amount/number/value/text from object payloads and honours formatOptions', () => {
       expect(renderNumberField(ctxFor({ amount: 5 }))).toBe('5');
-      expect(renderNumberField(ctxFor({ number: 0.256, formatOptions: { style: 'percent' } }))).toBe('26%');
+      expect(
+        renderNumberField(ctxFor({ number: 0.256, formatOptions: { style: 'percent' } })),
+      ).toBe('26%');
     });
 
     it('regression: formats numeric strings that carry thousands separators', () => {
@@ -92,7 +99,14 @@ describe('Table.registry field renderers', () => {
 
     it('uses the payload currency and format options', () => {
       expect(renderMoneyField(ctxFor({ amount: 10, currency: 'EUR' }))).toBe('€10.00');
-      expect(renderMoneyField(ctxFor({ amount: 10.4, formatOptions: { maximumFractionDigits: 0, minimumFractionDigits: 0 } }))).toBe('$10');
+      expect(
+        renderMoneyField(
+          ctxFor({
+            amount: 10.4,
+            formatOptions: { maximumFractionDigits: 0, minimumFractionDigits: 0 },
+          }),
+        ),
+      ).toBe('$10');
     });
 
     it('keeps unparsable values as given', () => {
@@ -112,7 +126,9 @@ describe('Table.registry field renderers', () => {
     });
 
     it('reads date/value/text from payload objects and applies formatOptions', () => {
-      expect(renderDateField(ctxFor({ date: '2024-03-05', formatOptions: { month: 'long' } }))).toBe('March');
+      expect(
+        renderDateField(ctxFor({ date: '2024-03-05', formatOptions: { month: 'long' } })),
+      ).toBe('March');
       expect(renderDateField(ctxFor({ value: '2024-12-25' }))).toBe('Dec 25, 2024');
     });
 
@@ -136,10 +152,14 @@ describe('Table.registry field renderers', () => {
     });
 
     it('renders a bare string as the glyph and returns elements as they are', () => {
-      expect(view(renderIconField(ctxFor('●'))).querySelector('[aria-hidden="true"]')).toHaveTextContent('●');
+      expect(
+        view(renderIconField(ctxFor('●'))).querySelector('[aria-hidden="true"]'),
+      ).toHaveTextContent('●');
       const el = <i data-testid="el" />;
       expect(renderIconField(ctxFor(el))).toBe(el);
-      expect(view(renderIconField(ctxFor(null))).querySelector('[aria-hidden="true"]')).toBeEmptyDOMElement();
+      expect(
+        view(renderIconField(ctxFor(null))).querySelector('[aria-hidden="true"]'),
+      ).toBeEmptyDOMElement();
     });
   });
 
@@ -189,7 +209,10 @@ describe('Table.registry field renderers', () => {
   describe('file', () => {
     it('links to the first of href/url/downloadUrl/download_url', () => {
       view(renderFileField(ctxFor({ name: 'report.pdf', download_url: '/f/report.pdf' })));
-      expect(screen.getByRole('link', { name: 'report.pdf' })).toHaveAttribute('href', '/f/report.pdf');
+      expect(screen.getByRole('link', { name: 'report.pdf' })).toHaveAttribute(
+        'href',
+        '/f/report.pdf',
+      );
     });
 
     it('falls back to the bare name, and to "File" when nameless', () => {
@@ -202,7 +225,15 @@ describe('Table.registry field renderers', () => {
   describe('actions', () => {
     it('renders configured actions as buttons wired to onClick', () => {
       const onEdit = vi.fn();
-      view(renderActionsField(ctxFor([{ key: 'edit', label: 'Edit', onClick: onEdit }, { id: 'rm', label: 'Remove' }, 'Plain'])));
+      view(
+        renderActionsField(
+          ctxFor([
+            { key: 'edit', label: 'Edit', onClick: onEdit },
+            { id: 'rm', label: 'Remove' },
+            'Plain',
+          ]),
+        ),
+      );
       fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
       expect(onEdit).toHaveBeenCalledTimes(1);
       expect(screen.getByRole('button', { name: 'Remove' })).toBeInTheDocument();
@@ -210,7 +241,16 @@ describe('Table.registry field renderers', () => {
     });
 
     it('passes element actions through, single elements as-is and other values as text', () => {
-      view(renderActionsField(ctxFor([<a key="x" href="#a">go</a>, <span>keyless</span>])));
+      view(
+        renderActionsField(
+          ctxFor([
+            <a key="x" href="#a">
+              go
+            </a>,
+            <span>keyless</span>,
+          ]),
+        ),
+      );
       expect(screen.getByRole('link', { name: 'go' })).toBeInTheDocument();
       expect(screen.getByText('keyless')).toBeInTheDocument();
       const el = <u />;
@@ -223,7 +263,18 @@ describe('Table.registry field renderers', () => {
 describe('default registry', () => {
   it('registers every row-data field including the text alias', () => {
     const { fields } = getDefaultTableRegistry<Rec>();
-    expect(Object.keys(fields).sort()).toEqual(['actions', 'avatar', 'date', 'file', 'icon', 'link', 'money', 'number', 'string', 'text']);
+    expect(Object.keys(fields).sort()).toEqual([
+      'actions',
+      'avatar',
+      'date',
+      'file',
+      'icon',
+      'link',
+      'money',
+      'number',
+      'string',
+      'text',
+    ]);
     expect(fields.text).toBe(fields.string);
   });
 
@@ -239,7 +290,9 @@ describe('default registry', () => {
     const render = vi.fn((v: unknown) => `custom:${String(v)}`);
     expect(renderers.cell(cellCtx({ value: 7, render }))).toBe('custom:7');
     expect(render.mock.calls[0][1]).toMatchObject({ rowIndex: 0, columnIndex: 0 });
-    expect(renderers.cell(cellCtx({ value: 3 }, { render: (v) => `col:${String(v)}` }))).toBe('col:3');
+    expect(renderers.cell(cellCtx({ value: 3 }, { render: (v) => `col:${String(v)}` }))).toBe(
+      'col:3',
+    );
     expect(renderers.cell(cellCtx({ value: 9 }))).toBe('9');
     expect(renderers.cell(cellCtx({}))).toBeNull();
   });
@@ -247,7 +300,11 @@ describe('default registry', () => {
   it('headerCell renderer resolves static and function titles; row renderer ignores function titles', () => {
     const { renderers } = getDefaultTableRegistry<Rec>();
     const base = ctxFor(null);
-    const headerCtx = (title: TableColumn<Rec>['title']) => ({ column: { key: 'c', title } as TableColumn<Rec>, columnIndex: 0, registry: base.registry });
+    const headerCtx = (title: TableColumn<Rec>['title']) => ({
+      column: { key: 'c', title } as TableColumn<Rec>,
+      columnIndex: 0,
+      registry: base.registry,
+    });
     expect(renderers.headerCell(headerCtx('Name'))).toBe('Name');
     expect(renderers.headerCell(headerCtx(({ column }) => `fn:${column.key}`))).toBe('fn:c');
     expect(renderers.row({ ...base, row: { key: 'r', title: 'Group' } })).toBe('Group');
@@ -281,7 +338,9 @@ describe('default registry', () => {
     expect(current).toHaveTextContent('2');
     fireEvent.click(current);
     expect(onClick).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole('button', { name: 'Previous page' })).not.toHaveAttribute('aria-current');
+    expect(screen.getByRole('button', { name: 'Previous page' })).not.toHaveAttribute(
+      'aria-current',
+    );
     const next = screen.getByRole('button', { name: 'Next page' });
     expect(next).toBeDisabled();
   });
@@ -294,14 +353,29 @@ describe('default registry', () => {
       <table>
         <components.HeaderWrapper {...internal} data-testid="thead">
           <components.HeaderRow {...internal} data-testid="hr">
-            <components.HeaderCell {...internal} column={{ key: 'a' }} columnIndex={0} data-testid="th" className="x">
+            <components.HeaderCell
+              {...internal}
+              column={{ key: 'a' }}
+              columnIndex={0}
+              data-testid="th"
+              className="x"
+            >
               A
             </components.HeaderCell>
           </components.HeaderRow>
         </components.HeaderWrapper>
         <components.BodyWrapper {...internal} data-testid="tbody">
           <components.BodyRow {...internal} record={{}} row={row} rowIndex={0} data-testid="tr">
-            <components.BodyCell {...internal} record={{}} row={row} column={{ key: 'a' }} rowIndex={0} columnIndex={0} value="v" data-testid="td">
+            <components.BodyCell
+              {...internal}
+              record={{}}
+              row={row}
+              column={{ key: 'a' }}
+              rowIndex={0}
+              columnIndex={0}
+              value="v"
+              data-testid="td"
+            >
               v
             </components.BodyCell>
             <components.SelectionCell

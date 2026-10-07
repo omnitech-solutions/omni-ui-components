@@ -14,19 +14,36 @@ describe('Table row and column reordering', () => {
 
   it('draggable rows get a handle column and ArrowUp / ArrowDown move the row, reporting the new order', () => {
     const onRowOrderChange = vi.fn();
-    const { container } = render(<Table<Person> columns={baseColumns} rows={draggableRows} onRowOrderChange={onRowOrderChange} />);
+    const { container } = render(
+      <Table<Person>
+        columns={baseColumns}
+        rows={draggableRows}
+        onRowOrderChange={onRowOrderChange}
+      />,
+    );
     expect(screen.getByTestId('table-row-drag-header-cell')).toBeInTheDocument();
     const handle = screen.getByRole('button', { name: 'Reorder row 2' });
     fireEvent.keyDown(handle, { key: 'ArrowDown' });
     expect(bodyNames(container)).toEqual(['Ada', 'Linus', 'Grace', 'Margaret']);
-    expect(onRowOrderChange).toHaveBeenCalledWith(['1', '3', '2', '4'], expect.any(Array), [people[0], people[2], people[1], people[3]]);
+    expect(onRowOrderChange).toHaveBeenCalledWith(['1', '3', '2', '4'], expect.any(Array), [
+      people[0],
+      people[2],
+      people[1],
+      people[3],
+    ]);
     fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder row 2' }), { key: 'ArrowUp' });
     expect(bodyNames(container)).toEqual(['Ada', 'Grace', 'Linus', 'Margaret']);
   });
 
   it('moving past either end does nothing', () => {
     const onRowOrderChange = vi.fn();
-    render(<Table<Person> columns={baseColumns} rows={draggableRows} onRowOrderChange={onRowOrderChange} />);
+    render(
+      <Table<Person>
+        columns={baseColumns}
+        rows={draggableRows}
+        onRowOrderChange={onRowOrderChange}
+      />,
+    );
     fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder row 1' }), { key: 'ArrowUp' });
     fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder row 4' }), { key: 'ArrowDown' });
     expect(onRowOrderChange).not.toHaveBeenCalled();
@@ -51,20 +68,47 @@ describe('Table row and column reordering', () => {
     const onColumnOrderChange = vi.fn();
     const onStateChange = vi.fn();
     const columns: TableColumn<Person>[] = baseColumns.map((c) => ({ ...c, draggable: true }));
-    render(<Table<Person> columns={columns} dataSource={people} rowKey="id" onColumnOrderChange={onColumnOrderChange} onStateChange={onStateChange} />);
-    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder column name' }), { key: 'ArrowRight' });
+    render(
+      <Table<Person>
+        columns={columns}
+        dataSource={people}
+        rowKey="id"
+        onColumnOrderChange={onColumnOrderChange}
+        onStateChange={onStateChange}
+      />,
+    );
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder column name' }), {
+      key: 'ArrowRight',
+    });
     expect(onColumnOrderChange).toHaveBeenCalledWith(['role', 'name', 'age']);
-    expect(onStateChange).toHaveBeenCalledWith(expect.objectContaining({ columnOrder: ['role', 'name', 'age'] }));
-    expect(screen.getAllByRole('columnheader').map((th) => th.textContent)).toEqual(['Role', 'Name', 'Age']);
-    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder column age' }), { key: 'ArrowRight' });
+    expect(onStateChange).toHaveBeenCalledWith(
+      expect.objectContaining({ columnOrder: ['role', 'name', 'age'] }),
+    );
+    expect(screen.getAllByRole('columnheader').map((th) => th.textContent)).toEqual([
+      'Role',
+      'Name',
+      'Age',
+    ]);
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder column age' }), {
+      key: 'ArrowRight',
+    });
     expect(onColumnOrderChange).toHaveBeenCalledTimes(1);
   });
 
   it('other keys on a handle are ignored', () => {
     const onColumnOrderChange = vi.fn();
-    render(<Table<Person> columns={baseColumns.map((c) => ({ ...c, draggable: true }))} dataSource={people} rowKey="id" onColumnOrderChange={onColumnOrderChange} />);
+    render(
+      <Table<Person>
+        columns={baseColumns.map((c) => ({ ...c, draggable: true }))}
+        dataSource={people}
+        rowKey="id"
+        onColumnOrderChange={onColumnOrderChange}
+      />,
+    );
     fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder column name' }), { key: 'a' });
-    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder column name' }), { key: 'ArrowDown' });
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder column name' }), {
+      key: 'ArrowDown',
+    });
     expect(onColumnOrderChange).not.toHaveBeenCalled();
   });
 });
@@ -95,9 +139,13 @@ describe('Table extendable', () => {
     await waitFor(() => expect(container.querySelectorAll('tbody tr')).toHaveLength(5));
     expect(screen.getByTestId('table-body-row-row-appended-1')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('table-append-column'));
-    await waitFor(() => expect(screen.getByRole('columnheader', { name: 'Column 4' })).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByRole('columnheader', { name: 'Column 4' })).toBeInTheDocument(),
+    );
     fireEvent.click(screen.getByTestId('table-append-column'));
-    await waitFor(() => expect(screen.getByRole('columnheader', { name: 'Column 5' })).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByRole('columnheader', { name: 'Column 5' })).toBeInTheDocument(),
+    );
   });
 
   it('keeps appending rows into explicit rows and numbers them in sequence', async () => {
@@ -111,14 +159,28 @@ describe('Table extendable', () => {
   });
 
   it('onAppend callbacks own the shape of what is appended and receive the current rows and columns', async () => {
-    const rowOnAppend = vi.fn(() => ({ key: 'custom-row', record: { id: 7, name: 'Custom', role: 'r', age: 1, salary: 0, joined: '' } }));
+    const rowOnAppend = vi.fn(() => ({
+      key: 'custom-row',
+      record: { id: 7, name: 'Custom', role: 'r', age: 1, salary: 0, joined: '' },
+    }));
     const columnOnAppend = vi.fn(() => ({ key: 'extra', title: 'Extra', dataIndex: 'role' }));
-    renderTable({ extendable: { rows: { onAppend: rowOnAppend }, columns: { onAppend: columnOnAppend as never } } });
+    renderTable({
+      extendable: {
+        rows: { onAppend: rowOnAppend },
+        columns: { onAppend: columnOnAppend as never },
+      },
+    });
     fireEvent.click(screen.getByTestId('table-append-row'));
-    await waitFor(() => expect(screen.getByTestId('table-body-row-custom-row')).toBeInTheDocument());
-    expect(rowOnAppend).toHaveBeenCalledWith(expect.objectContaining({ columns: expect.any(Array), rows: expect.any(Array) }));
+    await waitFor(() =>
+      expect(screen.getByTestId('table-body-row-custom-row')).toBeInTheDocument(),
+    );
+    expect(rowOnAppend).toHaveBeenCalledWith(
+      expect.objectContaining({ columns: expect.any(Array), rows: expect.any(Array) }),
+    );
     fireEvent.click(screen.getByTestId('table-append-column'));
-    await waitFor(() => expect(screen.getByRole('columnheader', { name: 'Extra' })).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByRole('columnheader', { name: 'Extra' })).toBeInTheDocument(),
+    );
     expect(columnOnAppend).toHaveBeenCalledTimes(1);
   });
 });
@@ -139,7 +201,9 @@ describe('Table loading', () => {
   it('skeleton row count follows the row count and pads for the selection column', () => {
     const { container } = renderTable({ loading: 'skeleton', rowSelection: {} });
     expect(container.querySelectorAll('tr.bui-table-skeleton-row')).toHaveLength(4);
-    expect(container.querySelector('tr.bui-table-skeleton-row')!.querySelectorAll('td')).toHaveLength(4);
+    expect(
+      container.querySelector('tr.bui-table-skeleton-row')!.querySelectorAll('td'),
+    ).toHaveLength(4);
   });
 
   it('spinner variant dims the table with an overlay and keeps the rows', () => {
@@ -169,9 +233,22 @@ describe('Table virtualization', () => {
   });
 
   it('virtual rows keep the data-virtual flags and still render rows inside the scroll body', () => {
-    const many: Person[] = Array.from({ length: 200 }, (_, i) => ({ id: i, name: `P${i}`, role: 'r', age: i, salary: 0, joined: '' }));
+    const many: Person[] = Array.from({ length: 200 }, (_, i) => ({
+      id: i,
+      name: `P${i}`,
+      role: 'r',
+      age: i,
+      salary: 0,
+      joined: '',
+    }));
     const { container } = render(
-      <Table<Person> columns={baseColumns} dataSource={many} rowKey="id" virtual={{ rows: true, estimateRowHeight: 30, overscan: 2 }} scroll={{ y: 300 }} />,
+      <Table<Person>
+        columns={baseColumns}
+        dataSource={many}
+        rowKey="id"
+        virtual={{ rows: true, estimateRowHeight: 30, overscan: 2 }}
+        scroll={{ y: 300 }}
+      />,
     );
     const root = screen.getByTestId('table-root');
     expect(root).toHaveAttribute('data-virtual-rows');
@@ -189,12 +266,18 @@ describe('Table sticky header', () => {
   it('sticky=true pins the header and sets the flag', () => {
     renderTable({ sticky: true });
     expect(screen.getByTestId('table-root')).toHaveAttribute('data-sticky', 'true');
-    expect(screen.getByTestId('table-header-wrapper')).toHaveStyle({ position: 'sticky', top: '0px' });
+    expect(screen.getByTestId('table-header-wrapper')).toHaveStyle({
+      position: 'sticky',
+      top: '0px',
+    });
   });
 
   it('sticky offsets and container are honoured', () => {
     const container = document.createElement('div');
-    renderTable({ sticky: { offsetHeader: 12, offsetScroll: 6, getContainer: () => container }, scroll: { x: 600 } });
+    renderTable({
+      sticky: { offsetHeader: 12, offsetScroll: 6, getContainer: () => container },
+      scroll: { x: 600 },
+    });
     expect(screen.getByTestId('table-header-wrapper')).toHaveStyle({ top: '12px' });
     const bar = screen.getByTestId('table-sticky-scrollbar');
     expect(bar).toHaveStyle({ bottom: '6px' });
@@ -210,7 +293,15 @@ describe('Table sticky header', () => {
 
 describe('Table appearance variables', () => {
   it('appearance maps to css variables on the root', () => {
-    renderTable({ appearance: { headerFill: '#abcdef', borderColor: '#123456', textSize: 12, padding: { top: 4 }, blockBorder: { radius: 8 } } });
+    renderTable({
+      appearance: {
+        headerFill: '#abcdef',
+        borderColor: '#123456',
+        textSize: 12,
+        padding: { top: 4 },
+        blockBorder: { radius: 8 },
+      },
+    });
     const root = screen.getByTestId('table-root');
     expect(root.style.getPropertyValue('--bui-table-header-bg')).toBe('#abcdef');
     expect(root.style.getPropertyValue('--bui-table-border')).toBe('#123456');
@@ -221,7 +312,10 @@ describe('Table appearance variables', () => {
   it('cellAlignment aligns every cell unless the column says otherwise', () => {
     render(
       <Table<Person>
-        columns={[{ key: 'name', dataIndex: 'name', title: 'Name' }, { key: 'age', dataIndex: 'age', title: 'Age', align: 'center' }]}
+        columns={[
+          { key: 'name', dataIndex: 'name', title: 'Name' },
+          { key: 'age', dataIndex: 'age', title: 'Age', align: 'center' },
+        ]}
         dataSource={[people[0]]}
         rowKey="id"
         appearance={{ cellAlignment: 'right' }}

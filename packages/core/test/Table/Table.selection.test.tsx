@@ -7,12 +7,21 @@ import type { TableProps } from '../../src/Table/Table.types';
 import { baseColumns, type Person, people } from './fixtures';
 
 const renderTable = (props: Partial<TableProps<Person>> = {}) =>
-  render(<Table<Person> columns={baseColumns} dataSource={people} rowKey="id" rowSelection={{}} {...props} />);
+  render(
+    <Table<Person>
+      columns={baseColumns}
+      dataSource={people}
+      rowKey="id"
+      rowSelection={{}}
+      {...props}
+    />,
+  );
 
 // Selection keys are normalised to strings (TanStack row ids), whatever type rowKey produced.
 const k = (...ids: number[]) => ids.map(String);
 
-const checkbox = (id: number) => screen.getByTestId(`table-selection-checkbox-${id}`) as HTMLInputElement;
+const checkbox = (id: number) =>
+  screen.getByTestId(`table-selection-checkbox-${id}`) as HTMLInputElement;
 const selectAll = () => screen.getByTestId('table-selection-checkbox-all') as HTMLInputElement;
 
 describe('Table row selection', () => {
@@ -83,19 +92,30 @@ describe('Table row selection', () => {
     fireEvent.click(checkbox(1));
     expect(onChange).toHaveBeenCalledWith(k(4, 1), expect.anything(), expect.anything());
     expect(checkbox(1).checked).toBe(false);
-    rerender(<Table<Person> columns={baseColumns} dataSource={people} rowKey="id" rowSelection={{ selectedRowKeys: [1, 4], onChange }} />);
+    rerender(
+      <Table<Person>
+        columns={baseColumns}
+        dataSource={people}
+        rowKey="id"
+        rowSelection={{ selectedRowKeys: [1, 4], onChange }}
+      />,
+    );
     expect(checkbox(1).checked).toBe(true);
   });
 
   it('getCheckboxProps can disable rows, which are skipped by select-all', () => {
     const onChange = vi.fn();
-    renderTable({ rowSelection: { onChange, getCheckboxProps: (record) => ({ disabled: record.id === 2 }) } });
+    renderTable({
+      rowSelection: { onChange, getCheckboxProps: (record) => ({ disabled: record.id === 2 }) },
+    });
     expect(checkbox(2)).toBeDisabled();
     expect(screen.getByTestId('table-body-row-2')).toHaveAttribute('data-disabled', 'true');
     fireEvent.click(screen.getByTestId('table-selection-cell-2'));
     expect(checkbox(2).checked).toBe(false);
     fireEvent.click(selectAll());
-    expect(onChange).toHaveBeenLastCalledWith(k(1, 3, 4), [people[0], people[2], people[3]], { type: 'all' });
+    expect(onChange).toHaveBeenLastCalledWith(k(1, 3, 4), [people[0], people[2], people[3]], {
+      type: 'all',
+    });
   });
 
   it('radio mode selects one row at a time and has no select-all', () => {
@@ -125,11 +145,7 @@ describe('Table row selection', () => {
     const onCell = vi.fn(() => ({ title: 'sel-cell' }));
     renderTable({
       rowSelection: {
-        columnTitle: (origin) => (
-          <span>
-            all: {origin}
-          </span>
-        ),
+        columnTitle: (origin) => <span>all: {origin}</span>,
         columnWidth: 60,
         renderCell: (checked, record, _i, origin) => (
           <span data-testid={`wrap-${record.id}`}>
@@ -157,8 +173,14 @@ describe('Table row selection', () => {
 
   it('pins the selection column when fixed', () => {
     renderTable({ rowSelection: { fixed: true } });
-    expect(screen.getByTestId('table-selection-header-cell')).toHaveAttribute('data-pinned', 'left');
-    expect(screen.getByTestId('table-selection-cell-1')).toHaveStyle({ position: 'sticky', left: '0px' });
+    expect(screen.getByTestId('table-selection-header-cell')).toHaveAttribute(
+      'data-pinned',
+      'left',
+    );
+    expect(screen.getByTestId('table-selection-cell-1')).toHaveStyle({
+      position: 'sticky',
+      left: '0px',
+    });
   });
 
   it('selection actions appear in a header menu and receive the changeable keys', () => {
@@ -166,7 +188,10 @@ describe('Table row selection', () => {
     renderTable({ rowSelection: { selections: [{ key: 'evens', text: 'Even rows', onSelect }] } });
     expect(screen.queryByTestId('table-selection-menu')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Open bulk actions' }));
-    expect(screen.getByRole('button', { name: 'Open bulk actions' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: 'Open bulk actions' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
     fireEvent.click(screen.getByTestId('table-selection-action-evens'));
     expect(onSelect).toHaveBeenCalledWith(k(1, 2, 3, 4));
     expect(screen.queryByTestId('table-selection-menu')).not.toBeInTheDocument();
@@ -189,12 +214,24 @@ describe('Table row selection', () => {
     const onChange = vi.fn();
     const onSelectInvert = vi.fn();
     const onSelectNone = vi.fn();
-    renderTable({ rowSelection: { selections: true, onChange, onSelectInvert, onSelectNone, defaultSelectedRowKeys: [1] } });
+    renderTable({
+      rowSelection: {
+        selections: true,
+        onChange,
+        onSelectInvert,
+        onSelectNone,
+        defaultSelectedRowKeys: [1],
+      },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Open bulk actions' }));
     const menu = screen.getByTestId('table-selection-menu');
-    const labels = within(menu).getAllByRole('button').map((b) => b.getAttribute('data-testid'));
+    const labels = within(menu)
+      .getAllByRole('button')
+      .map((b) => b.getAttribute('data-testid'));
     expect(labels).toHaveLength(3);
-    const invert = within(menu).getAllByRole('button').find((b) => /invert/i.test(b.textContent ?? ''));
+    const invert = within(menu)
+      .getAllByRole('button')
+      .find((b) => /invert/i.test(b.textContent ?? ''));
     expect(invert).toBeDefined();
     fireEvent.click(invert!);
     expect(onSelectInvert).toHaveBeenCalledWith(k(2, 3, 4));
@@ -222,7 +259,9 @@ describe('Table row selection', () => {
 });
 
 describe('Table bulk actions bar', () => {
-  const bulk = (extra = {}) => ({ bulkActions: { actions: [{ key: 'delete', label: 'Delete', onClick: vi.fn() }], ...extra } });
+  const bulk = (extra = {}) => ({
+    bulkActions: { actions: [{ key: 'delete', label: 'Delete', onClick: vi.fn() }], ...extra },
+  });
 
   it('stays hidden until something is selected, then shows the count', () => {
     renderTable({ rowSelection: bulk() });
@@ -234,7 +273,11 @@ describe('Table bulk actions bar', () => {
 
   it('runs a configured action with the selection and a clear callback', () => {
     const onClick = vi.fn();
-    renderTable({ rowSelection: bulk({ actions: [{ key: 'delete', label: 'Delete', onClick, variant: 'danger' }] }) });
+    renderTable({
+      rowSelection: bulk({
+        actions: [{ key: 'delete', label: 'Delete', onClick, variant: 'danger' }],
+      }),
+    });
     fireEvent.click(checkbox(1));
     fireEvent.click(checkbox(4));
     fireEvent.click(screen.getByTestId('table-bulk-action-delete'));
@@ -257,7 +300,11 @@ describe('Table bulk actions bar', () => {
 
   it('disabled configured actions do not run', () => {
     const onClick = vi.fn();
-    renderTable({ rowSelection: bulk({ actions: [{ key: 'archive', label: 'Archive', onClick, disabled: true }] }) });
+    renderTable({
+      rowSelection: bulk({
+        actions: [{ key: 'archive', label: 'Archive', onClick, disabled: true }],
+      }),
+    });
     fireEvent.click(checkbox(1));
     expect(screen.getByTestId('table-bulk-action-archive')).toBeDisabled();
     fireEvent.click(screen.getByTestId('table-bulk-action-archive'));
@@ -271,9 +318,17 @@ describe('Table bulk actions bar', () => {
   });
 
   it('bulkActions.render takes over the bar when no actions are configured', () => {
-    const render1 = vi.fn(({ selectedRowKeys, clear, Button }: { selectedRowKeys: unknown[]; clear: () => void; Button: React.FC<{ onClick?: () => void; children?: React.ReactNode }> }) => (
-      <Button onClick={clear}>{`custom ${selectedRowKeys.length}`}</Button>
-    ));
+    const render1 = vi.fn(
+      ({
+        selectedRowKeys,
+        clear,
+        Button,
+      }: {
+        selectedRowKeys: unknown[];
+        clear: () => void;
+        Button: React.FC<{ onClick?: () => void; children?: React.ReactNode }>;
+      }) => <Button onClick={clear}>{`custom ${selectedRowKeys.length}`}</Button>,
+    );
     renderTable({ rowSelection: { bulkActions: { render: render1 as never } } });
     fireEvent.click(checkbox(1));
     const btn = screen.getByRole('button', { name: 'custom 1' });
@@ -284,7 +339,9 @@ describe('Table bulk actions bar', () => {
 
   it('without actions or render the bar falls back to the selection actions and Clear', () => {
     const onSelect = vi.fn();
-    renderTable({ rowSelection: { selections: [{ key: 'one', text: 'First two', onSelect }], bulkActions: {} } });
+    renderTable({
+      rowSelection: { selections: [{ key: 'one', text: 'First two', onSelect }], bulkActions: {} },
+    });
     fireEvent.click(checkbox(3));
     fireEvent.click(screen.getByTestId('table-bulk-action-one'));
     expect(onSelect).toHaveBeenCalledWith(k(1, 2, 3, 4));

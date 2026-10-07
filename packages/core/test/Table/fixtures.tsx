@@ -25,4 +25,6 @@ export const baseColumns: TableColumn<Person>[] = [
 ];
 
 export const bodyNames = (container: HTMLElement, columnKey = 'name'): string[] =>
-  Array.from(container.querySelectorAll(`tbody td[data-column-key="${columnKey}"]`)).map((cell) => cell.textContent ?? '');
+  Array.from(container.querySelectorAll(`tbody td[data-column-key="${columnKey}"]`)).map(
+    (cell) => cell.textContent ?? '',
+  );
