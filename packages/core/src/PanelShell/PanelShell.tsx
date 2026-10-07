@@ -3,7 +3,12 @@ import * as React from 'react';
 import { cn } from 'lib/utils';
 import { useControllableState } from '../lib/use-controllable-state';
 import { panelShellSurfaceVariants } from './PanelShell.variants';
-import type { PanelShellProps } from './PanelShell.types';
+import type { PanelShellLabels, PanelShellProps } from './PanelShell.types';
+
+/** English strings of {@link PanelShell}. */
+export const DEFAULT_PANEL_SHELL_LABELS: PanelShellLabels = { closeSidebar: 'Close conversations', sidebar: 'Conversations' };
+
+const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
 const toCss = (value: number | string | undefined) => (typeof value === 'number' ? `${value}px` : value);
 
@@ -41,15 +46,50 @@ export const PanelShell = ({
   footer,
   overlay,
   closeOnEscape = false,
+  labels: labelOverrides,
   className,
   panelClassName,
   'data-testid': testId,
 }: PanelShellProps) => {
   const [open, setOpen] = useControllableState(openProp, defaultOpen, onOpenChange);
   const [sidebarOpen, setSidebarOpen] = useControllableState(sidebarOpenProp, defaultSidebarOpen, onSidebarOpenChange);
+  const labels = { ...DEFAULT_PANEL_SHELL_LABELS, ...labelOverrides };
   const full = mode === 'full';
   const showHost = host !== undefined && !(full && open);
   const showSidebar = Boolean(sidebar) && (sidebarMode === 'docked' || sidebarOpen);
+
+  const overlayShown = showSidebar && sidebarMode === 'overlay' && open;
+  const overlayRef = React.useRef<HTMLDivElement | null>(null);
+  // [SAFETY] An overlay sidebar behaves like a modal: focus moves in when it opens and returns to the opener when it closes.
+  React.useEffect(() => {
+    if (!overlayShown) return;
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const box = overlayRef.current;
+    (box?.querySelector<HTMLElement>(FOCUSABLE) ?? box)?.focus();
+    return () => {
+      if (opener?.isConnected) opener.focus();
+    };
+  }, [overlayShown]);
+
+  const trapTab = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    // [GUARD] Tab and Shift+Tab wrap inside the sidebar so focus never reaches the covered conversation.
+    if (event.key !== 'Tab') return;
+    const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(FOCUSABLE));
+    if (items.length === 0) {
+      event.preventDefault();
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || active === event.currentTarget)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
 
   const onKeyDown = (event: React.KeyboardEvent) => {
     // Escape closes an open overlay sidebar first, then (only when asked, and only as a side panel) the assistant.
@@ -90,9 +130,30 @@ export const PanelShell = ({
             {footer ? <div data-slot="panel-shell-footer" className="flex-none">{footer}</div> : null}
           </div>
           {showSidebar && sidebarMode === 'overlay' ? (
-            <div data-slot="panel-shell-sidebar" data-mode="overlay" style={{ width: `min(100%, ${toCss(sidebarWidth)})` }} className="absolute inset-y-0 left-0 z-10 flex flex-col p-1.5">
-              {sidebar}
-            </div>
+            <>
+              <button
+                type="button"
+                tabIndex={-1}
+                aria-label={labels.closeSidebar}
+                data-slot="panel-shell-backdrop"
+                className="absolute inset-0 z-[9] cursor-default border-0 bg-[color:color-mix(in_srgb,var(--oui-tone-neutral-fg)_30%,transparent)] p-0"
+                onClick={() => setSidebarOpen(false)}
+              />
+              <div
+                ref={overlayRef}
+                tabIndex={-1}
+                role="dialog"
+                aria-modal="true"
+                aria-label={labels.sidebar}
+                data-slot="panel-shell-sidebar"
+                data-mode="overlay"
+                style={{ width: `min(100%, ${toCss(sidebarWidth)})` }}
+                className="absolute inset-y-0 left-0 z-10 flex flex-col p-1.5 focus:outline-none"
+                onKeyDown={trapTab}
+              >
+                {sidebar}
+              </div>
+            </>
           ) : null}
           {overlay}
         </section>
