@@ -118,6 +118,7 @@ export * from './PanelShell';
 export * from './PreferencesForm';
 export * from './DataPrivacyPanel';
 export * from './IntegrationList';
+export * from './ModelsSettings';
 export * from './ShortcutList';
 export * from './lib/chat';
 export * from './Attachment';
