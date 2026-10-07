@@ -1,0 +1,70 @@
+# Contributing
+
+## Setup
+
+```sh
+pnpm install --frozen-lockfile   # also runs `lefthook install` through the prepare script
+```
+
+Node 22+ and the pnpm version in `package.json` (`packageManager`).
+
+## Git hooks (lefthook)
+
+`pnpm install` installs the hooks via `"prepare": "lefthook install || true"`.
+
+| Hook | What runs | Bypass |
+|---|---|---|
+| pre-commit | `biome check` on staged js/ts/tsx/json/jsonc/css files | `LEFTHOOK=0 git commit` |
+| pre-push | `pnpm verify` | `LEFTHOOK=0 git push` |
+
+Try a hook without committing: `pnpm hooks:run:pre-commit` or `pnpm hooks:run:pre-push`
+(or `pnpm exec lefthook run pre-commit --no-auto-install --files path/to/file.ts`).
+
+Git worktrees share one `.git/hooks`, and `lefthook install` writes the path of the
+checkout it ran in into those hook files. If hooks point at a deleted worktree, rerun
+`pnpm exec lefthook install` from the main checkout. CI sets `LEFTHOOK=0`.
+
+## Format and lint (Biome)
+
+Prettier is not used for the repo (it stays a dependency only because Storybook's source
+snippets call it as a library).
+
+| Command | Effect |
+|---|---|
+| `pnpm lint` | lint only; exits non-zero on errors (warnings are the backlog) |
+| `pnpm lint:fix` | apply safe lint fixes |
+| `pnpm format` | check formatting (fails until the repo-wide reformat lands) |
+| `pnpm format:write` | format everything |
+| `pnpm check` | lint + format + import sorting, the full Biome gate |
+| `pnpm verify` | lint + typecheck + test + build (the local and CI gate) |
+
+Configuration lives in `biome.json`. Stories, factories, tests and `.storybook/**` have
+relaxed rules via `overrides`. A set of judgement rules is temporarily `warn`; the list and
+counts are in `bionic/inbox/biome-backlog.md`. Promote a rule to `error` once its findings
+are fixed. CSS is linted but not formatted.
+
+## Tests and coverage
+
+- `pnpm test` unit tests; `pnpm test:storybook` runs every story's `play` in Chromium;
+  `pnpm test:visual` compares screenshots.
+- `pnpm test:coverage` produces coverage with `@vitest/coverage-v8`. Plan: it is not in
+  `verify` yet; thresholds and a CI coverage artifact are added once every component has
+  tests (Table is the remaining gap), then `test:coverage` joins `verify`.
+
+## The Biome reformat: C1, C2 and open branches
+
+- C1 (`chore(tooling)`) adds the config, hooks and scripts. The tree is not reformatted, so
+  `pnpm format` fails and `verify` leaves format out.
+- C2 is the one repo-wide reformat commit, produced in a quiet window by
+  `scripts/land-biome-c2.sh`. It also switches `verify` to `pnpm check` and prints the SHA
+  to add to `.git-blame-ignore-revs` (then `git config blame.ignoreRevsFile .git-blame-ignore-revs`).
+- Open branches absorb C2 without conflicts:
+
+  ```sh
+  git checkout my-branch
+  scripts/rebase-over-biome.sh <C1-sha> <C2-sha>
+  ```
+
+  That script does a normal merge of C1, `git merge -s ours --no-commit <C2>`, formats the
+  branch with Biome and commits the merge. Never use `-X ours` for this: it still applies
+  C2's hunks and reintroduces conflicts. Do not rebase onto C2 by hand.

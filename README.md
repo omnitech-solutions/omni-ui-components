@@ -45,3 +45,15 @@ import { DynamicForm } from '@oc-tech/omni-ui-components/dynamic-form';
 ```
 
 React 18.3+ or React 19 is required.
+
+## Visual regression tests
+
+`pnpm test:visual` compares 10 captures of the Native App stories (dark and light) with the baselines in
+`visual/__screenshots__/`, named per platform (`*-chromium-darwin.png`, `*-chromium-linux.png`). CI runs it on `ubuntu-24.04`
+against the `-linux` files.
+
+- macOS baselines: `pnpm test:visual:update`, review the changed PNGs, commit.
+- Linux baselines (no Docker needed): on a branch, temporarily replace the `pnpm test:visual` step of
+  `.github/workflows/verify.yml` with `pnpm test:visual:update` plus an `actions/upload-artifact@v4` step for
+  `visual/__screenshots__/*-linux.png`, open a draft PR, `gh run download <run-id> -n <artifact> -D visual/__screenshots__`,
+  commit the PNGs, then restore the plain step.
