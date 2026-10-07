@@ -1,7 +1,6 @@
-// Why this is not an `Input` variation: `Input` / `InputPrimitive` render a single-line `<input>`. A composer needs a
-// `<textarea>` that auto-grows to a max height, keeps newlines (Shift+Enter) and pairs Enter with send while staying IME
-// safe, plus ArrowUp recall on an empty draft. An `<input>` cannot express any of these, and `Input`'s `actions` slot only
-// sits beside the field. The composer reuses the panel Input's background/see-through tokens instead of forking its look.
+// Composer is a preset over `Input`: its message field IS `<Input multiline variant="panel">` (auto-grow to `maxHeight`, Enter
+// to send with Shift+Enter newline and IME safety, the see-through panel look). Composer adds what a single field cannot
+// express: the box around field AND toolbar, send/stop/queue states, attachments, triggers, dictation and ArrowUp recall.
 import * as React from 'react';
 
 import { cn } from 'lib/utils';
@@ -10,6 +9,7 @@ import { attachmentDropOverlayClasses } from '../Attachment/Attachment.variants'
 import { DEFAULT_ATTACHMENT_LABELS } from '../Attachment/Attachment.types';
 import { DictationBar } from '../DictationBar';
 import { IconButton } from '../IconButton';
+import { InputPrimitive } from '../Input/InputPrimitive';
 import { useHoldToTalk } from '../lib';
 import { useControllableState } from '../lib/use-controllable-state';
 import { QueuedList, type QueuedItem } from '../QueuedList';
@@ -129,19 +129,14 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
     const api: ComposerApi = { openPicker: drop.openPicker, focus: () => area.current?.focus() };
     const slot = (node: React.ReactNode | ((api: ComposerApi) => React.ReactNode)) => (typeof node === 'function' ? node(api) : node);
 
-    // [STATE] Grow with the content up to maxHeight, then scroll inside; shrink again when text is deleted.
+    // [STATE] A recalled prompt puts the caret at the end, as the original focusInput does. (Growth is the Input's job.)
     React.useLayoutEffect(() => {
       const element = area.current;
-      if (!element) return;
-      element.style.height = 'auto';
-      element.style.height = `${Math.min(element.scrollHeight, maxHeight)}px`;
-      element.style.overflowY = element.scrollHeight > maxHeight ? 'auto' : 'hidden';
-      // A recalled prompt puts the caret at the end, as the original focusInput does.
-      if (caretToEnd.current) {
+      if (element && caretToEnd.current) {
         caretToEnd.current = false;
         element.setSelectionRange(value.length, value.length);
       }
-    }, [value, maxHeight]);
+    }, [value]);
 
     // [STATE] Triggers: tell the host when one starts, changes or ends (so it can open its own popover).
     const lastTrigger = React.useRef<string>('');
@@ -193,10 +188,9 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       // [GUARD] An open popover owns the arrows, Enter, Tab and Escape.
-      if (onBeforeKeyDown?.(event) === true) return;
-      if (event.key === 'Enter' && !event.shiftKey && sendOnEnter && !event.nativeEvent.isComposing) {
+      if (onBeforeKeyDown?.(event) === true) {
+        // The Input sends on Enter unless the key was taken: a popover that handled it owns it.
         event.preventDefault();
-        submit();
         return;
       }
       // Up on an empty box brings back the last thing you sent.
@@ -227,27 +221,33 @@ function ComposerInner<A extends AttachmentItem = AttachmentItem, Q extends Queu
     ) : null);
 
     const field = bar ?? (
-      <textarea
+      <InputPrimitive
+        multiline
+        variant="ghost"
         ref={(node) => {
-          area.current = node;
-          setRef(inputRef, node);
+          area.current = node as unknown as HTMLTextAreaElement | null;
+          setRef(inputRef, node as unknown as HTMLTextAreaElement | null);
         }}
         data-slot="composer-input"
         aria-label={labels.message}
-        rows={1}
         value={value}
         placeholder={placeholder}
         disabled={disabled}
+        maxHeight={maxHeight}
+        sendOnEnter={sendOnEnter}
+        onSubmit={submit}
         className={composerTextareaClasses}
-        onChange={(event) => setValue(event.target.value)}
-        onKeyDown={onKeyDown}
+        onChange={setValue}
+        onKeyDown={onKeyDown as unknown as React.KeyboardEventHandler<HTMLInputElement>}
         onFocus={() => onFocus?.()}
         onBlur={() => onBlur?.()}
-        onPaste={(event) => {
-          if (onFiles) drop.onPaste(event);
-          if (!event.defaultPrevented) onPaste?.(event);
-        }}
-        {...textareaProps}
+        onPaste={
+          ((event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+            if (onFiles) drop.onPaste(event);
+            if (!event.defaultPrevented) onPaste?.(event);
+          }) as unknown as React.ClipboardEventHandler<HTMLInputElement>
+        }
+        {...(textareaProps as Record<string, unknown>)}
       />
     );
 

@@ -66,6 +66,9 @@ export const inputVariants = cva(
   },
 );
 
+/** Extra classes of the multiline `<textarea>`: height is set inline (auto-grow), so the size row's fixed height is dropped. */
+export const multilineClasses = 'h-auto min-h-[var(--oui-field-height-md)] resize-none leading-[1.5]';
+
 export type InputVariantProps = VariantProps<typeof inputVariants>;
 export type InputVariant = NonNullable<InputVariantProps['variant']>;
 export type InputSize = NonNullable<InputVariantProps['inputSize']>;
