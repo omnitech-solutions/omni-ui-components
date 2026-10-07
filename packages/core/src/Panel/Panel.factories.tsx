@@ -6,12 +6,7 @@ import { Panel, type PanelProps, type PanelScroll } from '@oc-tech/omni-ui-compo
 import { Steps } from '@oc-tech/omni-ui-components/Steps';
 import { Tag } from '@oc-tech/omni-ui-components/Tag';
 import { Transcript, type TranscriptEntry } from '@oc-tech/omni-ui-components/Transcript';
-import {
-  analysingEntries,
-  answeredEntries,
-  ComposerExample,
-  readyEntries,
-} from 'factories/omni-ui-components/Transcript/Transcript.factories';
+import { analysingEntries, answeredEntries, ComposerExample, readyEntries } from 'factories/omni-ui-components/Transcript/Transcript.factories';
 import type { OnAction } from '../SplitButton/SplitButton.factories';
 import type { Variant } from '../../internal/support/makeFactory';
 
@@ -87,10 +82,10 @@ export const analysingSteps = () => [
 /** Complexity chips for the meta slot of an answer that is ready. */
 export const ComplexityChips: React.FC = () => (
   <>
-    <Tag mono className="min-h-0 rounded-md px-2 py-0.5 text-[11.5px]">
+    <Tag mono variant="filled">
       O(n) time
     </Tag>
-    <Tag mono className="min-h-0 rounded-md px-2 py-0.5 text-[11.5px]">
+    <Tag mono variant="filled">
       O(n) space
     </Tag>
   </>
@@ -208,7 +203,13 @@ export const sampleMessages = (count: number, from = 0): TranscriptEntry[] =>
     const id = from + index;
     const text = SAMPLE_LINES[id % SAMPLE_LINES.length];
     if (id % 4 === 3) return { id: String(id), kind: 'message', text };
-    return { id: String(id), kind: 'speech', speaker: 'Mic', time: `08:${String((21 + id) % 60).padStart(2, '0')}`, text };
+    return {
+      id: String(id),
+      kind: 'speech',
+      speaker: 'Mic',
+      time: `08:${String((21 + id) % 60).padStart(2, '0')}`,
+      text,
+    };
   });
 
 export interface TranscriptDemoProps {
@@ -270,10 +271,27 @@ export const TranscriptDemo: React.FC<TranscriptDemoProps> = ({
   );
 };
 
+/**
+ * Header meta that never crops: the full text when the panel is wide enough (container query on the panel),
+ * the part before the first dot otherwise. The full text is always the hover title.
+ */
+const AnswerMeta: React.FC<{ text: string }> = ({ text }) => (
+  <span title={text} data-testid="answer-meta">
+    <span className="hidden @[340px]:inline">{text}</span>
+    <span className="@[340px]:hidden">{text.split(' · ')[0]}</span>
+  </span>
+);
+
 export type NativePanelsState = 'ready' | 'analysing' | 'answer';
 
+export type NativePanelId = 'chat' | 'answer' | 'code';
+export type NativePanelsVisible = Record<NativePanelId, boolean>;
+
 export interface NativePanelsDemoProps {
+  /** What the Answer and Code panels show. `answer` without `visible` also hides Code (the board's third state). */
   state?: NativePanelsState;
+  /** Which panels are on. The last visible one cannot be turned off (an all-false value keeps Chat). */
+  visible?: Partial<NativePanelsVisible>;
   /** Panel surface opacity, 0-1 (the `--oui-panel-see-through` token). Text and icons stay opaque. */
   seeThrough?: number;
   /** Width of the row in px (the window width the panels have to fit). */
@@ -281,15 +299,27 @@ export interface NativePanelsDemoProps {
   onAction?: OnAction;
 }
 
-const TRANSCRIPT = { ready: readyEntries, analysing: analysingEntries, answer: answeredEntries };
+const TRANSCRIPT = {
+  ready: readyEntries,
+  analysing: analysingEntries,
+  answer: answeredEntries,
+};
 
 /**
  * The three panels of board 1d in a row: transcript 330px (min 300), the others share the rest equally.
  * All content is passed to the library Panel as configuration; the row is a plain flex container.
  */
-export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({ state = 'ready', seeThrough = 1, width = 1180, onAction }) => {
+export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({ state = 'ready', visible, seeThrough = 1, width = 1180, onAction }) => {
   const act = (name: string) => () => onAction?.(name);
   const transcript = TRANSCRIPT[state]();
+  const shown: NativePanelsVisible = {
+    chat: true,
+    answer: true,
+    code: state !== 'answer',
+    ...visible,
+  };
+  if (!shown.chat && !shown.answer && !shown.code) shown.chat = true;
+  const count = Number(shown.chat) + Number(shown.answer) + Number(shown.code);
   return (
     <div
       data-testid="native-panels"
@@ -301,26 +331,30 @@ export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({ state = 'rea
         ['--oui-panel-see-through' as string]: seeThrough,
       }}
     >
-      <Panel
-        title="Transcript & chat"
-        width={330}
-        minWidth={300}
-        bodyPadding="sm"
-        scroll={{
-          fade: state === 'analysing',
-          thinScrollbar: true,
-          stickToBottom: true,
-          lines: transcript.length,
-        }}
-        dock={<ComposerExample onAction={onAction} />}
-        dockClassName="bg-transparent px-3 py-2.5"
-      >
-        <Transcript entries={transcript} copyIcon={<Copy />} copiedIcon={<Check />} />
-      </Panel>
-      {state === 'ready' ? (
+      {shown.chat ? (
+        <Panel
+          title="Transcript & chat"
+          width={count === 1 ? undefined : 330}
+          minWidth={count === 1 ? undefined : 300}
+          bodyPadding="sm"
+          scroll={{
+            fade: state === 'analysing',
+            thinScrollbar: true,
+            stickToBottom: true,
+            lines: transcript.length,
+          }}
+          dock={<ComposerExample onAction={onAction} />}
+          dockClassName="bg-transparent px-3 py-2.5"
+        >
+          <Transcript entries={transcript} copyIcon={<Copy />} copiedIcon={<Check />} />
+        </Panel>
+      ) : null}
+      {shown.answer && state === 'ready' ? (
         <Panel
           {...panelVariants[0].args}
           title="Answer"
+          className="@container"
+          meta={<AnswerMeta text={String(panelVariants[0].args.meta)} />}
           empty={{
             ...panelVariants[0].args.empty,
             action: {
@@ -332,7 +366,7 @@ export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({ state = 'rea
           }}
         />
       ) : null}
-      {state === 'analysing' ? (
+      {shown.answer && state === 'analysing' ? (
         <Panel
           title="Answer"
           subtitle="S2 · 10:57"
@@ -345,12 +379,12 @@ export const NativePanelsDemo: React.FC<NativePanelsDemoProps> = ({ state = 'rea
           <Steps variant="checklist" items={analysingSteps()} />
         </Panel>
       ) : null}
-      {state === 'answer' ? (
+      {shown.answer && state === 'answer' ? (
         <Panel title="Answer" subtitle="S2 · Two Sum" meta={<ComplexityChips />} bodyPadding="md" bodyClassName="gap-2.5 text-sm leading-[1.55]">
           <AnswerBody />
         </Panel>
       ) : null}
-      {state !== 'answer' ? <Panel {...(state === 'ready' ? panelVariants[4].args : panelVariants[1].args)} title="Code" /> : null}
+      {shown.code ? <Panel {...(state === 'ready' ? panelVariants[4].args : panelVariants[1].args)} title="Code" /> : null}
     </div>
   );
 };

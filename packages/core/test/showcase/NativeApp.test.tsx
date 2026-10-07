@@ -73,6 +73,18 @@ describe("omni-ui-components/Showcase/Native App", () => {
       ).toBeInTheDocument();
     });
 
+    it("the toolbar panel toggles reflow Chat, Answer and Code, and the last one cannot be turned off", async () => {
+      render(<NativeAppWindow {...nativeAppDefaults} />);
+      const regions = () => screen.getAllByRole("region").map((r) => r.getAttribute("aria-labelledby") && r.querySelector("[data-slot=panel-title]")?.textContent);
+      expect(regions()).toEqual(["Transcript & chat", "Answer", "Code"]);
+      await userEvent.click(screen.getByRole("button", { name: "Chat" }));
+      expect(regions()).toEqual(["Answer", "Code"]);
+      await userEvent.click(screen.getByRole("button", { name: "Answer" }));
+      expect(regions()).toEqual(["Code"]);
+      await userEvent.click(screen.getByRole("button", { name: "Code" }));
+      expect(regions()).toEqual(["Code"]);
+    });
+
     it("width 330 shows the transcript alone", () => {
       render(<NativeAppWindow {...nativeAppDefaults} width={330} />);
       expect(
