@@ -56,23 +56,21 @@ describe('omni-ui-components/Transcript history windowing', () => {
     expect(ids(container).at(-1)).toBe('t1999');
     expect(seen.at(-1)).toEqual(['t1999', 1999, true]);
     expect(seen.find(([id]) => id === 't1975')?.[1]).toBe(1975);
-    expect(screen.getByRole('button', { name: 'Show earlier messages' })).toBeEnabled();
-    expect(screen.queryByRole('button', { name: 'Load earlier messages' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Load earlier messages' })).toBeEnabled();
   });
 
   it('reveals windowStep more per press without calling the host, then hands over to onLoadEarlier', async () => {
     const onLoadEarlier = vi.fn();
     const user = userEvent.setup();
     const { container } = render(<Transcript turns={turns(7)} windowSize={3} windowStep={2} hasEarlier onLoadEarlier={onLoadEarlier} />);
-    const press = (name: string) => user.click(screen.getByRole('button', { name }));
+    const press = () => user.click(screen.getByRole('button', { name: 'Load earlier messages' }));
     expect(ids(container)).toHaveLength(3);
-    await press('Show earlier messages');
+    await press();
     expect(ids(container)).toHaveLength(5);
-    await press('Show earlier messages');
+    await press();
     expect(ids(container)).toHaveLength(7);
     expect(onLoadEarlier).not.toHaveBeenCalled();
-    // Everything in memory is drawn: the same slot now says it fetches from the host.
-    await press('Load earlier messages');
+    await press();
     expect(onLoadEarlier).toHaveBeenCalledTimes(1);
     expect(onLoadEarlier.mock.calls[0][0].id).toBe('t0');
   });
@@ -80,7 +78,7 @@ describe('omni-ui-components/Transcript history windowing', () => {
   it('shows the button for hidden turns even without hasEarlier or onLoadEarlier, and removes it once all are drawn', async () => {
     const user = userEvent.setup();
     render(<Transcript turns={turns(4)} windowSize={2} />);
-    await user.click(screen.getByRole('button', { name: 'Show earlier messages' }));
+    await user.click(screen.getByRole('button', { name: 'Load earlier messages' }));
     expect(screen.queryByRole('button', { name: 'Load earlier messages' })).toBeNull();
   });
 
@@ -91,11 +89,11 @@ describe('omni-ui-components/Transcript history windowing', () => {
     // Scrolled 150px above the end, reading.
     box.scrollTop = box.scrollHeight - VIEWPORT_PX - 150;
     expect(offsetFromBottom(box)).toBe(150);
-    await user.click(screen.getByRole('button', { name: 'Show earlier messages' }));
+    await user.click(screen.getByRole('button', { name: 'Load earlier messages' }));
     expect(box.querySelectorAll('[data-turn-id]')).toHaveLength(20);
     expect(box.scrollHeight).toBe(20 * ITEM_PX);
     expect(offsetFromBottom(box)).toBe(150);
-    await user.click(screen.getByRole('button', { name: 'Show earlier messages' }));
+    await user.click(screen.getByRole('button', { name: 'Load earlier messages' }));
     expect(box.querySelectorAll('[data-turn-id]')).toHaveLength(30);
     expect(offsetFromBottom(box)).toBe(150);
   });

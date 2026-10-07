@@ -366,7 +366,7 @@ export function TranscriptConversation<U extends ConversationTurn = Conversation
             else void onLoadEarlier?.(turns[0]);
           }}
         >
-          {view.hidden > 0 ? labels.showEarlier : labels.loadEarlier}
+          {labels.loadEarlier}
         </Button>
       ) : null}
       {turns.length === 0 && !busy ? <div data-slot="transcript-empty">{empty}</div> : null}

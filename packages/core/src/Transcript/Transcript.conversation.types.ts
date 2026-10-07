@@ -156,10 +156,7 @@ export interface TranscriptTurnSlots<U extends ConversationTurn = ConversationTu
 export interface TranscriptLabels {
   /** Accessible name of the log in conversation mode. Default `Conversation`. */
   conversation: string;
-  /** Fetches older messages from the host (`onLoadEarlier`). Default `Load earlier messages`. */
   loadEarlier: string;
-  /** Reveals turns already in memory when `windowSize` hides some. Default `Show earlier messages`. */
-  showEarlier: string;
   /** Shown on a stopped reply. Default `Stopped. Nothing has been applied.` */
   stopped: string;
   /** Name of the edit textarea. Default `Edit message`. */
@@ -183,7 +180,6 @@ export interface TranscriptLabels {
 export const DEFAULT_TRANSCRIPT_LABELS: TranscriptLabels = {
   conversation: 'Conversation',
   loadEarlier: 'Load earlier messages',
-  showEarlier: 'Show earlier messages',
   stopped: 'Stopped. Nothing has been applied.',
   editMessage: 'Edit message',
   editHint: 'Sends as a new branch — the original is kept.',
@@ -217,12 +213,12 @@ export interface TranscriptConversationProps<U extends ConversationTurn = Conver
   /** The earlier page is being fetched: the button is disabled. */
   loadingEarlier?: boolean;
   /**
-   * Draw only the newest N turns of `turns` (a long history keeps a small DOM). `Show earlier messages` then first reveals
+   * Draw only the newest N turns of `turns` (a long history keeps a small DOM). `Load earlier messages` then first reveals
    * `windowStep` more of the turns already in memory, keeping the scroll offset from the bottom so nothing jumps, and calls
    * `onLoadEarlier` only once every turn is shown and `hasEarlier` says more exist. Absent: every turn is drawn.
    */
   windowSize?: number;
-  /** Turns revealed by each `Show earlier messages` while some are hidden. Default `windowSize`. */
+  /** Turns revealed by each `Load earlier messages` while some are hidden. Default `windowSize`. */
   windowStep?: number;
   /** Shown when there are no turns and nothing runs: the empty state, or the "no longer shared" notice. */
   empty?: React.ReactNode;
