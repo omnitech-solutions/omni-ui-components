@@ -91,6 +91,8 @@ function TranscriptInner<
       hasEarlier,
       onLoadEarlier,
       loadingEarlier,
+      windowSize,
+      windowStep,
       empty,
       readOnly,
       renderTurn,
@@ -307,6 +309,8 @@ function TranscriptInner<
             hasEarlier={hasEarlier}
             onLoadEarlier={onLoadEarlier}
             loadingEarlier={loadingEarlier}
+            windowSize={windowSize}
+            windowStep={windowStep}
             empty={empty}
             readOnly={readOnly}
             renderTurn={renderTurn}

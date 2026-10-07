@@ -327,6 +327,16 @@ export const chatRuns = (): ChatRun[] => [
 ];
 
 /** The answered conversation as turns. */
+/** A long history of `count` finished turns (a question and a short answer each), for windowing demos and tests. */
+export const longHistoryTurns = (count = 3000): ConversationTurn[] =>
+  buildTurns(
+    Array.from({ length: count }, (_, n): ChatMessage[] => [
+      { id: `lu${n}`, role: 'user', createdAt: '2026-10-06T09:00:00Z', parts: [{ type: 'text', text: `Question ${n + 1}: how does case ${n + 1} behave?` }] },
+      { id: `la${n}`, role: 'assistant', createdAt: '2026-10-06T09:00:05Z', parts: [{ type: 'text', text: `Answer ${n + 1}: a short reply for case ${n + 1}.` }] },
+    ]).flat(),
+    [],
+  );
+
 export const answeredTurns = (): ConversationTurn[] => buildTurns([...chatMessages(), secondAnswer()], chatRuns());
 /** The same conversation with the last question still waiting for its answer (streams when `busy`). */
 export const streamingTurns = (): ConversationTurn[] => buildTurns(chatMessages(), [chatRuns()[0], { id: 'r2', userMessageId: 'u2', status: 'running' }]);
@@ -348,6 +358,9 @@ export interface ConversationDemoProps {
   composer?: boolean;
   readOnly?: boolean;
   hasEarlier?: boolean;
+  /** Draw only the newest N turns (`windowSize`). */
+  windowSize?: number;
+  windowStep?: number;
   empty?: boolean;
   /** Start editing this turn's question. */
   editingId?: string | null;
@@ -374,6 +387,8 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
   composer = true,
   readOnly = false,
   hasEarlier = false,
+  windowSize,
+  windowStep,
   empty = false,
   editingId: editingProp = null,
   seeThrough = 1,
@@ -456,6 +471,8 @@ export const ConversationDemo: React.FC<ConversationDemoProps> = ({
           waiting={waiting}
           live={busy ? { text: live, reasoning: 'Comparing the nested loop with a map lookup…' } : undefined}
           hasEarlier={hasEarlier}
+          windowSize={windowSize}
+          windowStep={windowStep}
           onLoadEarlier={(oldest) => onAction?.('load-earlier', oldest?.id)}
           readOnly={readOnly}
           empty={<div className="py-10 text-center text-sm text-[color:var(--oui-panel-meta-fg)]">What are we working on?</div>}

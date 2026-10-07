@@ -208,6 +208,14 @@ export interface TranscriptConversationProps<U extends ConversationTurn = Conver
   onLoadEarlier?: (oldest: U | undefined) => void | Promise<void>;
   /** The earlier page is being fetched: the button is disabled. */
   loadingEarlier?: boolean;
+  /**
+   * Draw only the newest N turns of `turns` (a long history keeps a small DOM). `Load earlier messages` then first reveals
+   * `windowStep` more of the turns already in memory, keeping the scroll offset from the bottom so nothing jumps, and calls
+   * `onLoadEarlier` only once every turn is shown and `hasEarlier` says more exist. Absent: every turn is drawn.
+   */
+  windowSize?: number;
+  /** Turns revealed by each `Load earlier messages` while some are hidden. Default `windowSize`. */
+  windowStep?: number;
   /** Shown when there are no turns and nothing runs: the empty state, or the "no longer shared" notice. */
   empty?: React.ReactNode;
   /** A shared, read-only transcript: no edit, copy, actions, versions, approvals or follow-ups; reading parts stay. */
