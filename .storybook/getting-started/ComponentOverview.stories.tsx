@@ -209,6 +209,8 @@ import { DataPrivacyPanel } from '@oc-tech/omni-ui-components/DataPrivacyPanel';
 import { DataPrivacyPanelDemo, dataPrivacyPanelPropsFactory, dataPrivacyPanelVariants } from 'factories/omni-ui-components/DataPrivacyPanel/DataPrivacyPanel.factories';
 import { IntegrationList } from '@oc-tech/omni-ui-components/IntegrationList';
 import { IntegrationListDemo, integrationListPropsFactory, integrationListVariants } from 'factories/omni-ui-components/IntegrationList/IntegrationList.factories';
+import { ModelsSettings } from '@oc-tech/omni-ui-components/ModelsSettings';
+import { modelsSettingsPropsFactory, modelsSettingsVariants } from 'factories/omni-ui-components/ModelsSettings/ModelsSettings.factories';
 import { ShortcutList } from '@oc-tech/omni-ui-components/ShortcutList';
 import { shortcutListPropsFactory, shortcutListVariants } from 'factories/omni-ui-components/ShortcutList/ShortcutList.factories';
 import { StatusClock } from '@oc-tech/omni-ui-components/StatusClock';
@@ -751,6 +753,17 @@ const IntegrationListPreview: React.FC = () => (
       <div key={variant.name} className="flex w-[420px] flex-col gap-1">
         <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
         <IntegrationList {...integrationListPropsFactory(variant.args)} />
+      </div>
+    ))}
+  </div>
+);
+
+const ModelsSettingsPreview: React.FC = () => (
+  <div className="flex flex-wrap items-start gap-6">
+    {modelsSettingsVariants.map((variant) => (
+      <div key={variant.name} className="flex w-[420px] flex-col gap-1">
+        <span className="font-mono text-[11px] text-muted-foreground">{variant.name}</span>
+        <ModelsSettings {...modelsSettingsPropsFactory(variant.args)} />
       </div>
     ))}
   </div>
@@ -1647,6 +1660,7 @@ const SECTIONS: OverviewSectionSpec[] = [
       { name: 'PreferencesForm', preview: PreferencesFormPreview, variants: preferencesFormVariants as Variant<unknown>[] },
       { name: 'DataPrivacyPanel', preview: DataPrivacyPanelPreview, variants: dataPrivacyPanelVariants as Variant<unknown>[] },
       { name: 'IntegrationList', preview: IntegrationListPreview, variants: integrationListVariants as Variant<unknown>[] },
+      { name: 'ModelsSettings', preview: ModelsSettingsPreview, variants: modelsSettingsVariants as Variant<unknown>[] },
       { name: 'ShortcutList', preview: ShortcutListPreview, variants: shortcutListVariants as Variant<unknown>[] },
     ],
   },
