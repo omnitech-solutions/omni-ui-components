@@ -256,4 +256,73 @@ describe('omni-ui-components/SplitButton', () => {
       expect(screen.getByRole('button', { name: 'Capture' })).toHaveAttribute('title', 'Capture');
     });
   });
+
+  describe('board 1c variants', () => {
+    it('C2: shows the caption as a word beside the icon while the accessible name stays the label', () => {
+      renderSplit({ main: { label: 'Capture, Manual', caption: 'Manual', labelInline: true, icon: <svg /> } });
+      const main = screen.getByRole('button', { name: 'Capture, Manual' });
+      expect(within(main).getByText('Manual')).toHaveAttribute('data-slot', 'split-button-inline-label');
+    });
+
+    it('C2: the labelled size keeps its own caption and does not duplicate the word', () => {
+      const { container } = renderSplit({ size: 'control-labelled', main: { label: 'Capture', caption: 'Manual', labelInline: true, icon: <svg /> } });
+      expect(container.querySelector('[data-slot="split-button-inline-label"]')).toBeNull();
+      expect(container.querySelector('[data-slot="split-button-caption"]')).toHaveTextContent('Manual');
+    });
+
+    it('C3: renders each segment between main and caret, each divided by its own border', () => {
+      const { container } = renderSplit({ segments: [{ id: 'auto', label: 'Auto', icon: <svg /> }, { id: 'b', label: 'Second', icon: <svg /> }] });
+      const slots = [...container.querySelectorAll('[data-slot^="split-button-"]')].map((n) => n.getAttribute('data-slot'));
+      expect(slots.filter((s) => ['split-button-main', 'split-button-segment', 'split-button-caret'].includes(s!))).toEqual([
+        'split-button-main',
+        'split-button-segment',
+        'split-button-segment',
+        'split-button-caret',
+      ]);
+      expect(screen.getByRole('button', { name: 'Auto' })).toHaveClass('border-l', 'border-inherit');
+    });
+
+    it('C3: a segment press calls only its own onPress with the segment by reference, then the event', async () => {
+      const user = userEvent.setup();
+      const onPress = vi.fn();
+      const onMain = vi.fn();
+      const segment = { id: 'auto', label: 'Auto', icon: <svg />, pressed: false, onPress };
+      renderSplit({ main: { label: 'Capture', icon: <svg />, onPress: onMain }, segments: [segment] });
+      await user.click(screen.getByRole('button', { name: 'Auto' }));
+      expect(onPress).toHaveBeenCalledTimes(1);
+      expect(onPress.mock.calls[0][0]).toBe(segment);
+      expect(onPress.mock.calls[0][1]).toHaveProperty('type', 'click');
+      expect(onMain).not.toHaveBeenCalled();
+    });
+
+    it('C3: a pressed segment is aria-pressed, a disabled one does not fire, an absent onPress is harmless', async () => {
+      const user = userEvent.setup();
+      const onPress = vi.fn();
+      renderSplit({
+        segments: [
+          { id: 'a', label: 'On', icon: <svg />, pressed: true },
+          { id: 'b', label: 'Off', icon: <svg />, disabled: true, onPress },
+        ],
+      });
+      expect(screen.getByRole('button', { name: 'On' })).toHaveAttribute('aria-pressed', 'true');
+      await user.click(screen.getByRole('button', { name: 'On' }));
+      await user.click(screen.getByRole('button', { name: 'Off' }));
+      expect(onPress).not.toHaveBeenCalled();
+    });
+
+    it('C3: the main and caret callbacks still work with segments present, and the segment tooltip shows its shortcut', async () => {
+      const user = userEvent.setup();
+      const onMain = vi.fn();
+      renderSplit({
+        main: { label: 'Capture', icon: <svg />, onPress: onMain },
+        segments: [{ id: 'auto', label: 'Auto', icon: <svg />, tooltip: 'Auto mode', shortcut: ['⌥', 'U'] }],
+      });
+      await user.click(screen.getByRole('button', { name: 'Capture' }));
+      expect(onMain).toHaveBeenCalledTimes(1);
+      await user.hover(screen.getByRole('button', { name: 'Auto' }));
+      expect(await screen.findByRole('tooltip')).toHaveTextContent('Auto mode⌥U');
+      await user.click(screen.getByRole('button', { name: 'More options' }));
+      expect(await screen.findByRole('menu')).toBeInTheDocument();
+    });
+  });
 });
