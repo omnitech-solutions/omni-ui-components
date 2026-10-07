@@ -189,6 +189,8 @@ import { feedbackPanelPropsFactory, feedbackPanelVariants } from 'factories/omni
 import { VersionPager } from '@oc-tech/omni-ui-components/VersionPager';
 import { versionPagerPropsFactory, versionPagerVariants } from 'factories/omni-ui-components/VersionPager/VersionPager.factories';
 import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
+import { MessageMenu } from '@oc-tech/omni-ui-components/MessageMenu';
+import { messageMenuPropsFactory, messageMenuVariants } from 'factories/omni-ui-components/MessageMenu/MessageMenu.factories';
 import { messageActionsPropsFactory, messageActionsVariants } from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
 import { SummaryDivider } from '@oc-tech/omni-ui-components/SummaryDivider';
 import { summaryDividerPropsFactory, summaryDividerVariants } from 'factories/omni-ui-components/SummaryDivider/SummaryDivider.factories';
@@ -475,7 +477,8 @@ const MessageBoxPreview: React.FC = () => (
 const ConversationPreview: React.FC = () => <ConversationDemo height={560} />;
 const VersionPagerPreview = MessagePartsPreview(versionPagerVariants as Variant<never>[], (args) => <VersionPager {...versionPagerPropsFactory(args as object)} />);
 const MessageActionsPreview = MessagePartsPreview(messageActionsVariants as Variant<never>[], (args) => <MessageActions {...messageActionsPropsFactory(args as object)} />);
-const SummaryDividerPreview = MessagePartsPreview(summaryDividerVariants as Variant<never>[], (args) => <SummaryDivider {...summaryDividerPropsFactory(args as object)} />);
+const MessageMenuPreview = MessagePartsPreview(messageMenuVariants as Variant<never>[], (args) => <MessageMenu {...messageMenuPropsFactory(args as object)} />);
+const SummaryDividerPreview =MessagePartsPreview(summaryDividerVariants as Variant<never>[], (args) => <SummaryDivider {...summaryDividerPropsFactory(args as object)} />);
 const ChatReplyPreview: React.FC = () => <ChatReplyShowcase />;
 
 const StatusClockPreview: React.FC = () => (
@@ -1440,6 +1443,7 @@ const SECTIONS: OverviewSectionSpec[] = [
       { name: 'FeedbackPanel', preview: FeedbackPanelPreview, variants: feedbackPanelVariants as Variant<unknown>[] },
       { name: 'VersionPager', preview: VersionPagerPreview, variants: versionPagerVariants as Variant<unknown>[] },
       { name: 'MessageActions', preview: MessageActionsPreview, variants: messageActionsVariants as Variant<unknown>[] },
+      { name: 'MessageMenu', preview: MessageMenuPreview, variants: messageMenuVariants as Variant<unknown>[] },
       { name: 'SummaryDivider', preview: SummaryDividerPreview, variants: summaryDividerVariants as Variant<unknown>[] },
       {
         name: 'Chat reply (message parts together)',
