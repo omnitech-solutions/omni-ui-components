@@ -9,8 +9,19 @@ import type { FieldLayoutProps, InputVariantProps } from './Input.variants';
  * @example
  * <InputPrimitive variant="bordered" inputSize="default" value={v} onChange={setV} />
  */
-export interface InputPrimitiveProps extends Omit<React.ComponentProps<'input'>, 'onChange' | 'size'>, InputVariantProps, RootProps {
+export interface InputPrimitiveProps extends Omit<React.ComponentProps<'input'>, 'onChange' | 'size' | 'onSubmit'>, InputVariantProps, RootProps {
   invalid?: boolean;
+  /**
+   * Render an auto-growing `<textarea>` instead of an `<input>` (a message box). The ref then holds the textarea (typed as
+   * `HTMLInputElement` for compatibility: both share `value`, `focus`, `setSelectionRange`). Slot: `data-slot="input"` still.
+   */
+  multiline?: boolean;
+  /** Multiline only: the field grows to this many px, then scrolls inside. Default 200. */
+  maxHeight?: number;
+  /** Multiline only: Enter calls `onSubmit` (Shift+Enter is a newline; IME composition is never interrupted). Default false: Enter is a newline. */
+  sendOnEnter?: boolean;
+  /** Multiline with `sendOnEnter`: Enter (also on a blank value: the host guards). Payload: the value. A promise is ignored. Absent: Enter stays a newline. */
+  onSubmit?: (value: string) => void | Promise<void>;
   /** Blur the input on Enter/Escape so callers can save-on-blur. */
   commitOnEnter?: boolean;
   onChange?: (next: string) => void;

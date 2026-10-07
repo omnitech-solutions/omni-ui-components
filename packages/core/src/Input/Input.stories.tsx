@@ -81,3 +81,15 @@ export const SizesMatrix: Story = {
     </div>
   ),
 };
+
+export const Multiline: Story = {
+  args: { multiline: true, variant: 'panel', label: undefined, 'aria-label': 'Message', placeholder: 'Message… (Enter sends, Shift+Enter adds a line)', sendOnEnter: true, maxHeight: 200 },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '`multiline` renders an auto-growing textarea to `maxHeight`. <primary>Enter</primary> calls <code>onSubmit(value)</code> with <primary>sendOnEnter</primary>, Shift+Enter is a newline and IME composition is never interrupted. `Composer` is a preset over this mode.',
+      },
+    },
+  },
+};
