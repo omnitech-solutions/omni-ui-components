@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import * as React from 'react';
 import userEvent from '@testing-library/user-event';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import { Transcript, type ConversationTurn } from '@oc-tech/omni-ui-components/Transcript';
 import { defaultWindowStart, offsetFromBottom, restoreFromBottom } from '@oc-tech/omni-ui-components/lib/chat/window';
