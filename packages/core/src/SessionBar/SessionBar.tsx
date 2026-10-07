@@ -61,6 +61,7 @@ export const SessionBar = React.forwardRef<HTMLDivElement, SessionBarProps>(
           disabled={pause?.disabled}
           onClick={pause?.onClick}
           data-slot="session-pause"
+          className="border-[color:var(--oui-session-pause-border)]"
         >
           {pause?.label ?? 'Pause session'}
         </Button>

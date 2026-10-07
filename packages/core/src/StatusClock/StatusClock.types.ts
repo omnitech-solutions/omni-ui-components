@@ -5,19 +5,23 @@ export type StatusClockState = 'live' | 'paused';
 
 /** The development-build tag: `<short sha> · <branch>` in mono after a divider; click to copy. */
 export interface StatusClockBuildTag {
-  /** Visible text, e.g. `a1b2c3d · feat/native-panel-cleanup`. */
-  label: string;
+  /** The short commit SHA, e.g. `a1b2c3d`. */
+  sha: string;
+  /** The branch name, e.g. `feat/native-panel-cleanup`. Omit to show the SHA alone. */
+  branch?: string;
+  /** Icon node before the SHA (the board shows a commit glyph). */
+  commitIcon?: React.ReactNode;
+  /** Icon node before the branch (the board shows a branch glyph). */
+  branchIcon?: React.ReactNode;
   /** Tooltip (native `title`): the full SHA. */
   title?: string;
   /** Called when the tag is chosen; the caller copies and then sets `copied`. */
   onCopy?: () => void;
-  /** Controlled: show `copiedLabel` instead of `label` (the caller times it out). */
+  /** Controlled: show `copiedLabel` instead of the SHA and branch (the caller times it out). */
   copied?: boolean;
   /** Text shown while `copied`. Default `Copied`. */
   copiedLabel?: string;
-  /** Optional leading icon node (the board shows a commit glyph). */
-  icon?: React.ReactNode;
-  /** Accessible name. Default `Copy build <title or label>`. */
+  /** Accessible name. Default `Copy build <title or sha>`. */
   'aria-label'?: string;
 }
 
