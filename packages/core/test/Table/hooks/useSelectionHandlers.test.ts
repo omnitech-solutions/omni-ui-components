@@ -263,6 +263,55 @@ describe('useSelectionHandlers tree selection', () => {
     expect(result.current.selectedKeys.sort()).toEqual(['k1', 'k2', 'p']);
   });
 
+  it('treats children without a record as empty records and ignores keys outside the tree', () => {
+    const rows = resolve([{ id: 'p', name: 'P', age: 0 }], () => ({
+      children: [{ key: 'k1' }, { key: 'k2' }],
+    }));
+    const loose = resolve([{ id: 'loose', name: 'L', age: 9 }]);
+    const all = [...rows, ...loose];
+    const rowSelection: Selection = { checkStrictly: false };
+    const view = renderHook(() => {
+      const state = useSelectionState<Person, unknown>(rowSelection);
+      return useSelectionHandlers<Person, unknown>({
+        rowSelection,
+        locale: undefined,
+        allResolvedRows: all,
+        resolvedRows: rows,
+        rowByKey: byKey(all),
+        emitStateChange: vi.fn(),
+        ...state,
+      });
+    });
+    // `loose` is selectable but absent from the tree, so no keys cascade and nothing is selected.
+    act(() => view.result.current.handleSelect(loose[0], true, click()));
+    expect(view.result.current.selectedKeys).toEqual([]);
+  });
+
+  it('does not derive a parent state from children that are all disabled', () => {
+    const parent = { id: 'p', name: 'P', age: 0 };
+    const kid = { id: 'k', name: 'K', age: 1 };
+    const rows = resolve([parent], () => ({ children: [{ key: 'k', record: kid }] }));
+    const all = [...rows, ...resolve([kid])];
+    const rowSelection: Selection = {
+      checkStrictly: false,
+      getCheckboxProps: (record) => ({ disabled: record.id === 'k' }),
+    };
+    const view = renderHook(() => {
+      const state = useSelectionState<Person, unknown>(rowSelection);
+      return useSelectionHandlers<Person, unknown>({
+        rowSelection,
+        locale: undefined,
+        allResolvedRows: all,
+        resolvedRows: rows,
+        rowByKey: byKey(all),
+        emitStateChange: vi.fn(),
+        ...state,
+      });
+    });
+    act(() => view.result.current.handleSelect(all[0], true, click()));
+    expect(view.result.current.selectedKeys).toEqual(['p']);
+  });
+
   it('un-checks the parent when a child is deselected and re-checks it when all return', () => {
     const { result, all } = treeRows(false);
     act(() => result.current.handleSelect(all[0], true, click()));
@@ -296,20 +345,19 @@ describe('useSelectionHandlers selection actions', () => {
 
   it('select-all adds every changeable row and reports only the newly added', () => {
     const onSelectAll = vi.fn();
-    const { result } = harness(
-      {
-        selections: true,
-        onSelectAll,
-        defaultSelectedRowKeys: ['a'],
-        getCheckboxProps: (r) => ({ disabled: r.id === 'd' }),
-      },
-    );
+    const { result } = harness({
+      selections: true,
+      onSelectAll,
+      defaultSelectedRowKeys: ['a'],
+      getCheckboxProps: (r) => ({ disabled: r.id === 'd' }),
+    });
     act(() => result.current.resolvedSelectionActions[0].onSelect([]));
     expect(result.current.selectedKeys.sort()).toEqual(['a', 'b', 'c']);
-    expect(onSelectAll).toHaveBeenCalledWith(true, [people[0], people[1], people[2]], [
-      people[1],
-      people[2],
-    ]);
+    expect(onSelectAll).toHaveBeenCalledWith(
+      true,
+      [people[0], people[1], people[2]],
+      [people[1], people[2]],
+    );
   });
 
   it('invert flips changeable rows only', () => {
@@ -336,6 +384,16 @@ describe('useSelectionHandlers selection actions', () => {
     act(() => result.current.resolvedSelectionActions[2].onSelect([]));
     expect(result.current.selectedKeys).toEqual(['d']);
     expect(onSelectNone).toHaveBeenCalledTimes(1);
+  });
+
+  it('none keeps selected keys it cannot resolve to a row out of the cleared set', () => {
+    const { result } = harness({
+      selections: true,
+      defaultSelectedRowKeys: ['a', 'ghost'],
+      preserveSelectedRowKeys: true,
+    });
+    act(() => result.current.resolvedSelectionActions[2].onSelect([]));
+    expect(result.current.selectedKeys).toEqual([]);
   });
 
   it('actions work without the optional callbacks', () => {

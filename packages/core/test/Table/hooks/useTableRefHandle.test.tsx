@@ -36,7 +36,12 @@ const setup = ({ enableVirtualRows = false, keys = ['a', 'b', 'c'], scrollEl }: 
     return null;
   }
   render(<Probe />);
-  return { ref, scroll: scroll as { scrollTo?: ReturnType<typeof vi.fn>; scrollTop: number }, root, scrollToIndex };
+  return {
+    ref,
+    scroll: scroll as { scrollTo?: ReturnType<typeof vi.fn>; scrollTop: number },
+    root,
+    scrollToIndex,
+  };
 };
 
 describe('useTableRefHandle', () => {

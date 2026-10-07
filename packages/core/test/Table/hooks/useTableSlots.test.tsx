@@ -11,10 +11,7 @@ import { RowDragCell, RowDragHeader } from '../../../src/Table/components/RowDra
 import { SelectionCell } from '../../../src/Table/components/SelectionCell';
 import { SelectionHeader } from '../../../src/Table/components/SelectionHeader';
 import { TableStructure } from '../../../src/Table/components/TableStructure';
-import {
-  useTableSlots,
-  type UseTableSlotsInput,
-} from '../../../src/Table/hooks/useTableSlots';
+import { useTableSlots, type UseTableSlotsInput } from '../../../src/Table/hooks/useTableSlots';
 import type { TableProps } from '../../../src/Table/Table.types';
 import { byKey, column, people, resolve, type Person } from './support';
 
@@ -218,9 +215,19 @@ describe('useTableSlots selection', () => {
       });
       return selectionHeader(call)!.props as Anything;
     };
-    expect(state([])).toMatchObject({ allChangeableSelected: false, someChangeableSelected: false, hasChangeableKeys: true });
-    expect(state(['a'])).toMatchObject({ allChangeableSelected: false, someChangeableSelected: true });
-    expect(state(['a', 'b', 'c'])).toMatchObject({ allChangeableSelected: true, someChangeableSelected: false });
+    expect(state([])).toMatchObject({
+      allChangeableSelected: false,
+      someChangeableSelected: false,
+      hasChangeableKeys: true,
+    });
+    expect(state(['a'])).toMatchObject({
+      allChangeableSelected: false,
+      someChangeableSelected: true,
+    });
+    expect(state(['a', 'b', 'c'])).toMatchObject({
+      allChangeableSelected: true,
+      someChangeableSelected: false,
+    });
     // A selected-but-disabled row (d) does not count towards "all changeable selected".
     expect(state(['a', 'd'], ['a'])).toMatchObject({ allChangeableSelected: true });
     expect(state([], [])).toMatchObject({ allChangeableSelected: false, hasChangeableKeys: false });
@@ -236,7 +243,11 @@ describe('useTableSlots selection', () => {
     });
     selectionHeader(call)!.props.onSelectAll(true);
     expect(applySelectionKeys).toHaveBeenCalledWith(['a', 'b', 'c'], 'all');
-    expect(onSelectAll).toHaveBeenCalledWith(true, [people[0], people[1], people[2]], [people[1], people[2]]);
+    expect(onSelectAll).toHaveBeenCalledWith(
+      true,
+      [people[0], people[1], people[2]],
+      [people[1], people[2]],
+    );
     expect(input.lastSelectedKeyRef.current).toBeNull();
   });
 
@@ -264,7 +275,7 @@ describe('useTableSlots selection', () => {
     expect(applySelectionKeys).toHaveBeenCalledWith([], 'all');
   });
 
-  it('hides header actions when bulk actions are configured, and passes title checkbox props', () => {
+  it('hides header actions under bulk actions and passes title checkbox props', () => {
     const actions = [{ key: 'x', text: 'X', onSelect: vi.fn() }];
     const withBulk = build({
       rowSelection: selection({ getTitleCheckboxProps: () => ({ disabled: true }) }),
@@ -315,7 +326,7 @@ describe('useTableSlots expansion', () => {
   const expandHeader = (call: ReturnType<typeof build>['call']) =>
     call('renderHeaderRows')!.props.renderExpandHeader() as React.ReactElement<Anything> | null;
 
-  it('renders no expand header in tree mode, without expandable, or when the column is hidden', () => {
+  it('renders no expand header in tree mode, without expandable or when hidden', () => {
     expect(expandHeader(build().call)).toBeNull();
     expect(expandHeader(build({ treeMode: true, expandable: {} }).call)).toBeNull();
     expect(expandHeader(build({ expandable: { showExpandColumn: false } }).call)).toBeNull();
@@ -326,7 +337,9 @@ describe('useTableSlots expansion', () => {
 
   it('renders no expand cell in tree mode, without expandable, or when hidden', () => {
     expect(build().call('renderExpandCell', rows[0], 0)).toBeNull();
-    expect(build({ treeMode: true, expandable: {} }).call('renderExpandCell', rows[0], 0)).toBeNull();
+    expect(
+      build({ treeMode: true, expandable: {} }).call('renderExpandCell', rows[0], 0),
+    ).toBeNull();
     expect(
       build({ expandable: { showExpandColumn: false } }).call('renderExpandCell', rows[0], 0),
     ).toBeNull();
@@ -391,7 +404,8 @@ describe('useTableSlots bulk actions bar', () => {
     expect(build().result.current.bulkActionsBar).toBeNull();
     expect(build({ rowSelection: {} }).result.current.bulkActionsBar).toBeNull();
     expect(
-      build({ rowSelection: { type: 'radio', bulkActions: {} as never } }).result.current.bulkActionsBar,
+      build({ rowSelection: { type: 'radio', bulkActions: {} as never } }).result.current
+        .bulkActionsBar,
     ).toBeNull();
   });
 

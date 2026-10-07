@@ -18,9 +18,9 @@ const render = (props: Partial<TableProps<Person>> = {}, columns?: TableColumn<P
 
 describe('useTableState sorting', () => {
   it('starts from props.state.sorting, then column sortOrder, then defaults', () => {
-    expect(render({ state: { sorting: [{ id: 'age', desc: true }] } }).result.current.sorting).toEqual([
-      { id: 'age', desc: true },
-    ]);
+    expect(
+      render({ state: { sorting: [{ id: 'age', desc: true }] } }).result.current.sorting,
+    ).toEqual([{ id: 'age', desc: true }]);
     const controlled = render({}, [column('name', { sorter: true, sortOrder: 'descend' })]);
     expect(controlled.result.current.sorting).toEqual([{ id: 'name', desc: true }]);
     expect(
@@ -51,17 +51,24 @@ describe('useTableState sorting', () => {
 
   it('syncs props.state.sorting changes, including clearing it', () => {
     const view = render({ state: { sorting: [{ id: 'age', desc: false }] } });
-    view.rerender({ props: { state: { sorting: [{ id: 'name', desc: true }] } }, columns: [column('name', { sorter: true }), column('age')] });
+    view.rerender({
+      props: { state: { sorting: [{ id: 'name', desc: true }] } },
+      columns: [column('name', { sorter: true }), column('age')],
+    });
     expect(view.result.current.sorting).toEqual([{ id: 'name', desc: true }]);
-    view.rerender({ props: { state: { sorting: undefined } }, columns: [column('name', { sorter: true }), column('age')] });
+    view.rerender({
+      props: { state: { sorting: undefined } },
+      columns: [column('name', { sorter: true }), column('age')],
+    });
     expect(view.result.current.sorting).toEqual([]);
   });
 });
 
 describe('useTableState filters', () => {
-  it('seeds filters from defaultState, then from column filteredValue / defaultFilteredValue', () => {
+  it('seeds filters from defaultState, then from column default filtered values', () => {
     expect(
-      render({ defaultState: { filters: [{ id: 'name', value: ['Ada'] }] } }).result.current.columnFilters,
+      render({ defaultState: { filters: [{ id: 'name', value: ['Ada'] }] } }).result.current
+        .columnFilters,
     ).toEqual([{ id: 'name', value: ['Ada'] }]);
     const cols = [column('name', { defaultFilteredValue: ['Bob'] }), column('age')];
     expect(render({}, cols).result.current.columnFilters).toEqual([{ id: 'name', value: ['Bob'] }]);
@@ -96,17 +103,30 @@ describe('useTableState filters', () => {
 
 describe('useTableState expanded', () => {
   it('resolves the initial state in priority order', () => {
-    expect(render({ state: { expanded: { a: true } } }).result.current.expanded).toEqual({ a: true });
-    expect(render({ expandable: { expandedRowKeys: ['b'] } }).result.current.expanded).toEqual({ b: true });
-    expect(render({ defaultState: { expanded: { c: true } } }).result.current.expanded).toEqual({ c: true });
-    expect(render({ expandable: { defaultExpandAllRows: true } }).result.current.expanded).toBe(true);
-    expect(render({ expandable: { defaultExpandedRowKeys: ['d'] } }).result.current.expanded).toEqual({ d: true });
+    expect(render({ state: { expanded: { a: true } } }).result.current.expanded).toEqual({
+      a: true,
+    });
+    expect(render({ expandable: { expandedRowKeys: ['b'] } }).result.current.expanded).toEqual({
+      b: true,
+    });
+    expect(render({ defaultState: { expanded: { c: true } } }).result.current.expanded).toEqual({
+      c: true,
+    });
+    expect(render({ expandable: { defaultExpandAllRows: true } }).result.current.expanded).toBe(
+      true,
+    );
+    expect(
+      render({ expandable: { defaultExpandedRowKeys: ['d'] } }).result.current.expanded,
+    ).toEqual({ d: true });
     expect(render({}).result.current.expanded).toEqual({});
   });
 
   it('follows expandedRowKeys changes from the owner', () => {
     const view = render({ expandable: { expandedRowKeys: ['a'] } });
-    view.rerender({ props: { expandable: { expandedRowKeys: ['b', 'c'] } }, columns: [column('name')] });
+    view.rerender({
+      props: { expandable: { expandedRowKeys: ['b', 'c'] } },
+      columns: [column('name')],
+    });
     expect(view.result.current.expanded).toEqual({ b: true, c: true });
   });
 });
@@ -149,14 +169,18 @@ describe('useTableState column layout, pagination and selection', () => {
       render({ pagination: { current: 3, pageSize: 2 } }).result.current.paginationStateValue,
     ).toEqual({ pageIndex: 2, pageSize: 2 });
     expect(
-      render({ pagination: { defaultCurrent: 2, defaultPageSize: 3 } }).result.current.paginationStateValue,
+      render({ pagination: { defaultCurrent: 2, defaultPageSize: 3 } }).result.current
+        .paginationStateValue,
     ).toEqual({ pageIndex: 1, pageSize: 3 });
     expect(render({ dataSource: [] }).result.current.paginationStateValue.pageSize).toBe(1);
   });
 
   it('syncs the controlled page and size but keeps the rest when partially controlled', () => {
     const view = render({ pagination: { current: 1, pageSize: 2 } });
-    view.rerender({ props: { pagination: { current: 2, pageSize: 2 } }, columns: [column('name')] });
+    view.rerender({
+      props: { pagination: { current: 2, pageSize: 2 } },
+      columns: [column('name')],
+    });
     expect(view.result.current.paginationStateValue).toEqual({ pageIndex: 1, pageSize: 2 });
     act(() => view.result.current.setPaginationStateValue({ pageIndex: 5, pageSize: 7 }));
     view.rerender({ props: { pagination: { total: 40 } }, columns: [column('name')] });
@@ -164,17 +188,26 @@ describe('useTableState column layout, pagination and selection', () => {
   });
 
   it('seeds selection from selectedRowKeys over defaults and follows controlled changes', () => {
-    const view = render({ rowSelection: { selectedRowKeys: ['a'], defaultSelectedRowKeys: ['b'] } });
+    const view = render({
+      rowSelection: { selectedRowKeys: ['a'], defaultSelectedRowKeys: ['b'] },
+    });
     expect(view.result.current.tanStackRowSelection).toEqual({ a: true });
-    view.rerender({ props: { rowSelection: { selectedRowKeys: ['c', 'd'] } }, columns: [column('name')] });
+    view.rerender({
+      props: { rowSelection: { selectedRowKeys: ['c', 'd'] } },
+      columns: [column('name')],
+    });
     expect(view.result.current.tanStackRowSelection).toEqual({ c: true, d: true });
-    expect(render({ rowSelection: { defaultSelectedRowKeys: ['b'] } }).result.current.tanStackRowSelection).toEqual({ b: true });
+    expect(
+      render({ rowSelection: { defaultSelectedRowKeys: ['b'] } }).result.current
+        .tanStackRowSelection,
+    ).toEqual({ b: true });
   });
 
   it('turns keys or iterables into a selection map', () => {
     const { result } = render({});
     expect(result.current.selectionKeysToState(new Set(['x', 'y']))).toEqual({ x: true, y: true });
     expect(result.current.selectionKeysToState()).toEqual({});
+    expect(result.current.selectionKeysToState(null as never)).toEqual({});
   });
 });
 

@@ -23,7 +23,12 @@ const { useVirtualization } = await import('../../../src/Table/hooks/useVirtuali
 type Input = Parameters<typeof useVirtualization<Person, unknown>>[0];
 
 const rows = ['r0', 'r1', 'r2', 'r3'].map((id) => ({ id })) as never[];
-const cols = [column('a'), column('b', { fixed: 'left' }), column('c', { width: 200 }), column('d')];
+const cols = [
+  column('a'),
+  column('b', { fixed: 'left' }),
+  column('c', { width: 200 }),
+  column('d'),
+];
 
 const run = (overrides: Partial<Input> = {}) =>
   renderHook(() =>
@@ -87,6 +92,7 @@ describe('useVirtualization rows', () => {
     const el = document.createElement('div');
     run({ virtual: true, scrollRef: { current: el } });
     expect(lastRow().options.getScrollElement()).toBe(el);
+    expect(lastColumn().options.getScrollElement()).toBe(el);
   });
 });
 

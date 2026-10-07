@@ -218,7 +218,12 @@ describe('useEditableHandlers saveCellEdit', () => {
   it('defaults to an empty string when nothing was typed', async () => {
     const { result, leaf, ctxFor } = harness();
     await act(async () => {
-      await result.current.saveCellEdit('a', leaf[0], { mode: 'cell', source: 'column' }, ctxFor(0));
+      await result.current.saveCellEdit(
+        'a',
+        leaf[0],
+        { mode: 'cell', source: 'column' },
+        ctxFor(0),
+      );
     });
     expect(result.current.editing.internalCellValues.a.name).toBe('');
   });
@@ -262,7 +267,13 @@ describe('useEditableHandlers saveCellEdit', () => {
     const { result, leaf, ctxFor } = harness();
     act(() => result.current.editing.setEditingCell({ rowKey: 'b', columnKey: 'name' }));
     await act(async () => {
-      await result.current.saveCellEdit('a', leaf[0], { mode: 'cell', source: 'column' }, ctxFor(0), 'x');
+      await result.current.saveCellEdit(
+        'a',
+        leaf[0],
+        { mode: 'cell', source: 'column' },
+        ctxFor(0),
+        'x',
+      );
     });
     expect(result.current.editing.editingCell).toEqual({ rowKey: 'b', columnKey: 'name' });
   });
@@ -278,15 +289,18 @@ describe('useEditableHandlers saveCellEdit', () => {
         },
       },
     };
-    await expect(
-      result.current.saveCellEdit('a', leaf[0], config, ctxFor(0), 'x'),
-    ).rejects.toThrow('server down');
+    await expect(result.current.saveCellEdit('a', leaf[0], config, ctxFor(0), 'x')).rejects.toThrow(
+      'server down',
+    );
     expect(result.current.editing.internalCellValues).toEqual({});
   });
 });
 
 describe('useEditableHandlers keyboard navigation', () => {
-  const editableColumns = () => [column('name', { editable: true }), column('age', { editable: true })];
+  const editableColumns = () => [
+    column('name', { editable: true }),
+    column('age', { editable: true }),
+  ];
 
   it('finds the next and previous editable cell, wrapping across rows', () => {
     const { result, rows } = harness({ columns: editableColumns() });
@@ -359,7 +373,7 @@ describe('useEditableHandlers row editing', () => {
     column('id'),
   ];
 
-  it('saves row values: onSave, internal values, one onEdit per column, closes the row', async () => {
+  it('saves row values: onSave, internal values, onEdit per column, closes row', async () => {
     const onEdit = vi.fn();
     const onSave = vi.fn();
     const { result, rows } = harness({ columns: rowColumns(), onEdit });
@@ -396,7 +410,7 @@ describe('useEditableHandlers row editing', () => {
     expect(result.current.editing.editingRowKey).toBe('a');
   });
 
-  it('saves from freshly derived values when the row was never edited, tolerating no onSave', async () => {
+  it('saves derived values for a never-edited row without an onSave', async () => {
     const onEdit = vi.fn();
     const { result, rows } = harness({ columns: rowColumns(), onEdit });
     await act(async () => {

@@ -7,21 +7,18 @@ import { column, people, type Person } from './support';
 type Input = Parameters<typeof useDerivedColumns<Person, unknown>>[0];
 
 const run = (overrides: Partial<Input> = {}) =>
-  renderHook(
-    (input: Input) => useDerivedColumns<Person, unknown>(input),
-    {
-      initialProps: {
-        columns: [column('name'), column('age')],
-        column: undefined,
-        appendedColumns: [],
-        dataSource: people,
-        expandable: undefined,
-        columnVisibility: {},
-        columnOrder: [],
-        ...overrides,
-      } as Input,
-    },
-  );
+  renderHook((input: Input) => useDerivedColumns<Person, unknown>(input), {
+    initialProps: {
+      columns: [column('name'), column('age')],
+      column: undefined,
+      appendedColumns: [],
+      dataSource: people,
+      expandable: undefined,
+      columnVisibility: {},
+      columnOrder: [],
+      ...overrides,
+    } as Input,
+  });
 
 const keys = (cols: TableColumn<Person>[]) => cols.map((col) => col.key);
 
@@ -68,7 +65,9 @@ describe('useDerivedColumns columns', () => {
     const group = column('group', {
       children: [column('name'), column('age')],
     } as Partial<TableColumn<Person>>);
-    const emptied = column('empty', { children: [column('id', { hidden: true })] } as Partial<TableColumn<Person>>);
+    const emptied = column('empty', { children: [column('id', { hidden: true })] } as Partial<
+      TableColumn<Person>
+    >);
     const { result } = run({ columns: [group, emptied] });
     expect(keys(result.current.mergedColumns)).toEqual(['group']);
     expect(keys(result.current.mergedLeafColumns)).toEqual(['name', 'age']);
@@ -94,7 +93,9 @@ describe('useDerivedColumns tree mode', () => {
 
   it('uses the children column name, defaulting to children', () => {
     expect(run().result.current.childrenColumnName).toBe('children');
-    expect(run({ expandable: { childrenColumnName: 'kids' } }).result.current.childrenColumnName).toBe('kids');
+    expect(
+      run({ expandable: { childrenColumnName: 'kids' } }).result.current.childrenColumnName,
+    ).toBe('kids');
   });
 
   it('detects nested data as tree mode', () => {
@@ -112,9 +113,12 @@ describe('useDerivedColumns tree mode', () => {
 
   it('is not tree mode when a custom expanded row render or explicit expand column is used', () => {
     expect(
-      run({ dataSource: tree, expandable: { expandedRowRender: () => null } }).result.current.treeMode,
+      run({ dataSource: tree, expandable: { expandedRowRender: () => null } }).result.current
+        .treeMode,
     ).toBe(false);
-    expect(run({ dataSource: tree, expandable: { showExpandColumn: true } }).result.current.treeMode).toBe(false);
+    expect(
+      run({ dataSource: tree, expandable: { showExpandColumn: true } }).result.current.treeMode,
+    ).toBe(false);
   });
 });
 
@@ -132,7 +136,11 @@ describe('useDerivedColumns responsive columns', () => {
       removeEventListener: vi.fn(),
     })) as never;
     const { result } = run({
-      columns: [column('name'), column('age', { responsive: ['lg'] }), column('id', { responsive: ['sm', 'lg'] })],
+      columns: [
+        column('name'),
+        column('age', { responsive: ['lg'] }),
+        column('id', { responsive: ['sm', 'lg'] }),
+      ],
     });
     expect(result.current.responsiveScreens).toMatchObject({ sm: true, lg: false });
     expect(keys(result.current.mergedLeafColumns)).toEqual(['name', 'id']);

@@ -98,7 +98,7 @@ describe('useTableHandlers filters', () => {
     expect(result.current.committedFilterKeys(cols[1])).toEqual([]);
   });
 
-  it('commits a filter: state, page reset, emission, scroll and an onChange with the filtered rows', () => {
+  it('commits a filter: state, page reset, emission, scroll and onChange rows', () => {
     const scrollTo = vi.fn();
     const { result, setColumnFilters, setPaginationStateValue, emitStateChange, onChange, rows } =
       setup({ scrollRef: { current: { scrollTo } as never } });

@@ -75,6 +75,10 @@ const paginationElement = (node: React.ReactNode) =>
     onPageSizeChange: (size: number) => void;
   }>;
 
+const goToPage = (node: React.ReactNode) =>
+  (paginationElement(node) as unknown as { props: { onGoToPage: (page: number) => void } }).props
+    .onGoToPage;
+
 const shown = (nodes: React.ReactNode[]) => {
   const ctx = { testIdPrefix: 'tbl' } as unknown as TableContextShape;
   return render(<TableProvider value={ctx}>{nodes}</TableProvider>);
@@ -96,9 +100,16 @@ describe('usePaginationHandlers off switch', () => {
   });
 
   it('stays on when only some placements are none or the list is empty', () => {
-    expect(wired({ pagination: { placement: ['none', 'bottomEnd'] } }).result.current.paginationEffectivelyOff).toBe(false);
-    expect(wired({ pagination: { placement: [] } }).result.current.paginationEffectivelyOff).toBe(false);
-    expect(wired({ pagination: { pageSize: 2 } }).result.current.paginationEffectivelyOff).toBe(false);
+    expect(
+      wired({ pagination: { placement: ['none', 'bottomEnd'] } }).result.current
+        .paginationEffectivelyOff,
+    ).toBe(false);
+    expect(wired({ pagination: { placement: [] } }).result.current.paginationEffectivelyOff).toBe(
+      false,
+    );
+    expect(wired({ pagination: { pageSize: 2 } }).result.current.paginationEffectivelyOff).toBe(
+      false,
+    );
   });
 
   it('never lets the stretched page size drop below one for an empty table', () => {
@@ -113,6 +124,16 @@ describe('usePaginationHandlers placement', () => {
     expect(result.current.topPagination).toHaveLength(0);
     expect(result.current.bottomPagination).toHaveLength(1);
     shown(result.current.bottomPagination);
+    expect(screen.getByTestId('tbl-pagination-root')).toBeTruthy();
+  });
+
+  it('treats pagination: true as a bottom-end pager and a lone top placement as unsuffixed', () => {
+    const plain = wired({ pagination: true as never });
+    expect(plain.result.current.bottomPagination).toHaveLength(1);
+    const top = wired({ pagination: { pageSize: 2, placement: ['topCenter'] } });
+    expect(top.result.current.topPagination).toHaveLength(1);
+    expect(top.result.current.bottomPagination).toHaveLength(0);
+    shown(top.result.current.topPagination);
     expect(screen.getByTestId('tbl-pagination-root')).toBeTruthy();
   });
 
@@ -156,7 +177,10 @@ describe('usePaginationHandlers navigation', () => {
     });
     expect(result.current.state.paginationStateValue).toEqual({ pageIndex: 1, pageSize: 2 });
     expect(result.current.table.getState().pagination.pageIndex).toBe(1);
-    expect(result.current.table.getRowModel().rows.map((r) => r.original.record.name)).toEqual(['Cy', 'Di']);
+    expect(result.current.table.getRowModel().rows.map((r) => r.original.record.name)).toEqual([
+      'Cy',
+      'Di',
+    ]);
     expect(scrollTo).toHaveBeenCalledWith({ top: 0 });
     expect(onPageChange).toHaveBeenCalledWith(2, 2);
     const [state, filters, sorter, extra] = onChange.mock.calls[0];
@@ -185,6 +209,27 @@ describe('usePaginationHandlers navigation', () => {
     expect(result.current.state.paginationStateValue.pageIndex).toBe(0);
     expect(onChange).not.toHaveBeenCalled();
     expect(scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('ignores a page request made while disabled, even if the control still forwards it', () => {
+    const onPageChange = vi.fn();
+    const { result } = wired({
+      pagination: { pageSize: 2, disabled: true, onChange: onPageChange },
+    });
+    act(() => goToPage(result.current.bottomPagination[0])(2));
+    expect(result.current.state.paginationStateValue.pageIndex).toBe(0);
+    expect(onPageChange).not.toHaveBeenCalled();
+  });
+
+  it('clamps out-of-range page requests to the first and last page', () => {
+    const onPageChange = vi.fn();
+    const { result } = wired({ pagination: { pageSize: 2, onChange: onPageChange } });
+    act(() => goToPage(result.current.bottomPagination[0])(99));
+    expect(result.current.state.paginationStateValue.pageIndex).toBe(1);
+    expect(onPageChange).toHaveBeenLastCalledWith(2, 2);
+    act(() => goToPage(result.current.bottomPagination[0])(-4));
+    expect(result.current.state.paginationStateValue.pageIndex).toBe(0);
+    expect(onPageChange).toHaveBeenLastCalledWith(1, 2);
   });
 
   it('uses the external total for the page count', () => {

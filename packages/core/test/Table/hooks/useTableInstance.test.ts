@@ -103,7 +103,12 @@ describe('useTableInstance sorting', () => {
   });
 
   it('sorts a boolean sorter with the default component comparison', () => {
-    const { result } = harness({ rows: [{ id: 'x', name: 'item10', age: 1 }, { id: 'y', name: 'item9', age: 2 }] });
+    const { result } = harness({
+      rows: [
+        { id: 'x', name: 'item10', age: 1 },
+        { id: 'y', name: 'item9', age: 2 },
+      ],
+    });
     act(() => result.current.table.getColumn('name')!.toggleSorting(false));
     // Numeric-aware: item9 sorts before item10.
     expect(names(result)).toEqual(['item9', 'item10']);
@@ -119,14 +124,16 @@ describe('useTableInstance sorting', () => {
     expect(compare.mock.calls[0][2]).toBe('descend');
   });
 
-  it('falls back to automatic sorting for a column without a sorter and disables sorting for it', () => {
+  it('disables sorting for a column that has no sorter', () => {
     const { result } = harness({ columns: [column('age')] });
     expect(result.current.table.getColumn('age')!.getCanSort()).toBe(false);
   });
 
   it('applies a sorting change: stores it, emits state, scrolls and reports a sort change', () => {
     const onChange = vi.fn();
-    const { result, emitStateChange, scrollToFirstRow, resolved } = harness({ props: { onChange } });
+    const { result, emitStateChange, scrollToFirstRow, resolved } = harness({
+      props: { onChange },
+    });
     act(() => result.current.applySortingChange([{ id: 'name', desc: true }]));
     expect(result.current.state.sorting).toEqual([{ id: 'name', desc: true }]);
     expect(emitStateChange).toHaveBeenCalledWith({ sorting: [{ id: 'name', desc: true }] });
@@ -134,7 +141,9 @@ describe('useTableInstance sorting', () => {
     const [pagination, filters, sorter, extra] = onChange.mock.calls[0];
     expect(pagination).toEqual({ current: 1, pageSize: 10, total: 4 });
     expect(filters).toEqual({});
-    expect(sorter).toEqual(expect.objectContaining({ columnKey: 'name', field: 'name', order: 'descend' }));
+    expect(sorter).toEqual(
+      expect.objectContaining({ columnKey: 'name', field: 'name', order: 'descend' }),
+    );
     expect(extra).toEqual(
       expect.objectContaining({
         action: 'sort',
@@ -154,7 +163,9 @@ describe('useTableInstance sorting', () => {
       ]),
     );
     const sorter = onChange.mock.calls[0][2];
-    expect(sorter.map((item: { columnKey: string; order: string }) => [item.columnKey, item.order])).toEqual([
+    expect(
+      sorter.map((item: { columnKey: string; order: string }) => [item.columnKey, item.order]),
+    ).toEqual([
       ['name', 'ascend'],
       ['age', 'descend'],
     ]);
@@ -170,7 +181,9 @@ describe('useTableInstance sorting', () => {
     act(() => result.current.applySortingChange([]));
     expect(onChange.mock.calls[1][2]).toEqual([]);
     act(() => result.current.applySortingChange([], cols[1]));
-    expect(onChange.mock.calls[2][2]).toEqual(expect.objectContaining({ columnKey: 'age', order: null }));
+    expect(onChange.mock.calls[2][2]).toEqual(
+      expect.objectContaining({ columnKey: 'age', order: null }),
+    );
   });
 
   it('reports a nested dataIndex as a path array and tolerates unknown columns', () => {
@@ -194,16 +207,22 @@ describe('useTableInstance sorting', () => {
     expect(controlled.result.current.sortingControlled).toBe(true);
     act(() => controlled.result.current.applySortingChange([{ id: 'name', desc: false }]));
     expect(controlled.result.current.state.sorting).toEqual([]);
-    expect(controlled.emitStateChange).toHaveBeenCalledWith({ sorting: [{ id: 'name', desc: false }] });
+    expect(controlled.emitStateChange).toHaveBeenCalledWith({
+      sorting: [{ id: 'name', desc: false }],
+    });
 
-    const bySortOrder = harness({ columns: [column('name', { sorter: true, sortOrder: 'ascend' })] });
+    const bySortOrder = harness({
+      columns: [column('name', { sorter: true, sortOrder: 'ascend' })],
+    });
     expect(bySortOrder.result.current.sortingControlled).toBe(true);
     expect(harness().result.current.sortingControlled).toBe(false);
   });
 
   it('works without an onChange prop', () => {
     const { result } = harness();
-    expect(() => act(() => result.current.applySortingChange([{ id: 'name', desc: false }]))).not.toThrow();
+    expect(() =>
+      act(() => result.current.applySortingChange([{ id: 'name', desc: false }])),
+    ).not.toThrow();
   });
 
   it('routes TanStack sorting changes through applySortingChange', () => {
@@ -300,5 +319,46 @@ describe('useTableInstance other state handlers', () => {
     const { result } = harness();
     act(() => result.current.table.setColumnOrder(['age', 'name']));
     expect(result.current.table.getVisibleLeafColumns().map((c) => c.id)).toEqual(['age', 'name']);
+  });
+});
+
+describe('useTableInstance functional updaters', () => {
+  it('resolves updater functions against the latest state for every slice', () => {
+    const { result, emitStateChange } = harness({ props: { rowSelection: {} } });
+    const table = result.current.table;
+    act(() => table.setExpanded({ a: true }));
+    act(() => table.setExpanded((old) => ({ ...(old as object), b: true })));
+    act(() => table.setColumnFilters([{ id: 'name', value: 'x' }]));
+    act(() => table.setColumnFilters((old) => old.map((f) => ({ ...f, value: `${f.value}y` }))));
+    act(() => table.setPagination({ pageIndex: 1, pageSize: 2 }));
+    act(() => table.setPagination((old) => ({ ...old, pageIndex: old.pageIndex + 1 })));
+    act(() => table.setRowSelection({ a: true }));
+    act(() => table.setRowSelection((old) => ({ ...old, b: true })));
+    act(() => table.setColumnOrder(['age']));
+    act(() => table.setColumnOrder((old) => [...old, 'name']));
+    act(() => table.setColumnSizing({ name: 10 }));
+    act(() => table.setColumnSizing((old) => ({ ...old, age: 20 })));
+    act(() => table.setColumnPinning({ left: ['name'] }));
+    act(() => table.setColumnPinning((old) => ({ ...old, right: ['age'] })));
+    act(() => table.setSorting([{ id: 'name', desc: false }]));
+    act(() => table.setSorting((old) => [...old, { id: 'age', desc: true }]));
+    const s = result.current.state;
+    expect(s.expanded).toEqual({ a: true, b: true });
+    expect(s.columnFilters).toEqual([{ id: 'name', value: 'xy' }]);
+    expect(s.paginationStateValue).toEqual({ pageIndex: 2, pageSize: 2 });
+    expect(s.tanStackRowSelection).toEqual({ a: true, b: true });
+    expect(s.columnOrder).toEqual(['age', 'name']);
+    expect(s.columnSizing).toEqual({ name: 10, age: 20 });
+    expect(s.columnPinning).toEqual({ left: ['name'], right: ['age'] });
+    expect(s.sorting).toEqual([
+      { id: 'name', desc: false },
+      { id: 'age', desc: true },
+    ]);
+    expect(emitStateChange).toHaveBeenCalledWith({
+      sorting: [
+        { id: 'name', desc: false },
+        { id: 'age', desc: true },
+      ],
+    });
   });
 });

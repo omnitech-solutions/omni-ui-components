@@ -5,11 +5,7 @@ import { column, people, resolve, type Person } from './support';
 
 const setup = (
   rowFor: Parameters<typeof resolve<Person>>[1] = () => ({ draggable: true }),
-  columns = [
-    column('name', { draggable: true }),
-    column('age', { draggable: true }),
-    column('id'),
-  ],
+  columns = [column('name', { draggable: true }), column('age', { draggable: true }), column('id')],
 ) => {
   const rows = resolve(people, rowFor);
   const spies = {
@@ -30,7 +26,10 @@ const setup = (
 };
 
 const dragEnd = (active: string, over: string | null | undefined) =>
-  ({ active: { id: active }, over: over === undefined ? undefined : over && { id: over } }) as never;
+  ({
+    active: { id: active },
+    over: over === undefined ? undefined : over && { id: over },
+  }) as never;
 
 describe('useReorderHandlers derived keys', () => {
   it('exposes only rows that are draggable and not disabled, with prefixed keys', () => {
