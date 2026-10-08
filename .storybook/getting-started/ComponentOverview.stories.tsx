@@ -409,6 +409,10 @@ import {
   splitButtonVariants,
 } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
 import {
+  SplitterDemo,
+  splitterVariants,
+} from 'factories/omni-ui-components/Splitter/Splitter.factories';
+import {
   statusClockExamples,
   statusClockPropsFactory,
 } from 'factories/omni-ui-components/StatusClock/StatusClock.factories';
@@ -760,6 +764,9 @@ const VersionPagerPreview = MessagePartsPreview(
   versionPagerVariants as Variant<never>[],
   (args) => <VersionPager {...versionPagerPropsFactory(args as object)} />,
 );
+const SplitterPreview = MessagePartsPreview(splitterVariants as Variant<never>[], (args) => (
+  <SplitterDemo {...(args as object)} />
+));
 const MessageActionsPreview = MessagePartsPreview(
   messageActionsVariants as Variant<never>[],
   (args) => <MessageActions {...messageActionsPropsFactory(args as object)} />,
@@ -1857,6 +1864,11 @@ const configuredRows: Record<string, OverviewRowSpec> = {
     name: 'Progress',
     preview: ProgressPreview,
     variants: [...progressVariants, ...progressRingVariants] as Variant<unknown>[],
+  },
+  Splitter: {
+    name: 'Splitter',
+    preview: SplitterPreview,
+    variants: splitterVariants as Variant<unknown>[],
   },
   Steps: { name: 'Steps', preview: StepsPreview, variants: stepsVariants as Variant<unknown>[] },
   Tag: { name: 'Tag', preview: TagPreview, variants: tagVariants as Variant<unknown>[] },
