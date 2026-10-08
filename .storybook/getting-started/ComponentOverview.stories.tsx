@@ -154,6 +154,7 @@ import { CommandPopover } from '@oc-tech/omni-ui-components/CommandPopover';
 import { ContextMeter } from '@oc-tech/omni-ui-components/ContextMeter';
 import { ConversationHeader } from '@oc-tech/omni-ui-components/ConversationHeader';
 import { ConversationList } from '@oc-tech/omni-ui-components/ConversationList';
+import { CueCard, HeardLine } from '@oc-tech/omni-ui-components/CueCard';
 import { DataPrivacyPanel } from '@oc-tech/omni-ui-components/DataPrivacyPanel';
 import { DictationBar } from '@oc-tech/omni-ui-components/DictationBar';
 import { DiffReview } from '@oc-tech/omni-ui-components/DiffReview';
@@ -230,6 +231,12 @@ import {
   conversationListVariants,
 } from 'factories/omni-ui-components/ConversationList/ConversationList.factories';
 import { ConversationTranscriptDemo } from 'factories/omni-ui-components/ConversationTranscript/ConversationTranscript.factories';
+import {
+  cueCardPropsFactory,
+  cueCardVariants,
+  heardLinePropsFactory,
+  heardLineVariants,
+} from 'factories/omni-ui-components/CueCard/CueCard.factories';
 import {
   currencyInputPropsFactory,
   currencyInputVariants,
@@ -769,6 +776,16 @@ const VersionPagerPreview = MessagePartsPreview(
   versionPagerVariants as Variant<never>[],
   (args) => <VersionPager {...versionPagerPropsFactory(args as object)} />,
 );
+const CueCardPreview = MessagePartsPreview(cueCardVariants as Variant<never>[], (args) => (
+  <div className="max-w-[560px]">
+    <CueCard {...cueCardPropsFactory(args as object)} />
+  </div>
+));
+const HeardLinePreview = MessagePartsPreview(heardLineVariants as Variant<never>[], (args) => (
+  <div className="max-w-[560px]">
+    <HeardLine {...heardLinePropsFactory(args as object)} />
+  </div>
+));
 const OutlineListPreview = MessagePartsPreview(outlineListVariants as Variant<never>[], (args) => (
   <div className="w-[280px]">
     <OutlineList {...outlineListPropsFactory(args as object)} />
@@ -2140,6 +2157,16 @@ const SECTIONS: OverviewSectionSpec[] = [
         name: 'SummaryDivider',
         preview: SummaryDividerPreview,
         variants: summaryDividerVariants as Variant<unknown>[],
+      },
+      {
+        name: 'CueCard',
+        preview: CueCardPreview,
+        variants: cueCardVariants as Variant<unknown>[],
+      },
+      {
+        name: 'HeardLine',
+        preview: HeardLinePreview,
+        variants: heardLineVariants as Variant<unknown>[],
       },
       {
         name: 'Chat reply (message parts together)',

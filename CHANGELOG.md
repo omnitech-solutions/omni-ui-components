@@ -6,6 +6,8 @@
 
 - Splitter `resizable`: a handle per sized panel (drag, arrow keys, Home, End, double-click or Enter to put it back), `orientation`, `sizes` / `defaultSizes` / `onSizesChange` by panel `id`, `minSize` / `maxSize`, `onResizeStart` / `onResizeEnd`, `resetKey`, `handleProps` and `labels`. The static layout is unchanged.
 - OutlineList: a numbered list of things to jump to (`items`, `value` / `defaultValue` / `onValueChange(item)`, `order="reversed"`, `title`, `hint`, `empty`, a `live` row, arrow keys, Home and End), generic over `OutlineItem`, with factories, stories, tests and a Component Overview row.
+- CueCard and HeardLine: what to say next as structured content (`sections` of `say`, `anchors`, `ask`, `caution`, `context`; pieces with a `role`, `grounding` and `source`), `mode="compact"` with `maxAnchors`, `status="pending"`, `onSourceSelect(segment)` generic over `CueSegment`, `cautionIcon`, `labels`; HeardLine draws a heard sentence (`pieces`, `label`, `tone`, `maxLines`). With factories, stories, tests and Component Overview rows.
+- `native` entry: exports OutlineList, CueCard, HeardLine and Splitter.
 
 ## 0.1.0 - 2026-10-06
 

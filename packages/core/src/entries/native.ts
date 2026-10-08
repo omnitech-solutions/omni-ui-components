@@ -2,6 +2,7 @@
 
 export * from '../ActionMenu';
 export * from '../Button';
+export * from '../CueCard';
 export * from '../Divider';
 export * from '../Empty';
 export * from '../IconButton';
@@ -11,6 +12,7 @@ export * from '../Progress';
 export * from '../Segmented';
 export * from '../SessionBar';
 export * from '../SplitButton';
+export * from '../Splitter';
 export * from '../StatusClock';
 export * from '../Steps';
 export * from '../Tag';
