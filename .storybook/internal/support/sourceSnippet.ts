@@ -166,3 +166,56 @@ export function buildSourceSnippet(
   const body = text(root, expression);
   return [...imports, '', ...lines, '', `export const Example = ${body};`].join('\n');
 }
+
+/** Fold the `import { a } from 'm'` lines at the top of an example into one line a module, as a consumer writes it. */
+export function mergeImports(code: string): string {
+  const lines = code.split('\n');
+  const end = lines.findIndex((line) => !line.startsWith('import '));
+  const head = end === -1 ? lines : lines.slice(0, end);
+  const named = new Map<string, Set<string>>();
+  const merged: string[] = [];
+  for (const line of head) {
+    const match = /^import (type )?\{ (.+) \} from '([^']+)';$/.exec(line);
+    if (!match) {
+      merged.push(line);
+      continue;
+    }
+    const [, typeOnly, names = '', from = ''] = match;
+    if (!named.has(from)) {
+      named.set(from, new Set());
+      merged.push(from);
+    }
+    for (const each of names.split(', '))
+      named.get(from)?.add(typeOnly && !each.startsWith('type ') ? `type ${each}` : each);
+  }
+  const bare = (specifier: string) => specifier.replace(/^type /, '');
+  const folded = merged.map((line) => {
+    const names = named.get(line);
+    if (!names) return line;
+    const sorted = [...names].sort((a, b) => bare(a).localeCompare(bare(b)));
+    const typeOnly = sorted.every((each) => each.startsWith('type '));
+    const list = typeOnly ? sorted.map(bare) : sorted;
+    const start = typeOnly ? 'import type {' : 'import {';
+    const one = `${start} ${list.join(', ')} } from '${line}';`;
+    // Past the line width the names go one a line, as the formatter writes them.
+    return one.length <= 100 ? one : `${start}\n  ${list.join(',\n  ')},\n} from '${line}';`;
+  });
+  return [...folded, ...(end === -1 ? [] : lines.slice(end))].join('\n');
+}
+
+/**
+ * The docs "Show code" of a story that renders an example component from its factories file: the example as it
+ * is written there, with the types and data it uses and one import line a module. Read from the original TSX,
+ * so what is shown is what runs. `transform` is set because the preview's own transform would replace the code.
+ *
+ * @example
+ * import factories from './OutlineList.factories.tsx?raw';
+ * export const Default: Story = { render: () => <QuestionsPanel />, parameters: exampleDocs(factories, 'QuestionsPanel') };
+ */
+export function exampleDocs(source: string, target: string) {
+  // One blank line between the top-level declarations, which the builder joins without any.
+  const code = mergeImports(buildSourceSnippet(source, target))
+    .replace(/\n(?=(?:const|interface|type|function|export const Example) )/g, '\n\n')
+    .replace(/\n{3,}/g, '\n\n');
+  return { docs: { source: { code, language: 'tsx', type: 'code', transform: () => code } } };
+}

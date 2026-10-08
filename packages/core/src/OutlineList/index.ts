@@ -1,2 +1,8 @@
-export { DEFAULT_OUTLINE_LIST_LABELS, OutlineList } from './OutlineList';
-export type { OutlineItem, OutlineListLabels, OutlineListProps } from './OutlineList.types';
+export { DEFAULT_OUTLINE_LIST_LABELS, OutlineList, OutlineListItem } from './OutlineList';
+export type {
+  OutlineItem,
+  OutlineListItemProps,
+  OutlineListLabels,
+  OutlineListProps,
+  OutlineRowState,
+} from './OutlineList.types';

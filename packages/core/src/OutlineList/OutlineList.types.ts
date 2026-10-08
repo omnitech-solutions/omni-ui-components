@@ -20,6 +20,28 @@ export interface OutlineItem {
   state?: 'default' | 'live';
   /** Plain text for the row's accessible name and tooltip when `label` is not a string. */
   name?: string;
+  /** Drawn at the end of the row: a `Tag`, a `Badge`, a count. */
+  trailing?: React.ReactNode;
+}
+
+/** What the list knows about a row when it draws it. */
+export interface OutlineRowState {
+  /** The number shown before the label. */
+  number: number | string;
+  /** This row is the one on show. */
+  current: boolean;
+  /** This row is happening now. */
+  live: boolean;
+}
+
+/** One row on its own: usable outside the list, or returned from `renderItem` with changes. */
+export interface OutlineListItemProps<T extends OutlineItem = OutlineItem>
+  extends Partial<OutlineRowState> {
+  item: T;
+  /** The row was pressed. Without it the row is not pressable. */
+  onSelect?: (item: T) => void;
+  labels?: Partial<OutlineListLabels>;
+  className?: string;
 }
 
 export interface OutlineListProps<T extends OutlineItem = OutlineItem>
@@ -32,6 +54,11 @@ export interface OutlineListProps<T extends OutlineItem = OutlineItem>
   onValueChange?: (item: T) => void;
   /** `reversed` draws the last item first (newest at the top). Numbers keep the order given. */
   order?: 'as-given' | 'reversed';
+  /**
+   * Draws a row in place of the default `OutlineListItem`. `select` chooses the item; return an
+   * `OutlineListItem` with extra props, or any element with `data-slot="outline-list-row"`.
+   */
+  renderItem?: (item: T, state: OutlineRowState, select: () => void) => React.ReactNode;
   /** Shown in place of the rows when there are none. */
   empty?: React.ReactNode;
   labels?: Partial<OutlineListLabels>;

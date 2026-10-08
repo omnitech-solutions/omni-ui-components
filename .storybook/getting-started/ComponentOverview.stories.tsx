@@ -4,7 +4,7 @@ import * as React from 'react';
 import '../internal/support/overview.css';
 import factorySupport from '../../packages/core/src/internal/support/makeFactory.ts?raw';
 import countrySource from '../../packages/core/src/Select/countries.ts?raw';
-import { buildSourceSnippet } from '../internal/support/sourceSnippet';
+import { buildSourceSnippet, mergeImports } from '../internal/support/sourceSnippet';
 import source from './ComponentOverview.stories.tsx?raw';
 
 const factorySources = import.meta.glob('../../packages/core/src/**/*.factories.{ts,tsx}', {
@@ -154,7 +154,6 @@ import { CommandPopover } from '@oc-tech/omni-ui-components/CommandPopover';
 import { ContextMeter } from '@oc-tech/omni-ui-components/ContextMeter';
 import { ConversationHeader } from '@oc-tech/omni-ui-components/ConversationHeader';
 import { ConversationList } from '@oc-tech/omni-ui-components/ConversationList';
-import { CueCard, HeardLine } from '@oc-tech/omni-ui-components/CueCard';
 import { DataPrivacyPanel } from '@oc-tech/omni-ui-components/DataPrivacyPanel';
 import { DictationBar } from '@oc-tech/omni-ui-components/DictationBar';
 import { DiffReview } from '@oc-tech/omni-ui-components/DiffReview';
@@ -167,7 +166,6 @@ import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
 import { MessageMenu } from '@oc-tech/omni-ui-components/MessageMenu';
 import { ModelMenu } from '@oc-tech/omni-ui-components/ModelPicker';
 import { ModelsSettings } from '@oc-tech/omni-ui-components/ModelsSettings';
-import { OutlineList } from '@oc-tech/omni-ui-components/OutlineList';
 import { PanelShell } from '@oc-tech/omni-ui-components/PanelShell';
 import { PreferencesForm } from '@oc-tech/omni-ui-components/PreferencesForm';
 import { QueuedList } from '@oc-tech/omni-ui-components/QueuedList';
@@ -232,9 +230,9 @@ import {
 } from 'factories/omni-ui-components/ConversationList/ConversationList.factories';
 import { ConversationTranscriptDemo } from 'factories/omni-ui-components/ConversationTranscript/ConversationTranscript.factories';
 import {
-  cueCardPropsFactory,
+  AnswerPanel,
   cueCardVariants,
-  heardLinePropsFactory,
+  HeardPanel,
   heardLineVariants,
 } from 'factories/omni-ui-components/CueCard/CueCard.factories';
 import {
@@ -343,8 +341,8 @@ import {
   numberInputVariants,
 } from 'factories/omni-ui-components/NumberInput/NumberInput.factories';
 import {
-  outlineListPropsFactory,
   outlineListVariants,
+  StepsPanel,
 } from 'factories/omni-ui-components/OutlineList/OutlineList.factories';
 import {
   NativePanelsDemo,
@@ -420,10 +418,7 @@ import {
   splitButtonPropsFactory,
   splitButtonVariants,
 } from 'factories/omni-ui-components/SplitButton/SplitButton.factories';
-import {
-  SplitterDemo,
-  splitterVariants,
-} from 'factories/omni-ui-components/Splitter/Splitter.factories';
+import { ResizableColumns } from 'factories/omni-ui-components/Splitter/Splitter.factories';
 import {
   statusClockExamples,
   statusClockPropsFactory,
@@ -554,7 +549,7 @@ const SectionHeading: React.FC<{
 );
 
 const codeFromVariants = (row: OverviewRowSpec): string =>
-  buildSourceSnippet(source, row.source ?? `${row.name}Preview`, snippetDependencies);
+  mergeImports(buildSourceSnippet(source, row.source ?? `${row.name}Preview`, snippetDependencies));
 
 type AnyComponent<P> = React.ComponentType<P>;
 
@@ -776,24 +771,12 @@ const VersionPagerPreview = MessagePartsPreview(
   versionPagerVariants as Variant<never>[],
   (args) => <VersionPager {...versionPagerPropsFactory(args as object)} />,
 );
-const CueCardPreview = MessagePartsPreview(cueCardVariants as Variant<never>[], (args) => (
-  <div className="max-w-[560px]">
-    <CueCard {...cueCardPropsFactory(args as object)} />
-  </div>
-));
-const HeardLinePreview = MessagePartsPreview(heardLineVariants as Variant<never>[], (args) => (
-  <div className="max-w-[560px]">
-    <HeardLine {...heardLinePropsFactory(args as object)} />
-  </div>
-));
-const OutlineListPreview = MessagePartsPreview(outlineListVariants as Variant<never>[], (args) => (
-  <div className="w-[280px]">
-    <OutlineList {...outlineListPropsFactory(args as object)} />
-  </div>
-));
-const SplitterPreview = MessagePartsPreview(splitterVariants as Variant<never>[], (args) => (
-  <SplitterDemo {...(args as object)} />
-));
+// These four previews are the first example of each component's own stories, so "Show code" is that example
+// as a consumer writes it: the type that extends the library's, the typed data, the state and the callbacks.
+const CueCardPreview: React.FC = () => <AnswerPanel />;
+const HeardLinePreview: React.FC = () => <HeardPanel />;
+const OutlineListPreview: React.FC = () => <StepsPanel />;
+const SplitterPreview: React.FC = () => <ResizableColumns />;
 const MessageActionsPreview = MessagePartsPreview(
   messageActionsVariants as Variant<never>[],
   (args) => <MessageActions {...messageActionsPropsFactory(args as object)} />,
@@ -1900,7 +1883,7 @@ const configuredRows: Record<string, OverviewRowSpec> = {
   Splitter: {
     name: 'Splitter',
     preview: SplitterPreview,
-    variants: splitterVariants as Variant<unknown>[],
+    variants: [],
   },
   Steps: { name: 'Steps', preview: StepsPreview, variants: stepsVariants as Variant<unknown>[] },
   Tag: { name: 'Tag', preview: TagPreview, variants: tagVariants as Variant<unknown>[] },

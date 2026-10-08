@@ -2,22 +2,24 @@ import '@testing-library/jest-dom';
 
 import {
   CueCard,
+  CueLineText,
   type CueSection,
   type CueSegment,
   DEFAULT_CUE_CARD_LABELS,
   HeardLine,
+  toCueLine,
 } from '@oc-tech/omni-ui-components/CueCard';
-import { render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  CueCardDemo,
+  AnswerPanel,
+  closingNote,
   cueCardPropsFactory,
   cueCardVariants,
-  cueClosingSections,
-  cueInferredSections,
-  cueTechnicalSections,
+  type Cited as FixtureCited,
   heardLinePropsFactory,
   heardLineVariants,
+  unconfirmedNote,
 } from 'factories/omni-ui-components/CueCard/CueCard.factories';
 import * as React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -53,7 +55,9 @@ describe('omni-ui-components/CueCard', () => {
     expect(card).toHaveAttribute('data-status', 'ready');
     expect(kindsOf(container)).toEqual(['say', 'anchors', 'ask', 'caution', 'context']);
     expect(headingOf(section(container, 'say')!)).toHaveTextContent('Say this');
-    expect(headingOf(section(container, 'anchors')!)).toHaveTextContent('Anchors');
+    // Anchors right after the response are nested under it: no heading of their own.
+    expect(headingOf(section(container, 'anchors')!)).toBeNull();
+    expect(section(container, 'anchors')).toHaveAttribute('data-nested');
     expect(headingOf(section(container, 'ask')!)).toHaveTextContent('Ask');
     expect(headingOf(section(container, 'caution')!)).toHaveTextContent('Careful');
     expect(headingOf(section(container, 'context')!)).toHaveTextContent('Context');
@@ -69,7 +73,9 @@ describe('omni-ui-components/CueCard', () => {
   });
 
   it('each kind has its own look: headings in the kind colour, the response large, anchors squared, context quiet with no mark', () => {
-    const { container } = render(<CueCard sections={everyKind} />);
+    const { container } = render(
+      <CueCard sections={[everyKind[1]!, everyKind[0]!, everyKind[2]!, everyKind[4]!]} />,
+    );
     const say = section(container, 'say')!;
     const anchors = section(container, 'anchors')!;
     const ask = section(container, 'ask')!;
@@ -142,12 +148,12 @@ describe('omni-ui-components/CueCard', () => {
   });
 
   it('an inferred claim is underlined with the tooltip; a verified or unmarked one is not', () => {
-    render(<CueCard sections={cueInferredSections} labels={{ inferred: 'Check first' }} />);
+    render(<CueCard sections={unconfirmedNote} labels={{ inferred: 'Check first' }} />);
     const claim = screen.getByText('dropped by about 40%');
     expect(claim).toHaveAttribute('title', 'Check first');
     expect(claim.className).toContain('decoration-dotted');
     expect(claim.className).toContain('--oui-tone-accent-fg');
-    const verified = screen.getByText('Relay');
+    const verified = screen.getByText('Changelog');
     expect(verified).not.toHaveAttribute('title');
     expect(verified.className).not.toContain('underline');
     expect(DEFAULT_CUE_CARD_LABELS.inferred).toBe('Not confirmed: check before saying');
@@ -155,16 +161,16 @@ describe('omni-ui-components/CueCard', () => {
 
   it('a piece with a source is a button only with onSourceSelect; without it the piece is plain text that still names its source', async () => {
     const onSourceSelect = vi.fn();
-    const { rerender } = render(<CueCard sections={cueClosingSections} />);
+    const { rerender } = render(<CueCard sections={closingNote} />);
     expect(screen.queryByRole('button')).toBeNull();
-    expect(screen.getByText('Relay').tagName).toBe('SPAN');
-    expect(screen.getByText('Relay')).toHaveAttribute('data-source', 'roles/relay');
-    rerender(<CueCard sections={cueClosingSections} onSourceSelect={onSourceSelect} />);
+    expect(screen.getByText('Changelog').tagName).toBe('SPAN');
+    expect(screen.getByText('Changelog')).toHaveAttribute('data-source', 'docs/changelog');
+    rerender(<CueCard sections={closingNote} onSourceSelect={onSourceSelect} />);
     const buttons = screen.getAllByRole('button');
-    expect(buttons.map((button) => button.textContent)).toEqual(['Relay', 'Trufla']);
+    expect(buttons.map((button) => button.textContent)).toEqual(['Changelog', 'Migration guide']);
     expect(buttons[0]).toHaveAttribute('type', 'button');
     expect(buttons[0]).toHaveAttribute('data-role', 'evidence');
-    expect(buttons[0]).toHaveAttribute('data-source', 'roles/relay');
+    expect(buttons[0]).toHaveAttribute('data-source', 'docs/changelog');
     expect(buttons[0]!.className).toContain('--oui-tone-accent-fg');
     // A piece with no source stays text even when sources are pressable.
     expect(screen.getByText('One thing I should have said earlier:').tagName).toBe('SPAN');
@@ -173,7 +179,9 @@ describe('omni-ui-components/CueCard', () => {
     );
     await userEvent.click(buttons[1]!);
     expect(onSourceSelect).toHaveBeenCalledTimes(1);
-    expect(onSourceSelect.mock.calls[0]![0]).toBe(cueClosingSections[0]!.lines[1]!.segments[1]);
+    expect(onSourceSelect.mock.calls[0]![0]).toBe(
+      (closingNote[0]!.lines[1] as readonly (string | FixtureCited)[])[1],
+    );
   });
 
   it('an extended segment reaches onSourceSelect by reference with its own fields typed', async () => {
@@ -219,7 +227,7 @@ describe('omni-ui-components/CueCard', () => {
     expect(linesOf(section(container, 'anchors')!).map((line) => line.textContent)).toEqual([
       'Outbox + idempotent consumers',
     ]);
-    rerender(<CueCard sections={cueClosingSections} mode="compact" />);
+    rerender(<CueCard sections={closingNote} mode="compact" />);
     expect(kindsOf(container)).toEqual(['say']);
   });
 
@@ -332,18 +340,14 @@ describe('omni-ui-components/CueCard', () => {
     expect(card).toHaveClass('max-w-md', 'flex');
   });
 
-  it('the demo names the pressed source under the card and reports its segment; every variant renders', async () => {
-    const onAction = vi.fn();
-    const { unmount } = render(<CueCardDemo heard onAction={onAction} />);
-    expect(screen.getByText('data consistent across services')).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: 'Relay' }));
-    expect(onAction).toHaveBeenCalledWith('source', cueTechnicalSections[1]!.lines[2]!.segments[0]);
-    expect(screen.getByText('Source: Relay · Staff engineer')).toBeInTheDocument();
-    unmount();
-    const bare = render(<CueCardDemo sections={cueInferredSections} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Relay' }));
-    expect(screen.getByText('Source: roles/relay')).toBeInTheDocument();
-    bare.unmount();
+  it('the first example reads the own field of the pressed segment into the panel; every variant renders', async () => {
+    render(<AnswerPanel />);
+    const panel = screen.getByRole('region', { name: 'Answer' });
+    expect(within(panel).getByText('data consistent across services')).toBeInTheDocument();
+    expect(within(panel).getByText('press a source')).toBeInTheDocument();
+    await userEvent.click(within(panel).getByRole('button', { name: 'Changelog' }));
+    expect(within(panel).getByText('open: /docs/changelog')).toBeInTheDocument();
+    cleanup();
     for (const variant of cueCardVariants) {
       const { container, unmount: done } = render(
         <CueCard {...cueCardPropsFactory(variant.args)} />,
@@ -351,6 +355,218 @@ describe('omni-ui-components/CueCard', () => {
       expect(container.querySelector('[data-slot="cue-card"]')).toBeInTheDocument();
       done();
     }
+  });
+
+  it('anchors right after say or ask are nested under it with no heading unless they carry a label; anywhere else they keep their own', () => {
+    const anchors = (label?: string): CueSection => ({
+      kind: 'anchors',
+      lines: ['Hang it here'],
+      ...(label === undefined ? {} : { label }),
+    });
+    const all = (container: HTMLElement) =>
+      Array.from(
+        container.querySelectorAll<HTMLElement>(
+          '[data-slot="cue-card-section"][data-kind="anchors"]',
+        ),
+      );
+    const afterSay = render(
+      <CueCard sections={[{ kind: 'say', lines: ['Say it.'] }, anchors()]} />,
+    );
+    expect(all(afterSay.container)[0]).toHaveAttribute('data-nested');
+    expect(headingOf(all(afterSay.container)[0]!)).toBeNull();
+    expect(screen.queryByText('Anchors')).toBeNull();
+    afterSay.unmount();
+    const afterAsk = render(
+      <CueCard sections={[{ kind: 'ask', lines: ['Ask this?'] }, anchors('Proof')]} />,
+    );
+    expect(all(afterAsk.container)[0]).toHaveAttribute('data-nested');
+    expect(headingOf(all(afterAsk.container)[0]!)).toHaveTextContent('Proof');
+    afterAsk.unmount();
+    const elsewhere = render(
+      <CueCard
+        sections={[
+          anchors(),
+          { kind: 'caution', lines: ['Avoid that.'] },
+          anchors(),
+          { kind: 'context', lines: ['Because of earlier.'] },
+          anchors(),
+          anchors(),
+        ]}
+      />,
+    );
+    const others = all(elsewhere.container);
+    expect(others).toHaveLength(4);
+    for (const node of others) {
+      expect(node).not.toHaveAttribute('data-nested');
+      expect(headingOf(node)).toHaveTextContent('Anchors');
+    }
+    // Only an anchors section is ever nested.
+    expect(elsewhere.container.querySelectorAll('[data-nested]')).toHaveLength(0);
+  });
+
+  it('a compact card nests the anchors it keeps under the response', () => {
+    const { container } = render(<CueCard {...cueCardPropsFactory({ mode: 'compact' })} />);
+    expect(section(container, 'anchors')).toHaveAttribute('data-nested');
+    expect(headingOf(section(container, 'anchors')!)).toBeNull();
+  });
+
+  it('the first caution line is semibold and the way back is not', () => {
+    const { container } = render(<CueCard sections={everyKind} />);
+    const [first, second] = linesOf(section(container, 'caution')!);
+    expect(first!.className).toContain('font-semibold');
+    expect(second!.className).not.toContain('font-semibold');
+  });
+});
+
+describe('omni-ui-components/CueCard short forms', () => {
+  const rolesOf = (container: HTMLElement) =>
+    Array.from(container.querySelectorAll('[data-slot="cue-card-segment"]')).map((node) => [
+      node.textContent,
+      node.getAttribute('data-role'),
+    ]);
+
+  it('a string line marks its key words: **cue**, ==evidence== and !!caution!!, the rest spoken', () => {
+    const { container } = render(
+      <CueCard
+        sections={[
+          {
+            kind: 'say',
+            lines: [
+              '**Start with** the result.',
+              'It uses an ==outbox==.',
+              '!!Never promise it.!!',
+            ],
+          },
+        ]}
+      />,
+    );
+    expect(rolesOf(container)).toEqual([
+      ['Start with', 'cue'],
+      [' the result.', 'spoken'],
+      ['It uses an ', 'spoken'],
+      ['outbox', 'evidence'],
+      ['.', 'spoken'],
+      ['Never promise it.', 'caution'],
+    ]);
+    expect(linesOf(container).map((line) => line.textContent)).toEqual([
+      'Start with the result.',
+      'It uses an outbox.',
+      'Never promise it.',
+    ]);
+  });
+
+  it('several marks in one line, text with no marks, and an unclosed mark that stays as written', () => {
+    expect(toCueLine('**Open** with ==A== and ==B==, !!not C!!.').segments).toEqual([
+      { text: 'Open', role: 'cue' },
+      { text: ' with ' },
+      { text: 'A', role: 'evidence' },
+      { text: ' and ' },
+      { text: 'B', role: 'evidence' },
+      { text: ', ' },
+      { text: 'not C', role: 'caution' },
+      { text: '.' },
+    ]);
+    expect(toCueLine('Nothing to mark here.').segments).toEqual([
+      { text: 'Nothing to mark here.' },
+    ]);
+    expect(toCueLine('').segments).toEqual([{ text: '' }]);
+    expect(toCueLine('An ==unclosed mark and 2 ** 3').segments).toEqual([
+      { text: 'An ==unclosed mark and 2 ** 3' },
+    ]);
+    expect(toCueLine('a == b and **c**').segments).toEqual([
+      { text: 'a == b and ' },
+      { text: 'c', role: 'cue' },
+    ]);
+  });
+
+  it('in a list a string is spoken text exactly as written (marks are not parsed) and a segment passes through by reference', () => {
+    const cited = { text: 'the guide', role: 'evidence', source: 'docs/guide' } as const;
+    const line = toCueLine(['See ==this== in ', cited, '.']);
+    expect(line.segments).toEqual([{ text: 'See ==this== in ' }, cited, { text: '.' }]);
+    expect(line.segments[1]).toBe(cited);
+    const { container } = render(<CueCard sections={[{ kind: 'say', lines: [['a ==b==']] }]} />);
+    expect(rolesOf(container)).toEqual([['a ==b==', 'spoken']]);
+  });
+
+  it('a full CueLine still works and toCueLine returns it as it is', () => {
+    const full = { segments: [{ text: 'Say ' }, { text: 'this', role: 'cue' as const }] };
+    expect(toCueLine(full)).toBe(full);
+    const { container } = render(<CueCard sections={[{ kind: 'say', lines: [full] }]} />);
+    expect(rolesOf(container)).toEqual([
+      ['Say ', 'spoken'],
+      ['this', 'cue'],
+    ]);
+  });
+
+  it('the three forms mix in one section, and a segment in a list is pressable by reference with its own field', async () => {
+    type Linked = CueSegment & { href: string };
+    const linked: Linked = { text: 'guide', role: 'evidence', source: 'docs/guide', href: '/g' };
+    const onSourceSelect = vi.fn((segment: Linked) => {
+      expectTypeOf(segment.href).toEqualTypeOf<string>();
+    });
+    const sections: CueSection<Linked>[] = [
+      {
+        kind: 'say',
+        lines: ['**One** marked.', ['Read the ', linked, '.'], { segments: [linked] }],
+      },
+    ];
+    const { container } = render(
+      <CueCard<Linked> sections={sections} onSourceSelect={onSourceSelect} />,
+    );
+    expect(linesOf(container).map((line) => line.textContent)).toEqual([
+      'One marked.',
+      'Read the guide.',
+      'guide',
+    ]);
+    await userEvent.click(screen.getAllByRole('button', { name: 'guide' })[0]!);
+    expect(onSourceSelect.mock.calls[0]![0]).toBe(linked);
+  });
+
+  it('CueLineText draws one line on its own from any form, with the default tooltip and a pressable source', async () => {
+    const onSourceSelect = vi.fn();
+    const source = { text: 'guide', source: 'docs/guide', grounding: 'inferred' } as const;
+    const { container, rerender } = render(
+      <p>
+        <CueLineText line="**Start with** the ==result==, !!not the method!!." />
+      </p>,
+    );
+    expect(rolesOf(container)).toEqual([
+      ['Start with', 'cue'],
+      [' the ', 'spoken'],
+      ['result', 'evidence'],
+      [', ', 'spoken'],
+      ['not the method', 'caution'],
+      ['.', 'spoken'],
+    ]);
+    expect(container.querySelector('[data-slot="cue-card"]')).toBeNull();
+    rerender(
+      <p>
+        <CueLineText line={['Read the ', source]} />
+      </p>,
+    );
+    expect(screen.queryByRole('button')).toBeNull();
+    expect(screen.getByText('guide')).toHaveAttribute('title', DEFAULT_CUE_CARD_LABELS.inferred);
+    rerender(
+      <p>
+        <CueLineText
+          line={{ segments: [source] }}
+          inferred="Check"
+          onSourceSelect={onSourceSelect}
+        />
+      </p>,
+    );
+    const button = screen.getByRole('button', { name: 'guide' });
+    expect(button).toHaveAttribute('title', 'Check');
+    await userEvent.click(button);
+    expect(onSourceSelect.mock.calls[0]![0]).toBe(source);
+  });
+
+  it('a pressable source is a button with no padding that keeps the font of its line', () => {
+    render(<CueCard sections={closingNote} onSourceSelect={() => undefined} />);
+    const button = screen.getAllByRole('button')[0]!;
+    expect(button.className).toContain('p-0');
+    expect(button.className).toContain('[font-family:inherit]');
+    expect(button.className).toContain('[font-size:inherit]');
   });
 });
 
@@ -370,6 +586,37 @@ describe('omni-ui-components/HeardLine', () => {
     expect(strong.className).toContain('font-medium');
     expect(strong.className).toContain('--oui-foreground');
     expect(screen.getByText('And how do you keep', { exact: false }).className).toBe('');
+  });
+
+  it('pieces as one string is the whole sentence, with nothing lifted', () => {
+    const { container } = render(<HeardLine pieces="We split it out last year." />);
+    const text = textOf(container);
+    expect(text.textContent).toBe('We split it out last year.');
+    expect(text).toHaveAttribute('title', 'We split it out last year.');
+    expect(text.children).toHaveLength(1);
+    expect(text.children[0]!.className).toBe('');
+  });
+
+  it('mixed pieces: a string is a run that is not lifted, an object is lifted only when strong', () => {
+    const { container } = render(
+      <HeardLine
+        pieces={[
+          'How do you keep ',
+          { text: 'data consistent', strong: true },
+          { text: ' then' },
+          '?',
+        ]}
+      />,
+    );
+    const text = textOf(container);
+    expect(text.textContent).toBe('How do you keep data consistent then?');
+    expect(text).toHaveAttribute('title', 'How do you keep data consistent then?');
+    expect(Array.from(text.children).map((run) => run.className.includes('font-medium'))).toEqual([
+      false,
+      true,
+      false,
+      false,
+    ]);
   });
 
   it('tone ask draws the bar and a green label; plain (the default) draws neither', () => {

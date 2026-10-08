@@ -4,11 +4,14 @@ import type {
   CueCardLabels,
   CueCardProps,
   CueLine,
+  CueLineInput,
+  CuePieceInput,
   CueRole,
   CueSection,
   CueSectionKind,
   CueSegment,
   HeardLineProps,
+  HeardPiece,
 } from './CueCard.types';
 
 /** English strings of {@link CueCard}. */
@@ -43,20 +46,62 @@ const LABEL_CLASS: Record<CueSectionKind, string> = {
 };
 const COMPACT_KINDS: readonly CueSectionKind[] = ['say', 'anchors', 'caution'];
 
+const MARKS: Record<string, CueRole> = { '**': 'cue', '==': 'evidence', '!!': 'caution' };
+const MARKED = /(\*\*|==|!!)(.+?)\1/g;
+
+/** A marked sentence as pieces: `**cue**`, `==evidence==`, `!!caution!!`; the rest is spoken. */
+function marked(text: string): CueSegment[] {
+  const segments: CueSegment[] = [];
+  let from = 0;
+  for (const match of text.matchAll(MARKED)) {
+    if (match.index > from) segments.push({ text: text.slice(from, match.index) });
+    segments.push({ text: match[2] as string, role: MARKS[match[1] as string] as CueRole });
+    from = match.index + match[0].length;
+  }
+  if (from < text.length || segments.length === 0) segments.push({ text: text.slice(from) });
+  return segments;
+}
+
+/**
+ * Any short form of a line as a {@link CueLine}. A string is a sentence with its key words marked
+ * (`**cue**`, `==evidence==`, `!!caution!!`); a list is its pieces, where a string is spoken text taken
+ * exactly as written.
+ */
+export function toCueLine<S extends CueSegment = CueSegment>(line: CueLineInput<S>): CueLine<S> {
+  if (typeof line === 'string') return { segments: marked(line) as S[] };
+  if ('segments' in line) return line;
+  return {
+    segments: line.map((piece: CuePieceInput<S>) =>
+      typeof piece === 'string' ? ({ text: piece } as S) : piece,
+    ),
+  };
+}
+
 const textOf = (line: CueLine) => line.segments.map((segment) => segment.text).join('');
 
-function Line<S extends CueSegment>({
+/**
+ * The pieces of one {@link CueLine}, each drawn by its role (spoken, cue, evidence, caution, context). It is what
+ * every line of a {@link CueCard} is made of, and is usable on its own inside any text element.
+ *
+ * Slot: `data-slot="cue-card-segment"` with `data-role`.
+ *
+ * @example
+ * <p><CueLineText line={{ segments: [{ text: 'Start with ' }, { text: 'the result', role: 'cue' }] }} /></p>
+ */
+export function CueLineText<S extends CueSegment = CueSegment>({
   line,
-  inferred,
+  inferred = DEFAULT_CUE_CARD_LABELS.inferred,
   onSourceSelect,
 }: {
-  line: CueLine<S>;
-  inferred: string;
+  line: CueLineInput<S>;
+  /** Tooltip of a piece whose grounding is `inferred`. */
+  inferred?: string;
+  /** A piece with a `source` was pressed. Without it the pieces are plain text. */
   onSourceSelect?: ((segment: S) => void) | undefined;
-}) {
+}): React.ReactElement {
   return (
     <>
-      {line.segments.map((segment, at) => {
+      {toCueLine(line).segments.map((segment, at) => {
         const role = segment.role ?? 'spoken';
         const unconfirmed = segment.grounding === 'inferred';
         const className = cn(
@@ -79,7 +124,7 @@ function Line<S extends CueSegment>({
             {...shared}
             className={cn(
               className,
-              'cursor-pointer rounded-sm outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/50',
+              'm-0 cursor-pointer rounded-sm border-0 bg-transparent p-0 [font-family:inherit] [font-size:inherit] [line-height:inherit] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/50',
             )}
             onClick={() => onSourceSelect(segment)}
           >
@@ -157,10 +202,11 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
         {...rest}
       >
         {shown.map((section, at) => {
-          const lines =
+          const lines = (
             compact && section.kind === 'anchors'
               ? section.lines.slice(0, maxAnchors)
-              : section.lines;
+              : section.lines
+          ).map(toCueLine);
           // Sections of one card never reorder.
           const key = `${at}:${section.kind}`;
           if (section.kind === 'caution')
@@ -181,10 +227,11 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
                       data-slot="cue-card-line"
                       className={cn(
                         'm-0 text-base leading-snug',
+                        index === 0 && 'font-semibold',
                         index > 0 && 'text-[color:var(--oui-foreground)]',
                       )}
                     >
-                      <Line
+                      <CueLineText
                         line={line}
                         inferred={labels.inferred}
                         onSourceSelect={onSourceSelect}
@@ -196,19 +243,33 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
             );
           const anchors = section.kind === 'anchors';
           const quiet = section.kind === 'context';
+          // Anchors belong to the lines they follow: they sit under them, indented to their text, with no
+          // heading of their own unless one is given.
+          const before = shown[at - 1]?.kind;
+          const nested = anchors && (before === 'say' || before === 'ask');
           return (
             <div
               key={key}
               data-slot="cue-card-section"
               data-kind={section.kind}
-              className="flex flex-col gap-2.5"
+              {...(nested ? { 'data-nested': '' } : {})}
+              className={cn(
+                'flex flex-col',
+                quiet ? 'gap-1.5' : 'gap-2',
+                nested &&
+                  '-mt-3 ml-[18px] gap-1.5 border-l border-[color:var(--oui-panel-border)] pl-3.5',
+              )}
             >
-              {heading(section)}
+              {nested && section.label === undefined ? null : heading(section)}
               {lines.map((line, index) => (
                 <div
                   // biome-ignore lint/suspicious/noArrayIndexKey: the lines of one section never reorder, and two may read the same
                   key={`${index}:${textOf(line)}`}
-                  className={cn('flex min-w-0', anchors ? 'gap-2.5' : 'gap-3')}
+                  className={cn(
+                    'flex min-w-0',
+                    anchors ? 'gap-2.5' : 'gap-3',
+                    quiet && 'pl-[18px]',
+                  )}
                 >
                   {!quiet && (
                     <span
@@ -232,7 +293,11 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
                           : 'text-[19px] leading-[1.42]',
                     )}
                   >
-                    <Line line={line} inferred={labels.inferred} onSourceSelect={onSourceSelect} />
+                    <CueLineText
+                      line={line}
+                      inferred={labels.inferred}
+                      onSourceSelect={onSourceSelect}
+                    />
                   </p>
                 </div>
               ))}
@@ -272,7 +337,10 @@ export const CueCard = CueCardImpl as unknown as <S extends CueSegment = CueSegm
  */
 export const HeardLine = React.forwardRef<HTMLDivElement, HeardLineProps>(
   ({ pieces, label, tone = 'plain', maxLines = 2, className, ...rest }, ref) => {
-    const whole = pieces.map((piece) => piece.text).join('');
+    const runs: HeardPiece[] = (typeof pieces === 'string' ? [pieces] : pieces).map((piece) =>
+      typeof piece === 'string' ? { text: piece } : piece,
+    );
+    const whole = runs.map((piece) => piece.text).join('');
     return (
       <div
         ref={ref}
@@ -304,7 +372,7 @@ export const HeardLine = React.forwardRef<HTMLDivElement, HeardLineProps>(
           className="m-0 overflow-hidden text-[15px] leading-normal text-[color:var(--oui-panel-meta-fg)]"
           style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: maxLines }}
         >
-          {pieces.map((piece, at) => (
+          {runs.map((piece, at) => (
             <span
               // biome-ignore lint/suspicious/noArrayIndexKey: the runs of one sentence never reorder
               key={`${at}:${piece.text}`}

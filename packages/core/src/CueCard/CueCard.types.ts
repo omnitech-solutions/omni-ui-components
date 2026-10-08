@@ -36,11 +36,27 @@ export interface CueLine<S extends CueSegment = CueSegment> {
  */
 export type CueSectionKind = 'say' | 'anchors' | 'ask' | 'caution' | 'context';
 
+/** A piece written the short way: a plain string is a `spoken` piece. */
+export type CuePieceInput<S extends CueSegment = CueSegment> = string | S;
+
+/**
+ * A line written the short way. `toCueLine` turns any of them into a {@link CueLine}.
+ * - a string: one sentence with its key words marked, `**cue**`, `==evidence==`, `!!caution!!`.
+ * - a list of strings and segments: a string is spoken text taken exactly as written; use a segment for a
+ *   `source`, a `grounding` or a field of your own.
+ * - a full {@link CueLine}.
+ */
+export type CueLineInput<S extends CueSegment = CueSegment> =
+  | string
+  | readonly CuePieceInput<S>[]
+  | CueLine<S>;
+
 export interface CueSection<S extends CueSegment = CueSegment> {
   kind: CueSectionKind;
   /** A heading in place of the kind's own. An empty string draws no heading. */
   label?: string;
-  lines: readonly CueLine<S>[];
+  /** Each line is a string, a list of strings and segments, or a `CueLine`. */
+  lines: readonly CueLineInput<S>[];
 }
 
 /** English strings of {@link CueCard}. */
@@ -81,8 +97,8 @@ export interface HeardPiece {
 }
 
 export interface HeardLineProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
-  /** The sentence, in runs. Joined they are the sentence exactly. */
-  pieces: readonly HeardPiece[];
+  /** The sentence: a string, or runs (a plain string is a run that is not lifted). Joined they are the sentence exactly. */
+  pieces: string | readonly (string | HeardPiece)[];
   /** Small heading above it: who said it, when. */
   label?: React.ReactNode;
   /** `ask` marks it with the act-now colour (something asked); `plain` does not. */

@@ -9,9 +9,13 @@ import {
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  SplitterDemo,
+  ColumnsWithGap,
+  ResettableColumns,
+  ResizableColumns,
+  ResizableStack,
+  StaticSplit,
+  StaticThreePanels,
   splitterPropsFactory,
-  splitterVariants,
 } from 'factories/omni-ui-components/Splitter/Splitter.factories';
 
 /** happy-dom lays nothing out: give every element a main size so the splitter has room to share. */
@@ -239,25 +243,99 @@ describe('omni-ui-components/Splitter', () => {
     expect(handle('panel-1')).toHaveAttribute('aria-valuenow', '120');
   });
 
-  it('every factory variant renders, and the demo resets through its button', async () => {
-    for (const variant of splitterVariants) {
-      const { unmount } = render(<SplitterDemo {...variant.args} />);
-      expect(document.querySelector('[data-slot="splitter"]')).not.toBeNull();
-      unmount();
-    }
-    const onAction = vi.fn();
-    render(<SplitterDemo reset limits onAction={onAction} />);
+  it('a root that is not laid out (it measures 0) does not clamp to 0: only the panel limits hold', async () => {
+    restore();
+    restore = layout(0, 0);
+    const onSizesChange = vi.fn();
+    render(<Columns onSizesChange={onSizesChange} keyboardStep={10} />);
+    expect(now('list')).toBe(200);
     handle('list').focus();
     await userEvent.keyboard('{ArrowRight}');
-    expect(now('list')).toBe(204);
-    expect(onAction).toHaveBeenCalledWith('sizes', { list: 204, side: 220 });
-    fireEvent.pointerDown(handle('list'), { clientX: 0, pointerId: 1 });
-    fireEvent.pointerUp(handle('list'));
-    expect(onAction).toHaveBeenCalledWith('resize:start', 'list');
+    expect(now('list')).toBe(210);
+    expect(onSizesChange).toHaveBeenLastCalledWith({ list: 210, side: 250 });
+    await userEvent.keyboard('{End}');
+    expect(now('list')).toBe(300);
+    await userEvent.keyboard('{Home}');
+    expect(now('list')).toBe(100);
+    // The side has no maxSize: with no room to measure it grows by its step and is never pushed to 0.
+    handle('side').focus();
+    await userEvent.keyboard('{ArrowLeft}');
+    expect(now('side')).toBe(260);
+  });
+
+  it('a handle never reports an infinite maximum: unmeasured and without maxSize it reports its own size, and End stays there', async () => {
+    restore();
+    restore = layout(0, 0);
+    render(<Columns />);
+    const side = handle('side');
+    expect(side).toHaveAttribute('aria-valuemax', '250');
+    expect(handle('list')).toHaveAttribute('aria-valuemax', '300');
+    for (const each of screen.getAllByRole('separator')) {
+      expect(each.getAttribute('aria-valuemax')).not.toBe('Infinity');
+      expect(Number.isFinite(Number(each.getAttribute('aria-valuemax')))).toBe(true);
+    }
+    side.focus();
+    await userEvent.keyboard('{End}');
+    expect(now('side')).toBe(250);
+    await userEvent.keyboard('{ArrowLeft}');
+    expect(now('side')).toBe(274);
+    expect(side).toHaveAttribute('aria-valuemax', '274');
+  });
+
+  it('End goes to the real ceiling: the room the others leave when measured, the panel maxSize when that is smaller', async () => {
+    render(<Columns />);
+    // 1000 wide, list 200, main keeps 300, two 8px handles: 484 left for the side.
+    // The room is measured from the root, which exists only after the first render: the first value is the
+    // panel's own (its size, or its maxSize), and any later render reports the real ceiling.
+    expect(handle('side')).toHaveAttribute('aria-valuemax', '250');
+    expect(handle('list')).toHaveAttribute('aria-valuemax', '300');
+    handle('side').focus();
+    await userEvent.keyboard('{ArrowLeft}');
+    expect(handle('side')).toHaveAttribute('aria-valuemax', '484');
+    await userEvent.keyboard('{End}');
+    expect(now('side')).toBe(484);
+    // The side took the room: the list can now only reach what is left, below its own maxSize.
+    expect(handle('list')).toHaveAttribute('aria-valuemax', '200');
+    handle('list').focus();
+    await userEvent.keyboard('{End}');
+    expect(now('list')).toBe(200);
+  });
+
+  it('the examples: columns from typed data hold a Panel each and show their size; the reset Button puts all back', async () => {
+    const { unmount } = render(<ResizableColumns />);
+    expect(screen.getAllByRole('region').map((region) => region.textContent)).toEqual([
+      'List180px',
+      'Maintakes the rest',
+      'Side220px',
+    ]);
+    expect(handle('List')).toHaveAttribute('aria-valuemin', '160');
+    handle('List').focus();
+    await userEvent.keyboard('{ArrowRight}');
+    expect(now('List')).toBe(204);
+    expect(screen.getByRole('region', { name: 'List' })).toHaveTextContent('204px');
+    fireEvent.pointerDown(handle('Side'), { clientX: 0, pointerId: 1 });
+    expect(screen.getByRole('region', { name: 'Side' })).toHaveTextContent('resizing');
+    fireEvent.pointerUp(handle('Side'));
+    expect(screen.getByRole('region', { name: 'Side' })).toHaveTextContent('220px');
+    unmount();
+    const reset = render(<ResettableColumns />);
+    handle('List').focus();
+    await userEvent.keyboard('{ArrowRight}');
+    expect(now('List')).toBe(204);
     await act(async () => {
       await userEvent.click(screen.getByRole('button', { name: 'Reset layout' }));
     });
-    expect(now('list')).toBe(180);
-    expect(onAction).toHaveBeenCalledWith('reset');
+    expect(now('List')).toBe(180);
+    expect(screen.getByRole('region', { name: 'List' })).toHaveTextContent('180px');
+    reset.unmount();
+    const stack = render(<ResizableStack />);
+    expect(handle('Top')).toHaveAttribute('aria-orientation', 'horizontal');
+    expect(screen.getByRole('region', { name: 'Top' })).toHaveTextContent('90px');
+    stack.unmount();
+    for (const Example of [StaticSplit, StaticThreePanels, ColumnsWithGap]) {
+      const { unmount: done } = render(<Example />);
+      expect(document.querySelector('[data-slot="splitter"]')).not.toBeNull();
+      done();
+    }
   });
 });
