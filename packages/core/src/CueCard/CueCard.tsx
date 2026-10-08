@@ -3,6 +3,7 @@ import * as React from 'react';
 import type {
   CueCardLabels,
   CueCardProps,
+  CueCardSize,
   CueLine,
   CueLineInput,
   CuePieceInput,
@@ -43,6 +44,13 @@ const LABEL_CLASS: Record<CueSectionKind, string> = {
   anchors: 'text-[color:var(--oui-tone-accent-fg)]',
   caution: 'text-[color:var(--oui-tone-warning-fg)]',
   context: 'text-[color:var(--oui-panel-meta-fg)]',
+};
+/** The card's base text size: every part is drawn relative to it, so the card scales as one. */
+const SIZE_CLASS: Record<CueCardSize, string> = {
+  sm: 'text-[14px]',
+  md: 'text-[16px]',
+  lg: 'text-[19px]',
+  xl: 'text-[22px]',
 };
 const COMPACT_KINDS: readonly CueSectionKind[] = ['say', 'anchors', 'caution'];
 
@@ -158,6 +166,9 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
     {
       sections,
       mode = 'detail',
+      size = 'md',
+      meta,
+      inset = false,
       maxAnchors = 3,
       status = 'ready',
       onSourceSelect,
@@ -184,7 +195,7 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
         <span
           data-slot="cue-card-label"
           className={cn(
-            'mb-0.5 text-[11px] font-bold tracking-[0.09em] uppercase',
+            'mb-0.5 text-[0.6875em] font-bold tracking-[0.09em] uppercase',
             LABEL_CLASS[section.kind],
           )}
         >
@@ -197,10 +208,25 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
         ref={ref}
         data-slot="cue-card"
         data-mode={mode}
+        data-size={size}
         data-status={status}
-        className={cn('flex min-w-0 flex-col gap-6 text-[color:var(--oui-foreground)]', className)}
+        className={cn(
+          'flex min-w-0 flex-col gap-6 text-[color:var(--oui-foreground)]',
+          SIZE_CLASS[size],
+          // The text column of a HeardLine above it: its bar and the gap after it.
+          inset && 'pl-[18px]',
+          className,
+        )}
         {...rest}
       >
+        {meta && (
+          <span
+            data-slot="cue-card-meta"
+            className="-mb-3 text-[0.72em] text-[color:var(--oui-panel-meta-fg)]"
+          >
+            {meta}
+          </span>
+        )}
         {shown.map((section, at) => {
           const lines = (
             compact && section.kind === 'anchors'
@@ -226,7 +252,7 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
                       key={`${index}:${textOf(line)}`}
                       data-slot="cue-card-line"
                       className={cn(
-                        'm-0 text-base leading-snug',
+                        'm-0 text-[1em] leading-snug',
                         index === 0 && 'font-semibold',
                         index > 0 && 'text-[color:var(--oui-foreground)]',
                       )}
@@ -277,8 +303,8 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
                       className={cn(
                         'size-1.5 shrink-0',
                         anchors
-                          ? 'mt-2 rounded-[1.5px] bg-[color:var(--oui-tone-accent-fg)]'
-                          : 'mt-[11px] rounded-full bg-[color:var(--oui-panel-meta-fg)]',
+                          ? 'mt-[0.5em] rounded-[1.5px] bg-[color:var(--oui-tone-accent-fg)]'
+                          : 'mt-[0.69em] rounded-full bg-[color:var(--oui-panel-meta-fg)]',
                       )}
                     />
                   )}
@@ -287,10 +313,10 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
                     className={cn(
                       'm-0 min-w-0',
                       quiet
-                        ? 'text-sm leading-normal text-[color:var(--oui-panel-meta-fg)]'
+                        ? 'text-[0.875em] leading-normal text-[color:var(--oui-panel-meta-fg)]'
                         : anchors
-                          ? 'text-base leading-snug'
-                          : 'text-[19px] leading-[1.42]',
+                          ? 'text-[1em] leading-snug'
+                          : 'text-[1.1875em] leading-[1.42]',
                     )}
                   >
                     <CueLineText
@@ -309,7 +335,7 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
           <p
             data-slot="cue-card-status"
             role="status"
-            className="m-0 text-sm text-[color:var(--oui-panel-meta-fg)] italic"
+            className="m-0 text-[0.875em] text-[color:var(--oui-panel-meta-fg)] italic"
           >
             {shown.length > 0 ? labels.updating : labels.preparing}
           </p>
@@ -330,60 +356,120 @@ export const CueCard = CueCardImpl as unknown as <S extends CueSegment = CueSegm
  * cannot be scanned and all foreground it competes with the card under it, so the words that carry it are lifted
  * a little and the rest stays quiet. It is cut after `maxLines`; the whole sentence is in its tooltip.
  *
- * Slots: `data-slot="heard-line" | "heard-line-label" | "heard-line-text"`.
+ * With a `title` it is the heading of what follows: the short name of the thing asked, with the sentence as
+ * heard small beneath it. `variant="boxed"` and a `status` make it a notice (something heard, an answer on its way).
+ *
+ * Slots: `data-slot="heard-line" | "heard-line-label" | "heard-line-title" | "heard-line-text" | "heard-line-status"`.
  *
  * @example
  * <HeardLine label="Follow-up · 11:46" tone="ask" pieces={[{ text: 'What about ' }, { text: 'event-driven approaches', strong: true }]} />
  */
 export const HeardLine = React.forwardRef<HTMLDivElement, HeardLineProps>(
-  ({ pieces, label, tone = 'plain', maxLines = 2, className, ...rest }, ref) => {
-    const runs: HeardPiece[] = (typeof pieces === 'string' ? [pieces] : pieces).map((piece) =>
-      typeof piece === 'string' ? { text: piece } : piece,
-    );
+  (
+    {
+      pieces,
+      label,
+      title,
+      status,
+      tone = 'plain',
+      variant = 'line',
+      size = 'md',
+      maxLines = 2,
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
+    const runs: HeardPiece[] = (
+      pieces === undefined ? [] : typeof pieces === 'string' ? [pieces] : pieces
+    ).map((piece) => (typeof piece === 'string' ? { text: piece } : piece));
     const whole = runs.map((piece) => piece.text).join('');
+    const colour =
+      tone === 'ask'
+        ? 'var(--oui-tone-success-fg)'
+        : tone === 'accent'
+          ? 'var(--oui-tone-accent-fg)'
+          : undefined;
+    const boxed = variant === 'boxed';
     return (
       <div
         ref={ref}
         data-slot="heard-line"
         data-tone={tone}
+        data-variant={variant}
+        data-size={size}
         className={cn(
           'flex min-w-0 flex-col gap-1',
-          tone === 'ask' && 'border-l-4 border-[color:var(--oui-tone-success-fg)] pl-3.5',
+          SIZE_CLASS[size],
+          !boxed && colour && 'border-l-4 pl-3.5',
+          boxed && 'rounded-lg border px-3.5 py-2.5',
+          boxed && !colour && 'border-[color:var(--oui-panel-divider)]',
           className,
         )}
-        {...rest}
+        style={
+          colour
+            ? {
+                borderColor: boxed ? `color-mix(in srgb, ${colour} 40%, transparent)` : colour,
+                ...(boxed ? { background: `color-mix(in srgb, ${colour} 10%, transparent)` } : {}),
+                ...rest.style,
+              }
+            : rest.style
+        }
+        {...(({ style: _style, ...others }) => others)(rest)}
       >
         {label && (
           <span
             data-slot="heard-line-label"
             className={cn(
-              'text-[11px] font-semibold tracking-[0.08em] uppercase',
-              tone === 'ask'
-                ? 'text-[color:var(--oui-tone-success-fg)]'
-                : 'text-[color:var(--oui-panel-meta-fg)]',
+              'text-[0.6875em] font-semibold tracking-[0.08em] uppercase',
+              !colour && 'text-[color:var(--oui-panel-meta-fg)]',
             )}
+            style={colour ? { color: colour } : undefined}
           >
             {label}
           </span>
         )}
-        <p
-          data-slot="heard-line-text"
-          title={whole}
-          className="m-0 overflow-hidden text-[15px] leading-normal text-[color:var(--oui-panel-meta-fg)]"
-          style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: maxLines }}
-        >
-          {runs.map((piece, at) => (
-            <span
-              // biome-ignore lint/suspicious/noArrayIndexKey: the runs of one sentence never reorder
-              key={`${at}:${piece.text}`}
-              className={
-                piece.strong ? 'font-medium text-[color:var(--oui-foreground)]' : undefined
-              }
-            >
-              {piece.text}
-            </span>
-          ))}
-        </p>
+        {title && (
+          <p
+            data-slot="heard-line-title"
+            className="m-0 text-[1.3em] leading-snug font-semibold text-pretty text-[color:var(--oui-foreground)]"
+          >
+            {title}
+          </p>
+        )}
+        {runs.length > 0 && (
+          <p
+            data-slot="heard-line-text"
+            title={whole}
+            className="m-0 overflow-hidden text-[0.9375em] leading-normal text-[color:var(--oui-panel-meta-fg)]"
+            style={{
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: maxLines,
+            }}
+          >
+            {runs.map((piece, at) => (
+              <span
+                // biome-ignore lint/suspicious/noArrayIndexKey: the runs of one sentence never reorder
+                key={`${at}:${piece.text}`}
+                className={
+                  piece.strong ? 'font-medium text-[color:var(--oui-foreground)]' : undefined
+                }
+              >
+                {piece.text}
+              </span>
+            ))}
+          </p>
+        )}
+        {status && (
+          <span
+            data-slot="heard-line-status"
+            role="status"
+            className="text-[0.75em] text-[color:var(--oui-panel-meta-fg)]"
+          >
+            {status}
+          </span>
+        )}
       </div>
     );
   },

@@ -11,6 +11,7 @@ import {
   LineOnItsOwn,
   PendingNotePanel,
   PreparingNotePanel,
+  ResizableNotePanel,
   UnconfirmedNotePanel,
 } from 'factories/omni-ui-components/CueCard/CueCard.factories';
 import type * as React from 'react';
@@ -30,13 +31,14 @@ const meta: Meta<StoryArgs> = {
     docs: {
       description: {
         component:
-          '<primary>What to say next</primary>, readable in the two seconds a person has while still listening. The content is structured and the card alone decides how it looks: `sections` (`say`, `anchors`, `ask`, `caution`, `context`) hold one-sentence `lines`, and each piece of a line carries a `role` (`spoken`, `cue`, `evidence`, `caution`, `context`). A line is written the short way: a string with its key words marked, `**cue**`, `==evidence==` and `!!caution!!` (the rest is spoken); or a list of strings and segments, where a string is spoken text taken exactly as written and a segment object is used only for a `source`, a `grounding` or a field of your own; a full `{ segments }` line still works, and `toCueLine` turns any form into one. Evidence is the accent colour, a caution sits in an amber box whose first line names it, context is small and quiet. `mode="compact"` keeps the response, `maxAnchors` anchors and any caution. `status="pending"` says a revision is on its way and leaves what is ready on show. A piece with `grounding: "inferred"` is underlined with a tooltip. A piece with a `source` is a button only when <primary>onSourceSelect(segment)</primary> is given, and the segment arrives by reference: <code>CueCard&lt;S extends CueSegment&gt;</code>. Headings and status text come from `labels`; a section `label` replaces its heading and an empty string draws none. <primary>HeardLine</primary> draws the sentence the card answers: `pieces` with the carrying words `strong`, a `label`, `tone="ask"` for something asked, cut after `maxLines` with the whole sentence in its tooltip; `pieces` is a string, or a list of strings and `{ text, strong }`. <primary>CueLineText</primary> is one line on its own, the part every line of the card is drawn with. They draw their content only: the card reuses its own `CueLineText` and `toCueLine` for every line and imports no other component (just the library\'s `cn`); the caution icon is a node the caller passes. They are meant to be placed inside a `Panel` (`title`, `meta`, `bodyPadding`), with the `HeardLine` above the `CueCard` it answers. Every story below shows its whole code: the `Cited` type that extends `CueSegment`, the typed sections written as marked strings, the state and the callback.',
+          '<primary>What to say next</primary>, readable in the two seconds a person has while still listening. The content is structured and the card alone decides how it looks: `sections` (`say`, `anchors`, `ask`, `caution`, `context`) hold one-sentence `lines`, and each piece of a line carries a `role` (`spoken`, `cue`, `evidence`, `caution`, `context`). A line is written the short way: a string with its key words marked, `**cue**`, `==evidence==` and `!!caution!!` (the rest is spoken); or a list of strings and segments, where a string is spoken text taken exactly as written and a segment object is used only for a `source`, a `grounding` or a field of your own; a full `{ segments }` line still works, and `toCueLine` turns any form into one. Evidence is the accent colour, a caution sits in an amber box whose first line names it, context is small and quiet. `mode="compact"` keeps the response, `maxAnchors` anchors and any caution. `size` (`sm`, `md` the default, `lg`, `xl`) sets the base text size on the root (14, 16, 19 or 22px, with `data-size`) and every part is sized in `em` from it, so the card scales as one. `status="pending"` says a revision is on its way and leaves what is ready on show. A piece with `grounding: "inferred"` is underlined with a tooltip. A piece with a `source` is a button only when <primary>onSourceSelect(segment)</primary> is given, and the segment arrives by reference: <code>CueCard&lt;S extends CueSegment&gt;</code>. Headings and status text come from `labels`; a section `label` replaces its heading and an empty string draws none. <primary>HeardLine</primary> draws the sentence the card answers: `pieces` with the carrying words `strong`, a `label`, `tone="ask"` for something asked, cut after `maxLines` with the whole sentence in its tooltip; `pieces` is a string, or a list of strings and `{ text, strong }`. <primary>CueLineText</primary> is one line on its own, the part every line of the card is drawn with. They draw their content only: the card reuses its own `CueLineText` and `toCueLine` for every line and imports no other component (just the library\'s `cn`); the caution icon is a node the caller passes. They are meant to be placed inside a `Panel` (`title`, `meta`, `bodyPadding`), with the `HeardLine` above the `CueCard` it answers. Every story below shows its whole code: the `Cited` type that extends `CueSegment`, the typed sections written as marked strings, the state and the callback.',
       },
     },
   },
   argTypes: {
     sections: { control: false, description: '`{ kind, label?, lines: { segments }[] }[]`.' },
     mode: { control: false, description: '`detail` (default) or `compact`.' },
+    size: { control: false, description: '`sm`, `md` (default), `lg` or `xl`.' },
     status: { control: false, description: '`ready` (default) or `pending`.' },
     maxAnchors: { control: false, description: 'Anchors a compact card keeps.' },
     onSourceSelect: {
@@ -132,6 +134,20 @@ export const InferredClaim: Story = {
 export const CustomLabels: Story = {
   render: () => <GermanNotePanel />,
   parameters: exampleDocs(factories, 'GermanNotePanel'),
+};
+
+/** A `SegmentedPrimitive` in the panel's `actions` switches the `size` held in state: the whole card scales as one. */
+export const Sizes: Story = {
+  render: () => <ResizableNotePanel />,
+  parameters: exampleDocs(factories, 'ResizableNotePanel'),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const card = canvasElement.querySelector('[data-slot="cue-card"]');
+    await expect(card).toHaveAttribute('data-size', 'md');
+    await userEvent.click(canvas.getByText('Extra large'));
+    await expect(card).toHaveAttribute('data-size', 'xl');
+    await expect(canvas.getByText('size: xl')).toBeVisible();
+  },
 };
 
 /** HeardLine on its own: plain, cut after one line, and asked. */

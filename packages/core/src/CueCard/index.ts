@@ -2,6 +2,7 @@ export { CueCard, CueLineText, DEFAULT_CUE_CARD_LABELS, HeardLine, toCueLine } f
 export type {
   CueCardLabels,
   CueCardProps,
+  CueCardSize,
   CueLine,
   CueLineInput,
   CuePieceInput,

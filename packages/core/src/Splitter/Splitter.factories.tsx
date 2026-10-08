@@ -2,6 +2,7 @@ import { Button } from '@oc-tech/omni-ui-components/Button';
 import { Panel } from '@oc-tech/omni-ui-components/Panel';
 import {
   Splitter,
+  type SplitterEdge,
   SplitterPanel,
   type SplitterPanelProps,
   type SplitterProps,
@@ -155,3 +156,80 @@ export const ColumnsWithGap = () => (
     </SplitterPanel>
   </Splitter>
 );
+
+/** The limits of what the outer edges resize, as `Splitter` takes them, plus the caller's own starting size. */
+export interface ExtentLimits extends Pick<SplitterProps, 'minExtent' | 'maxExtent'> {
+  defaultExtent: number;
+}
+
+/** A card between 280 and 640px wide that starts at 420. */
+export const cardWidth: ExtentLimits = { defaultExtent: 420, minExtent: 280, maxExtent: 640 };
+
+/** A card between 120 and 360px tall that starts at 200. */
+export const cardHeight: ExtentLimits = { defaultExtent: 200, minExtent: 120, maxExtent: 360 };
+
+/**
+ * A card resized from both side edges about its centre. An edge handle resizes nothing itself: it reports the
+ * width wanted, and the caller keeps it in state and applies it as the container's style.
+ */
+export const CardResizedFromBothSides = () => {
+  const [width, setWidth] = useState(cardWidth.defaultExtent);
+  const [lastEdge, setLastEdge] = useState<SplitterEdge | null>(null);
+  const reset = () => {
+    setWidth(cardWidth.defaultExtent);
+    setLastEdge(null);
+  };
+  return (
+    <div style={{ width, marginInline: 'auto' }}>
+      <Splitter
+        resizable
+        edges={['start', 'end']}
+        edgeAnchor="centre"
+        extent={width}
+        minExtent={cardWidth.minExtent}
+        maxExtent={cardWidth.maxExtent}
+        onExtentChange={(extent: number, edge: SplitterEdge) => {
+          setWidth(extent);
+          setLastEdge(edge);
+        }}
+        onExtentReset={reset}
+        style={{ height: 200 }}
+      >
+        <SplitterPanel id="card" className="flex">
+          <Panel
+            title="Card"
+            meta={lastEdge ? `${width}px, from the ${lastEdge} edge` : `${width}px`}
+            actions={
+              <Button buttonSize="sm" variant="outline" icon={<RotateCcw />} onClick={reset}>
+                Reset width
+              </Button>
+            }
+          />
+        </SplitterPanel>
+      </Splitter>
+    </div>
+  );
+};
+
+/** Stacked: a card resized from its bottom edge. Its top stays put, so the height changes by the distance dragged. */
+export const CardResizedFromBottom = () => {
+  const [height, setHeight] = useState(cardHeight.defaultExtent);
+  return (
+    <div style={{ height }}>
+      <Splitter
+        resizable
+        orientation="vertical"
+        edges={['end']}
+        extent={height}
+        minExtent={cardHeight.minExtent}
+        maxExtent={cardHeight.maxExtent}
+        onExtentChange={(extent: number) => setHeight(extent)}
+        onExtentReset={() => setHeight(cardHeight.defaultExtent)}
+      >
+        <SplitterPanel id="card" className="flex">
+          <Panel title="Card" meta={`${height}px`} />
+        </SplitterPanel>
+      </Splitter>
+    </div>
+  );
+};

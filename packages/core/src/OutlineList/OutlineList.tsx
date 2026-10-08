@@ -47,7 +47,7 @@ export const OutlineListItem = <T extends OutlineItem = OutlineItem>({
           live
             ? 'text-[color:var(--oui-tone-success-fg)]'
             : current
-              ? 'text-[color:var(--oui-foreground)]'
+              ? 'text-[color:var(--oui-tone-accent-fg)]'
               : 'text-[color:var(--oui-panel-meta-fg)]',
         )}
       >
@@ -58,10 +58,10 @@ export const OutlineListItem = <T extends OutlineItem = OutlineItem>({
           data-slot="outline-list-label"
           className={cn(
             'text-[13.5px] leading-snug break-words',
-            live
-              ? 'font-semibold text-[color:var(--oui-tone-success-fg)]'
-              : current
-                ? 'font-medium text-[color:var(--oui-foreground)]'
+            current
+              ? 'font-semibold text-[color:var(--oui-foreground)]'
+              : live
+                ? 'text-[color:var(--oui-foreground)]'
                 : 'text-[color:var(--oui-foreground-muted)]',
           )}
         >
@@ -74,7 +74,15 @@ export const OutlineListItem = <T extends OutlineItem = OutlineItem>({
           >
             {item.meta}
             {item.meta && live ? ' · ' : ''}
-            {live ? labels.live : ''}
+            {live && (
+              <span className="font-semibold text-[color:var(--oui-tone-success-fg)]">
+                <span
+                  aria-hidden="true"
+                  className="mr-1 inline-block size-1.5 rounded-full bg-[color:var(--oui-tone-success-fg)] align-middle"
+                />
+                {labels.live}
+              </span>
+            )}
           </span>
         )}
       </span>
@@ -87,17 +95,18 @@ export const OutlineListItem = <T extends OutlineItem = OutlineItem>({
   );
   const rowClass = cn(
     'flex w-full gap-2.5 rounded-lg border-l-[3px] py-2 pr-2.5 pl-2 text-left outline-none',
-    live
-      ? 'border-[color:var(--oui-tone-success-fg)] bg-[color:var(--oui-tone-success-bg)]'
-      : current
-        ? 'border-[color:var(--oui-foreground)] bg-[color:color-mix(in_srgb,var(--oui-foreground)_8%,transparent)]'
-        : 'border-transparent',
+    // The chosen row is the only filled one. Live is said by the number and the word, never by a fill, so
+    // "what I am reading" and "what is happening now" cannot be mistaken for each other.
+    current
+      ? 'border-[color:var(--oui-tone-accent-fg)] bg-[color:var(--oui-tone-accent-bg)]'
+      : 'border-transparent',
   );
   return onSelect ? (
     <button
       type="button"
       data-slot="outline-list-row"
       data-state={live ? 'live' : 'default'}
+      {...(current ? { 'data-current': '' } : {})}
       aria-current={current ? 'true' : undefined}
       title={name}
       className={cn(
@@ -122,7 +131,7 @@ export const OutlineListItem = <T extends OutlineItem = OutlineItem>({
 
 /**
  * Omni OutlineList: a numbered list of things to jump to (the questions of a call, the steps of a run). The chosen
- * row is marked with a bar; the `live` row is green, so "what is happening now" and "what I am reading" never
+ * row is the only filled one (a bar and a tint); the `live` row has a green number and word, so "what is happening now" and "what I am reading" never
  * look alike.
  *
  * Made of the library's own parts: the `List` and `ListItem` hold the rows, each row is an

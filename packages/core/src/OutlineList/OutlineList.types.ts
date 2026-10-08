@@ -16,7 +16,7 @@ export interface OutlineItem {
   meta?: React.ReactNode;
   /** Shown before the label. Defaults to the item's position, counted from 1 in the order given. */
   number?: number | string;
-  /** `live` marks the item that is happening now (green). */
+  /** `live` marks the item that is happening now: a green number and a green word in its meta line, no fill. */
   state?: 'default' | 'live';
   /** Plain text for the row's accessible name and tooltip when `label` is not a string. */
   name?: string;

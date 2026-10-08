@@ -104,7 +104,7 @@ describe('omni-ui-components/OutlineList', () => {
     expect(container.querySelector('[aria-current]')).toBeNull();
   });
 
-  it('the live row is marked data-state="live", green, and says so after its meta; a live row with no meta says only the word', () => {
+  it('the live row is marked data-state="live" with a green number and a green word after its meta, and no fill or bar; a live row with no meta says only the word', () => {
     const { container } = render(
       <OutlineList
         labels={{ live: 'now' }}
@@ -119,34 +119,80 @@ describe('omni-ui-components/OutlineList', () => {
     );
     const [asked, bare, quiet, nothing] = rowsOf(container);
     expect(asked).toHaveAttribute('data-state', 'live');
-    expect(asked!.className).toContain('--oui-tone-success-bg');
-    expect(asked!.querySelector('[data-slot="outline-list-meta"]')).toHaveTextContent(
-      '11:46 · now',
+    // Live is never a fill: no background, no bar, and it is not the chosen row.
+    expect(asked!.className).not.toContain('--oui-tone-success');
+    expect(asked!.className).not.toContain('--oui-tone-accent');
+    expect(asked!.className).toContain('border-transparent');
+    expect(asked).not.toHaveAttribute('data-current');
+    expect(asked!.querySelector('[data-slot="outline-list-number"]')!.className).toContain(
+      'text-[color:var(--oui-tone-success-fg)]',
     );
-    expect(asked!.querySelector('[data-slot="outline-list-label"]')!.className).toContain(
-      '--oui-tone-success-fg',
-    );
+    const label = asked!.querySelector('[data-slot="outline-list-label"]')!;
+    expect(label.className).not.toContain('--oui-tone-success-fg');
+    expect(label.className).not.toContain('font-semibold');
+    const meta = asked!.querySelector('[data-slot="outline-list-meta"]')!;
+    expect(meta).toHaveTextContent('11:46 · now');
+    const word = meta.querySelector('span')!;
+    expect(word.textContent).toBe('now');
+    expect(word.className).toContain('font-semibold');
+    expect(word.className).toContain('text-[color:var(--oui-tone-success-fg)]');
+    const dot = word.querySelector('span')!;
+    expect(dot).toHaveAttribute('aria-hidden', 'true');
+    expect(dot.className).toContain('rounded-full');
+    expect(dot.className).toContain('bg-[color:var(--oui-tone-success-fg)]');
     expect(bare!.querySelector('[data-slot="outline-list-meta"]')!.textContent).toBe('now');
     expect(quiet).toHaveAttribute('data-state', 'default');
-    expect(quiet!.querySelector('[data-slot="outline-list-meta"]')!.textContent).toBe('11:50');
+    const quietMeta = quiet!.querySelector('[data-slot="outline-list-meta"]')!;
+    expect(quietMeta.textContent).toBe('11:50');
+    expect(quietMeta.querySelector('span')).toBeNull();
     expect(nothing!.querySelector('[data-slot="outline-list-meta"]')).toBeNull();
     expect(DEFAULT_OUTLINE_LIST_LABELS).toEqual({ list: 'Outline', live: 'live' });
   });
 
-  it('live wins over chosen in colour, and the chosen row still carries aria-current', () => {
-    const { container } = render(<OutlineList {...outlineListPropsFactory({ value: 'deploy' })} />);
-    const live = rowsOf(container)[0]!;
-    expect(live).toHaveAttribute('aria-current', 'true');
-    expect(live).toHaveAttribute('data-state', 'live');
-    expect(live.className).toContain('--oui-tone-success-fg');
-    const chosen = render(
+  it('the chosen row is the only filled one: an accent bar and tint, a semibold label, an accent number, data-current and aria-current', () => {
+    const { container } = render(
       <OutlineList {...outlineListPropsFactory({ value: 'configure' })} />,
-    ).container;
-    const row = chosen.querySelector<HTMLElement>('[aria-current="true"]')!;
-    expect(row.className).toContain('border-[color:var(--oui-foreground)]');
-    expect(row.querySelector('[data-slot="outline-list-number"]')!.className).toContain(
-      'text-[color:var(--oui-foreground)]',
     );
+    const filled = rowsOf(container).filter((each) => each.className.includes('bg-[color:var('));
+    expect(filled).toHaveLength(1);
+    const row = filled[0]!;
+    expect(row).toHaveAttribute('aria-current', 'true');
+    expect(row).toHaveAttribute('data-current');
+    expect(row).toHaveAttribute('data-state', 'default');
+    expect(row.className).toContain('border-[color:var(--oui-tone-accent-fg)]');
+    expect(row.className).toContain('bg-[color:var(--oui-tone-accent-bg)]');
+    expect(row.querySelector('[data-slot="outline-list-label"]')!.className).toContain(
+      'font-semibold',
+    );
+    expect(row.querySelector('[data-slot="outline-list-number"]')!.className).toContain(
+      'text-[color:var(--oui-tone-accent-fg)]',
+    );
+    expect(container.querySelectorAll('[data-current]')).toHaveLength(1);
+    for (const other of rowsOf(container).filter((each) => each !== row)) {
+      expect(other.className).toContain('border-transparent');
+      expect(other).not.toHaveAttribute('aria-current');
+    }
+  });
+
+  it('a row that is both chosen and live has the chosen fill with the green number and word', () => {
+    const { container } = render(<OutlineList {...outlineListPropsFactory({ value: 'deploy' })} />);
+    const row = rowsOf(container)[0]!;
+    expect(row).toHaveAttribute('aria-current', 'true');
+    expect(row).toHaveAttribute('data-current');
+    expect(row).toHaveAttribute('data-state', 'live');
+    expect(row.className).toContain('border-[color:var(--oui-tone-accent-fg)]');
+    expect(row.className).toContain('bg-[color:var(--oui-tone-accent-bg)]');
+    expect(row.className).not.toContain('--oui-tone-success');
+    const number = row.querySelector('[data-slot="outline-list-number"]')!;
+    expect(number.className).toContain('text-[color:var(--oui-tone-success-fg)]');
+    expect(number.className).not.toContain('--oui-tone-accent-fg');
+    expect(row.querySelector('[data-slot="outline-list-label"]')!.className).toContain(
+      'font-semibold',
+    );
+    const word = row.querySelector('[data-slot="outline-list-meta"] span')!;
+    expect(word.textContent).toBe('live');
+    expect(word.className).toContain('text-[color:var(--oui-tone-success-fg)]');
+    expect(container.querySelectorAll('[data-current]')).toHaveLength(1);
   });
 
   it('without onValueChange the rows are not pressable: no buttons, no aria-current, the content is still there', () => {

@@ -6,7 +6,12 @@ export interface SplitterLabels {
   handle: (panel: string) => string;
   /** Tooltip of a handle. */
   hint: string;
+  /** Accessible name of the handle at an outer edge. */
+  edge: (edge: SplitterEdge, orientation: 'horizontal' | 'vertical') => string;
 }
+
+/** An outer edge of the splitter along its orientation: `start` is left (or top), `end` is right (or bottom). */
+export type SplitterEdge = 'start' | 'end';
 
 /** Panel sizes in px, by panel `id`. A panel with no entry takes the room that is left. */
 export type SplitterSizes = Record<string, number>;
@@ -27,6 +32,25 @@ export interface SplitterProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   onResizeStart?: (panelId: string) => void;
   /** The handle was let go. */
   onResizeEnd?: (panelId: string, sizes: SplitterSizes) => void;
+  /**
+   * Draw a handle at these outer edges. It does not resize a panel: it reports the size wanted for whatever
+   * holds the splitter (a window, a drawer, a card) through `onExtentChange`, and the caller applies it.
+   * Needs `resizable`. `onResizeStart` and `onResizeEnd` fire for it with the id `edge:start` or `edge:end`.
+   */
+  edges?: readonly SplitterEdge[];
+  /** The current size in px of what the edges resize. Defaults to the splitter's own measured size. */
+  extent?: number;
+  minExtent?: number;
+  maxExtent?: number;
+  /**
+   * How the container grows. `opposite` (default): the far edge stays put, so the size changes by the distance
+   * dragged. `centre`: it grows about its centre, so the size changes by twice the distance.
+   */
+  edgeAnchor?: 'opposite' | 'centre';
+  /** The size wanted, from a drag or an arrow key on an edge handle. */
+  onExtentChange?: (extent: number, edge: SplitterEdge) => void;
+  /** An edge handle was double-clicked (or Enter pressed on it): go back to the default size. */
+  onExtentReset?: (edge: SplitterEdge) => void;
   /** Every panel goes back to its default size whenever this value changes. */
   resetKey?: React.Key;
   /** Px a panel moves per arrow key press. */

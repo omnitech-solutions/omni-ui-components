@@ -119,7 +119,7 @@ export const StepsLastFirst = () => {
   );
 };
 
-/** The step running now is also the one on show: it stays green and carries `aria-current`. */
+/** The step running now is also the one on show: it has the chosen fill and `aria-current`, with its number and the word still green. */
 export const StepsLiveOnShow = () => {
   const [href, setHref] = useState('/docs/deploy');
   return (

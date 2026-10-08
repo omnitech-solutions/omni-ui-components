@@ -70,9 +70,18 @@ export interface CueCardLabels {
   inferred: string;
 }
 
+/** `sm` for a narrow side pane, `md` the default, `lg` and `xl` for reading at a glance or from a distance. */
+export type CueCardSize = 'sm' | 'md' | 'lg' | 'xl';
+
 export interface CueCardProps<S extends CueSegment = CueSegment>
   extends Omit<React.HTMLAttributes<HTMLElement>, 'children'> {
   sections: readonly CueSection<S>[];
+  /** A quiet line above the sections: what kind of note, when. */
+  meta?: React.ReactNode;
+  /** Indent the card to the text column of a `HeardLine` above it. */
+  inset?: boolean;
+  /** How large the card reads. Every part scales together. Default `md`. */
+  size?: CueCardSize;
   /** `compact` keeps the response, a few anchors and any caution: nothing to read. */
   mode?: 'detail' | 'compact';
   /** The most anchors a compact card shows. */
@@ -96,13 +105,22 @@ export interface HeardPiece {
   strong?: boolean;
 }
 
-export interface HeardLineProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface HeardLineProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
   /** The sentence: a string, or runs (a plain string is a run that is not lifted). Joined they are the sentence exactly. */
-  pieces: string | readonly (string | HeardPiece)[];
+  pieces?: string | readonly (string | HeardPiece)[];
+  /** The short name of what was heard, drawn large above the sentence. */
+  title?: React.ReactNode;
+  /** A small line under it: what is happening about it ("Preparing…"). */
+  status?: React.ReactNode;
+  /** `line` (default): a bar at the left when it has a tone. `boxed`: a tinted notice. */
+  variant?: 'line' | 'boxed';
+  /** Scales with a `CueCard` of the same size. Default `md`. */
+  size?: CueCardSize;
   /** Small heading above it: who said it, when. */
   label?: React.ReactNode;
-  /** `ask` marks it with the act-now colour (something asked); `plain` does not. */
-  tone?: 'ask' | 'plain';
+  /** `ask` marks it with the act-now colour (something asked), `accent` with the chosen colour; `plain` does not. */
+  tone?: 'ask' | 'accent' | 'plain';
   /** Lines shown before the rest is cut. The whole sentence is in the tooltip. */
   maxLines?: number;
 }

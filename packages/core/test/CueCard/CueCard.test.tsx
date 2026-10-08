@@ -2,6 +2,8 @@ import '@testing-library/jest-dom';
 
 import {
   CueCard,
+  type CueCardProps,
+  type CueCardSize,
   CueLineText,
   type CueSection,
   type CueSegment,
@@ -19,6 +21,8 @@ import {
   type Cited as FixtureCited,
   heardLinePropsFactory,
   heardLineVariants,
+  ResizableNotePanel,
+  sizeOptions,
   unconfirmedNote,
 } from 'factories/omni-ui-components/CueCard/CueCard.factories';
 import * as React from 'react';
@@ -84,10 +88,10 @@ describe('omni-ui-components/CueCard', () => {
     expect(headingOf(ask)!.className).toContain('--oui-tone-success-fg');
     expect(headingOf(anchors)!.className).toContain('--oui-tone-accent-fg');
     expect(headingOf(context)!.className).toContain('--oui-panel-meta-fg');
-    expect(linesOf(say)[0]!.className).toContain('text-[19px]');
-    expect(linesOf(ask)[0]!.className).toContain('text-[19px]');
-    expect(linesOf(anchors)[0]!.className).toContain('text-base');
-    expect(linesOf(context)[0]!.className).toContain('text-sm');
+    expect(linesOf(say)[0]!.className).toContain('text-[1.1875em]');
+    expect(linesOf(ask)[0]!.className).toContain('text-[1.1875em]');
+    expect(linesOf(anchors)[0]!.className).toContain('text-[1em]');
+    expect(linesOf(context)[0]!.className).toContain('text-[0.875em]');
     expect(say.querySelector('[aria-hidden="true"]')!.className).toContain('rounded-full');
     expect(anchors.querySelector('[aria-hidden="true"]')!.className).toContain('rounded-[1.5px]');
     expect(context.querySelector('[aria-hidden="true"]')).toBeNull();
@@ -626,13 +630,55 @@ describe('omni-ui-components/HeardLine', () => {
     expect(root).toHaveAttribute('data-tone', 'ask');
     expect(root.className).toContain('border-l-4');
     expect(label).toHaveTextContent('Follow-up · 11:46');
-    expect(label.className).toContain('--oui-tone-success-fg');
+    expect(label.style.color).toBe('var(--oui-tone-success-fg)');
     rerender(<HeardLine pieces={[{ text: 'Right.' }]} label="Them · 11:44" />);
     expect(root).toHaveAttribute('data-tone', 'plain');
     expect(root.className).not.toContain('border-l-4');
     expect(container.querySelector('[data-slot="heard-line-label"]')!.className).toContain(
       '--oui-panel-meta-fg',
     );
+  });
+
+  it('HeardLine: a title, a status, the accent tone, the boxed variant and a size; with no pieces it draws no sentence', () => {
+    const { container, rerender } = render(
+      <HeardLine title="Heard" status="On its way" tone="accent" variant="boxed" size="lg" />,
+    );
+    const root = container.querySelector<HTMLElement>('[data-slot="heard-line"]')!;
+    expect(root).toHaveAttribute('data-tone', 'accent');
+    expect(root).toHaveAttribute('data-variant', 'boxed');
+    expect(root).toHaveAttribute('data-size', 'lg');
+    expect(root.className).toContain('text-[19px]');
+    expect(root.className).toContain('rounded-lg');
+    expect(root.className).not.toContain('border-l-4');
+    // A toned box takes its border and tint from the tone, not the plain divider.
+    expect(root.className).not.toContain('--oui-panel-divider');
+    expect(container.querySelector('[data-slot="heard-line-title"]')).toHaveTextContent('Heard');
+    expect(screen.getByRole('status')).toHaveTextContent('On its way');
+    expect(container.querySelector('[data-slot="heard-line-text"]')).toBeNull();
+    expect(root).not.toHaveAttribute('title');
+    rerender(<HeardLine pieces="Go on." variant="boxed" style={{ opacity: 0.5 }} />);
+    expect(root).toHaveAttribute('data-variant', 'boxed');
+    expect(root).toHaveAttribute('data-size', 'md');
+    expect(root.className).toContain('border-[color:var(--oui-panel-divider)]');
+    expect(root).toHaveStyle({ opacity: '0.5' });
+    expect(container.querySelector('[data-slot="heard-line-title"]')).toBeNull();
+    expect(screen.queryByRole('status')).toBeNull();
+    rerender(<HeardLine pieces="Go on." tone="accent" style={{ opacity: 0.5 }} />);
+    expect(root.className).toContain('border-l-4');
+    expect(root).toHaveStyle({ opacity: '0.5' });
+    expect(root).toHaveAttribute('data-variant', 'line');
+  });
+
+  it('CueCard meta is a quiet line above the sections and inset indents the card; neither is drawn by default', () => {
+    const { container, rerender } = render(<CueCard sections={everyKind} />);
+    const root = container.querySelector<HTMLElement>('[data-slot="cue-card"]')!;
+    expect(container.querySelector('[data-slot="cue-card-meta"]')).toBeNull();
+    expect(root.className).not.toContain('pl-[18px]');
+    rerender(<CueCard sections={everyKind} meta="Note · 11:46" inset />);
+    const meta = container.querySelector<HTMLElement>('[data-slot="cue-card-meta"]')!;
+    expect(meta).toHaveTextContent('Note · 11:46');
+    expect(root.firstElementChild).toBe(meta);
+    expect(root.className).toContain('pl-[18px]');
   });
 
   it('is cut after two lines by default and after maxLines when given', () => {
@@ -669,5 +715,53 @@ describe('omni-ui-components/HeardLine', () => {
       expect(each.querySelector('[data-slot="heard-line"]')).toBeInTheDocument();
       unmount();
     }
+  });
+
+  it('size: md by default; each size sets data-size and the base text size on the root, and the parts are sized in em from it', () => {
+    const { container, rerender } = render(<CueCard sections={everyKind} status="pending" />);
+    const root = container.querySelector<HTMLElement>('[data-slot="cue-card"]')!;
+    expect(root).toHaveAttribute('data-size', 'md');
+    expect(root.className).toContain('text-[16px]');
+    const base: Record<CueCardSize, string> = {
+      sm: 'text-[14px]',
+      md: 'text-[16px]',
+      lg: 'text-[19px]',
+      xl: 'text-[22px]',
+    };
+    for (const size of Object.keys(base) as CueCardSize[]) {
+      rerender(<CueCard sections={everyKind} status="pending" size={size} className="mine" />);
+      expect(root).toHaveAttribute('data-size', size);
+      expect(root.className).toContain(base[size]);
+      for (const other of Object.values(base).filter((each) => each !== base[size]))
+        expect(root.className).not.toContain(other);
+      // The colour and the caller's class stay beside the size.
+      expect(root.className).toContain('text-[color:var(--oui-foreground)]');
+      expect(root).toHaveClass('mine');
+      // No part below the root has a px or rem text size of its own.
+      for (const part of root.querySelectorAll<HTMLElement>(
+        '[data-slot="cue-card-label"], [data-slot="cue-card-line"], [data-slot="cue-card-status"]',
+      )) {
+        expect(part.className).toMatch(/text-\[[\d.]+em\]/);
+        expect(part.className).not.toMatch(/text-\[\d+px\]|text-(xs|sm|base|lg|xl)\b/);
+      }
+    }
+    expectTypeOf<CueCardProps['size']>().toEqualTypeOf<CueCardSize | undefined>();
+    expectTypeOf<CueCardSize>().toEqualTypeOf<'sm' | 'md' | 'lg' | 'xl'>();
+  });
+
+  it('the size example: the switch in the panel actions sets the size held in state, from typed options', async () => {
+    const { container } = render(<ResizableNotePanel />);
+    const root = container.querySelector<HTMLElement>('[data-slot="cue-card"]')!;
+    expect(root).toHaveAttribute('data-size', 'md');
+    expect(screen.getByRole('region', { name: 'Answer' })).toHaveTextContent('size: md');
+    for (const option of sizeOptions) {
+      await userEvent.click(screen.getByText(option.label as string));
+      expect(root).toHaveAttribute('data-size', option.value);
+      expect(screen.getByRole('region', { name: 'Answer' })).toHaveTextContent(
+        `size: ${option.value}`,
+      );
+    }
+    expect(sizeOptions.map((option) => option.value)).toEqual(['sm', 'md', 'lg', 'xl']);
+    expectTypeOf(sizeOptions[0]!.value).toEqualTypeOf<CueCardSize>();
   });
 });

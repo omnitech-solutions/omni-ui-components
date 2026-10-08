@@ -9,6 +9,8 @@ import {
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
+  CardResizedFromBothSides,
+  CardResizedFromBottom,
   ColumnsWithGap,
   ResettableColumns,
   ResizableColumns,
@@ -38,6 +40,16 @@ const Columns = (props: React.ComponentProps<typeof Splitter>) => (
     </SplitterPanel>
   </Splitter>
 );
+
+const Edged = (props: React.ComponentProps<typeof Splitter>) => (
+  <Splitter {...splitterPropsFactory({ edges: ['start', 'end'], extent: 400, ...props })}>
+    <SplitterPanel id="body">Body</SplitterPanel>
+  </Splitter>
+);
+const edge = (side: 'left' | 'right' | 'top' | 'bottom') =>
+  screen.getByRole('separator', { name: `Resize from the ${side} edge` });
+const slots = (root: HTMLElement) =>
+  Array.from(root.children).map((el) => el.getAttribute('data-slot') ?? '');
 
 const handle = (name: string) => screen.getByRole('separator', { name: `Resize ${name}` });
 const now = (name: string) => Number(handle(name).getAttribute('aria-valuenow'));
@@ -337,5 +349,367 @@ describe('omni-ui-components/Splitter', () => {
       expect(document.querySelector('[data-slot="splitter"]')).not.toBeNull();
       done();
     }
+  });
+
+  describe('outer edges', () => {
+    it('an edge handle is drawn only for a listed edge, and only when resizable', () => {
+      const { rerender } = render(<Edged data-testid="root" edges={['end']} />);
+      expect(slots(screen.getByTestId('root'))).toEqual(['splitter-panel', 'splitter-edge']);
+      expect(screen.getByRole('separator')).toHaveAttribute('data-edge', 'end');
+      rerender(<Edged data-testid="root" edges={['start']} />);
+      expect(slots(screen.getByTestId('root'))).toEqual(['splitter-edge', 'splitter-panel']);
+      expect(screen.getByRole('separator')).toHaveAttribute('data-edge', 'start');
+      rerender(<Edged data-testid="root" />);
+      expect(slots(screen.getByTestId('root'))).toEqual([
+        'splitter-edge',
+        'splitter-panel',
+        'splitter-edge',
+      ]);
+      rerender(<Edged data-testid="root" edges={[]} />);
+      expect(screen.queryByRole('separator')).toBeNull();
+      rerender(<Edged data-testid="root" edges={undefined} />);
+      expect(screen.queryByRole('separator')).toBeNull();
+      rerender(<Edged data-testid="root" resizable={false} />);
+      expect(screen.queryByRole('separator')).toBeNull();
+      expect(document.querySelector('[data-slot="splitter-edge"]')).toBeNull();
+    });
+
+    it('edge handles sit outside the panel handles, which keep their own names and values', () => {
+      render(<Columns data-testid="root" edges={['start', 'end']} extent={1000} />);
+      expect(slots(screen.getByTestId('root'))).toEqual([
+        'splitter-edge',
+        'splitter-panel',
+        'splitter-handle',
+        'splitter-panel',
+        'splitter-handle',
+        'splitter-panel',
+        'splitter-edge',
+      ]);
+      expect(now('list')).toBe(200);
+      expect(edge('left')).toHaveAttribute('aria-valuenow', '1000');
+    });
+
+    it('is a focusable separator named by its edge, with the extent as its value and its limits', () => {
+      const { rerender } = render(<Edged minExtent={300} maxExtent={640} />);
+      for (const [side, name] of [
+        ['left', 'start'],
+        ['right', 'end'],
+      ] as const) {
+        const each = edge(side);
+        expect(each).toHaveAttribute('data-slot', 'splitter-edge');
+        expect(each).toHaveAttribute('data-edge', name);
+        expect(each).toHaveAttribute('aria-orientation', 'vertical');
+        expect(each).toHaveAttribute('aria-valuenow', '400');
+        expect(each).toHaveAttribute('aria-valuemin', '300');
+        expect(each).toHaveAttribute('aria-valuemax', '640');
+        expect(each).toHaveAttribute('tabindex', '0');
+        expect(each).toHaveAttribute('title', DEFAULT_SPLITTER_LABELS.hint);
+      }
+      rerender(<Edged orientation="vertical" />);
+      expect(edge('top')).toHaveAttribute('data-edge', 'start');
+      expect(edge('bottom')).toHaveAttribute('data-edge', 'end');
+      expect(edge('bottom')).toHaveAttribute('aria-orientation', 'horizontal');
+      expect(edge('bottom')).toHaveAttribute('aria-valuemin', '0');
+      rerender(<Edged labels={{ edge: (which, orientation) => `Rand ${which} ${orientation}` }} />);
+      expect(screen.getByRole('separator', { name: 'Rand start horizontal' })).toBeInTheDocument();
+      expect(screen.getByRole('separator', { name: 'Rand end horizontal' })).toBeInTheDocument();
+      expect(DEFAULT_SPLITTER_LABELS.edge('end', 'vertical')).toBe('Resize from the bottom edge');
+    });
+
+    it('never reports an infinite maximum: without maxExtent it reports the extent, or minExtent when that is larger', () => {
+      const { rerender } = render(<Edged />);
+      expect(edge('right')).toHaveAttribute('aria-valuemax', '400');
+      rerender(<Edged extent={100} minExtent={300} />);
+      expect(edge('right')).toHaveAttribute('aria-valuemax', '300');
+      for (const each of screen.getAllByRole('separator'))
+        expect(Number.isFinite(Number(each.getAttribute('aria-valuemax')))).toBe(true);
+    });
+
+    it('opposite anchor: a drag asks for the extent plus the distance moved outwards, in screen coordinates', () => {
+      const onExtentChange = vi.fn();
+      const onSizesChange = vi.fn();
+      render(<Edged onExtentChange={onExtentChange} onSizesChange={onSizesChange} />);
+      const right = edge('right');
+      fireEvent.pointerMove(right, { screenX: 900 });
+      expect(onExtentChange).not.toHaveBeenCalled();
+      // clientX is not what is read: the container may move under the pointer.
+      fireEvent.pointerDown(right, { screenX: 100, clientX: 7, pointerId: 1 });
+      fireEvent.pointerMove(right, { screenX: 140, clientX: 7 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(440, 'end');
+      fireEvent.pointerMove(right, { screenX: 70 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(370, 'end');
+      fireEvent.pointerUp(right);
+      fireEvent.pointerMove(right, { screenX: 500 });
+      expect(onExtentChange).toHaveBeenCalledTimes(2);
+
+      const left = edge('left');
+      fireEvent.pointerDown(left, { screenX: 100, pointerId: 2 });
+      fireEvent.pointerMove(left, { screenX: 60 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(440, 'start');
+      fireEvent.pointerMove(left, { screenX: 130 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(370, 'start');
+      fireEvent.pointerCancel(left);
+      // An edge resizes no panel.
+      expect(onSizesChange).not.toHaveBeenCalled();
+    });
+
+    it('centre anchor: a drag asks for twice the distance moved, from either edge', () => {
+      const onExtentChange = vi.fn();
+      render(<Edged edgeAnchor="centre" onExtentChange={onExtentChange} />);
+      fireEvent.pointerDown(edge('right'), { screenX: 100, pointerId: 1 });
+      fireEvent.pointerMove(edge('right'), { screenX: 140 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(480, 'end');
+      fireEvent.pointerUp(edge('right'));
+      fireEvent.pointerDown(edge('left'), { screenX: 100, pointerId: 2 });
+      fireEvent.pointerMove(edge('left'), { screenX: 60 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(480, 'start');
+      fireEvent.pointerMove(edge('left'), { screenX: 125 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(350, 'start');
+      fireEvent.pointerUp(edge('left'));
+    });
+
+    it('vertical: a drag reads screenY, with both anchors', () => {
+      const onExtentChange = vi.fn();
+      const { rerender } = render(<Edged orientation="vertical" onExtentChange={onExtentChange} />);
+      fireEvent.pointerDown(edge('bottom'), { screenY: 50, screenX: 50, pointerId: 1 });
+      fireEvent.pointerMove(edge('bottom'), { screenY: 80, screenX: 500 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(430, 'end');
+      fireEvent.pointerUp(edge('bottom'));
+      fireEvent.pointerDown(edge('top'), { screenY: 50, pointerId: 2 });
+      fireEvent.pointerMove(edge('top'), { screenY: 20 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(430, 'start');
+      fireEvent.pointerUp(edge('top'));
+      rerender(
+        <Edged orientation="vertical" edgeAnchor="centre" onExtentChange={onExtentChange} />,
+      );
+      fireEvent.pointerDown(edge('bottom'), { screenY: 50, pointerId: 3 });
+      fireEvent.pointerMove(edge('bottom'), { screenY: 80 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(460, 'end');
+      fireEvent.pointerUp(edge('bottom'));
+    });
+
+    it('a drag and a key never ask for less than minExtent or more than maxExtent', async () => {
+      const onExtentChange = vi.fn();
+      render(
+        <Edged minExtent={390} maxExtent={410} keyboardStep={24} onExtentChange={onExtentChange} />,
+      );
+      const right = edge('right');
+      fireEvent.pointerDown(right, { screenX: 100, pointerId: 1 });
+      fireEvent.pointerMove(right, { screenX: 900 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(410, 'end');
+      fireEvent.pointerMove(right, { screenX: -900 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(390, 'end');
+      fireEvent.pointerUp(right);
+      right.focus();
+      await userEvent.keyboard('{ArrowRight}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(410, 'end');
+      await userEvent.keyboard('{ArrowLeft}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(390, 'end');
+      edge('left').focus();
+      await userEvent.keyboard('{ArrowLeft}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(410, 'start');
+    });
+
+    it('horizontal keys: the end edge grows on ArrowRight, the start edge on ArrowLeft; other keys do nothing', async () => {
+      const onExtentChange = vi.fn();
+      render(<Edged keyboardStep={10} onExtentChange={onExtentChange} />);
+      edge('right').focus();
+      await userEvent.keyboard('{ArrowRight}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(410, 'end');
+      await userEvent.keyboard('{ArrowLeft}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(390, 'end');
+      edge('left').focus();
+      await userEvent.keyboard('{ArrowLeft}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(410, 'start');
+      await userEvent.keyboard('{ArrowRight}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(390, 'start');
+      expect(onExtentChange).toHaveBeenCalledTimes(4);
+      await userEvent.keyboard('{ArrowUp}{ArrowDown}{Home}{End}a');
+      expect(onExtentChange).toHaveBeenCalledTimes(4);
+    });
+
+    it('vertical keys: the end edge grows on ArrowDown, the start edge on ArrowUp; the default step is 24', async () => {
+      const onExtentChange = vi.fn();
+      render(<Edged orientation="vertical" onExtentChange={onExtentChange} />);
+      edge('bottom').focus();
+      await userEvent.keyboard('{ArrowDown}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(424, 'end');
+      await userEvent.keyboard('{ArrowUp}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(376, 'end');
+      edge('top').focus();
+      await userEvent.keyboard('{ArrowUp}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(424, 'start');
+      await userEvent.keyboard('{ArrowDown}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(376, 'start');
+      expect(onExtentChange).toHaveBeenCalledTimes(4);
+      await userEvent.keyboard('{ArrowLeft}{ArrowRight}');
+      expect(onExtentChange).toHaveBeenCalledTimes(4);
+    });
+
+    it('centre anchor: an arrow key asks for twice the step', async () => {
+      const onExtentChange = vi.fn();
+      render(<Edged edgeAnchor="centre" keyboardStep={10} onExtentChange={onExtentChange} />);
+      edge('right').focus();
+      await userEvent.keyboard('{ArrowRight}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(420, 'end');
+      edge('left').focus();
+      await userEvent.keyboard('{ArrowRight}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(380, 'start');
+    });
+
+    it('Enter and double-click ask for a reset with the edge, and for no size', async () => {
+      const onExtentReset = vi.fn();
+      const onExtentChange = vi.fn();
+      render(<Edged onExtentReset={onExtentReset} onExtentChange={onExtentChange} />);
+      edge('left').focus();
+      await userEvent.keyboard('{Enter}');
+      expect(onExtentReset).toHaveBeenLastCalledWith('start');
+      await userEvent.dblClick(edge('right'));
+      expect(onExtentReset).toHaveBeenLastCalledWith('end');
+      expect(onExtentReset).toHaveBeenCalledTimes(2);
+      expect(onExtentChange).not.toHaveBeenCalled();
+    });
+
+    it('with no callbacks a drag, a key, Enter and a double-click do nothing and do not throw', async () => {
+      render(<Edged />);
+      const right = edge('right');
+      fireEvent.pointerDown(right, { screenX: 100, pointerId: 1 });
+      fireEvent.pointerMove(right, { screenX: 140 });
+      fireEvent.pointerUp(right);
+      right.focus();
+      await userEvent.keyboard('{ArrowRight}{Enter}');
+      await userEvent.dblClick(right);
+      expect(right).toHaveAttribute('aria-valuenow', '400');
+    });
+
+    it('a held edge reports its start and end with the id edge:start or edge:end, once', () => {
+      const onResizeStart = vi.fn();
+      const onResizeEnd = vi.fn();
+      render(
+        <Columns
+          edges={['start', 'end']}
+          extent={1000}
+          onResizeStart={onResizeStart}
+          onResizeEnd={onResizeEnd}
+        />,
+      );
+      fireEvent.pointerUp(edge('left'));
+      expect(onResizeEnd).not.toHaveBeenCalled();
+      fireEvent.pointerDown(edge('left'), { screenX: 100, pointerId: 1 });
+      expect(onResizeStart).toHaveBeenLastCalledWith('edge:start');
+      fireEvent.pointerUp(edge('left'));
+      expect(onResizeEnd).toHaveBeenLastCalledWith('edge:start', { list: 200, side: 250 });
+      fireEvent.pointerCancel(edge('left'));
+      expect(onResizeEnd).toHaveBeenCalledTimes(1);
+      fireEvent.pointerDown(edge('right'), { screenX: 100, pointerId: 2 });
+      expect(onResizeStart).toHaveBeenLastCalledWith('edge:end');
+      fireEvent.pointerCancel(edge('right'));
+      expect(onResizeEnd).toHaveBeenLastCalledWith('edge:end', { list: 200, side: 250 });
+      expect(onResizeStart).toHaveBeenCalledTimes(2);
+      expect(onResizeEnd).toHaveBeenCalledTimes(2);
+    });
+
+    it('handleProps reach the edge handles too', () => {
+      render(
+        <Edged
+          handleProps={{ 'data-hit-surface': '', className: 'mine', style: { opacity: 0.5 } }}
+        />,
+      );
+      for (const each of [edge('left'), edge('right')]) {
+        expect(each).toHaveAttribute('data-hit-surface', '');
+        expect(each).toHaveClass('mine');
+        expect(each).toHaveStyle({ opacity: '0.5' });
+        expect(each).toHaveAttribute('data-slot', 'splitter-edge');
+      }
+    });
+
+    it('the extent prop is what a drag and a key start from; a new one is shown and used', async () => {
+      const width = vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(520);
+      const onExtentChange = vi.fn();
+      const { rerender } = render(<Edged extent={400} onExtentChange={onExtentChange} />);
+      edge('right').focus();
+      await userEvent.keyboard('{ArrowRight}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(424, 'end');
+      // The caller did not apply it: the handle still shows what it was given.
+      expect(edge('right')).toHaveAttribute('aria-valuenow', '400');
+      rerender(<Edged extent={424} onExtentChange={onExtentChange} />);
+      expect(edge('right')).toHaveAttribute('aria-valuenow', '424');
+      await userEvent.keyboard('{ArrowRight}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(448, 'end');
+      width.mockRestore();
+    });
+
+    it('without extent the splitter measures itself: its own width, or its height when stacked', async () => {
+      const width = vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(520);
+      const height = vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(310);
+      const onExtentChange = vi.fn();
+      const { rerender } = render(<Edged extent={undefined} onExtentChange={onExtentChange} />);
+      edge('right').focus();
+      await userEvent.keyboard('{ArrowRight}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(544, 'end');
+      fireEvent.pointerDown(edge('left'), { screenX: 100, pointerId: 1 });
+      fireEvent.pointerMove(edge('left'), { screenX: 90 });
+      expect(onExtentChange).toHaveBeenLastCalledWith(530, 'start');
+      fireEvent.pointerUp(edge('left'));
+      rerender(<Edged extent={undefined} onExtentChange={onExtentChange} />);
+      expect(edge('right')).toHaveAttribute('aria-valuenow', '520');
+      expect(edge('right')).toHaveAttribute('aria-valuemax', '520');
+      rerender(<Edged extent={undefined} orientation="vertical" onExtentChange={onExtentChange} />);
+      expect(edge('bottom')).toHaveAttribute('aria-valuenow', '310');
+      edge('bottom').focus();
+      await userEvent.keyboard('{ArrowDown}');
+      expect(onExtentChange).toHaveBeenLastCalledWith(334, 'end');
+      width.mockRestore();
+      height.mockRestore();
+    });
+
+    it('the examples: a card keeps its width from both side edges within its limits and is put back; a stacked one grows from its bottom', async () => {
+      const { unmount } = render(<CardResizedFromBothSides />);
+      const container = document.querySelector('[data-slot="splitter"]')!.parentElement!;
+      expect(container).toHaveStyle({ width: '420px' });
+      expect(screen.getByRole('region', { name: 'Card' })).toHaveTextContent('420px');
+      expect(edge('right')).toHaveAttribute('aria-valuemin', '280');
+      expect(edge('right')).toHaveAttribute('aria-valuemax', '640');
+      edge('right').focus();
+      await userEvent.keyboard('{ArrowRight}');
+      expect(container).toHaveStyle({ width: '468px' });
+      expect(edge('left')).toHaveAttribute('aria-valuenow', '468');
+      expect(screen.getByRole('region', { name: 'Card' })).toHaveTextContent(
+        '468px, from the end edge',
+      );
+      fireEvent.pointerDown(edge('left'), { screenX: 500, pointerId: 1 });
+      fireEvent.pointerMove(edge('left'), { screenX: 0 });
+      expect(container).toHaveStyle({ width: '640px' });
+      fireEvent.pointerMove(edge('left'), { screenX: 900 });
+      expect(container).toHaveStyle({ width: '280px' });
+      fireEvent.pointerUp(edge('left'));
+      expect(screen.getByRole('region', { name: 'Card' })).toHaveTextContent(
+        '280px, from the start edge',
+      );
+      await userEvent.dblClick(edge('left'));
+      expect(container).toHaveStyle({ width: '420px' });
+      edge('left').focus();
+      await userEvent.keyboard('{ArrowLeft}');
+      expect(container).toHaveStyle({ width: '468px' });
+      await userEvent.click(screen.getByRole('button', { name: 'Reset width' }));
+      expect(container).toHaveStyle({ width: '420px' });
+      expect(screen.getByRole('region', { name: 'Card' })).not.toHaveTextContent('from the');
+      unmount();
+
+      render(<CardResizedFromBottom />);
+      const stack = document.querySelector('[data-slot="splitter"]')!.parentElement!;
+      expect(screen.getAllByRole('separator')).toHaveLength(1);
+      expect(stack).toHaveStyle({ height: '200px' });
+      edge('bottom').focus();
+      await userEvent.keyboard('{ArrowDown}');
+      expect(stack).toHaveStyle({ height: '224px' });
+      fireEvent.pointerDown(edge('bottom'), { screenY: 0, pointerId: 1 });
+      fireEvent.pointerMove(edge('bottom'), { screenY: 900 });
+      expect(stack).toHaveStyle({ height: '360px' });
+      fireEvent.pointerUp(edge('bottom'));
+      await userEvent.keyboard('{Enter}');
+      expect(stack).toHaveStyle({ height: '200px' });
+      expect(screen.getByRole('region', { name: 'Card' })).toHaveTextContent('200px');
+    });
   });
 });

@@ -2,6 +2,7 @@ import { cn } from 'lib/utils';
 import * as React from 'react';
 import { useControllableState } from '../lib/use-controllable-state';
 import type {
+  SplitterEdge,
   SplitterLabels,
   SplitterPanelProps,
   SplitterProps,
@@ -12,6 +13,10 @@ import type {
 export const DEFAULT_SPLITTER_LABELS: SplitterLabels = {
   handle: (panel) => `Resize ${panel}`,
   hint: 'Drag to resize. Double-click to reset.',
+  edge: (edge, orientation) =>
+    orientation === 'horizontal'
+      ? `Resize from the ${edge === 'start' ? 'left' : 'right'} edge`
+      : `Resize from the ${edge === 'start' ? 'top' : 'bottom'} edge`,
 };
 
 const HANDLE_PX = 8;
@@ -57,7 +62,10 @@ const isPanel = (child: React.ReactNode): child is React.ReactElement<SplitterPa
  * `onSizesChange` fires either way. A panel is never sized past its `minSize` / `maxSize` or past the room the
  * other panels leave. Change `resetKey` to put every panel back.
  *
- * Slots: `data-slot="splitter" | "splitter-panel" | "splitter-handle"`.
+ * Slots: `data-slot="splitter" | "splitter-panel" | "splitter-handle" | "splitter-edge"`.
+ *
+ * `edges` adds a handle at an outer edge that resizes what holds the splitter (a window, a drawer): it reports
+ * the size wanted through `onExtentChange` and the caller applies it.
  *
  * @example
  * <Splitter resizable onSizesChange={save}>
@@ -79,6 +87,13 @@ export const Splitter = ({
   resetKey,
   keyboardStep = DEFAULT_STEP,
   handleProps,
+  edges,
+  extent,
+  minExtent = 0,
+  maxExtent = Number.POSITIVE_INFINITY,
+  edgeAnchor = 'opposite',
+  onExtentChange,
+  onExtentReset,
   labels: labelOverrides,
   ...props
 }: SplitterProps) => {
@@ -153,6 +168,8 @@ export const Splitter = ({
   const drag = React.useRef<{ id: string; at: number; size: number; latest: SplitterSizes } | null>(
     null,
   );
+
+  const edgeDrag = React.useRef<{ at: number; extent: number } | null>(null);
 
   if (!resizable) {
     return (
@@ -248,7 +265,93 @@ export const Splitter = ({
     );
   };
 
+  // A handle at an outer edge: it resizes what holds the splitter, so it only reports the size wanted.
+  const grip = (
+    <span
+      aria-hidden="true"
+      className={cn(
+        'rounded-full bg-[color:var(--oui-panel-divider)] transition-colors group-hover/handle:bg-[color:var(--oui-foreground-muted)] group-focus-visible/handle:bg-[color:var(--oui-tone-accent-fg)] motion-reduce:transition-none',
+        horizontal ? 'h-11 w-1' : 'h-1 w-11',
+      )}
+    />
+  );
+  const edgeHandle = (edge: SplitterEdge) => {
+    const outward = edge === 'start' ? -1 : 1;
+    const factor = edgeAnchor === 'centre' ? 2 : 1;
+    const measured = () =>
+      extent ??
+      (root.current ? (horizontal ? root.current.offsetWidth : root.current.offsetHeight) : 0);
+    const want = (from: number, moved: number) =>
+      onExtentChange?.(
+        Math.round(Math.min(Math.max(from + factor * outward * moved, minExtent), maxExtent)),
+        edge,
+      );
+    const finish = () => {
+      if (!edgeDrag.current) return;
+      edgeDrag.current = null;
+      onResizeEnd?.(`edge:${edge}`, sizes);
+    };
+    const now = measured();
+    return (
+      // biome-ignore lint/a11y/useSemanticElements: a focusable, valued separator is the window-splitter pattern; <hr> cannot hold a value
+      <div
+        key={`edge:${edge}`}
+        role="separator"
+        tabIndex={0}
+        aria-orientation={horizontal ? 'vertical' : 'horizontal'}
+        aria-label={labels.edge(edge, orientation)}
+        aria-valuemin={minExtent}
+        aria-valuemax={Number.isFinite(maxExtent) ? maxExtent : Math.max(now, minExtent)}
+        aria-valuenow={now}
+        title={labels.hint}
+        data-slot="splitter-edge"
+        data-edge={edge}
+        {...handleProps}
+        className={cn(
+          'group/handle grid shrink-0 touch-none place-items-center outline-none',
+          horizontal ? 'cursor-ew-resize' : 'cursor-ns-resize',
+          handleProps?.className,
+        )}
+        style={{ flex: `0 0 ${HANDLE_PX}px`, ...handleProps?.style }}
+        onPointerDown={(event) => {
+          // Screen coordinates: the container may move under the pointer as it grows.
+          edgeDrag.current = {
+            at: horizontal ? event.screenX : event.screenY,
+            extent: measured(),
+          };
+          event.currentTarget.setPointerCapture?.(event.pointerId);
+          onResizeStart?.(`edge:${edge}`);
+        }}
+        onPointerMove={(event) => {
+          const held = edgeDrag.current;
+          if (!held) return;
+          want(held.extent, (horizontal ? event.screenX : event.screenY) - held.at);
+        }}
+        onPointerUp={finish}
+        onPointerCancel={finish}
+        onDoubleClick={() => onExtentReset?.(edge)}
+        onKeyDown={(event) => {
+          const forward = horizontal ? 'ArrowRight' : 'ArrowDown';
+          const back = horizontal ? 'ArrowLeft' : 'ArrowUp';
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            onExtentReset?.(edge);
+            return;
+          }
+          const moved =
+            event.key === forward ? keyboardStep : event.key === back ? -keyboardStep : null;
+          if (moved === null) return;
+          event.preventDefault();
+          want(measured(), moved);
+        }}
+      >
+        {grip}
+      </div>
+    );
+  };
+
   const rendered: React.ReactNode[] = [];
+  if (edges?.includes('start')) rendered.push(edgeHandle('start'));
   let at = 0;
   React.Children.forEach(children, (child) => {
     if (!isPanel(child)) {
@@ -287,6 +390,7 @@ export const Splitter = ({
     else if (after) rendered.push(body, handleFor(panel, 1));
     else rendered.push(handleFor(panel, -1), body);
   });
+  if (edges?.includes('end')) rendered.push(edgeHandle('end'));
 
   return (
     <div

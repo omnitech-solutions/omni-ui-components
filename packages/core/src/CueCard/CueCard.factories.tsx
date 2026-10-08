@@ -1,6 +1,7 @@
 import {
   CueCard,
   type CueCardProps,
+  type CueCardSize,
   CueLineText,
   type CueSection,
   type CueSegment,
@@ -8,6 +9,7 @@ import {
   type HeardLineProps,
 } from '@oc-tech/omni-ui-components/CueCard';
 import { Panel } from '@oc-tech/omni-ui-components/Panel';
+import { type SegmentedOption, SegmentedPrimitive } from '@oc-tech/omni-ui-components/Segmented';
 import { TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import type { Variant } from '../internal/support/makeFactory';
@@ -325,3 +327,49 @@ export const LineOnItsOwn = () => (
     </p>
   </Panel>
 );
+
+/** An option of the size switch: a `SegmentedOption` whose value is one of the card's sizes. */
+export interface SizeOption extends SegmentedOption {
+  value: CueCardSize;
+}
+
+/** Every size of the card, smallest first. */
+export const sizeOptions: SizeOption[] = [
+  { value: 'sm', label: 'Small' },
+  { value: 'md', label: 'Medium' },
+  { value: 'lg', label: 'Large' },
+  { value: 'xl', label: 'Extra large' },
+];
+
+/**
+ * `size` scales the whole card as one: headings, lines, anchors and the caution keep their proportions. The size
+ * is kept in state and switched from a `SegmentedPrimitive` in the panel's `actions`.
+ */
+export const ResizableNotePanel = () => {
+  const [size, setSize] = useState<CueCardSize>('md');
+  return (
+    <Panel
+      title="Answer"
+      meta={`size: ${size}`}
+      actions={
+        <SegmentedPrimitive
+          appearance="control"
+          value={size}
+          options={sizeOptions}
+          // The switch reports a string: the option it belongs to holds the typed size.
+          onChange={(next: string) =>
+            setSize(sizeOptions.find((option) => option.value === next)?.value ?? 'md')
+          }
+        />
+      }
+      bodyPadding="md"
+      style={{ maxWidth: 720 }}
+    >
+      <CueCard<Cited>
+        size={size}
+        sections={technicalNote}
+        cautionIcon={<TriangleAlert className="size-4" />}
+      />
+    </Panel>
+  );
+};
