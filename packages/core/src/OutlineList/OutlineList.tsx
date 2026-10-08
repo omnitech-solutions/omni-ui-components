@@ -1,6 +1,7 @@
 import { cn } from 'lib/utils';
 import * as React from 'react';
 import { useControllableState } from '../lib/use-controllable-state';
+import { useRovingTabindex } from '../lib/use-roving-tabindex';
 import type { OutlineItem, OutlineListLabels, OutlineListProps } from './OutlineList.types';
 
 /** English strings of {@link OutlineList}. */
@@ -12,14 +13,18 @@ export const DEFAULT_OUTLINE_LIST_LABELS: OutlineListLabels = {
 /**
  * Omni OutlineList: a numbered list of things to jump to (the questions of a call, the steps of a run). Each row
  * is one button with a label that wraps and a quiet meta line under it. The chosen row is marked with a bar; the
- * `live` row is green, so "what is happening now" and "what I am reading" never look alike. Arrow keys move
- * between rows, Home and End go to the ends.
+ * `live` row is green, so "what is happening now" and "what I am reading" never look alike.
  *
- * Slots: `data-slot="outline-list" | "outline-list-header" | "outline-list-row" | "outline-list-number" |
- * "outline-list-label" | "outline-list-meta"`.
+ * It is the rows only. Its heading, count and scrolling come from the `Panel` it is placed in, and its keyboard
+ * movement (arrow keys, Home, End, one tab stop) from the library's roving tabindex, as in `ConversationList`.
+ *
+ * Slots: `data-slot="outline-list" | "outline-list-row" | "outline-list-number" | "outline-list-label" |
+ * "outline-list-meta"`.
  *
  * @example
- * <OutlineList title="Questions" items={questions} value={shown} onValueChange={(item) => show(item.id)} order="reversed" />
+ * <Panel title="Questions" meta="newest first" scroll={{ thinScrollbar: true }}>
+ *   <OutlineList aria-label="Questions" items={questions} value={shown} onValueChange={(item) => show(item.id)} order="reversed" />
+ * </Panel>
  */
 const OutlineListImpl = React.forwardRef<HTMLDivElement, OutlineListProps>(
   (
@@ -29,8 +34,6 @@ const OutlineListImpl = React.forwardRef<HTMLDivElement, OutlineListProps>(
       defaultValue = null,
       onValueChange,
       order = 'as-given',
-      title,
-      hint,
       empty,
       labels: labelOverrides,
       className,
@@ -43,8 +46,14 @@ const OutlineListImpl = React.forwardRef<HTMLDivElement, OutlineListProps>(
     const numbered = items.map((item, index) => ({ item, number: item.number ?? index + 1 }));
     const rows = order === 'reversed' ? [...numbered].reverse() : numbered;
     const list = React.useRef<HTMLUListElement>(null);
-    const focusRow = (index: number) =>
-      list.current?.querySelectorAll<HTMLElement>('[data-slot="outline-list-row"]')[index]?.focus();
+    // One tab stop for the whole list; arrows, Home and End move between rows.
+    const roving = useRovingTabindex(list, {
+      orientation: 'vertical',
+      loop: false,
+      getItems: (root) => [
+        ...root.querySelectorAll<HTMLElement>('button[data-slot="outline-list-row"]'),
+      ],
+    });
     return (
       <div
         ref={ref}
@@ -52,26 +61,17 @@ const OutlineListImpl = React.forwardRef<HTMLDivElement, OutlineListProps>(
         className={cn('flex min-h-0 min-w-0 flex-col', className)}
         {...rest}
       >
-        {(title || hint) && (
-          <div
-            data-slot="outline-list-header"
-            className="flex h-10 shrink-0 items-center justify-between gap-2 border-b border-[color:var(--oui-panel-divider)] px-3.5"
-          >
-            <span className="text-[11px] font-semibold tracking-[0.08em] text-[color:var(--oui-panel-meta-fg)] uppercase">
-              {title}
-            </span>
-            {hint && <span className="text-xs text-[color:var(--oui-panel-meta-fg)]">{hint}</span>}
-          </div>
-        )}
         {rows.length === 0 ? (
           <div className="p-3.5 text-sm text-[color:var(--oui-panel-meta-fg)]">{empty}</div>
         ) : (
           <ul
             ref={list}
-            aria-label={typeof title === 'string' ? title : labels.list}
+            aria-label={rest['aria-label'] ?? labels.list}
+            onKeyDown={roving.onKeyDown}
+            onFocus={roving.onFocus}
             className="m-0 flex min-h-0 flex-1 list-none flex-col gap-0.5 overflow-auto p-2"
           >
-            {rows.map(({ item, number }, index) => {
+            {rows.map(({ item, number }) => {
               const live = item.state === 'live';
               const current = item.id === chosen;
               const name = item.name ?? (typeof item.label === 'string' ? item.label : undefined);
@@ -133,7 +133,6 @@ const OutlineListImpl = React.forwardRef<HTMLDivElement, OutlineListProps>(
                       data-slot="outline-list-row"
                       data-state={live ? 'live' : 'default'}
                       aria-current={current ? 'true' : undefined}
-                      aria-label={name}
                       title={name}
                       className={cn(
                         rowClass,
@@ -142,21 +141,6 @@ const OutlineListImpl = React.forwardRef<HTMLDivElement, OutlineListProps>(
                       onClick={() => {
                         setChosen(item.id);
                         onValueChange(item);
-                      }}
-                      onKeyDown={(event) => {
-                        const to =
-                          event.key === 'ArrowDown'
-                            ? index + 1
-                            : event.key === 'ArrowUp'
-                              ? index - 1
-                              : event.key === 'Home'
-                                ? 0
-                                : event.key === 'End'
-                                  ? rows.length - 1
-                                  : null;
-                        if (to === null || to < 0 || to >= rows.length) return;
-                        event.preventDefault();
-                        focusRow(to);
                       }}
                     >
                       {body}

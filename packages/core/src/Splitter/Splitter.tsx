@@ -123,11 +123,13 @@ export const Splitter = ({
 
   // [GUARD] A panel never passes its own limits, nor the room the others (and the handles) leave.
   const bound = (panel: PanelSpec, wanted: number, current: SplitterSizes) => {
-    const total = root.current
+    // Not laid out yet (first render, a hidden root): there is no room to measure, so only the panel's own limits hold.
+    const measured = root.current
       ? horizontal
         ? root.current.clientWidth
         : root.current.clientHeight
-      : Number.POSITIVE_INFINITY;
+      : 0;
+    const total = measured > 0 ? measured : Number.POSITIVE_INFINITY;
     const others = panels.reduce((sum, each) => {
       if (each.id === panel.id) return sum;
       return sum + (each.sized ? (current[each.id] ?? each.fallback) : (each.props.minSize ?? 0));
@@ -143,6 +145,11 @@ export const Splitter = ({
     return next;
   };
 
+  // What a handle reports as its most: the bound when there is one, never "Infinity".
+  const ceiling = (panel: PanelSpec, size: number) => {
+    const most = bound(panel, Number.POSITIVE_INFINITY, sizes);
+    return Number.isFinite(most) ? most : Math.max(size, panel.props.maxSize ?? size);
+  };
   const drag = React.useRef<{ id: string; at: number; size: number; latest: SplitterSizes } | null>(
     null,
   );
@@ -179,7 +186,7 @@ export const Splitter = ({
         aria-orientation={horizontal ? 'vertical' : 'horizontal'}
         aria-label={labels.handle(name)}
         aria-valuemin={panel.props.minSize ?? 0}
-        aria-valuemax={bound(panel, Number.POSITIVE_INFINITY, sizes)}
+        aria-valuemax={ceiling(panel, size)}
         aria-valuenow={size}
         title={labels.hint}
         data-slot="splitter-handle"
@@ -221,7 +228,7 @@ export const Splitter = ({
                 : event.key === 'Home'
                   ? (panel.props.minSize ?? 0)
                   : event.key === 'End'
-                    ? Number.POSITIVE_INFINITY
+                    ? ceiling(panel, size)
                     : event.key === 'Enter'
                       ? (defaults[panel.id] ?? panel.fallback)
                       : null;

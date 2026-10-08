@@ -176,7 +176,8 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
                   {heading(section)}
                   {lines.map((line, index) => (
                     <p
-                      key={textOf(line)}
+                      // biome-ignore lint/suspicious/noArrayIndexKey: the lines of one section never reorder, and two may read the same
+                      key={`${index}:${textOf(line)}`}
                       data-slot="cue-card-line"
                       className={cn(
                         'm-0 text-base leading-snug',
@@ -203,9 +204,10 @@ const CueCardImpl = React.forwardRef<HTMLElement, CueCardProps>(
               className="flex flex-col gap-2.5"
             >
               {heading(section)}
-              {lines.map((line) => (
+              {lines.map((line, index) => (
                 <div
-                  key={textOf(line)}
+                  // biome-ignore lint/suspicious/noArrayIndexKey: the lines of one section never reorder, and two may read the same
+                  key={`${index}:${textOf(line)}`}
                   className={cn('flex min-w-0', anchors ? 'gap-2.5' : 'gap-3')}
                 >
                   {!quiet && (

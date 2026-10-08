@@ -2,7 +2,7 @@ import type * as React from 'react';
 
 /** English strings of {@link OutlineList}. */
 export interface OutlineListLabels {
-  /** Accessible name of the list when no `title` is given. */
+  /** Accessible name of the list when no `aria-label` is given. */
   list: string;
   /** Word shown beside the item that is happening now. */
   live: string;
@@ -23,7 +23,7 @@ export interface OutlineItem {
 }
 
 export interface OutlineListProps<T extends OutlineItem = OutlineItem>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'title' | 'defaultValue'> {
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'> {
   items: readonly T[];
   /** The id of the item on show (controlled). */
   value?: string | null;
@@ -32,10 +32,6 @@ export interface OutlineListProps<T extends OutlineItem = OutlineItem>
   onValueChange?: (item: T) => void;
   /** `reversed` draws the last item first (newest at the top). Numbers keep the order given. */
   order?: 'as-given' | 'reversed';
-  /** Header text, drawn in small capitals. */
-  title?: React.ReactNode;
-  /** Quiet text at the end of the header. */
-  hint?: React.ReactNode;
   /** Shown in place of the rows when there are none. */
   empty?: React.ReactNode;
   labels?: Partial<OutlineListLabels>;
