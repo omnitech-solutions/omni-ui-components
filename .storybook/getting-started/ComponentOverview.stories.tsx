@@ -166,6 +166,7 @@ import { MessageActions } from '@oc-tech/omni-ui-components/MessageActions';
 import { MessageMenu } from '@oc-tech/omni-ui-components/MessageMenu';
 import { ModelMenu } from '@oc-tech/omni-ui-components/ModelPicker';
 import { ModelsSettings } from '@oc-tech/omni-ui-components/ModelsSettings';
+import { OutlineList } from '@oc-tech/omni-ui-components/OutlineList';
 import { PanelShell } from '@oc-tech/omni-ui-components/PanelShell';
 import { PreferencesForm } from '@oc-tech/omni-ui-components/PreferencesForm';
 import { QueuedList } from '@oc-tech/omni-ui-components/QueuedList';
@@ -334,6 +335,10 @@ import {
   numberInputPropsFactory,
   numberInputVariants,
 } from 'factories/omni-ui-components/NumberInput/NumberInput.factories';
+import {
+  outlineListPropsFactory,
+  outlineListVariants,
+} from 'factories/omni-ui-components/OutlineList/OutlineList.factories';
 import {
   NativePanelsDemo,
   panelPropsFactory,
@@ -764,6 +769,11 @@ const VersionPagerPreview = MessagePartsPreview(
   versionPagerVariants as Variant<never>[],
   (args) => <VersionPager {...versionPagerPropsFactory(args as object)} />,
 );
+const OutlineListPreview = MessagePartsPreview(outlineListVariants as Variant<never>[], (args) => (
+  <div className="w-[280px]">
+    <OutlineList {...outlineListPropsFactory(args as object)} />
+  </div>
+));
 const SplitterPreview = MessagePartsPreview(splitterVariants as Variant<never>[], (args) => (
   <SplitterDemo {...(args as object)} />
 ));
@@ -1865,6 +1875,11 @@ const configuredRows: Record<string, OverviewRowSpec> = {
     preview: ProgressPreview,
     variants: [...progressVariants, ...progressRingVariants] as Variant<unknown>[],
   },
+  OutlineList: {
+    name: 'OutlineList',
+    preview: OutlineListPreview,
+    variants: outlineListVariants as Variant<unknown>[],
+  },
   Splitter: {
     name: 'Splitter',
     preview: SplitterPreview,
@@ -1979,9 +1994,17 @@ const SECTIONS: OverviewSectionSpec[] = [
   },
   {
     title: 'Navigation',
-    rows: ['Anchor', 'Breadcrumb', 'Dropdown', 'Menu', 'Pagination', 'Steps', 'Tabs', 'Wizard'].map(
-      libraryRow,
-    ),
+    rows: [
+      'Anchor',
+      'Breadcrumb',
+      'Dropdown',
+      'Menu',
+      'OutlineList',
+      'Pagination',
+      'Steps',
+      'Tabs',
+      'Wizard',
+    ].map(libraryRow),
   },
   {
     title: 'Data entry',

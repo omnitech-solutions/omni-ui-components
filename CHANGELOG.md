@@ -5,6 +5,7 @@
 ### Added
 
 - Splitter `resizable`: a handle per sized panel (drag, arrow keys, Home, End, double-click or Enter to put it back), `orientation`, `sizes` / `defaultSizes` / `onSizesChange` by panel `id`, `minSize` / `maxSize`, `onResizeStart` / `onResizeEnd`, `resetKey`, `handleProps` and `labels`. The static layout is unchanged.
+- OutlineList: a numbered list of things to jump to (`items`, `value` / `defaultValue` / `onValueChange(item)`, `order="reversed"`, `title`, `hint`, `empty`, a `live` row, arrow keys, Home and End), generic over `OutlineItem`, with factories, stories, tests and a Component Overview row.
 
 ## 0.1.0 - 2026-10-06
 

@@ -5,6 +5,7 @@ export * from '../Button';
 export * from '../Divider';
 export * from '../Empty';
 export * from '../IconButton';
+export * from '../OutlineList';
 export * from '../Panel';
 export * from '../Progress';
 export * from '../Segmented';
