@@ -9,9 +9,9 @@ const toneClass = (type?: BaseProps<'span'>['type']) =>
   type === 'danger'
     ? 'text-[var(--oui-border-invalid)]'
     : type === 'warning'
-      ? 'text-amber-700'
+      ? 'text-[color:var(--oui-tone-warning-fg)]'
       : type === 'success'
-        ? 'text-emerald-700'
+        ? 'text-[color:var(--oui-tone-success-fg)]'
         : type === 'secondary'
           ? 'text-[var(--oui-foreground-muted)]'
           : 'text-[var(--oui-foreground)]';
