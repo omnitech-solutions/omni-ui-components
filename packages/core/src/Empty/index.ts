@@ -1,2 +1,2 @@
-export type { EmptyAction, EmptyProps } from './Empty';
+export type { EmptyAction, EmptyProps, EmptySize } from './Empty';
 export { Empty } from './Empty';

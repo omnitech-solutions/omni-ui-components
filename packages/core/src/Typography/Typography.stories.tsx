@@ -47,6 +47,30 @@ export const ToneVariants: Story = {
   ),
 };
 
+/** `size="compact"` is one step smaller and tighter, for a side panel or a dense list. */
+export const Compact: Story = {
+  render: () => (
+    <div className="grid max-w-2xl grid-cols-2 gap-6 rounded-2xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-6 shadow-xs">
+      <div className="space-y-2">
+        <Typography.Title>Default</Typography.Title>
+        <Typography.Paragraph>
+          Body copy at the default size, for a page a person reads top to bottom.
+        </Typography.Paragraph>
+        <Typography.Text type="secondary">Secondary text</Typography.Text>
+      </div>
+      <div className="space-y-2">
+        <Typography.Title size="compact">Compact</Typography.Title>
+        <Typography.Paragraph size="compact">
+          Body copy at the compact size, for a narrow panel where many short lines sit together.
+        </Typography.Paragraph>
+        <Typography.Text size="compact" type="secondary">
+          Secondary text
+        </Typography.Text>
+      </div>
+    </div>
+  ),
+};
+
 export const EditorialBlock: Story = {
   render: () => (
     <div className="max-w-3xl rounded-2xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-8 shadow-xs">

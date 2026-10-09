@@ -97,3 +97,33 @@ describe('omni-ui-components/Empty tile', () => {
     });
   });
 });
+
+describe('omni-ui-components/Empty compact', () => {
+  it('a compact tile is one row: a small icon beside the description, not a centred block', () => {
+    const { container } = render(
+      <Empty variant="tile" size="compact" description="No releases yet." />,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root).toHaveAttribute('data-size', 'compact');
+    expect(root.className).toContain('items-center');
+    expect(root.className).not.toContain('flex-col');
+    expect(root.className).not.toContain('flex-1');
+    expect(root.querySelector('[data-slot="empty-tile"]')?.className).toContain('size-6');
+    expect(screen.getByText('No releases yet.')).toBeInTheDocument();
+  });
+
+  it('the default tile is unchanged', () => {
+    const { container } = render(<Empty variant="tile" description="No releases yet." />);
+    const root = container.firstElementChild as HTMLElement;
+    expect(root).toHaveAttribute('data-size', 'default');
+    expect(root.className).toContain('flex-col');
+    expect(root.querySelector('[data-slot="empty-tile"]')?.className).toContain('size-10');
+  });
+
+  it('a compact dashed box drops its tall minimum', () => {
+    const { container } = render(<Empty size="compact" description="No matching records" />);
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.className).not.toContain('min-h-48');
+    expect(root.className).toContain('py-4');
+  });
+});

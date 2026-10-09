@@ -27,7 +27,14 @@ export interface EmptyProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   description?: React.ReactNode;
   /** `tile`: optional action button under the description. */
   action?: EmptyAction;
+  /**
+   * `compact`: a single quiet row (a small icon beside the description), for a
+   * dense surface where a full blank state would take over. Default `default`.
+   */
+  size?: EmptySize;
 }
+
+export type EmptySize = 'default' | 'compact';
 
 export const Empty = ({
   variant = 'dashed',
@@ -36,18 +43,23 @@ export const Empty = ({
   title,
   description = 'No data',
   action,
+  size = 'default',
   className,
   children,
   ...props
 }: EmptyProps) => {
+  const compact = size === 'compact';
   if (variant === 'tile') {
     const glyph = icon ?? image;
     return (
       <div
         data-slot="empty"
         data-variant="tile"
+        data-size={size}
         className={cn(
-          'flex flex-1 flex-col items-center justify-center gap-[10px] p-5 text-center',
+          compact
+            ? 'flex flex-wrap items-center gap-2 px-1 py-1.5 text-left'
+            : 'flex flex-1 flex-col items-center justify-center gap-[10px] p-5 text-center',
           className,
         )}
         {...props}
@@ -55,24 +67,33 @@ export const Empty = ({
         <span
           data-slot="empty-tile"
           aria-hidden="true"
-          className="box-border flex size-10 items-center justify-center rounded-[var(--oui-control-radius)] bg-[color:var(--oui-tone-accent-bg)] text-[color:var(--oui-tone-neutral-fg)] [&_svg]:size-[var(--oui-control-icon)]"
+          className={cn(
+            'box-border flex shrink-0 items-center justify-center rounded-[var(--oui-control-radius)] bg-[color:var(--oui-tone-accent-bg)] text-[color:var(--oui-tone-neutral-fg)]',
+            compact ? 'size-6 [&_svg]:size-3.5' : 'size-10 [&_svg]:size-[var(--oui-control-icon)]',
+          )}
         >
           {glyph ?? <Inbox />}
         </span>
         {title ? (
-          <span data-slot="empty-title" className="text-[15px] leading-snug font-semibold">
+          <span
+            data-slot="empty-title"
+            className={cn('leading-snug font-semibold', compact ? 'text-[13px]' : 'text-[15px]')}
+          >
             {title}
           </span>
         ) : null}
         <span
           data-slot="empty-description"
-          className="max-w-[340px] text-[13px] leading-normal text-[color:var(--oui-tone-neutral-fg)] opacity-75"
+          className={cn(
+            'leading-normal text-[color:var(--oui-tone-neutral-fg)] opacity-75',
+            compact ? 'min-w-0 flex-1 text-[13px]' : 'max-w-[340px] text-[13px]',
+          )}
         >
           {description}
         </span>
         {action ? (
           <Button
-            buttonSize="control"
+            buttonSize={compact ? 'sm' : 'control'}
             tone={action.tone ?? 'accent'}
             icon={action.icon}
             shortcut={action.shortcut}
@@ -88,13 +109,17 @@ export const Empty = ({
 
   return (
     <div
+      data-size={size}
       className={cn(
-        'flex min-h-48 flex-col items-center justify-center gap-3 rounded-lg border border-dashed px-6 py-10 text-center',
+        'flex flex-col items-center justify-center rounded-lg border border-dashed text-center',
+        compact ? 'gap-1.5 px-3 py-4' : 'min-h-48 gap-3 px-6 py-10',
         className,
       )}
       {...props}
     >
-      <div className="text-muted-foreground">{image ?? <Inbox className="h-8 w-8" />}</div>
+      <div className="text-muted-foreground">
+        {image ?? <Inbox className={compact ? 'h-5 w-5' : 'h-8 w-8'} />}
+      </div>
       <div className="text-sm text-muted-foreground">{description}</div>
       {children}
     </div>

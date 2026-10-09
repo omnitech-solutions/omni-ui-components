@@ -55,6 +55,22 @@ export const TileWithTitleAndAction: Story = {
     </div>
   ),
 };
+/** `size="compact"` is one quiet row: for a list or a side panel where a full blank state would take over. */
+export const Compact: Story = {
+  render: () => (
+    <div className="flex w-[360px] flex-col gap-3 rounded-xl border p-3">
+      <Empty variant="tile" size="compact" description="No releases yet." />
+      <Empty
+        variant="tile"
+        size="compact"
+        title="Nothing scheduled"
+        description="Add a release to see it here."
+      />
+      <Empty size="compact" description="No matching records" />
+    </div>
+  ),
+};
+
 export const TileMatrix: Story = {
   render: () => (
     <div className="grid grid-cols-3 gap-4">
