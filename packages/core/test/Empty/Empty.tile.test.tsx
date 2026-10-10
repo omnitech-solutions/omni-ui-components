@@ -120,6 +120,19 @@ describe('omni-ui-components/Empty compact', () => {
     expect(root.querySelector('[data-slot="empty-tile"]')?.className).toContain('size-10');
   });
 
+  it('the title and the description keep their line heights at either size', () => {
+    for (const size of ['default', 'compact'] as const) {
+      const { container, unmount } = render(
+        <Empty variant="tile" size={size} title="Nothing yet" description="No releases yet." />,
+      );
+      expect(container.querySelector('[data-slot="empty-title"]')).toHaveClass('leading-snug');
+      expect(container.querySelector('[data-slot="empty-description"]')).toHaveClass(
+        'leading-normal',
+      );
+      unmount();
+    }
+  });
+
   it('a compact dashed box drops its tall minimum', () => {
     const { container } = render(<Empty size="compact" description="No matching records" />);
     const root = container.firstElementChild as HTMLElement;

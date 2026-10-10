@@ -73,4 +73,41 @@ describe('theme contract (subtree theming)', () => {
     for (const file of ['base-palette.css', 'theme-tokens.css', 'tokens.css'])
       expect(read(file)).not.toMatch(/html\s*\[data-theme|:root\[data-theme/);
   });
+
+  it('keeps the brand primary and gives text its own shade of it that reaches 4.5:1 in each theme', () => {
+    const channels = (hex: string) =>
+      [1, 3, 5].map((at) => Number.parseInt(hex.slice(at, at + 2), 16));
+    const luminance = (rgb: number[]) => {
+      const [r, g, b] = rgb.map((value) => {
+        const unit = value / 255;
+        return unit <= 0.03928 ? unit / 12.92 : ((unit + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const contrast = (a: number[], b: number[]) => {
+      const [light, dark] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+      return (light + 0.05) / (dark + 0.05);
+    };
+    const palette = new Map(declarations(block(read('base-palette.css'), ':root {')));
+    expect(palette.get('--oui-primary')).toBe('#1677ff');
+    const primary = channels('#1677ff');
+
+    const tokens = read('tokens.css');
+    const textShade = (opener: string) => {
+      const value = new Map(declarations(block(tokens, opener))).get('--oui-foreground-primary');
+      const mix = value?.match(
+        /^color-mix\(in srgb, var\(--oui-primary\) (\d+)%, var\(--(black|white)\)\)$/,
+      );
+      expect(mix, `--oui-foreground-primary in ${opener} is ${value}`).toBeTruthy();
+      const share = Number(mix?.[1]) / 100;
+      const other = mix?.[2] === 'black' ? 0 : 255;
+      return primary.map((value) => Math.round(value * share + other * (1 - share)));
+    };
+    const light = textShade(":root,\n  [data-theme='light'] {");
+    for (const surface of ['#ffffff', '#fafafa', '#f5f5f5'])
+      expect(contrast(light, channels(surface)), `light on ${surface}`).toBeGreaterThanOrEqual(4.5);
+    const dark = textShade('[data-theme="dark"] {');
+    for (const surface of ['#1a1c1d', '#1d1d1d', '#2f2f2f'])
+      expect(contrast(dark, channels(surface)), `dark on ${surface}`).toBeGreaterThanOrEqual(4.5);
+  });
 });

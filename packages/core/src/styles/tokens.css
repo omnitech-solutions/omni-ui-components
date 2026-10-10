@@ -78,6 +78,12 @@
   /* Light values: `:root` (no theme attribute) and any light subtree, also inside a dark one. */
   :root,
   [data-theme='light'] {
+    /* The primary used as TEXT (a link, the current step, a label action). The brand fill stays `--oui-primary`
+       (#1677ff, the owner's colour); as text on a light surface that is 3.93:1 to 4.10:1, so text takes a darker
+       shade of the same hue: 85% of the seed over black (#1365d9 by default: 5.17:1 on #fafafa, 5.40:1 on #ffffff).
+       It follows a host's own `--oui-primary`. */
+    --oui-foreground-primary:      color-mix(in srgb, var(--oui-primary) 85%, var(--black));
+
     --oui-tone-accent-fg:          #2447b8;
     --oui-tone-accent-bg:          rgba(91, 140, 255, 0.14);
     --oui-tone-accent-border:      #9db8f5;
@@ -138,6 +144,10 @@
   }
 
   [data-theme="dark"] {
+    /* On a dark surface the primary as text is 3.26:1 (a panel, #2f2f2f) to 4.16:1 (the page): text takes a lighter
+       shade of the same hue, 70% of the seed over white (#5ca0ff by default: 5.05:1 on #2f2f2f, 6.46:1 on #1a1c1d). */
+    --oui-foreground-primary:      color-mix(in srgb, var(--oui-primary) 70%, var(--white));
+
     --oui-segment-active-bg:       rgba(91, 140, 255, 0.24);
     --oui-segment-active-fg:       #c3d3ff;
     --oui-segment-inactive-fg:     #8a8e98;

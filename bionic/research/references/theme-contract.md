@@ -1,7 +1,7 @@
 ---
 title: Theme contract (how a host themes a subtree, every --oui token with its light and dark default, and the see-through contract)
 category: references
-updated: 2026-10-06
+updated: 2026-10-10
 ---
 
 # Theme contract
@@ -26,6 +26,21 @@ The library is themed per subtree. A host puts `data-theme="light"` or `data-the
 ## Legacy unprefixed names
 
 The stylesheet still defines the legacy theme names on the theme roots: `--primary`, `--danger`, `--black`, `--white`, `--grey-*`, `--bg-*`, `--text-*`, `--border-*`, `--color-*`, `--radius-*`, `--font-*`, `--shadow-*`. The semantic ones (`--bg-*`, `--text-*`, `--border-*`, `--color-*`) are per-theme; the palette ones (`--black`, `--white`, `--grey-*`, `--font-*`) are fixed on `:root`. They are not renamed in this unit (the Tailwind `--color-*`/`--radius-*`/`--font-*` families are Tailwind's own namespace and the rest are read by about 200 call sites), so the collision rule in `css-delivery.md` stands: a host should not reuse these names.
+
+## The primary as a fill and as text
+
+`--oui-primary` is the brand colour, `#1677ff`, and it is the owner's decision that it stays (2026-10-10). It is the fill, the border, the focus ring and the icon colour (`--color-primary`, `bg-primary`). It is not used as a text colour: on a light surface it is 3.93:1 (`#fafafa`) to 4.10:1 (`#ffffff`) and on a dark panel 3.26:1, under the 4.5:1 that WCAG AA asks of text.
+
+Text in the primary takes `--oui-foreground-primary`: a shade of the same hue, derived from the seed on each theme root, so a subtree with its own `--oui-primary` gets its own text shade.
+
+| Theme | Value | Default | Contrast |
+|---|---|---|---|
+| light | 85% of `--oui-primary` over black | `#1365d9` | 5.40:1 on `#ffffff`, 5.17:1 on `#fafafa`, 4.95:1 on `#f5f5f5` |
+| dark | 70% of `--oui-primary` over white | `#5ca0ff` | 6.46:1 on `#1a1c1d`, 5.05:1 on a `#2f2f2f` panel |
+
+In a component: `text-[color:var(--oui-foreground-primary)]` (Button `variant="link"`, Steps, the dynamic-form label action, Select's footer action). `test/Theming/themeContract.test.ts` holds the seed at `#1677ff` and both shades at 4.5:1 or more.
+
+White text on the solid primary (the primary Button) is 4.10:1. That is an accepted exception, not a token: it is recorded once, in `.storybook/a11yAllowances.ts`, scoped to that colour pair.
 
 ## Tokens
 
@@ -88,6 +103,7 @@ Light and dark defaults below are the values in `packages/core/src/styles/tokens
 
 | Token | Light | Dark | Meaning |
 |---|---|---|---|
+| `--oui-foreground-primary` | `color-mix(in srgb, var(--oui-primary) 85%, var(--black))` (`#1365d9`) | `color-mix(in srgb, var(--oui-primary) 70%, var(--white))` (`#5ca0ff`) | The primary used as text (a link, the current step, a label action). See "The primary as a fill and as text" |
 | `--oui-tone-accent-fg` | `#2447b8` | `#a9c1ff` | Tone text colour |
 | `--oui-tone-accent-bg` | `rgba(91, 140, 255, 0.14)` | `rgba(91, 140, 255, 0.18)` | Tone background |
 | `--oui-tone-accent-border` | `#9db8f5` | `#3b5f9e` | Tone border |

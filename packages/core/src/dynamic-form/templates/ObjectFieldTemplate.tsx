@@ -129,7 +129,7 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
         data-testid="oui-collapsible-toggle"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex w-fit items-center gap-1.5 text-sm font-semibold text-foreground hover:text-primary"
+        className="flex w-fit items-center gap-1.5 text-sm font-semibold text-foreground hover:text-[color:var(--oui-foreground-primary)]"
       >
         {title}
         <ChevronDown

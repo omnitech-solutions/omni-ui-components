@@ -455,7 +455,9 @@ Tokens changed (the bulk of the contrast failures; ratios are WCAG contrast, 4.5
 
 | Token | Theme | Was | Now | Contrast before -> after |
 |---|---|---|---|---|
-| `--oui-primary` (the seed; `--color-primary` follows) | both | `#1677ff` | `#146ceb` | white text on it 4.10 -> 4.80; as text on `#fafafa` 3.93 -> 4.60, on `#ffffff` 4.10 -> 4.80 |
+| `--oui-primary` (the seed; `--color-primary` follows) | both | `#1677ff` | `#1677ff`: kept, by the owner's decision (2026-10-10). `#146ceb` was tried in `cc3eb6c` and taken back | white text on it 4.10: an accepted exception, recorded once in `.storybook/a11yAllowances.ts` and scoped to that colour pair. As text 3.93 on `#fafafa`, 4.10 on `#ffffff`, 3.26 on a dark panel: text no longer uses it, see the next row |
+| `--oui-foreground-primary` (new: the primary as text) | light | `--color-primary`, `#1677ff` | 85% of `--oui-primary` over black, `#1365d9` | on `#fafafa` 3.93 -> 5.17; on `#ffffff` 4.10 -> 5.40 |
+| same | dark | `--color-primary`, `#1677ff` | 70% of `--oui-primary` over white, `#5ca0ff` | on a panel `#2f2f2f` 3.26 -> 5.05; on `#1a1c1d` 4.16 -> 6.46 |
 | `--color-primary-contrast` | dark | `#ffffffe0` | `#ffffff` | button text on the primary 3.52 -> 4.80 |
 | `--text-muted`, `--text-muted-alt`, `--text-semi-transparent-muted` | light | `#00000073` (45%) | `#0000008c` (55%) | on `#ffffff` 3.36 -> 4.74; on `#fafafa` 3.35 -> 4.68 |
 | same | dark | `#ffffff73` (45%) | `#ffffff96` (59%) | on `#1a1c1d` 4.44 -> 6.68; on a panel `#2f2f2f` 4.03 -> 5.70; on `#404040` 3.51 -> 4.78 |
@@ -528,6 +530,70 @@ actual and diff images are in `.vitest-attachments/` (untracked).
   `pnpm test:storybook` passes (184 files, 862 stories, every play function); `pnpm test:visual` fails 6 of 10 as
   described above.
 - Not checked: Firefox and Safari, and a production `storybook build`.
+
+### Follow-up, 2026-10-10: the primary stays `#1677ff`
+
+The owner decided the primary colour stays `#1677ff`. Every other token change above is kept, and so is every
+component fix. Built in the working tree on `master`, not committed; measured against a private server on port 6107.
+
+What the brand blue costs, and how each case is handled:
+
+- The primary as text (8 stories: the dynamic-form label action in 6, Button "Link", Steps "Default"; 3.93:1 on
+  `#fafafa`, 4.10:1 on `#ffffff`, 3.26:1 on a dark panel, 4.16:1 on the dark page). Fixed in the library with no
+  change to the brand fill: a new token, `--oui-foreground-primary`, a shade of the same hue derived from
+  `--oui-primary` on each theme root (the two rows in the token table). Button `variant="link"`, Steps (current and
+  finished), the dynamic-form label action and collapsible title hover, and Select's footer action use it. This also
+  clears the 8 dark-theme nodes the first round left as "the theme's primary used as text on a dark surface".
+  Icons, borders, rings and fills keep `--color-primary` (3:1 is what a non-text mark needs, and it has it).
+- White text on the solid primary (4.10:1; 99 nodes in 82 stories, the same 82 in both themes). The colour is the
+  owner's, so this is an accepted exception. It is recorded once, in `.storybook/a11yAllowances.ts`, which the
+  preview hands to the a11y addon as `parameters.a11y.config.rules`: an element is left out of `color-contrast`
+  only when axe itself measures its text as exactly `#ffffff` on exactly `#1677ff`. Any other pair in the same
+  story is still checked. The rule is not disabled on any story or globally, and `a11y.test` is still `'error'`.
+
+Stories with accessibility violations (`node scripts/storybook-inventory.mjs --a11y --theme dark|light`, 862 stories):
+
+| | Dark | Light |
+|---|---|---|
+| With `#146ceb` (`cc3eb6c`) | 107 (`color-contrast` 51 stories / 81 nodes) | 102 (43 / 112) |
+| `#1677ff` restored, nothing else | 176 (126 / 183) | 175 (125 / 219) |
+| `#1677ff`, the text token and the exception | 102 (43 / 73) | 102 (43 / 112) |
+
+Every other rule's count is unchanged. One dark run counted 103: ConfigProvider "Right To Left" was measured in
+the middle of its outline button's colour transition (a different grey pair each time); alone it passed 4 runs of 4.
+
+The 82 stories the exception covers (69 of them have no other violation; 13 still fail on another rule):
+DynamicForm (Add Address, Api Error, Async Submit, Automation Text Fields, Kitchen Sink, Validation Errors);
+the dynamic-form showcases NewCompany, NewContact, NewExpense, NewTimesheet; the "Validation Error" story of
+CheckboxesWidget, CheckboxWidget, RadioWidget, SegmentedWidget, SelectWidget, TextareaWidget and TextWidget;
+SegmentedWidget (Plain, Two Options); Badge (Default, Matrix); Button (Default, Sizes Matrix, With Leading Icon,
+With Trailing Icon); Card (Default); ConfigProvider (Default, Right To Left); ConversationTranscript (Chat Reply);
+DataPrivacyPanel (Activity Log, Default, Delete Needs Confirmation, Log Empty, Log Loading, Log Open, Log Scrolls,
+Retention Only); DiffReview (Checklist Two Changes, Default, Every Status, Fallback When Empty, Keyboard Tabs, Long
+Diff, Translated Labels); Drawer (Default); ErrorCard (Default); FeedbackPanel (Default, Two Chosen); FloatButton
+(Text Button); Form (Add Address, Api Error, Async Submit, Contact, Kitchen Sink, Prefilled, Validation Errors);
+IntegrationList (OAuth Accounts); Markdown (Chat Reply); Modal (Default); ModelPicker (Hosted Model, Local Only,
+Menu Only, Non Reasoning Model, Open Menu, Translated Labels); Navigation/Wizard (Custom Labels, Default, Start On
+Middle Step); Segmented (Default, Horizontal Sidebar, Required, Two Options); SettingsDialog (Arrow Key Tabs, Data
+And Privacy Tab, Default, Two Tabs); Theming (See Through, Subtree Themes, Token Overrides); Tour (Default);
+Transcript (Conversation Approval, Conversation Failed). The ids are in
+`storybook-audit/after/a11y/primary-kept/covered-by-exception.json`, with the three measurements beside it.
+
+Visual baselines, corrected. The six that differ (PanelsInThreeStates, Window1180, Window900, dark and light) were
+put down to the token changes above. They are not: the diff images show no colour change at all, only the Empty
+tile's block (icon, title, two-line description, button) sitting 3 to 4 px off. The cause is `4a563eb` (Empty's
+compact size), before `cc3eb6c`: the title's `leading-snug` and the description's `leading-normal` were moved in
+front of the text size in a `cn()` call, where tailwind-merge drops them, so a default tile's description was 16 px
+a line, not 19.5 px. With the two classes put back after the text size (and a test), `pnpm test:visual` passes
+10 of 10 against the committed baselines. No baseline was updated: the token changes (muted text, panel meta
+text, placeholder) are under the comparator's threshold in these stories. The six actual and diff images from
+before the Empty fix are in `storybook-audit/after/a11y/primary-kept/visual-before-empty-fix/`.
+
+Checks: `pnpm verify` passes (229 test files, 2,281 tests, typecheck, Biome, build); `pnpm test:storybook` passes
+(184 files, 862 stories); `pnpm test:visual` passes 10 of 10. `pnpm test:storybook` runs the stories and their play
+functions but not the accessibility check (its set-up loads the preview's annotations only), so the exception and
+the counts above are exercised by the story view and the inventory script, not by that command. The Linux
+baselines were not run (macOS here; CI runs them).
 
 ## Not checked
 

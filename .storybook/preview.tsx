@@ -2,6 +2,7 @@ import { withThemeByDataAttribute } from '@storybook/addon-themes';
 import type { Preview } from '@storybook/react';
 import * as React from 'react';
 import { themes } from 'storybook/theming';
+import { a11yAllowances } from './a11yAllowances';
 import { renderCodeAwareText } from './internal/support/codeAwareText';
 import { componentNameOf } from './internal/support/componentName';
 import { DocsPage } from './internal/support/DocsPage';
@@ -103,7 +104,8 @@ const preview: Preview = {
     },
     // The JSX printed from a story's args names components as they are imported (see `componentNameOf`).
     jsx: { displayName: (element: React.ReactElement) => componentNameOf(element.type) },
-    a11y: { test: 'error' },
+    // `config.rules` is the list of accepted exceptions, kept in one file: see `a11yAllowances.ts`.
+    a11y: { test: 'error', config: { rules: a11yAllowances } },
     options: {
       storySort: {
         order: [

@@ -77,7 +77,7 @@ export const Empty = ({
         {title ? (
           <span
             data-slot="empty-title"
-            className={cn('leading-snug font-semibold', compact ? 'text-[13px]' : 'text-[15px]')}
+            className={cn(compact ? 'text-[13px]' : 'text-[15px]', 'leading-snug font-semibold')}
           >
             {title}
           </span>
@@ -85,8 +85,8 @@ export const Empty = ({
         <span
           data-slot="empty-description"
           className={cn(
-            'leading-normal text-[color:var(--oui-tone-neutral-fg)] opacity-75',
             compact ? 'min-w-0 flex-1 text-[13px]' : 'max-w-[340px] text-[13px]',
+            'leading-normal text-[color:var(--oui-tone-neutral-fg)] opacity-75',
           )}
         >
           {description}

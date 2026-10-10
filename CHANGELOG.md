@@ -18,7 +18,10 @@
 
 ### Changed
 
-- Theme tokens, for WCAG AA contrast (4.5:1 for text) in both themes. Apps see these: the default primary is `#146ceb` (was `#1677ff`: white text on it was 4.1:1, and it was 3.9:1 as text on the light background); `--color-primary-contrast` in dark is `#ffffff` (was `#ffffffe0`); muted text (`--text-muted`, `--text-muted-alt`, `--text-semi-transparent-muted`) is 55% black in light and 59% white in dark (was 45% in both: 3.4:1 and 4.0:1 to 4.4:1); a placeholder is 62% of the foreground (was 32%: 2.0:1 to 2.6:1); `--color-danger` is `#d32f35` in light and `#ff6b6d` in dark (was `#ff4d4f` in both: 3.1:1 to 4.1:1 as text) and `--color-destructive` follows it on every theme root; `--oui-panel-meta-fg` is `#566070` in light and `#a0abc2` in dark; in dark `--oui-tone-success-solid-bg` is `#23874a` and `--oui-tone-danger-solid-bg` is `#cf3f39` (white text on them was 3.4:1 and 4.3:1). A host that set `--oui-primary` keeps its own colour.
+- Theme tokens, for WCAG AA contrast (4.5:1 for text) in both themes. Apps see these: `--color-primary-contrast` in dark is `#ffffff` (was `#ffffffe0`); muted text (`--text-muted`, `--text-muted-alt`, `--text-semi-transparent-muted`) is 55% black in light and 59% white in dark (was 45% in both: 3.4:1 and 4.0:1 to 4.4:1); a placeholder is 62% of the foreground (was 32%: 2.0:1 to 2.6:1); `--color-danger` is `#d32f35` in light and `#ff6b6d` in dark (was `#ff4d4f` in both: 3.1:1 to 4.1:1 as text) and `--color-destructive` follows it on every theme root; `--oui-panel-meta-fg` is `#566070` in light and `#a4afc6` in dark; in dark `--oui-tone-success-solid-bg` is `#23874a` and `--oui-tone-danger-solid-bg` is `#cf3f39` (white text on them was 3.4:1 and 4.3:1). The primary is not among them: see the next entry.
+- The primary colour stays `#1677ff` (the owner's decision, 2026-10-10; a change to `#146ceb` for contrast was made and taken back before any release). The two places it falls short of 4.5:1 are handled apart:
+  - As text (3.93:1 on `#fafafa`, 4.10:1 on `#ffffff`, 3.26:1 on a dark panel): a new token, `--oui-foreground-primary`, is the primary as a text colour. It is a shade of the same hue, derived from `--oui-primary` on each theme root, so a host's own primary gets its own: 85% of it over black in light (`#1365d9` by default, 5.17:1 on `#fafafa`) and 70% of it over white in dark (`#5ca0ff`, 5.05:1 on a `#2f2f2f` panel, 6.46:1 on the page). Button `variant="link"`, the current and finished Steps, the dynamic-form label action, the collapsible section title on hover and Select's footer action use it. Fills, borders, focus rings and icons keep `--color-primary`.
+  - White text on the solid primary (the primary Button, the chosen Segmented option, the solid Badge) is 4.10:1 and stays: an accepted exception, recorded once in `.storybook/a11yAllowances.ts` and scoped to that colour pair.
 - StreamStatus: the timer is no longer drawn at 80% opacity (it is muted text already).
 
 ### Fixed
@@ -30,6 +33,7 @@
 - dynamic-form CheckboxWidget: the box has its label beside it, as documented (`ui:title` replaces it, `ui:options.label: false` hides it and it still names the box). A boolean field had no label and no name.
 - CommandPopover brings the highlighted option into view by scrolling its own list, and ConversationHeader focuses its rename field without scrolling: a page that shows either no longer jumps to it.
 - RichText no longer registers the underline extension twice.
+- Empty (`variant="tile"`): the title and the description have their line heights again (`leading-snug`, `leading-normal`). Since the compact size was added the two classes were dropped when merged with the text size, so a default tile's two-line description was 16px a line, not 19.5px, and the block sat 3 to 4px off. The Native App visual baselines match again, unchanged.
 
 ### Storybook
 
@@ -39,6 +43,8 @@
 - The highlighter and the formatter load when a code panel is first opened: a story makes about 110 requests, not 406.
 - Docs pages are as wide as their window, mount a variant when it comes near, and exist for the 20 titles that had none (BackTop, Breadcrumb, Calendar, Cascader, ConfigProvider, Icon, Masonry, Message, Notification, Theming, Upload, Util, HiddenWidget, Table API, Extendable, Virtualization and the four Table showcases), with examples that show their code.
 - `scripts/storybook-inventory.mjs --a11y --theme <dark|light>` records every story's accessibility result node by node, with contrast failures counted by colour pair.
+- Accepted accessibility exceptions live in one file, `.storybook/a11yAllowances.ts`, which the preview hands to the a11y addon (`parameters.a11y.config.rules`). It has one entry: an element whose text axe measures as exactly `#ffffff` on exactly `#1677ff` is left out of `color-contrast` (owner's brand colour, 4.10:1, accepted 2026-10-10). Every other colour pair is still checked, the rule is not disabled anywhere, and `a11y.test` is still `'error'`.
+
 
 ## 0.1.0 - 2026-10-06
 

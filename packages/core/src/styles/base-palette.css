@@ -42,14 +42,13 @@
 
   /* Ant Design-style theme seeds.
      Minimal customization:
-       :root { --oui-primary: #146ceb; --oui-background: #fafafa; }
+       :root { --oui-primary: #1677ff; --oui-background: #fafafa; }
      Optional:
        :root { --oui-background-dark: #1d1d1d; }
        :root, [data-theme] { --oui-primary-1: ...; ... --oui-primary-10: ...; }   (stops are derived, so a host sets them on both)
      If palette stops are not provided, they are derived from the primary
      and current background with color-mix so one seed color is enough. */
-  /* #146ceb, not Ant Design's #1677ff: white text on it, and it as text on the light background, reach 4.5:1 (WCAG AA). */
-  --oui-primary: #146ceb;
+  --oui-primary: #1677ff;
   --oui-background: #fafafa;
   --oui-background-dark: #1d1d1d;
 

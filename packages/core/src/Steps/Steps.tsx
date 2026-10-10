@@ -127,8 +127,8 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                 aria-current={index === current ? 'step' : undefined}
                 className={cn(
                   'flex appearance-none gap-2 border-0 bg-transparent p-0 text-left',
-                  itemStatus === 'process' && 'text-primary',
-                  itemStatus === 'finish' && 'text-primary',
+                  itemStatus === 'process' && 'text-[color:var(--oui-foreground-primary)]',
+                  itemStatus === 'finish' && 'text-[color:var(--oui-foreground-primary)]',
                   itemStatus === 'error' && 'text-destructive',
                 )}
                 onClick={() => onChange?.(index)}
