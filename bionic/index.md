@@ -1,8 +1,14 @@
 # docs/omni-ui-components
 
-_Last updated: 2026-10-05_
+_Last updated: 2026-10-10_
 
-## Research (0 sources, 0 synthesis pages)
+## Research (0 sources, 4 synthesis pages)
+
+### References (4)
+- [[research/references/theme-contract]] — every `--oui-*` token, per-subtree theming, the see-through contract — sources: 0
+- [[research/references/css-delivery]] — the stylesheet inside a host with its own CSS — sources: 0
+- [[research/references/bundle-weight]] — what each entry point weighs — sources: 0
+- [[research/references/native-app-control-variations]] — Native App controls, message parts, chat shell: conventions and deviations — sources: 0
 
 See [[research/index]].
 
@@ -12,11 +18,15 @@ See [[research/index]].
 |---|---|---|---|
 | [[adrs/ADR-0000-record-architecture-decisions]] | Record architectural decisions as ADRs | Accepted | 2026-10-05 |
 
-## Briefs (0)
+## Briefs (3)
 
-_No briefs yet._
+- [[briefs/BRIEF-bionic-docs-and-skills-audit]] — `draft` — `updated_at: 2026-10-10`
+- [[briefs/BRIEF-dynamic-form-widget-coverage]] — `draft` — `updated_at: 2026-10-10`
+- [[briefs/BRIEF-storybook-audit]] — `draft` — `updated_at: 2026-10-09`
 
 ## Journal (1 month)
+
+- [[journal/2026-10]] — 16 entries — first: 2026-10-06 — last: 2026-10-08
 
 See [[journal/index]].
 

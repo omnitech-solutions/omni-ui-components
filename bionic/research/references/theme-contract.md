@@ -90,7 +90,7 @@ Light and dark defaults below are the values in `packages/core/src/styles/tokens
 | `--oui-border-invalid` | `var(--color-destructive)` | Field border (rest, focus, invalid) |
 | `--oui-foreground` | `var(--color-foreground)` | Text colour |
 | `--oui-foreground-muted` | `var(--color-muted-foreground)` | Text colour |
-| `--oui-foreground-placeholder` | `color-mix(in srgb, var(--color-foreground) 32%, transparent)` | Text colour |
+| `--oui-foreground-placeholder` | `color-mix(in srgb, var(--color-foreground) 62%, transparent)` | Text colour |
 | `--oui-foreground-required` | `var(--color-destructive)` | Text colour |
 | `--oui-tone-neutral-fg` | `var(--text-default)` | Tone text colour |
 | `--oui-tone-neutral-bg` | `var(--bg-grey-f5)` | Tone background |
@@ -112,7 +112,7 @@ Light and dark defaults below are the values in `packages/core/src/styles/tokens
 | `--oui-tone-success-fg` | `#1b7a3e` | `#6ddc93` | Tone text colour |
 | `--oui-tone-success-bg` | `rgba(47, 158, 85, 0.12)` | `rgba(109, 220, 147, 0.12)` | Tone background |
 | `--oui-tone-success-border` | `#8fd0a5` | `#2f9e55` | Tone border |
-| `--oui-tone-success-solid-bg` | `#23874a` | `#2f9e55` | Tone background |
+| `--oui-tone-success-solid-bg` | `#23874a` | `#23874a` | Tone background |
 | `--oui-tone-success-solid-fg` | `#ffffff` | `#ffffff` | Tone text colour |
 | `--oui-tone-warning-fg` | `#8a5a00` | `#f5c86b` | Tone text colour |
 | `--oui-tone-warning-bg` | `rgba(240, 180, 41, 0.18)` | `rgba(240, 180, 41, 0.12)` | Tone background |
@@ -122,7 +122,7 @@ Light and dark defaults below are the values in `packages/core/src/styles/tokens
 | `--oui-tone-danger-fg` | `#b42318` | `#ff8a85` | Tone text colour |
 | `--oui-tone-danger-bg` | `rgba(220, 38, 38, 0.08)` | `rgba(255, 107, 102, 0.1)` | Tone background |
 | `--oui-tone-danger-border` | `#f0a3a0` | `#7a3236` | Tone border |
-| `--oui-tone-danger-solid-bg` | `#dc2626` | `#d8453f` | Tone background |
+| `--oui-tone-danger-solid-bg` | `#dc2626` | `#cf3f39` | Tone background |
 | `--oui-tone-danger-solid-fg` | `#ffffff` | `#ffffff` | Tone text colour |
 | `--oui-tone-dim-fg` | `#8b909a` | `#5f636c` | Tone text colour |
 | `--oui-tone-dim-bg` | `transparent` | `transparent` | Tone background |
@@ -136,7 +136,7 @@ Light and dark defaults below are the values in `packages/core/src/styles/tokens
 | `--oui-panel-dock-bg` | `#f6f7f9` | `#141c2d` | Opaque base colour of a panel surface (mixed with the see-through level) |
 | `--oui-panel-border` | `#e3e6ec` | `#24314a` | Panel border and separators |
 | `--oui-panel-divider` | `#e8ebf0` | `#212c42` | 1px separators under the header and over the dock |
-| `--oui-panel-meta-fg` | `#6b7280` | `#7d8aa3` | Panel secondary text |
+| `--oui-panel-meta-fg` | `#566070` | `#a4afc6` | Panel secondary text |
 | `--oui-tag-filled-bg` | `#eef0f4` | `#212c42` | Filled Tag colours |
 | `--oui-tag-filled-fg` | `#374151` | `#a9b6cf` | Filled Tag colours |
 | `--oui-clock-live` | `#b42318` | `#ff8a85` | StatusClock record icon and timer while live |

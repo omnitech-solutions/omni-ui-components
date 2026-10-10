@@ -1,3 +1,9 @@
+---
+title: Bundle weight per entry point (what a consumer of ./native, ./chat and ./highlight pays, measured by the entries test)
+category: references
+updated: 2026-10-07
+---
+
 # Bundle weight per entry point
 
 Measured by `packages/core/test/Entries/entries.test.ts`, which builds the scratch consumers in `packages/core/fixtures/consumer/`

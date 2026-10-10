@@ -33,10 +33,10 @@ snippets call it as a library).
 |---|---|
 | `pnpm lint` | lint only; exits non-zero on errors (warnings are the backlog) |
 | `pnpm lint:fix` | apply safe lint fixes |
-| `pnpm format` | check formatting (fails until the repo-wide reformat lands) |
+| `pnpm format` | check formatting |
 | `pnpm format:write` | format everything |
 | `pnpm check` | lint + format + import sorting, the full Biome gate |
-| `pnpm verify` | lint + typecheck + test + build (the local and CI gate) |
+| `pnpm verify` | `pnpm check` + typecheck + unit tests with the coverage gate + build (the local and CI gate) |
 
 Configuration lives in `biome.json`. Stories, factories, tests and `.storybook/**` have
 relaxed rules via `overrides`. A set of judgement rules is temporarily `warn`; the list and
@@ -47,18 +47,22 @@ are fixed. CSS is linted but not formatted.
 
 - `pnpm test` unit tests; `pnpm test:storybook` runs every story's `play` in Chromium;
   `pnpm test:visual` compares screenshots.
-- `pnpm test:coverage` produces coverage with `@vitest/coverage-v8`. Plan: it is not in
-  `verify` yet; thresholds and a CI coverage artifact are added once every component has
-  tests (Table is the remaining gap), then `test:coverage` joins `verify`.
+- `pnpm test:coverage` produces coverage with `@vitest/coverage-v8` and is part of `verify`:
+  80% of lines, statements, branches and functions (`vitest.config.ts`). No coverage artifact
+  is uploaded by CI.
+- What each command proves and does not prove, and the parts every component must have
+  (enforced by `packages/core/test/Tripwires/`): see the README, "How things are built here".
 
 ## The Biome reformat: C1, C2 and open branches
 
-- C1 (`chore(tooling)`) adds the config, hooks and scripts. The tree is not reformatted, so
-  `pnpm format` fails and `verify` leaves format out.
-- C2 is the one repo-wide reformat commit, produced in a quiet window by
-  `scripts/land-biome-c2.sh`. It also switches `verify` to `pnpm check` and prints the SHA
-  to add to `.git-blame-ignore-revs` (then `git config blame.ignoreRevsFile .git-blame-ignore-revs`).
-- Open branches absorb C2 without conflicts:
+Both have landed on `master` (C2 is `2a91f90`, listed in `.git-blame-ignore-revs`); this
+section is kept for a branch that still predates them.
+
+- C1 (`chore(tooling)`) added the config, hooks and scripts without reformatting the tree.
+- C2 is the one repo-wide reformat commit, produced by `scripts/land-biome-c2.sh`. It also
+  switched `verify` to `pnpm check`. Run `git config blame.ignoreRevsFile .git-blame-ignore-revs`
+  once so blame skips it.
+- A branch from before C2 absorbs it without conflicts:
 
   ```sh
   git checkout my-branch
