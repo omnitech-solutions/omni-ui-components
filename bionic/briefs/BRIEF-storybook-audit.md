@@ -2,12 +2,12 @@
 title: "Storybook audit: one example renderer, a table of contents that stays, and overview pages that load"
 slug: storybook-audit
 type: brief
-status: draft
+status: published
 created_at: 2026-10-09
-updated_at: 2026-10-09
+updated_at: 2026-10-10
 authors: ["claude"]
 tags: [storybook, docs, performance, accessibility]
-related_adrs: []
+related_adrs: [ADR-0005, ADR-0006, ADR-0009, ADR-0022]
 ---
 
 # Storybook audit (phase 1 of 2: findings only, no source changed)

@@ -2,12 +2,12 @@
 title: "Dynamic form widget coverage: which components the schema-driven form can use, which it cannot, and what to add first"
 slug: dynamic-form-widget-coverage
 type: brief
-status: draft
+status: published
 created_at: 2026-10-10
 updated_at: 2026-10-10
 authors: ["claude"]
 tags: [dynamic-form, widgets, forms, storybook, accessibility]
-related_adrs: []
+related_adrs: [ADR-0001, ADR-0008, ADR-0016, ADR-0019, ADR-0020]
 ---
 
 # Dynamic form widget coverage (audit only, no source changed)

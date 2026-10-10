@@ -39,9 +39,9 @@ snippets call it as a library).
 | `pnpm verify` | `pnpm check` + typecheck + unit tests with the coverage gate + build (the local and CI gate) |
 
 Configuration lives in `biome.json`. Stories, factories, tests and `.storybook/**` have
-relaxed rules via `overrides`. A set of judgement rules is temporarily `warn`; the list and
-counts are in `bionic/inbox/biome-backlog.md`. Promote a rule to `error` once its findings
-are fixed. CSS is linted but not formatted.
+relaxed rules via `overrides`. A set of judgement rules is temporarily `warn`; the list is in
+`bionic/briefs/BRIEF-biome-rule-backlog.md`. Promote a rule to `error` once its findings
+are fixed. CSS is linted but not formatted. The decision is ADR-0010.
 
 ## Tests and coverage
 
@@ -52,6 +52,9 @@ are fixed. CSS is linted but not formatted.
   is uploaded by CI.
 - What each command proves and does not prove, and the parts every component must have
   (enforced by `packages/core/test/Tripwires/`): see the README, "How things are built here".
+  The decisions: ADR-0017 (the gates), ADR-0011 (coverage), ADR-0012 (visual baselines),
+  ADR-0015 (mandatory parts), all in `bionic/adrs/`.
+- Publishing is the owner's alone (ADR-0013, `RELEASING.md`).
 
 ## The Biome reformat: C1, C2 and open branches
 

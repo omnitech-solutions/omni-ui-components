@@ -2,12 +2,12 @@
 title: "Bionic docs and skills audit: what is stale, what was never written down, what drifts, and the tripwires that now hold the build rules"
 slug: bionic-docs-and-skills-audit
 type: brief
-status: draft
+status: published
 created_at: 2026-10-10
 updated_at: 2026-10-10
 authors: ["claude"]
 tags: [bionic, crux, documentation, skills, tripwires, storybook, accessibility]
-related_adrs: []
+related_adrs: [ADR-0001, ADR-0002, ADR-0003, ADR-0004, ADR-0005, ADR-0006, ADR-0007, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0013, ADR-0014, ADR-0015, ADR-0016, ADR-0017, ADR-0018, ADR-0021, ADR-0022]
 ---
 
 # Bionic docs and skills audit (with the safe repairs, the README and the tripwires)

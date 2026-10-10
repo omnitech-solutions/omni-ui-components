@@ -28,6 +28,14 @@ concerns_enabled:
   # arch: the derived architecture concern (docs/AGENTS.md §4). Fully in-tree +
   # regenerated, so enabling it is ADDITIVE — no schema_version bump. Default-on
   # for new repos; the spine is built on first `derive-arch` / `audit-docs`.
+  # NOT DERIVED HERE, on purpose (2026-10-10). The deriver walks the working tree and prunes a fixed
+  # list of directories (`dist`, `node_modules`, ...) that has no project setting; it does not prune
+  # this repository's `packages/core/dist-types/`, `coverage/` or `storybook-static/`, which are
+  # gitignored build output. Of its 2,264 inputs here almost all are those files, so the spine would
+  # describe the last build on one machine and drift on every other. `.bionic.yml` offers a stack pin
+  # and a per-concern extractor override, and neither excludes an input. Derive it when crux can
+  # exclude paths, or with a project extractor that reads `packages/core/src` only. Until then
+  # `derive-arch --dry-run` reports drift and `bionic/arch/index.md` stays the init stub.
   - arch
   # observations: the observed-record concern (docs/AGENTS.md §17). Fully
   # in-tree, so enabling it is ADDITIVE — no schema_version bump. Default-on
@@ -40,9 +48,17 @@ concerns_enabled:
 # extractor also reads include_private and refuses any other key.
 code:
   extractors:
+    # Shared code and entry points only: `lib` (hooks and helpers every component builds on), the
+    # entry points and the dynamic-form registries. Decided 2026-10-10:
+    #   - the only TypeScript extractor crux ships is `fallback`, which reads a file's leading comment
+    #     and nothing else, so a page for a component or its types file is empty (measured: 90 of the
+    #     104 pages of a first run). A component is documented by its Storybook Docs page (OBJ-6).
+    #   - a glob cannot exclude, so stories, factories, fixtures, tests and build output (dist/,
+    #     dist-types/, coverage/) are kept out by never being matched. The first glob, every .ts and
+    #     .tsx under src, would have written 960 pages, most of them stories and tests.
     typescript:
       extractor: fallback
-      glob: ["packages/*/src/**/*.ts", "packages/*/src/**/*.tsx"]
+      glob: ["packages/core/src/lib/*.ts", "packages/core/src/lib/chat/*.ts", "packages/core/src/index.ts", "packages/core/src/entries/*.ts", "packages/core/src/dynamic-form/index.ts", "packages/core/src/dynamic-form/registries/*.ts"]
 
 # Research concern.
 research:
@@ -66,7 +82,7 @@ journal:
 # ADR allocation. propose-adr reads adr.next_number, allocates it, writes the
 # new ADR, and increments this field atomically. Numbers are NEVER reused.
 adr:
-  next_number: 1
+  next_number: 23
   # The rule-length advisory baseline: the ADR identities that predate the advisory in THIS
   # tree. Empty is correct for a new tree and is self-maintaining — with no ADRs yet, every ADR
   # you write is new relative to it and is advised on. It ships as an explicit empty list rather

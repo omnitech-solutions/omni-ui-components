@@ -1,0 +1,187 @@
+{
+  "extractor_version": "1",
+  "pages": [
+    {
+      "doc_path": "fallback/packages/core/src/dynamic-form/index.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "735822c216141e9c8b0a18fd825238227577b0e4ec5e63eb26c00fedd0f98ec4",
+      "source_path": "packages/core/src/dynamic-form/index.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/dynamic-form/registries/fields.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "8f1dc20024d3971ad933fc5259aaec5a00de9bdc887b68a5ed7e001c13565a11",
+      "source_path": "packages/core/src/dynamic-form/registries/fields.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/dynamic-form/registries/templates.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "386a7ecce7b1af947ad732e2bce54c6a3737a5f0cca8389d3be5c031460b57a9",
+      "source_path": "packages/core/src/dynamic-form/registries/templates.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/dynamic-form/registries/widgets.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "021fc49657fb7aa96669317b5c38c0219bd662e4342f5a58fa94d796e5add43a",
+      "source_path": "packages/core/src/dynamic-form/registries/widgets.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/entries/chat.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "1941ab29c97a1d26a809d8b96cbb43506cdbf860f1fcede27e6db94237b57aca",
+      "source_path": "packages/core/src/entries/chat.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/entries/highlight.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "6ae635c7a89cadd0000db384cb1ab729fc7ed47c7c63c23899e783742651a97f",
+      "source_path": "packages/core/src/entries/highlight.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/entries/native.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "4c8ddf6358a62db6cbbf66489c6fda337f3abcea1fb958dd5e107f4cde467e7c",
+      "source_path": "packages/core/src/entries/native.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/index.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "2f8495f55ba73f13a2679f5ef55d6f128d6d0875ba4fe4bd48b38dfccc5e7ca8",
+      "source_path": "packages/core/src/index.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/chat/clipboard.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "4d5e244c05d57a6a600cd364882863c8aad92f0128927ddf34cc31723e865e6c",
+      "source_path": "packages/core/src/lib/chat/clipboard.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/chat/export.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "da62ee9fabea4966862bae0440de137f7fb99729b7bf0d0a966be84421b90c11",
+      "source_path": "packages/core/src/lib/chat/export.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/chat/failure.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "80ef3dd582670ca19511daa3f3095761f6bf396fdf3ed032890faa4a2ea7d3f7",
+      "source_path": "packages/core/src/lib/chat/failure.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/chat/index.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "1940a361749c8dcc3aa7c189032cff172f465a54fef7e429d6d27971c6536c74",
+      "source_path": "packages/core/src/lib/chat/index.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/chat/initials.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "eaf2135b4cc4caed21f093a3b1430a5fa14be786d90203354b888895b9a91066",
+      "source_path": "packages/core/src/lib/chat/initials.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/chat/recency.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "872eb0bc8c9104457c1b0143cffb7604a36e91b4d979fcbbc52806fc009eaefb",
+      "source_path": "packages/core/src/lib/chat/recency.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/chat/shortcuts.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "70d9172d45e57e367e1d9b6f4b0a87962201fad2e64e9c91376e0dd515320234",
+      "source_path": "packages/core/src/lib/chat/shortcuts.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/chat/speech.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "6ed3a771e80e4f2ebabc3b25726980da2c0f7a64dc403a4269f2d587cdb6935b",
+      "source_path": "packages/core/src/lib/chat/speech.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/chat/useDebouncedCallback.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "f1c3377f4b8c43296234cce0ffc08a80ee701bf020c65f3ab36ce03c7e63bbd2",
+      "source_path": "packages/core/src/lib/chat/useDebouncedCallback.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/chat/window.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "4f933788530a2b514fb4cc4c481156a963cc311bd7205ecd878c91819ad785c1",
+      "source_path": "packages/core/src/lib/chat/window.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/index.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "a324bbe8ef263bb322b33b94a8a39459540b385fca2de3389e4a876261ae05c7",
+      "source_path": "packages/core/src/lib/index.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/types.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "3ac6826d9a7888c158a330e1a08ec195f6dcb48839f422a2683b098dc247d71f",
+      "source_path": "packages/core/src/lib/types.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/use-controllable-state.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "c43c2fe36afe3bcc87034ea08a28303d328301684ceca517a10a5c804388c158",
+      "source_path": "packages/core/src/lib/use-controllable-state.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/use-follow-latest.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "9682d7f5c63e2ce2000ed69fed924a0dd38a85f5c6d2e2e9cb115cda982dfd22",
+      "source_path": "packages/core/src/lib/use-follow-latest.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/use-hold-to-talk.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "2de08c5329b8b9e0c1f127bc6b971f142db203817031891bfb7c49f32cf163d5",
+      "source_path": "packages/core/src/lib/use-hold-to-talk.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/use-roving-tabindex.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "6ab11c863b1bdeaff4c0464516bcadab8110104e1e0a2d9124a27f8ad95bb9f6",
+      "source_path": "packages/core/src/lib/use-roving-tabindex.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/use-stable-id.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "54389a117214fff37a2fa26196711e58cf20c76194f1d3b71bf2ebf4de4a86fa",
+      "source_path": "packages/core/src/lib/use-stable-id.ts"
+    },
+    {
+      "doc_path": "fallback/packages/core/src/lib/utils.ts.md",
+      "extractor_version": "1",
+      "owner": "typescript",
+      "sha256": "12cc12f6b0fa97173bd5de83376cf88960f03a4f7fa6b23dd20fcd1135dac33d",
+      "source_path": "packages/core/src/lib/utils.ts"
+    }
+  ]
+}
