@@ -62,6 +62,13 @@ export interface FieldShellProps extends FieldLayoutProps {
   errorId?: string;
   /** From {@link useFieldChrome} with `requiredHint`: draws the hidden "Required" hint the control is described by. */
   requiredId?: string;
+  /** A line under the control that stays visible beside the description and the error (a schema form's `ui:help`). */
+  help?: React.ReactNode;
+  helpId?: string;
+  /** A node at the end of the label row (a link or a button the host supplies). */
+  labelAction?: React.ReactNode;
+  /** The words of the hidden "Required" hint. Default `Required`. */
+  requiredLabel?: string;
   labelTag?: 'label' | 'span';
   labelId?: string;
   role?: string;
@@ -84,6 +91,10 @@ export const FieldShell: React.FC<FieldShellProps> = ({
   descriptionId,
   errorId,
   requiredId,
+  help,
+  helpId,
+  labelAction,
+  requiredLabel = 'Required',
   labelTag = 'label',
   labelId,
   role,
@@ -98,7 +109,7 @@ export const FieldShell: React.FC<FieldShellProps> = ({
       *
     </span>
   ) : null;
-  const labelNode = label ? (
+  const labelElement = label ? (
     labelTag === 'label' ? (
       <label htmlFor={id} className={labelClasses} id={labelId}>
         {label}
@@ -111,10 +122,19 @@ export const FieldShell: React.FC<FieldShellProps> = ({
       </span>
     )
   ) : null;
+  const labelNode =
+    labelElement && labelAction ? (
+      <div className="flex items-baseline justify-between gap-3" data-slot="field-label-row">
+        {labelElement}
+        {labelAction}
+      </div>
+    ) : (
+      labelElement
+    );
   // The asterisk is hidden from assistive technology; a control that cannot carry `aria-required` is described by this.
   const requiredHint = requiredId ? (
     <span id={requiredId} className="sr-only">
-      Required
+      {requiredLabel}
     </span>
   ) : null;
   const helpers =
@@ -135,6 +155,14 @@ export const FieldShell: React.FC<FieldShellProps> = ({
       {error}
     </p>
   ) : null;
+  const helpNode = help ? (
+    <p
+      id={helpId}
+      className="font-[family-name:var(--oui-font-sans)] text-xs text-[var(--oui-foreground-muted)]"
+    >
+      {help}
+    </p>
+  ) : null;
 
   if (layout === 'horizontal') {
     return (
@@ -150,6 +178,7 @@ export const FieldShell: React.FC<FieldShellProps> = ({
           {children}
           {helpers}
           {errorNode}
+          {helpNode}
         </div>
       </div>
     );
@@ -167,6 +196,7 @@ export const FieldShell: React.FC<FieldShellProps> = ({
       {children}
       {helpers}
       {errorNode}
+      {helpNode}
     </div>
   );
 };

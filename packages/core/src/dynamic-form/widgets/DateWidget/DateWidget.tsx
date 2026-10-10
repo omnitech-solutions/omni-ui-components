@@ -2,37 +2,27 @@ import { DatePickerPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import * as React from 'react';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import { fromIsoDate, stringOption, toIsoDate, widgetField, widgetLook } from '../../lib/widgetKit';
 
-/** RJSF Date widget — stores YYYY-MM-DD strings. */
+/**
+ * `date`: one day, stored as `YYYY-MM-DD`. `ui:options.min` and `max` (the same format) bound the calendar;
+ * `ui:options.placeholder`.
+ */
 export const DateWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, required } = props;
-  const { onChange } = useStableRjsfCallbacks<Date | { from?: Date; to?: Date } | null>(
-    props,
-    (next) => {
-      if (next instanceof Date) {
-        const yyyy = next.getFullYear();
-        const mm = String(next.getMonth() + 1).padStart(2, '0');
-        const dd = String(next.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
-      }
-      return undefined;
-    },
+  const { value, options, placeholder } = props;
+  const { onChange } = useStableRjsfCallbacks<unknown>(props, (next) =>
+    next instanceof Date ? toIsoDate(next) : undefined,
   );
-
-  const date = React.useMemo(() => {
-    if (!value || typeof value !== 'string') return null;
-    const d = new Date(`${value}T00:00:00`);
-    return Number.isNaN(d.getTime()) ? null : d;
-  }, [value]);
-
+  const date = React.useMemo(() => fromIsoDate(value), [value]);
   return (
     <DatePickerPrimitive
-      id={id}
+      {...widgetField(props, { requiredHint: true })}
+      {...widgetLook(props)}
       mode="single"
       value={date}
-      disabled={disabled || readonly}
-      required={required}
-      invalid={Boolean(rawErrors?.length)}
+      min={fromIsoDate(options?.min) ?? undefined}
+      max={fromIsoDate(options?.max) ?? undefined}
+      placeholder={stringOption(options, 'placeholder') ?? (placeholder || undefined)}
       onChange={onChange}
     />
   );

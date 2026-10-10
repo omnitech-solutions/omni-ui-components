@@ -309,9 +309,9 @@ export const ComposerDemo: React.FC<ComposerDemoProps> = ({
       onBeforeKeyDown={command.onKeyDown}
       onRecallPrevious={promptHistory.previous}
       onRecallNext={promptHistory.next}
+      // A textarea may not take the combobox role (ARIA in HTML): it stays a textbox that names the list it
+      // drives. `aria-expanded` belongs to the combobox role, so it is not set.
       textareaProps={{
-        role: 'combobox',
-        'aria-expanded': command.open,
         'aria-controls': command.open ? command.listboxId : undefined,
         'aria-activedescendant': command.activeDescendant,
         'aria-autocomplete': 'list',

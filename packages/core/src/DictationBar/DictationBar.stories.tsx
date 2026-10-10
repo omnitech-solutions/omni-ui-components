@@ -125,8 +125,8 @@ export const InComposer: StoryObj = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: /Dictate/ }));
     await expect(canvasElement.querySelector('[data-slot="dictation-bar"]')).not.toBeNull();
-    await expect(canvas.queryByRole('combobox', { name: 'Message' })).toBeNull();
+    await expect(canvas.queryByRole('textbox', { name: 'Message' })).toBeNull();
     await userEvent.click(canvas.getByRole('button', { name: 'Cancel' }));
-    await expect(canvas.getByRole('combobox', { name: 'Message' })).toBeVisible();
+    await expect(canvas.getByRole('textbox', { name: 'Message' })).toBeVisible();
   },
 };

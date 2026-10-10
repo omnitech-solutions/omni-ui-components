@@ -159,6 +159,8 @@ export const EveryStatus: Story = {
             {...args}
             status={status}
             variant="diff"
+            // Several on one page: each region landmark has its own name.
+            labels={{ region: `Proposed change, ${status}` }}
             actions={phaseActions({
               status,
               onApply: fn(),
@@ -189,6 +191,7 @@ export const WithAndWithoutHighlighting: Story = {
             {...args}
             changes={[sampleChanges()[1]!]}
             highlight={on ? args.highlight : undefined}
+            labels={{ region: on ? 'Proposed change, highlighted' : 'Proposed change, plain' }}
             actions={[]}
           />
         </div>

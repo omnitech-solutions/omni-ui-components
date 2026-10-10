@@ -66,6 +66,9 @@ export const HorizontalSidebar: Story = {
 
 export const Disabled: Story = { args: { disabled: true, value: 'US' } };
 
+/** Read-only: focusable and readable, announced as such, and the value cannot change. */
+export const ReadOnly: Story = { args: { readOnly: true, value: 'US' } };
+
 export const Ghost: Story = { args: { variant: 'ghost' } };
 
 export const Grouped: Story = {

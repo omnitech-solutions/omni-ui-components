@@ -1,95 +1,57 @@
-import {
-  type SelectFooterAction,
-  type SelectOption,
-  SelectPrimitive,
-} from '@oc-tech/omni-ui-components';
+import { type SelectOption, SelectPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
-import * as React from 'react';
-import type { OmniRjsfFormContext } from '../../lib/formContext';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import {
+  actionOf,
+  choicesOf,
+  formLabelsOf,
+  placeholderOf,
+  sizeOf,
+  variantOf,
+  widgetField,
+} from '../../lib/widgetKit';
 import { MultiSelectWidget } from '../MultiSelectWidget';
 
 /**
- * RJSF Select widget. Sources options from one of two places:
- *   1. `ui:options.optionSetKey`: look up
- *      `formContext.optionSets[optionSetKey]` (preferred for grouped,
- *      avatar-bearing, or shared lists).
- *   2. Default: `schema.enum` / `oneOf` (the existing RJSF route).
- *
- * Honors `ui:options.footerActionKey` to render a dropdown footer
- * action — resolved from `formContext.actions[footerActionKey]`. The
- * primitive owns visual treatment.
+ * The one-of-a-list control behind `select` and `combobox`. Choices come from the schema (`enum` / `oneOf`) or,
+ * with `ui:options.optionSetKey`, from `formContext.optionSets` (grouped, with avatar, colour, description).
+ * `ui:options.footerActionKey` names an action in `formContext.actions` drawn under the list: a link when it has
+ * an `href`, a call to the host's `onSelect` otherwise. The library never navigates.
  */
-export const SelectWidget = (props: WidgetProps) => {
-  const {
-    id,
-    value,
-    required,
-    disabled,
-    readonly,
-    placeholder,
-    rawErrors,
-    options,
-    schema,
-    autofocus,
-    multiple,
-    registry,
-  } = props;
+export const SelectControl = ({
+  props,
+  searchable,
+}: {
+  props: WidgetProps;
+  searchable: boolean;
+}) => {
+  const { value, options, autofocus } = props;
   const { onChange, onBlur, onFocus } = useStableRjsfCallbacks<string>(props);
-
-  const optionSetKey = typeof options?.optionSetKey === 'string' ? options.optionSetKey : '';
-  const footerActionKey =
-    typeof options?.footerActionKey === 'string' ? options.footerActionKey : '';
-  const context = (registry?.formContext ?? {}) as Partial<OmniRjsfFormContext>;
-
-  const selectOptions: SelectOption[] = React.useMemo(() => {
-    if (optionSetKey) {
-      const set = context.optionSets?.[optionSetKey];
-      if (set) return set.map((o) => ({ ...o }));
-    }
-    const enumOptions =
-      (options?.enumOptions as { value: unknown; label: string }[] | undefined) ?? [];
-    return enumOptions.map((opt) => ({ value: String(opt.value), label: opt.label }));
-  }, [optionSetKey, context.optionSets, options?.enumOptions]);
-
-  const footerAction: SelectFooterAction | undefined = React.useMemo(() => {
-    if (!footerActionKey) return undefined;
-    const action = context.actions?.[footerActionKey];
-    if (!action) return undefined;
-    return {
-      label: action.label,
-      href: action.href ?? null,
-      onSelect: () => {
-        if (action.href && typeof window !== 'undefined') {
-          // Story / dev: navigation is the caller's concern; widgets must
-          // not auto-navigate during render. We expose the href on the
-          // primitive's footer button via onSelect so consumers can route.
-          window.location.assign(action.href);
-        }
-      },
-    };
-  }, [footerActionKey, context.actions]);
-
-  const ph =
-    typeof options?.placeholder === 'string'
-      ? options.placeholder
-      : ((placeholder as string | undefined) ??
-        (schema.title ? `Select ${String(schema.title).toLowerCase()}…` : 'Select…'));
-
-  if (multiple) {
-    return <MultiSelectWidget {...props} />;
-  }
+  const labels = formLabelsOf(props);
+  const action = actionOf(props, 'footerActionKey');
+  const variant = variantOf(props);
 
   return (
     <SelectPrimitive
-      id={id}
-      options={selectOptions}
-      placeholder={ph}
-      searchable={Boolean(options?.searchable)}
-      footerAction={footerAction}
-      required={required}
-      disabled={disabled || readonly}
-      invalid={Boolean(rawErrors?.length)}
+      {...widgetField(props, { requiredHint: true })}
+      variant={variant === 'panel' ? undefined : variant}
+      inputSize={sizeOf(props)}
+      options={choicesOf(props) as SelectOption[]}
+      placeholder={
+        searchable
+          ? placeholderOf(props, labels.searchPlaceholder, labels.searchPlaceholderUntitled)
+          : placeholderOf(props, labels.selectPlaceholder, labels.selectPlaceholderUntitled)
+      }
+      searchable={searchable}
+      footerAction={
+        action
+          ? {
+              label: action.label,
+              href: action.href,
+              onSelect: action.onSelect ? () => action.onSelect?.(action) : undefined,
+            }
+          : undefined
+      }
       value={(value as string | undefined) ?? ''}
       autoFocus={autofocus}
       onChange={onChange}
@@ -98,3 +60,14 @@ export const SelectWidget = (props: WidgetProps) => {
     />
   );
 };
+
+/**
+ * `select`: one choice from a list. An array schema is handed to `multiSelect`. `ui:options.searchable` adds a
+ * search box (the same as `combobox`).
+ */
+export const SelectWidget = (props: WidgetProps) =>
+  props.multiple ? (
+    <MultiSelectWidget {...props} />
+  ) : (
+    <SelectControl props={props} searchable={Boolean(props.options?.searchable)} />
+  );

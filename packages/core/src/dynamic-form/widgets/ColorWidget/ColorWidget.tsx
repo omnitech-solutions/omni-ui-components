@@ -1,18 +1,21 @@
 import { ColorPickerPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import { widgetField, widgetLook } from '../../lib/widgetKit';
 
-/** RJSF Color widget — submits `#rrggbb`. */
+/**
+ * `color`: a colour, stored as `#rrggbb`. An empty field shows no colour of its own: the screen never shows a
+ * value the data does not hold. `ui:options.presets: string[]` offers swatches.
+ */
 export const ColorWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, required } = props;
+  const { value, options } = props;
   const { onChange } = useStableRjsfCallbacks<string>(props, (next) => next);
   return (
     <ColorPickerPrimitive
-      id={id}
-      value={(value as string | undefined) ?? '#3b82f6'}
-      required={required}
-      disabled={disabled || readonly}
-      invalid={Boolean(rawErrors?.length)}
+      {...widgetField(props)}
+      {...widgetLook(props)}
+      value={(value as string | undefined) ?? ''}
+      presets={Array.isArray(options?.presets) ? (options.presets as string[]) : undefined}
       onChange={onChange}
     />
   );

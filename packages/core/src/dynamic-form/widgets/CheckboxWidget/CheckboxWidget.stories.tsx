@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { playKeyboardToggle } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
 import {
   plainTosFixture,
   prefilledTosFixture,
@@ -59,3 +60,6 @@ type Story = StoryObj<Args>;
 export const Plain: Story = { args: config.stories.Plain };
 export const Prefilled: Story = { args: config.stories.Prefilled };
 export const ValidationError: Story = { args: config.stories.ValidationError };
+
+/** Driven by the keyboard alone (focus arrives by the field's key, as a host does it). */
+export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardToggle };

@@ -298,7 +298,7 @@
     font-size: 13px;
     font-weight: 400;
     line-height: 1.4;
-    color: color-mix(in srgb, var(--bui-table-muted-fg) 82%, transparent);
+    color: var(--bui-table-muted-fg);
   }
 
   .bui-table-loading-overlay {

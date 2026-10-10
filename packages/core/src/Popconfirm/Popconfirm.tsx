@@ -23,17 +23,21 @@ export const Popconfirm = ({
   cancelText = 'Cancel',
   children,
 }: PopconfirmProps) => {
+  const titleId = React.useId();
   const [open, setOpen] = React.useState(false);
   const choose = (callback?: () => void) => () => {
     setOpen(false);
     callback?.();
   };
   return (
+    // The dialog is named by its question.
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-80 space-y-3">
+      <PopoverContent aria-labelledby={titleId} className="w-80 space-y-3">
         <div className="space-y-1">
-          <div className="text-sm font-semibold">{title}</div>
+          <div id={titleId} className="text-sm font-semibold">
+            {title}
+          </div>
           {description ? <div className="text-sm text-muted-foreground">{description}</div> : null}
         </div>
         <div className="flex justify-end gap-2">

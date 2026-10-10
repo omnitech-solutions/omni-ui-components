@@ -48,6 +48,12 @@ export const Required: Story = { args: { required: true } };
 
 export const Inline: Story = { args: { orientation: 'horizontal' } };
 
+/** `appearance="card"`: each option is a selectable card; the chosen one is tinted. */
+export const Cards: Story = { args: { appearance: 'card', value: 'pro' } };
+
+/** Cards side by side. */
+export const CardsInline: Story = { args: { appearance: 'card', orientation: 'horizontal' } };
+
 export const WithDescription: Story = {
   args: { description: 'You can switch any time — prorated automatically.' },
 };
@@ -65,6 +71,9 @@ export const HorizontalSidebar: Story = {
 };
 
 export const Disabled: Story = { args: { disabled: true, value: 'pro' } };
+
+/** Read-only: focusable and readable, announced as such, and the value cannot change. */
+export const ReadOnly: Story = { args: { readOnly: true, value: 'pro' } };
 
 export const DisabledOption: Story = {
   args: {

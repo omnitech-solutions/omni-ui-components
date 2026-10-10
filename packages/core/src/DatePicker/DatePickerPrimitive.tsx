@@ -42,6 +42,9 @@ const DatePickerPrimitiveInner = React.forwardRef<HTMLButtonElement, DatePickerP
       disabled,
       required,
       invalid,
+      readOnly,
+      variant = 'bordered',
+      inputSize = 'default',
       placeholder = 'Pick a date',
       formatOptions = defaultFormat,
       'aria-describedby': ariaDescribedBy,
@@ -51,6 +54,7 @@ const DatePickerPrimitiveInner = React.forwardRef<HTMLButtonElement, DatePickerP
     ref,
   ) => {
     const [open, setOpen] = React.useState(false);
+    const isReadOnly = Boolean(readOnly) && !disabled;
     const restAny = rest as Record<string, unknown>;
     const testId =
       typeof restAny['data-testid'] === 'string' && restAny['data-testid'].length > 0
@@ -62,6 +66,7 @@ const DatePickerPrimitiveInner = React.forwardRef<HTMLButtonElement, DatePickerP
     const current = isControlled ? value : internal;
 
     const commit = (next: Date | DateRange | undefined) => {
+      if (isReadOnly) return;
       const resolved = next ?? null;
       if (!isControlled) setInternal(resolved);
       onChange?.(resolved);
@@ -78,62 +83,69 @@ const DatePickerPrimitiveInner = React.forwardRef<HTMLButtonElement, DatePickerP
       return formatDate(current as Date, formatOptions);
     })();
     const isPlaceholder = label === placeholder;
+    const clearable = !isPlaceholder && !disabled && !isReadOnly;
 
     return (
-      <PopoverPrimitive.Root open={open} onOpenChange={(o) => !disabled && setOpen(o)}>
-        <PopoverPrimitive.Trigger asChild>
-          <button
-            ref={ref}
-            type="button"
-            id={id}
-            disabled={disabled}
-            data-testid={testId}
-            data-slot="date-picker"
-            data-state={disabled ? 'disabled' : invalid ? 'invalid' : 'idle'}
-            data-placeholder={isPlaceholder || undefined}
-            aria-invalid={invalid || undefined}
-            aria-labelledby={ariaLabelledBy}
-            aria-describedby={ariaDescribedBy}
-            aria-haspopup="dialog"
-            aria-expanded={open}
-            className={cn(
-              inputVariants({ variant: 'bordered', inputSize: 'default' }),
-              'items-center justify-between gap-2 px-3 text-left cursor-pointer',
-              'disabled:cursor-not-allowed',
-              isPlaceholder && 'text-[var(--oui-foreground-placeholder)]',
-              className,
-            )}
-          >
-            <span className="truncate">{label}</span>
-            {!isPlaceholder && !disabled ? (
-              <span
-                role="button"
-                tabIndex={0}
-                aria-label="Clear date"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  commit(undefined);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    commit(undefined);
-                  }
-                }}
-                className="inline-flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-sm text-[var(--oui-foreground-muted)] transition-colors hover:bg-blue-500/10 hover:text-blue-300"
-              >
-                <X className="size-3.5" aria-hidden="true" />
-              </span>
-            ) : (
-              <CalendarIcon
-                className="size-4 shrink-0 text-[var(--oui-foreground-muted)]"
-                aria-hidden="true"
-              />
-            )}
-          </button>
-        </PopoverPrimitive.Trigger>
+      <PopoverPrimitive.Root
+        open={open}
+        onOpenChange={(o) => !disabled && !isReadOnly && setOpen(o)}
+      >
+        <div className="relative flex w-full" data-slot="date-picker-field">
+          <PopoverPrimitive.Trigger asChild>
+            <button
+              ref={ref}
+              type="button"
+              id={id}
+              disabled={disabled}
+              data-testid={testId}
+              data-slot="date-picker"
+              data-state={
+                disabled ? 'disabled' : isReadOnly ? 'readonly' : invalid ? 'invalid' : 'idle'
+              }
+              data-variant={variant}
+              data-input-size={inputSize}
+              data-readonly={isReadOnly ? '' : undefined}
+              // A button has no `aria-readonly`: a read-only picker is `aria-disabled` and stays focusable.
+              aria-disabled={isReadOnly || undefined}
+              data-placeholder={isPlaceholder || undefined}
+              aria-invalid={invalid || undefined}
+              aria-labelledby={ariaLabelledBy}
+              aria-describedby={ariaDescribedBy}
+              aria-haspopup="dialog"
+              aria-expanded={open}
+              className={cn(
+                inputVariants({ variant, inputSize }),
+                'items-center justify-between gap-2 px-3 text-left cursor-pointer',
+                isReadOnly && 'cursor-default hover:border-[var(--oui-border-field)]',
+                'disabled:cursor-not-allowed',
+                isPlaceholder && 'text-[var(--oui-foreground-placeholder)]',
+                className,
+              )}
+            >
+              <span className="truncate">{label}</span>
+              {clearable ? (
+                // Room for the clear control, which sits beside the trigger (a button cannot hold a button).
+                <span className="size-5 shrink-0" aria-hidden="true" />
+              ) : (
+                <CalendarIcon
+                  className="size-4 shrink-0 text-[var(--oui-foreground-muted)]"
+                  aria-hidden="true"
+                />
+              )}
+            </button>
+          </PopoverPrimitive.Trigger>
+          {clearable ? (
+            <button
+              type="button"
+              data-slot="date-picker-clear"
+              aria-label="Clear date"
+              onClick={() => commit(undefined)}
+              className="absolute right-2 top-1/2 inline-flex size-5 -translate-y-1/2 cursor-pointer items-center justify-center rounded-sm text-[var(--oui-foreground-muted)] outline-none transition-colors hover:text-[var(--oui-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--oui-border-interactive)] motion-reduce:transition-none"
+            >
+              <X className="size-3.5" aria-hidden="true" />
+            </button>
+          ) : null}
+        </div>
         <PopoverPrimitive.Portal>
           <PopoverPrimitive.Content
             align="start"

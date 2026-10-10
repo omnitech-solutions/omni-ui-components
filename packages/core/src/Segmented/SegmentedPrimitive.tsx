@@ -56,10 +56,13 @@ const SegmentedPrimitiveInner = React.forwardRef<HTMLDivElement, SegmentedPrimit
       disabled,
       required,
       invalid,
+      readOnly,
       appearance = 'pill',
       minActive = 0,
       minActiveReason = 'Keep at least one on',
       'aria-describedby': ariaDescribedBy,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       ...rest
     } = props;
     const restAny = rest as Record<string, unknown>;
@@ -90,16 +93,20 @@ const SegmentedPrimitiveInner = React.forwardRef<HTMLDivElement, SegmentedPrimit
           value={opt.value}
           aria-label={accessibleName}
           // aria-disabled (not native disabled) keeps a reasoned or locked option hoverable for its tooltip.
-          aria-disabled={reasoned || locked ? true : undefined}
+          // A toggle has no `aria-readonly`: a read-only option is `aria-disabled` and stays focusable.
+          aria-disabled={reasoned || locked || readOnly ? true : undefined}
           data-locked={locked ? 'true' : undefined}
           title={tip === undefined && !opt.label ? accessibleName : undefined}
           disabled={disabled || opt.disabled}
           data-testid={testId ? `${testId}-option-${opt.value}` : undefined}
           // Radix skips its toggle when the click is default-prevented.
           onClick={(event) => {
-            if (reasoned || locked) event.preventDefault();
+            if (reasoned || locked || readOnly) event.preventDefault();
           }}
-          className={control ? CONTROL_ITEM : PILL_ITEM}
+          className={cn(
+            control ? CONTROL_ITEM : PILL_ITEM,
+            readOnly && 'cursor-default aria-disabled:cursor-default aria-disabled:opacity-100',
+          )}
         >
           {opt.icon}
           {opt.label}
@@ -128,6 +135,9 @@ const SegmentedPrimitiveInner = React.forwardRef<HTMLDivElement, SegmentedPrimit
       'aria-invalid': invalid || undefined,
       'aria-required': required || undefined,
       'aria-describedby': ariaDescribedBy,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      'data-readonly': readOnly ? '' : undefined,
       className: cn(control ? CONTROL_ROOT : PILL_ROOT, className),
     } as const;
 
@@ -139,7 +149,7 @@ const SegmentedPrimitiveInner = React.forwardRef<HTMLDivElement, SegmentedPrimit
           defaultValue={props.defaultValue}
           onValueChange={(next: string[]) => {
             /* The minActive rule: never report a selection below the floor. */
-            if (next.length >= minActive) props.onChange?.(next);
+            if (!readOnly && next.length >= minActive) props.onChange?.(next);
           }}
           {...shared}
         >
@@ -157,7 +167,7 @@ const SegmentedPrimitiveInner = React.forwardRef<HTMLDivElement, SegmentedPrimit
           /* Radix lets the user "deselect" by clicking the active item.
            * Omni Segmented is conceptually a required single-select, so
            * we ignore empty-string transitions. */
-          if (v) props.onChange?.(v);
+          if (v && !readOnly) props.onChange?.(v);
         }}
         {...shared}
       >

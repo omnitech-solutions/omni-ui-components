@@ -10,7 +10,8 @@ import ts from 'typescript';
  * The list of components is not kept by hand. A component is a PascalCase folder that the public entry point
  * (`packages/core/src/index.ts`) re-exports; a widget is a folder under `dynamic-form/widgets` or a widget the
  * registry (`dynamic-form/registries/widgets.ts`, exported as `appWidgets`) imports. The README section
- * "The mandatory parts of every component" states the rules in words.
+ * "The mandatory parts of every component" states the rules in words; the decisions are ADR-0015 (the tripwire
+ * and its allow-list), ADR-0018 (`Default`) and ADR-0021 (`play` functions and story factories).
  */
 
 /** What a component can be missing. */
@@ -26,7 +27,11 @@ export type ComponentPart =
   /** Not a row of `Getting Started/Component Overview` and no overview page of its own. */
   | 'overview'
   /** A component folder (it holds component source) that the public entry point does not re-export. */
-  | 'export';
+  | 'export'
+  /** Its own source declares a callback prop (it is interactive), and no story has a `play` function. */
+  | 'play'
+  /** It has a factories file, and no story file of its folder imports a factories module. */
+  | 'story-factories';
 
 /** What a dynamic-form widget can be missing. */
 export type WidgetPart =
@@ -36,6 +41,8 @@ export type WidgetPart =
   | 'docs-page'
   /** No test file under `dynamic-form` names the widget. */
   | 'test'
+  /** Stories exist, but none is built by the shared builder, `defineDynamicFormStories`. */
+  | 'story-builder'
   /** Its folder is not a value of `appWidgets`, or `appWidgets` imports a widget that has no folder. */
   | 'registered';
 
@@ -76,6 +83,15 @@ const TEST_FILE = /\.test\.tsx?$/;
 const NOT_SOURCE = /\.(stories|factories|fixtures|test)\.tsx?$/;
 const AUTODOCS = /tags:\s*\[[^\]]*['"]autodocs['"]/;
 const STORY_EXPORT = /^export const ([A-Z][A-Za-z0-9]*)\b/gm;
+const FACTORIES_FILE = /\.factories\.tsx?$/;
+/** A story file that takes its examples from a factories module (`./X.factories`, an alias, or its `?raw` source). */
+const FACTORIES_IMPORT = /from\s+['"][^'"]*\.factories[^'"]*['"]/;
+/** A story's `play` function. */
+const PLAY = /\bplay\s*:/;
+/** A callback prop in a component's own source: `onVerb: (` or `onVerb?: (`, or a React event handler type. */
+const CALLBACK_PROP = /\bon[A-Z][A-Za-z]*\??\s*:\s*(?:\(|React\.\w*EventHandler)/;
+/** The one builder of a dynamic-form widget's stories (`.storybook/defineDynamicFormStories.tsx`). */
+const WIDGET_STORY_BUILDER = /\bdefineDynamicFormStories\b/;
 
 const read = (file: string): string => (fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '');
 
@@ -144,9 +160,8 @@ export function componentGaps(layout: LibraryLayout): Gap<ComponentPart>[] {
   const gaps: Gap<ComponentPart>[] = [];
 
   for (const name of exported) {
-    const stories = walk(path.join(layout.src, name))
-      .filter((file) => STORY_FILE.test(file))
-      .map(read);
+    const files = walk(path.join(layout.src, name));
+    const stories = files.filter((file) => STORY_FILE.test(file)).map(read);
     if (stories.every((source) => storyNames(source).length === 0)) {
       gaps.push({ name, missing: 'stories' });
     } else {
@@ -154,6 +169,16 @@ export function componentGaps(layout: LibraryLayout): Gap<ComponentPart>[] {
         gaps.push({ name, missing: 'default-story' });
       if (!stories.some((source) => AUTODOCS.test(source)))
         gaps.push({ name, missing: 'docs-page' });
+      // Interactive, here, is a fact read from the files: the component's own source declares a callback prop.
+      const interactive = files
+        .filter((file) => /\.tsx?$/.test(file) && !NOT_SOURCE.test(file))
+        .some((file) => CALLBACK_PROP.test(read(file)));
+      if (interactive && !stories.some((source) => PLAY.test(source)))
+        gaps.push({ name, missing: 'play' });
+      // Where a factories file exists, the stories are built from one. A component with none owes nothing here.
+      const hasFactories = files.some((file) => FACTORIES_FILE.test(file));
+      if (hasFactories && !stories.some((source) => FACTORIES_IMPORT.test(source)))
+        gaps.push({ name, missing: 'story-factories' });
     }
     if (!walk(path.join(layout.test, name)).some((file) => TEST_FILE.test(file)))
       gaps.push({ name, missing: 'test' });
@@ -220,8 +245,12 @@ export function widgetGaps(layout: LibraryLayout): Gap<WidgetPart>[] {
       .map(read);
     if (stories.every((source) => storyNames(source).length === 0))
       gaps.push({ name, missing: 'stories' });
-    else if (!stories.some((source) => AUTODOCS.test(source)))
-      gaps.push({ name, missing: 'docs-page' });
+    else {
+      if (!stories.some((source) => AUTODOCS.test(source)))
+        gaps.push({ name, missing: 'docs-page' });
+      if (!stories.some((source) => WIDGET_STORY_BUILDER.test(source)))
+        gaps.push({ name, missing: 'story-builder' });
+    }
     const named = new RegExp(`\\b${name}\\b`);
     if (!tests.some((source) => named.test(source))) gaps.push({ name, missing: 'test' });
   }

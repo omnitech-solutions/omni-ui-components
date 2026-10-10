@@ -9,6 +9,23 @@ export interface CommandItem {
   description?: string;
   /** Caller-supplied icon node. */
   icon?: React.ReactNode;
+  /** Heading the row is drawn under. Groups are drawn in the order they are first seen; rows keep their index in `items`. */
+  group?: string;
+  /** Keys drawn at the end of the row (`['Ctrl', 'K']`). The popover draws them; the host owns the shortcut. */
+  shortcut?: string[];
+}
+
+/** The popover's own search input. `label` is its accessible name. */
+export interface CommandPopoverSearch {
+  label: string;
+  /** Controlled query. */
+  value?: string;
+  defaultValue?: string;
+  /** Fires with the query on every edit, in controlled and uncontrolled mode. */
+  onChange?: (query: string) => void;
+  placeholder?: string;
+  /** Caller-supplied icon node before the input. */
+  icon?: React.ReactNode;
 }
 
 /** Every user-visible string of the popover. */
@@ -64,8 +81,20 @@ export interface CommandPopoverProps<T extends CommandItem = CommandItem>
   anchor?: HTMLElement | null;
   /** Portal target when `anchor` is set. Default `document.body`. */
   container?: HTMLElement | null;
-  /** Where the popover sits against its `relative` parent: `above` (default, over a composer) or `below`. */
-  placement?: 'above' | 'below';
+  /** Where the popover sits against its `relative` parent: `above` (default, over a composer) or `below`. `inline`: not positioned at all, it fills what holds it (a `ModalContent`). */
+  placement?: 'above' | 'below' | 'inline';
+  /**
+   * Draws a search input above the rows and makes the popover a command palette: the input is a combobox that owns
+   * ArrowUp, ArrowDown, Home, End, Enter (chooses the highlighted row through `onSelect`) and Escape (`onClose`),
+   * and keeps `aria-activedescendant` on the highlighted row. Rows are filtered by `filter`.
+   */
+  search?: CommandPopoverSearch;
+  /**
+   * How `search` narrows the rows. Default: the label contains the query, whatever the case. `false`: no filtering
+   * (the host filters from `search.onChange`). A function: your own test. Indexes given to callbacks are indexes in
+   * the rows that are shown.
+   */
+  filter?: false | ((item: T, query: string) => boolean);
   labels?: Partial<CommandPopoverLabels>;
 }
 

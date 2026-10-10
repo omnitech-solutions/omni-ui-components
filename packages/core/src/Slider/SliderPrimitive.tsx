@@ -28,6 +28,8 @@ const SliderPrimitiveInner = React.forwardRef<HTMLSpanElement, SliderPrimitivePr
       disabled,
       required,
       invalid,
+      readOnly,
+      thumbLabels,
       orientation = 'horizontal',
       inverted,
       minStepsBetweenThumbs,
@@ -51,14 +53,19 @@ const SliderPrimitiveInner = React.forwardRef<HTMLSpanElement, SliderPrimitivePr
     const defaultValueArr = toArray(defaultValue);
     const isRange = (valueArr ?? defaultValueArr ?? []).length > 1;
 
-    const handleChange = (next: number[]) => onChange?.(isRange ? next : (next[0] as number));
-    const handleCommit = (next: number[]) => onValueCommit?.(isRange ? next : (next[0] as number));
+    const handleChange = (next: number[]) => {
+      if (!readOnly) onChange?.(isRange ? next : (next[0] as number));
+    };
+    const handleCommit = (next: number[]) => {
+      if (!readOnly) onValueCommit?.(isRange ? next : (next[0] as number));
+    };
 
     return (
       <ShadcnSlider
         name={name}
-        value={valueArr}
-        defaultValue={defaultValueArr}
+        // Read-only: the value is pinned, so neither the pointer nor the arrow keys can move a thumb.
+        value={readOnly ? (valueArr ?? defaultValueArr ?? [min]) : valueArr}
+        defaultValue={readOnly ? undefined : defaultValueArr}
         min={min}
         max={max}
         step={step}
@@ -72,6 +79,8 @@ const SliderPrimitiveInner = React.forwardRef<HTMLSpanElement, SliderPrimitivePr
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-invalid={invalid || undefined}
+        aria-readonly={readOnly || undefined}
+        thumbLabels={thumbLabels}
         id={id}
         data-testid={testId}
         className={cn(className)}

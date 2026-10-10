@@ -6,6 +6,7 @@ import type {
   UiSchema,
 } from '@rjsf/utils';
 import type { z } from 'zod';
+import type { OmniUiSchema } from './lib/formContext';
 
 /**
  * Re-export the canonical `FormError` shape owned by `omni-ui-components/Form`.
@@ -36,7 +37,7 @@ export type { FormError } from '@oc-tech/omni-ui-components';
 export type AppFormSchema<TFormData, TSubmitData = TFormData> = {
   id: string;
   schema: RJSFSchema;
-  uiSchema?: UiSchema;
+  uiSchema?: UiSchema | OmniUiSchema;
   zodSchema: z.ZodType<TSubmitData>;
   defaultFormData?: TFormData;
   fields?: RegistryFieldsType;

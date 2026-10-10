@@ -87,9 +87,9 @@ const PillLoader = ({ label }: { label: string }) => (
   <span
     className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium"
     style={{
-      border: '1px solid rgba(255,255,255,0.14)',
+      border: '1px solid color-mix(in srgb, var(--color-foreground) 14%, transparent)',
       background: 'transparent',
-      color: 'rgba(255,255,255,0.92)',
+      color: 'var(--color-foreground)',
     }}
   >
     <RingLoader size={14} thickness={2} />

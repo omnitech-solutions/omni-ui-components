@@ -77,6 +77,9 @@ export const WithError: Story = {
 
 export const Disabled: Story = { args: { disabled: true, value: 'professional' } };
 
+/** Read-only: focusable and readable, announced as such, and the value cannot change. */
+export const ReadOnly: Story = { args: { readOnly: true, value: 'professional' } };
+
 export const HorizontalSidebar: Story = {
   args: { layout: 'horizontal', label: 'Tone', wrapperClassName: 'mx-auto max-w-lg' },
 };

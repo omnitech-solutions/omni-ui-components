@@ -54,6 +54,8 @@ const NumberInputPrimitiveInner = React.forwardRef<HTMLInputElement, NumberInput
       required,
       invalid,
       readOnly,
+      variant = 'bordered',
+      inputSize = 'default',
       'aria-describedby': ariaDescribedBy,
       'aria-label': ariaLabel,
       ...rest
@@ -161,7 +163,7 @@ const NumberInputPrimitiveInner = React.forwardRef<HTMLInputElement, NumberInput
           onBlur={handleBlur}
           onFocus={handleFocus}
           className={cn(
-            inputVariants({ variant: 'bordered', inputSize: 'default' }),
+            inputVariants({ variant, inputSize }),
             prefix && 'pl-7',
             suffix && 'pr-10',
             'text-right tabular-nums',

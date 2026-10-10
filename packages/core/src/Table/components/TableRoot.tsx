@@ -143,6 +143,8 @@ export function TableRoot<TRecord, TRowData>({
             ref={scrollRef as React.Ref<HTMLDivElement>}
             className="bui-table-scroll-body"
             onScroll={onScroll}
+            // A region that scrolls must be reachable by keyboard, or its rows cannot be read without a mouse.
+            tabIndex={scroll?.y || scroll?.x ? 0 : undefined}
             style={{
               height: scroll?.y,
               maxHeight: scroll?.y,

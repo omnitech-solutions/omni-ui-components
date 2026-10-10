@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { playKeyboardPick } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
 import {
   type CountryFormData,
   descriptionCountryFixture,
@@ -86,3 +87,6 @@ export const Searchable: Story = { args: config.stories.Searchable };
 export const ValidationError: Story = { args: config.stories.ValidationError };
 export const GroupedOptions: Story = { args: config.stories.GroupedOptions };
 export const WithFooterAction: Story = { args: config.stories.WithFooterAction };
+
+/** Driven by the keyboard alone (focus arrives by the field's key, as a host does it). */
+export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardPick };

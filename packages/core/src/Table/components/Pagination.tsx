@@ -55,6 +55,8 @@ export function Pagination({
       className={className}
       style={style as React.CSSProperties}
       data-placement={placement}
+      // A table may draw one above and one below: two navigation landmarks need two names.
+      aria-label={placement.startsWith('top') ? 'Pagination, top' : 'Pagination'}
       testIdPrefix={`${testIdPrefix}${testIdSegment}`}
       data-testid={`${testIdPrefix}-pagination-root${testIdSegment}`}
     />

@@ -1,21 +1,23 @@
 import { CurrencyInputPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import { formContextOf, stringOption, widgetField, widgetLook } from '../../lib/widgetKit';
 
-/** RJSF Currency widget for monetary fields. */
+/**
+ * `currency`: an amount of money as a number; empty is `undefined`. `ui:options.currency` (default `USD`);
+ * `ui:options.locale`, else the form's `formContext.locale`.
+ */
 export const CurrencyWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, required, placeholder, options } = props;
+  const { value, placeholder, options } = props;
   const { onChange } = useStableRjsfCallbacks<number | null>(props, (next) => next ?? undefined);
   return (
     <CurrencyInputPrimitive
-      id={id}
+      {...widgetField(props)}
+      {...widgetLook(props)}
       value={typeof value === 'number' ? value : null}
-      currency={(options?.currency as string | undefined) ?? 'USD'}
-      locale={(options?.locale as string | undefined) ?? undefined}
+      currency={stringOption(options, 'currency') ?? 'USD'}
+      locale={stringOption(options, 'locale') ?? formContextOf(props).locale}
       placeholder={placeholder}
-      required={required}
-      disabled={disabled || readonly}
-      invalid={Boolean(rawErrors?.length)}
       onChange={onChange}
     />
   );

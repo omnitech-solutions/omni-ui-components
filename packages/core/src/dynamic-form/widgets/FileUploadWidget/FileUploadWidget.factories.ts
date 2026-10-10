@@ -22,10 +22,11 @@ const ATTACHMENTS_SCHEMA: RJSFSchema = {
 };
 
 const AVATAR_ZOD = z.object({
-  avatar: z.string().optional(),
+  // The form holds the real `File` (or a string in the `data-url` and `name` modes); the host uploads it on submit.
+  avatar: z.union([z.instanceof(File), z.string()]).optional(),
 }) as unknown as z.ZodType<AvatarFormData>;
 const ATTACHMENTS_ZOD = z.object({
-  attachments: z.array(z.string()).optional(),
+  attachments: z.array(z.union([z.instanceof(File), z.string()])).optional(),
 }) as unknown as z.ZodType<AttachmentsFormData>;
 
 const singleFixture = (uiSchema: UiSchema): FormFixture<AvatarFormData> => ({
@@ -49,3 +50,19 @@ export const imageFileFixture = (): FormFixture<AvatarFormData> =>
   });
 export const multipleFileFixture = (): FormFixture<AttachmentsFormData> =>
   multiFixture({ attachments: { 'ui:widget': 'file', 'ui:options': { maxFiles: 5 } } });
+
+/** A compact button for a dense form; files can still be dropped on it. */
+export const compactFileFixture = (): FormFixture<AvatarFormData> =>
+  singleFixture({ avatar: { 'ui:widget': 'file', 'ui:options': { appearance: 'button' } } });
+/** The form holds a `data:` string per file: pure JSON, for small files. */
+export const dataUrlFileFixture = (): FormFixture<AvatarFormData> =>
+  singleFixture({ avatar: { 'ui:widget': 'file', 'ui:options': { mode: 'data-url' } } });
+/** The form holds the file name only. */
+export const nameFileFixture = (): FormFixture<AvatarFormData> =>
+  singleFixture({ avatar: { 'ui:widget': 'file', 'ui:options': { mode: 'name' } } });
+export const readOnlyFileFixture = (): FormFixture<AvatarFormData> => ({
+  ...singleFixture({
+    avatar: { 'ui:widget': 'file', 'ui:options': { mode: 'name' }, 'ui:readonly': true },
+  }),
+  defaults: { avatar: 'portrait.png' } as AvatarFormData,
+});

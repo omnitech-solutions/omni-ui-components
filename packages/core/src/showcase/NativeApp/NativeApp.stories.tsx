@@ -112,7 +112,16 @@ const OpenMenu: React.FC<{
       side="bottom"
       align="start"
       sideOffset={0}
-      trigger={<span className="block h-0 w-0" />}
+      // The menu is shown open under its caption; what it hangs from is a button, the only element that may
+      // carry the trigger's `aria-haspopup` and `aria-expanded`.
+      trigger={
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-label={`${caption}: menu`}
+          className="block h-0 w-0 border-0 bg-transparent p-0"
+        />
+      }
     />
   </div>
 );

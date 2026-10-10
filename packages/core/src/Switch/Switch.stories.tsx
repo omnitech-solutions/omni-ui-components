@@ -38,3 +38,6 @@ export const Checked: Story = { args: { checked: true } };
 export const SwitchOnLeft: Story = { args: { switchSide: 'left' } };
 export const WithError: Story = { args: { error: 'You must enable to continue', checked: false } };
 export const Disabled: Story = { args: { disabled: true, checked: true } };
+
+/** Read-only: focusable and readable, announced as such, and the value cannot change. */
+export const ReadOnly: Story = { args: { readOnly: true, checked: true } };

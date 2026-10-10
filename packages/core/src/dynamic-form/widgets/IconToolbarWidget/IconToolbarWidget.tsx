@@ -1,73 +1,83 @@
-import { IconButton, type IconButtonVariant } from '@oc-tech/omni-ui-components';
+import { Button, IconButton, type IconButtonVariant } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
-import { ChevronDown, ChevronUp, Copy, type LucideIcon, Trash2, X } from 'lucide-react';
+import { formContextOf, widgetGroupName } from '../../lib/widgetKit';
 
 /**
- * IconToolbarWidget — a non-data RJSF widget that renders a row of
- * Omni {@link IconButton}s declared in `ui:options.actions`. Useful
- * for kitchen-sink demos and form-level affordances that don't map to a
- * traditional input.
- *
- * Per-action shape:
- *   { icon: 'trash' | 'copy' | 'move-up' | 'move-down' | 'x', label, variant?, onClick? }
- *
- * Lucide `Trash2` auto-defaults to the `destructive` variant via the
- * Omni `IconButton`, so callers don't need to repeat it.
- *
- * @example
- * const uiSchema = {
- *   quick_actions: {
- *     'ui:widget': 'iconToolbar',
- *     'ui:options': {
- *       actions: [
- *         { icon: 'move-up',   label: 'Move up',   variant: 'ghost' },
- *         { icon: 'move-down', label: 'Move down', variant: 'ghost' },
- *         { icon: 'copy',      label: 'Duplicate', variant: 'ghost' },
- *         { icon: 'x',         label: 'Clear',     variant: 'ghost' },
- *         { icon: 'trash',     label: 'Delete' },
- *       ],
- *     },
- *   },
- * };
+ * One entry of `ui:options.actions`: plain data. It names an action; the host supplies the action itself (its
+ * words, its icon node and what it does) in `formContext.actions[actionKey]`. No function and no icon name ever
+ * sits in a schema.
  */
 export interface IconToolbarAction {
-  icon: 'trash' | 'copy' | 'move-up' | 'move-down' | 'x';
-  label: string;
+  actionKey: string;
   variant?: IconButtonVariant;
-  onClick?: () => void;
 }
 
-const ICON_MAP: Record<IconToolbarAction['icon'], LucideIcon> = {
-  trash: Trash2,
-  copy: Copy,
-  'move-up': ChevronUp,
-  'move-down': ChevronDown,
-  x: X,
-};
+const isAction = (entry: unknown): entry is IconToolbarAction =>
+  typeof entry === 'object' &&
+  entry !== null &&
+  typeof (entry as IconToolbarAction).actionKey === 'string';
 
+/**
+ * `iconToolbar`: a row of actions that belong to the form (duplicate, clear, delete). It holds no value and
+ * nothing is submitted. An entry whose key the host did not supply is not drawn; an action with no icon is
+ * drawn as a text button; an action with an `href` and no `onSelect` is a link.
+ *
+ * @example
+ * uiSchema: { quick: { 'ui:widget': 'iconToolbar', 'ui:options': { actions: [{ actionKey: 'duplicate', variant: 'ghost' }] } } }
+ * formContext: { actions: { duplicate: { actionId: 'duplicate', label: 'Duplicate', href: null, icon: <Copy />, onSelect: duplicate } } }
+ */
 export const IconToolbarWidget = (props: WidgetProps) => {
   const { id, options, disabled, readonly } = props;
-  const actions = (options?.actions as IconToolbarAction[] | undefined) ?? [];
+  const context = formContextOf(props);
+  const entries = Array.isArray(options?.actions) ? options.actions.filter(isAction) : [];
   const isDisabled = Boolean(disabled || readonly);
 
   return (
     <div
       id={id}
+      role="toolbar"
+      {...widgetGroupName(props)}
       data-slot="icon-toolbar"
       className="inline-flex items-center gap-1 self-start rounded-md border border-[var(--oui-border-field)] p-1"
     >
-      {actions.map((action, idx) => {
-        const Icon = ICON_MAP[action.icon];
-        return (
+      {entries.map((entry) => {
+        const action = context.actions?.[entry.actionKey];
+        if (!action) return null;
+        const onClick = action.onSelect ? () => action.onSelect?.(action) : undefined;
+        if (action.href && !action.onSelect) {
+          return (
+            <a
+              key={entry.actionKey}
+              href={action.href}
+              data-action-id={action.actionId}
+              className="inline-flex items-center gap-1 px-2 text-sm font-medium text-[color:var(--oui-foreground-primary)] hover:underline [&_svg]:size-4"
+            >
+              {action.icon}
+              {action.label}
+            </a>
+          );
+        }
+        return action.icon ? (
           <IconButton
-            key={`${action.icon}-${idx}`}
+            key={entry.actionKey}
             aria-label={action.label}
             title={action.label}
-            variant={action.variant}
+            variant={entry.variant}
             disabled={isDisabled}
-            onClick={action.onClick}
-            icon={<Icon />}
+            data-action-id={action.actionId}
+            onClick={onClick}
+            icon={action.icon}
           />
+        ) : (
+          <Button
+            key={entry.actionKey}
+            buttonSize="sm"
+            disabled={isDisabled}
+            data-action-id={action.actionId}
+            onClick={onClick}
+          >
+            {action.label}
+          </Button>
         );
       })}
     </div>

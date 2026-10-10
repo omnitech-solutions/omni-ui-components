@@ -1,6 +1,7 @@
 import { cn } from 'lib/utils';
 import * as React from 'react';
 import { DatePickerPrimitive } from '../DatePicker';
+import type { InputSize, InputVariant } from '../Input/Input.variants';
 import { TimePickerPrimitive } from '../TimePicker';
 
 export interface DateTimePickerPrimitiveProps {
@@ -13,6 +14,10 @@ export interface DateTimePickerPrimitiveProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** The look of the field box. Default `bordered`. */
+  variant?: InputVariant;
+  /** The height of the field box. Default `default`. */
+  inputSize?: InputSize;
   readOnly?: boolean;
   /** Id of the element that names the pair: the date button is named by it and its own date, the time field by it. */
   'aria-labelledby'?: string;
@@ -64,6 +69,8 @@ export const DateTimePickerPrimitive = React.forwardRef<
       required,
       invalid,
       readOnly,
+      variant,
+      inputSize,
       className,
       timeLabel = 'Time',
       ...rest
@@ -76,6 +83,7 @@ export const DateTimePickerPrimitive = React.forwardRef<
     return (
       <div
         ref={ref}
+        id={id}
         className={cn('flex w-full gap-2', className)}
         data-slot="date-time-picker"
         data-testid={testId}
@@ -91,6 +99,9 @@ export const DateTimePickerPrimitive = React.forwardRef<
               else onChange?.('');
             }}
             disabled={disabled}
+            readOnly={readOnly}
+            variant={variant}
+            inputSize={inputSize}
             required={required}
             invalid={invalid}
             aria-labelledby={labelledBy && id ? `${labelledBy} ${id}-date` : undefined}
@@ -104,6 +115,8 @@ export const DateTimePickerPrimitive = React.forwardRef<
             onChange={(next) => onChange?.(joinIso(parts.date, next))}
             disabled={disabled || !parts.date}
             readOnly={readOnly}
+            variant={variant}
+            inputSize={inputSize}
             required={required}
             invalid={invalid}
             aria-label={labelledBy ? undefined : timeLabel}

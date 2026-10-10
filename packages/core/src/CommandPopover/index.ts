@@ -12,6 +12,7 @@ export type {
   CommandItem,
   CommandPopoverLabels,
   CommandPopoverProps,
+  CommandPopoverSearch,
   CommandTrigger,
   UseCommandTriggerOptions,
 } from './CommandPopover.types';

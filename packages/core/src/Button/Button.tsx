@@ -97,7 +97,8 @@ const ButtonInner = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <span
           data-slot="button-shortcut"
           aria-hidden="true"
-          className="ml-1 font-mono text-[11px] leading-none opacity-70"
+          // Dimmed beside the label, except on the solid primary, where dimmed white falls under 4.5:1.
+          className="ml-1 font-mono text-[11px] leading-none opacity-70 in-data-[variant=default]:opacity-100"
         >
           {shortcut.join('')}
         </span>

@@ -21,7 +21,12 @@ type Story = StoryObj<typeof Affix>;
 
 export const Default: Story = {
   render: () => (
-    <div className="h-56 overflow-auto rounded border p-4">
+    <div
+      className="h-56 overflow-auto rounded border p-4"
+      role="region"
+      aria-label="Scrolling content"
+      tabIndex={0}
+    >
       <div className="h-96 space-y-4">
         <Affix offsetTop={0} className="rounded border bg-background p-3">
           Sticky summary
@@ -34,7 +39,12 @@ export const Default: Story = {
 
 export const WithBottomOffset: Story = {
   render: () => (
-    <div className="h-56 overflow-auto rounded border p-4">
+    <div
+      className="h-56 overflow-auto rounded border p-4"
+      role="region"
+      aria-label="Scrolling content"
+      tabIndex={0}
+    >
       <div className="h-96 space-y-4">
         <div className="pt-60 text-sm text-muted-foreground">Scroll toward the bottom edge</div>
         <Affix offsetBottom={0} className="rounded border bg-background p-3">

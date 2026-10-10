@@ -106,7 +106,7 @@ export const SessionBarDemo: React.FC<SessionBarDemoProps> = ({
         }}
       />
       {ended ? (
-        <span role="status" className="font-mono text-xs text-muted-foreground">
+        <span role="status" className="font-mono text-xs text-white">
           Session ended
         </span>
       ) : null}

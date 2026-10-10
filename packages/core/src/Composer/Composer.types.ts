@@ -197,7 +197,7 @@ export interface ComposerProps<
   onPaste?: React.ClipboardEventHandler<HTMLTextAreaElement>;
   /** Ref of the textarea (focus it after a pick, set the caret). */
   inputRef?: React.Ref<HTMLTextAreaElement>;
-  /** Extra attributes for the textarea, e.g. `aria-activedescendant`, `aria-expanded`, `aria-controls`, `role="combobox"`. */
+  /** Extra attributes for the textarea, e.g. `aria-activedescendant`, `aria-controls`, `aria-autocomplete` (a textarea stays a textbox: it may not take `role="combobox"`). */
   textareaProps?: Omit<
     React.TextareaHTMLAttributes<HTMLTextAreaElement>,
     'value' | 'onChange' | 'placeholder' | 'disabled' | 'rows' | 'onFocus' | 'onBlur'

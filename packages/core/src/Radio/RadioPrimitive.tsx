@@ -29,8 +29,12 @@ const RadioPrimitiveInner = React.forwardRef<HTMLDivElement, RadioPrimitiveProps
       disabled,
       required,
       invalid,
+      readOnly,
       orientation = 'vertical',
+      appearance = 'plain',
       'aria-describedby': ariaDescribedBy,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       ...rest
     },
     ref,
@@ -47,18 +51,29 @@ const RadioPrimitiveInner = React.forwardRef<HTMLDivElement, RadioPrimitiveProps
         name={name}
         value={value}
         defaultValue={defaultValue}
-        onValueChange={(next) => onChange?.(next)}
+        onValueChange={(next) => {
+          if (!readOnly) onChange?.(next);
+        }}
         disabled={disabled}
         required={required}
         aria-invalid={invalid || undefined}
         aria-describedby={ariaDescribedBy}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-readonly={readOnly || undefined}
+        data-readonly={readOnly ? '' : undefined}
         data-testid={testId}
         data-orientation={orientation}
+        data-appearance={appearance}
         orientation={orientation === 'horizontal' ? 'horizontal' : 'vertical'}
         className={cn(
           orientation === 'horizontal'
-            ? 'flex flex-row flex-wrap items-center gap-x-6 gap-y-3'
-            : 'flex flex-col gap-4',
+            ? appearance === 'card'
+              ? 'flex flex-row flex-wrap items-stretch gap-3'
+              : 'flex flex-row flex-wrap items-center gap-x-6 gap-y-3'
+            : appearance === 'card'
+              ? 'flex flex-col gap-3'
+              : 'flex flex-col gap-4',
           className,
         )}
       >
@@ -71,16 +86,28 @@ const RadioPrimitiveInner = React.forwardRef<HTMLDivElement, RadioPrimitiveProps
               key={opt.value}
               htmlFor={itemId}
               className={cn(
-                'flex items-start gap-3 rounded-md p-2 -m-2',
+                'flex items-start gap-3',
+                appearance === 'card'
+                  ? [
+                      'rounded-[var(--oui-radius-field)] border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-3',
+                      'transition-colors motion-reduce:transition-none',
+                      'has-[[data-state=checked]]:border-[var(--oui-border-interactive)] has-[[data-state=checked]]:bg-[var(--oui-tone-accent-bg)]',
+                      orientation === 'horizontal' && 'min-w-40 flex-1',
+                    ]
+                  : 'rounded-md p-2 -m-2',
                 isItemDisabled
                   ? 'cursor-not-allowed opacity-50'
-                  : 'cursor-pointer hover:bg-[var(--oui-surface-field-hover,theme(colors.muted/40))]',
+                  : readOnly
+                    ? 'cursor-default'
+                    : 'cursor-pointer hover:bg-[var(--oui-surface-field-hover,theme(colors.muted/40))]',
               )}
             >
               <RadioGroupItem
                 id={itemId}
                 value={opt.value}
                 disabled={isItemDisabled}
+                // Radix skips its check when the click is default-prevented (arrow keys select through a click).
+                onClick={readOnly ? (event) => event.preventDefault() : undefined}
                 onBlur={onBlur}
                 onFocus={onFocus}
                 data-testid={testId ? `${testId}-option-${opt.value}` : undefined}

@@ -130,22 +130,25 @@ const sections = [
   'Audit log',
 ];
 
+/** A tab's `value` becomes part of an element id (`aria-controls`), so it has no spaces. */
+const sectionValue = (section: string) => section.toLowerCase().replaceAll(' ', '-');
+
 /**
  * More tabs than the bar has room for. The bar scrolls sideways (the default) and the chosen tab is brought
  * into view; `scrollable={false}` lets the bar grow past what holds it.
  */
 export const MoreTabsThanFit: Story = {
   render: () => (
-    <Tabs defaultValue="Audit log" className="w-72">
+    <Tabs defaultValue={sectionValue('Audit log')} className="w-72">
       <TabsBar aria-label="Account sections">
         {sections.map((section) => (
-          <Tab key={section} value={section}>
+          <Tab key={section} value={sectionValue(section)}>
             {section}
           </Tab>
         ))}
       </TabsBar>
       {sections.map((section) => (
-        <TabPanel key={section} value={section}>
+        <TabPanel key={section} value={sectionValue(section)}>
           <div className="text-sm text-[var(--oui-foreground-muted)]">{section}</div>
         </TabPanel>
       ))}

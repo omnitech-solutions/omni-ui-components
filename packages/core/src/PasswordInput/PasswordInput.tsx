@@ -1,19 +1,25 @@
 import { cn } from 'lib/utils';
-import { Eye, EyeOff } from 'lucide-react';
 import * as React from 'react';
 import type { InputProps } from '../Input';
-import { InputPrimitive } from '../Input/InputPrimitive';
 import { FieldShell, useFieldChrome } from '../lib/FieldShell';
-import { PasswordInputPrimitive } from './PasswordInputPrimitive';
+import { PasswordInputPrimitive, type PasswordInputPrimitiveProps } from './PasswordInputPrimitive';
 
-export interface PasswordInputProps extends Omit<InputProps, 'type'> {
+export interface PasswordInputProps
+  extends Omit<InputProps, 'type'>,
+    Pick<
+      PasswordInputPrimitiveProps,
+      'revealed' | 'defaultRevealed' | 'onRevealedChange' | 'labels' | 'showIcon' | 'hideIcon'
+    > {
   /** Show the eye toggle to reveal/hide the password. Default true. */
   toggleable?: boolean;
 }
 
 /**
- * Omni PasswordInput — chrome-wrapped {@link PasswordInputPrimitive} with
- * an optional show/hide eye toggle owned by the wrapper.
+ * Omni PasswordInput: {@link PasswordInputPrimitive} (which owns the reveal control) inside the shared field
+ * chrome.
+ *
+ * @example
+ * <PasswordInput label="Password" required value={password} onChange={setPassword} />
  */
 const PasswordInputInner = React.forwardRef<HTMLInputElement, PasswordInputProps>(
   (
@@ -29,7 +35,7 @@ const PasswordInputInner = React.forwardRef<HTMLInputElement, PasswordInputProps
       invalid,
       className,
       toggleable = true,
-      disabled,
+      actions: _actions,
       ...primitiveProps
     },
     ref,
@@ -42,9 +48,6 @@ const PasswordInputInner = React.forwardRef<HTMLInputElement, PasswordInputProps
       invalid,
       prefix: 'oui-password',
     });
-    const [visible, setVisible] = React.useState(false);
-    const Primitive = visible ? InputPrimitive : PasswordInputPrimitive;
-    const extraType = visible ? ({ type: 'text' } as const) : ({} as const);
 
     return (
       <FieldShell
@@ -59,36 +62,17 @@ const PasswordInputInner = React.forwardRef<HTMLInputElement, PasswordInputProps
         wrapperClassName={wrapperClassName}
         labelClassName={labelClassName}
       >
-        <div className="relative flex w-full items-center" data-slot="password-input-wrapper">
-          <Primitive
-            ref={ref}
-            id={id}
-            invalid={isInvalid}
-            disabled={disabled}
-            aria-describedby={describedBy}
-            aria-required={required || undefined}
-            aria-invalid={isInvalid || undefined}
-            className={cn(layout === 'horizontal' && 'flex-1', toggleable && 'pr-10', className)}
-            {...extraType}
-            {...primitiveProps}
-          />
-          {toggleable ? (
-            <button
-              type="button"
-              aria-label={visible ? 'Hide password' : 'Show password'}
-              aria-pressed={visible}
-              onClick={() => setVisible((v) => !v)}
-              disabled={disabled}
-              className={cn(
-                'absolute right-2 inline-flex size-7 items-center justify-center rounded-md text-[var(--oui-foreground-muted)] cursor-pointer',
-                'hover:bg-muted/40 hover:text-[var(--oui-foreground)] transition-colors',
-                'disabled:cursor-not-allowed disabled:opacity-50',
-              )}
-            >
-              {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-            </button>
-          ) : null}
-        </div>
+        <PasswordInputPrimitive
+          ref={ref}
+          id={id}
+          toggleable={toggleable}
+          invalid={isInvalid}
+          aria-describedby={describedBy}
+          aria-required={required || undefined}
+          aria-invalid={isInvalid || undefined}
+          className={cn(layout === 'horizontal' && 'flex-1', className)}
+          {...primitiveProps}
+        />
       </FieldShell>
     );
   },

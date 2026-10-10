@@ -52,6 +52,21 @@ export const descriptionPlanFixture = (): FormFixture<PlanFormData> =>
     },
   });
 
+export const cardPlanFixture = (): FormFixture<PlanFormData> =>
+  fixtureFor({
+    plan: {
+      'ui:widget': 'radio',
+      'ui:options': {
+        appearance: 'card',
+        optionDescriptions: {
+          free: 'For trying it out.',
+          pro: 'For one person.',
+          team: 'For a group.',
+        },
+      },
+    },
+  });
+
 export const prefilledPlanFixture = (): FormFixture<PlanFormData> =>
   fixtureFor({ plan: { 'ui:widget': 'radio' } }, { initial: 'pro' });
 

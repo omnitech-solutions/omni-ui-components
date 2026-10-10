@@ -2,28 +2,26 @@ import { NumberInputPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { rangeSpec } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import { numberOption, stringOption, widgetField, widgetLook } from '../../lib/widgetKit';
 
-/** RJSF NumberInput widget — formatted numeric input. */
+/** `numberInput`: a typed number; empty is `undefined`. `ui:options.decimals`, `thousandSeparator`, `prefix`, `suffix`. */
 export const NumberInputWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, required, placeholder, options, schema } =
-    props;
+  const { value, placeholder, options, schema } = props;
   const { onChange } = useStableRjsfCallbacks<number | null>(props, (next) => next ?? undefined);
   const { min, max, step } = rangeSpec(schema);
   return (
     <NumberInputPrimitive
-      id={id}
+      {...widgetField(props)}
+      {...widgetLook(props)}
       value={typeof value === 'number' ? value : null}
       min={min}
       max={max}
       step={step}
-      decimals={typeof options?.decimals === 'number' ? (options.decimals as number) : undefined}
+      decimals={numberOption(options, 'decimals')}
       thousandSeparator={Boolean(options?.thousandSeparator)}
-      prefix={(options?.prefix as string | undefined) ?? undefined}
-      suffix={(options?.suffix as string | undefined) ?? undefined}
+      prefix={stringOption(options, 'prefix')}
+      suffix={stringOption(options, 'suffix')}
       placeholder={placeholder}
-      required={required}
-      disabled={disabled || readonly}
-      invalid={Boolean(rawErrors?.length)}
       onChange={onChange}
     />
   );

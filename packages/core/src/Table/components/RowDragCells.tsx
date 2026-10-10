@@ -15,7 +15,9 @@ export const RowDragHeader: React.FC<RowDragHeaderProps> = ({ className, style }
       className={classNames(headerCellClass, className)}
       style={{ width: 'var(--bui-table-selection-column-width)', ...style }}
       data-testid={`${testIdPrefix}-row-drag-header-cell`}
-    />
+    >
+      <span className="sr-only">Reorder</span>
+    </th>
   );
 };
 

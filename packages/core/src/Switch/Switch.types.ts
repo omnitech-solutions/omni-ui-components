@@ -11,6 +11,8 @@ export interface SwitchPrimitiveProps extends RootProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** Read-only: stays focusable and readable, is announced as read-only, and cannot be changed. `disabled` wins. */
+  readOnly?: boolean;
   className?: string;
   'data-testid'?: string;
   'aria-describedby'?: string;

@@ -28,6 +28,8 @@ export interface CheckboxPrimitiveProps extends RootProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** Read-only: stays focusable and readable, is announced as read-only, and cannot be changed. `disabled` wins. */
+  readOnly?: boolean;
   className?: string;
   autoFocus?: boolean;
   'data-testid'?: string;
@@ -71,11 +73,15 @@ export interface CheckboxGroupPrimitiveProps extends RootProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** Read-only: stays focusable and readable, is announced as read-only, and cannot be changed. `disabled` wins. */
+  readOnly?: boolean;
   orientation?: CheckboxOrientation;
   className?: string;
   id?: string;
   'data-testid'?: string;
   'aria-describedby'?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
 }
 
 /**

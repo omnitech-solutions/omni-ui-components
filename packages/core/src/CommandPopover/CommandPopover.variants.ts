@@ -10,7 +10,14 @@ export const commandPopoverVariants = cva(
     'bg-[color:var(--oui-panel-bg)] text-[color:var(--oui-foreground)] shadow-lg',
   ].join(' '),
   {
-    variants: { placement: { above: 'bottom-full mb-2', below: 'top-full mt-2' } },
+    variants: {
+      placement: {
+        above: 'bottom-full mb-2',
+        below: 'top-full mt-2',
+        inline:
+          'static inset-auto z-auto max-h-[min(60vh,28rem)] w-full rounded-none border-0 shadow-none',
+      },
+    },
     defaultVariants: { placement: 'above' },
   },
 );
@@ -29,3 +36,12 @@ export const commandPopoverEmptyClasses =
   'px-3 py-2 text-[13px] text-[color:var(--oui-panel-meta-fg)]';
 export const commandPopoverHintClasses =
   'border-t border-solid border-[color:var(--oui-panel-divider)] px-3 py-1.5 text-[11px] text-[color:var(--oui-panel-meta-fg)]';
+export const commandPopoverSearchClasses =
+  'flex flex-none items-center gap-2 border-b border-solid border-[color:var(--oui-panel-divider)] px-3 py-2 text-[color:var(--oui-panel-meta-fg)] [&_svg]:size-4 [&_svg]:flex-none';
+export const commandPopoverSearchInputClasses =
+  'min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 text-sm text-[color:var(--oui-foreground)] outline-none placeholder:text-[color:var(--oui-panel-meta-fg)]';
+export const commandPopoverGroupLabelClasses =
+  'px-2.5 pt-2 pb-1 text-[11px] font-medium text-[color:var(--oui-panel-meta-fg)]';
+export const commandPopoverShortcutClasses = 'ml-auto flex flex-none items-center gap-1 pl-2';
+export const commandPopoverKeyClasses =
+  'rounded border border-solid border-[color:var(--oui-panel-divider)] px-1 font-sans text-[11px] leading-4 text-[color:var(--oui-panel-meta-fg)]';

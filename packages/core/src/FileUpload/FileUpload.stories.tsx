@@ -43,3 +43,9 @@ export const MultipleWithMax: Story = {
 };
 export const WithError: Story = { args: { error: 'File too large' } };
 export const Disabled: Story = { args: { disabled: true } };
+
+/** `appearance="button"`: a compact button for a dense form; files can still be dropped on it. */
+export const CompactButton: Story = { args: { appearance: 'button' } };
+
+/** Read-only: the zone stays a tab stop and the picker does not open. */
+export const ReadOnly: Story = { args: { readOnly: true } };

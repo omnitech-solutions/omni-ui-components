@@ -41,13 +41,19 @@ export function SelectionHeader<TRecord, TRowData>({
   };
 
   const originNode =
-    rowSelection.type === 'radio' ? null : (
+    rowSelection.type === 'radio' ? (
+      // A header cell with nothing in it is announced as an unnamed column.
+      <span className="sr-only">Select</span>
+    ) : (
       <input
         type="checkbox"
         aria-label="Select all rows"
         {...titleCheckboxProps}
         checked={allChangeableSelected}
-        aria-checked={someChangeableSelected ? 'mixed' : allChangeableSelected}
+        // A native checkbox says "mixed" through its `indeterminate` property; `aria-checked` is not allowed on it.
+        ref={(node) => {
+          if (node) node.indeterminate = someChangeableSelected && !allChangeableSelected;
+        }}
         disabled={!hasChangeableKeys || titleCheckboxProps.disabled}
         onChange={(event) => {
           titleCheckboxProps.onChange?.(event);

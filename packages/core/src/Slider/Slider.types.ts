@@ -23,6 +23,10 @@ export interface SliderPrimitiveProps extends RootProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** Read-only: stays focusable and readable, is announced as read-only, and cannot be changed. `disabled` wins. */
+  readOnly?: boolean;
+  /** Range mode: an accessible name per thumb, lowest first (`['From', 'To']`). Absent: every thumb takes the slider's name. */
+  thumbLabels?: string[];
   orientation?: SliderOrientation;
   inverted?: boolean;
   minStepsBetweenThumbs?: number;

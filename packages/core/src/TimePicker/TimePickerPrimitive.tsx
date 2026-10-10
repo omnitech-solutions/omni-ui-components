@@ -1,7 +1,7 @@
 import { cn } from 'lib/utils';
 import { Clock } from 'lucide-react';
 import * as React from 'react';
-import { inputVariants } from '../Input/Input.variants';
+import { type InputSize, type InputVariant, inputVariants } from '../Input/Input.variants';
 import type { RootProps } from '../lib';
 
 export interface TimePickerPrimitiveProps extends RootProps {
@@ -17,6 +17,10 @@ export interface TimePickerPrimitiveProps extends RootProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** The look of the field box. Default `bordered`. */
+  variant?: InputVariant;
+  /** The height of the field box. Default `default`. */
+  inputSize?: InputSize;
   readOnly?: boolean;
   className?: string;
   'aria-describedby'?: string;
@@ -41,6 +45,8 @@ const TimePickerPrimitiveInner = React.forwardRef<HTMLInputElement, TimePickerPr
       max,
       disabled,
       readOnly,
+      variant = 'bordered',
+      inputSize = 'default',
       required,
       invalid,
       className,
@@ -79,7 +85,7 @@ const TimePickerPrimitiveInner = React.forwardRef<HTMLInputElement, TimePickerPr
           data-slot="time-picker"
           data-testid={testId}
           className={cn(
-            inputVariants({ variant: 'bordered', inputSize: 'default' }),
+            inputVariants({ variant, inputSize }),
             'px-3 pr-10 [&::-webkit-calendar-picker-indicator]:opacity-0',
             className,
           )}

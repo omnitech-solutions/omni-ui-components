@@ -1,4 +1,5 @@
 import type { TemplatesType } from '@rjsf/utils';
+import { AddButton, ArrayFieldItemTemplate, ArrayFieldTemplate } from '../templates/ArrayTemplates';
 import {
   CopyButton,
   MoveDownButton,
@@ -8,6 +9,7 @@ import {
 } from '../templates/ButtonTemplates';
 import { FieldTemplate } from '../templates/FieldTemplate';
 import { ObjectFieldTemplate } from '../templates/ObjectFieldTemplate';
+import { TitleFieldTemplate } from '../templates/TitleFieldTemplate';
 import { WrapIfAdditionalTemplate } from '../templates/WrapIfAdditionalTemplate';
 
 /**
@@ -20,10 +22,14 @@ import { WrapIfAdditionalTemplate } from '../templates/WrapIfAdditionalTemplate'
  * - `FieldTemplate` paints the required `*` marker in `text-destructive`.
  */
 export const appTemplates: Partial<TemplatesType> = {
+  ArrayFieldTemplate,
+  ArrayFieldItemTemplate,
   FieldTemplate,
   ObjectFieldTemplate,
+  TitleFieldTemplate,
   WrapIfAdditionalTemplate,
   ButtonTemplates: {
+    AddButton,
     SubmitButton,
     CopyButton,
     MoveDownButton,

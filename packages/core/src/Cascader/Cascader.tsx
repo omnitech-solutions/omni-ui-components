@@ -1,59 +1,70 @@
+import { cn } from 'lib/utils';
 import * as React from 'react';
+import { FieldShell, useFieldChrome } from '../lib/FieldShell';
+import type { CascaderOption, CascaderProps } from './Cascader.types';
+import { CascaderPrimitive } from './CascaderPrimitive';
 
-export type CascaderOption = {
-  value: string;
-  label: React.ReactNode;
-  children?: CascaderOption[];
-  disabled?: boolean;
-};
-export interface CascaderProps
-  extends Omit<
-    React.SelectHTMLAttributes<HTMLSelectElement>,
-    'value' | 'defaultValue' | 'onChange'
-  > {
-  options: CascaderOption[];
-  value?: string[];
-  defaultValue?: string[];
-  onChange?: (value: string[], selectedOptions: CascaderOption[]) => void;
-}
-const flatten = (
-  options: CascaderOption[],
-  path: string[] = [],
-): Array<{ option: CascaderOption; path: string[] }> =>
-  options.flatMap((option) =>
-    option.children?.length
-      ? flatten(option.children, [...path, option.value])
-      : [{ option, path: [...path, option.value] }],
-  );
-export const Cascader = React.forwardRef<HTMLSelectElement, CascaderProps>(
-  ({ options, value, defaultValue, onChange, ...props }, ref) => {
-    const leaves = flatten(options);
-    return (
-      <select
+function CascaderInner<T extends CascaderOption = CascaderOption>(
+  {
+    id: idProp,
+    wrapperClassName,
+    labelClassName,
+    layout = 'vertical',
+    label,
+    description,
+    error,
+    required,
+    invalid,
+    className,
+    'aria-describedby': ariaDescribedBy,
+    ...primitiveProps
+  }: CascaderProps<T>,
+  ref: React.ForwardedRef<HTMLButtonElement>,
+) {
+  const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
+    id: idProp,
+    label,
+    description,
+    error,
+    invalid,
+    prefix: 'oui-cascader',
+  });
+  return (
+    <FieldShell
+      id={id}
+      layout={layout}
+      label={label}
+      description={description}
+      error={error}
+      required={required}
+      descriptionId={descriptionId}
+      errorId={errorId}
+      wrapperClassName={wrapperClassName}
+      labelClassName={labelClassName}
+    >
+      <CascaderPrimitive<T>
         ref={ref}
-        value={value?.at(-1) ?? undefined}
-        defaultValue={defaultValue?.at(-1)}
-        onChange={(event) => {
-          const selected = leaves.find(({ option }) => option.value === event.target.value);
-          if (selected)
-            onChange?.(
-              selected.path,
-              selected.path
-                .map((key) => leaves.find(({ option }) => option.value === key)?.option)
-                .filter(Boolean) as CascaderOption[],
-            );
-        }}
-        {...props}
-      >
-        {leaves.map(({ option, path }) => (
-          <option key={path.join('/')} value={option.value} disabled={option.disabled}>
-            {path.slice(0, -1).join(' / ')}
-            {path.length > 1 ? ' / ' : ''}
-            {option.label}
-          </option>
-        ))}
-      </select>
-    );
-  },
-);
+        id={id}
+        invalid={isInvalid}
+        required={required}
+        aria-describedby={[ariaDescribedBy, describedBy].filter(Boolean).join(' ') || undefined}
+        className={cn(layout === 'horizontal' && 'flex-1', className)}
+        {...primitiveProps}
+      />
+    </FieldShell>
+  );
+}
+
+/**
+ * Chooses a path through a tree of options, one column per level. Composes
+ * {@link CascaderPrimitive} with the label, description and error rows.
+ *
+ * @example
+ * <Cascader label="Stack" options={stack} value={path} onChange={(next) => setPath(next)} />
+ */
+export const Cascader = React.forwardRef(CascaderInner) as (<
+  T extends CascaderOption = CascaderOption,
+>(
+  props: CascaderProps<T> & React.RefAttributes<HTMLButtonElement>,
+) => React.ReactElement | null) & { displayName?: string };
 Cascader.displayName = 'Cascader';

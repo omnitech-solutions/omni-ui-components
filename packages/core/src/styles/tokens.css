@@ -108,10 +108,10 @@
     --oui-tone-danger-solid-bg:    #dc2626;
     --oui-tone-danger-solid-fg:    #ffffff;
 
-    --oui-tone-dim-fg:             #8b909a;
+    --oui-tone-dim-fg:             #6b717b;
     --oui-tone-dim-bg:             transparent;
     --oui-tone-dim-border:         #d9dce2;
-    --oui-tone-dim-solid-fg:       #8b909a;
+    --oui-tone-dim-solid-fg:       #6b717b;
 
     /* ---- Segmented control (active / inactive segment) ---- */
     --oui-segment-active-bg:       rgba(59, 111, 224, 0.16);
@@ -135,10 +135,10 @@
     --oui-code-keyword:            oklch(0.5 0.18 300);
     --oui-code-type:               oklch(0.5 0.1 210);
     --oui-code-string:             oklch(0.48 0.12 145);
-    --oui-code-comment:            oklch(0.56 0.02 260);
+    --oui-code-comment:            oklch(0.5 0.02 260);
     --oui-code-number:             oklch(0.52 0.13 55);
     --oui-code-function:           oklch(0.48 0.13 250);
-    --oui-code-gutter:             oklch(0.62 0.02 260);
+    --oui-code-gutter:             oklch(0.53 0.02 260);
     --oui-code-mark-bg:            rgba(59, 111, 224, 0.1);
     --oui-panel-scrollbar-thumb:   rgba(17, 24, 39, 0.28);
   }
@@ -177,10 +177,10 @@
     --oui-tone-danger-solid-bg:    #cf3f39;
     --oui-tone-danger-solid-fg:    #ffffff;
 
-    --oui-tone-dim-fg:             #5f636c;
+    --oui-tone-dim-fg:             #9297a0;
     --oui-tone-dim-bg:             transparent;
     --oui-tone-dim-border:         #373b46; /* a touch lighter than the board's #2c3038 so the dimmed outline stays visible */
-    --oui-tone-dim-solid-fg:       #5f636c;
+    --oui-tone-dim-solid-fg:       #9297a0;
 
     --oui-panel-bg:                #172033;
     --oui-panel-header-bg:         transparent;
@@ -199,10 +199,10 @@
     --oui-code-keyword:            oklch(0.76 0.14 300);
     --oui-code-type:               oklch(0.8 0.1 200);
     --oui-code-string:             oklch(0.8 0.13 145);
-    --oui-code-comment:            oklch(0.62 0.02 260);
+    --oui-code-comment:            oklch(0.7 0.02 260);
     --oui-code-number:             oklch(0.8 0.12 65);
     --oui-code-function:           oklch(0.82 0.1 240);
-    --oui-code-gutter:             oklch(0.5 0.02 260);
+    --oui-code-gutter:             oklch(0.63 0.02 260);
     --oui-code-mark-bg:            rgba(91, 140, 255, 0.14);
     --oui-panel-scrollbar-thumb:   rgba(169, 182, 207, 0.32);
   }

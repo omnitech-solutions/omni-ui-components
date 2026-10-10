@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { playKeyboardReach } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
 import {
-  destructiveOnlyQuickActionsFixture,
   plainQuickActionsFixture,
   type QuickActionsFormData,
+  withLinkQuickActionsFixture,
 } from 'factories/dynamic-form/widgets/IconToolbarWidget/IconToolbarWidget.factories';
 import {
   type DynamicFormStoryArgs,
@@ -15,24 +16,24 @@ const config = defineDynamicFormStories<QuickActionsFormData>({
   title: 'dynamic-form/widgets/IconToolbarWidget',
   fixtures: {
     plain: plainQuickActionsFixture,
-    destructive: destructiveOnlyQuickActionsFixture,
+    withLink: withLinkQuickActionsFixture,
   },
   titles: {
     plain: 'IconToolbarWidget',
-    destructive: 'IconToolbarWidget · destructive only',
+    withLink: 'IconToolbarWidget · with a link',
   },
   defaultArgs: { fixture: 'plain' },
   docs: {
     name: 'IconToolbarWidget',
     whenToUse: [
-      'Non-data RJSF widget that surfaces Omni IconButtons in form chrome.',
-      'Drive the toolbar via `ui:widget: "iconToolbar"` + `ui:options.actions`.',
-      'Trash2 auto-defaults to the destructive variant; supply `variant` per action to override.',
+      'A row of actions that belong to the form. It holds no value and nothing is submitted.',
+      '`ui:options.actions` is plain data: `[{ actionKey, variant }]`.',
+      'Each action (its words, its icon node and what it does) comes from `formContext.actions[actionKey]`: no function and no icon name sits in a schema.',
     ].join(' '),
   },
   stories: {
     Plain: { fixture: 'plain' },
-    Destructive: { fixture: 'destructive' },
+    WithLink: { fixture: 'withLink' },
   },
 });
 
@@ -49,4 +50,7 @@ export default meta;
 type Story = StoryObj<Args>;
 
 export const Plain: Story = { args: config.stories.Plain };
-export const Destructive: Story = { args: config.stories.Destructive };
+export const WithLink: Story = { args: config.stories.WithLink };
+
+/** Reached and left by the keyboard alone (focus arrives by the field's key, as a host does it). */
+export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardReach };

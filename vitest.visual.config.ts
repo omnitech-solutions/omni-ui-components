@@ -10,6 +10,8 @@ import viteConfig from './vite.config';
 export default mergeConfig(
   viteConfig,
   defineConfig({
+    // The set-up file imports the a11y addon's preview: named here so Vite does not find it mid-run and reload.
+    optimizeDeps: { include: ['@storybook/addon-a11y/preview'] },
     test: {
       name: 'visual',
       include: ['visual/**/*.visual.test.tsx'],

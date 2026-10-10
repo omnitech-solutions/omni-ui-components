@@ -1,4 +1,6 @@
 import type { RJSFSchema, UiSchema } from '@rjsf/utils';
+import { FileText } from 'lucide-react';
+import * as React from 'react';
 import { z } from 'zod';
 
 import type { FormFixture } from '../../DynamicForm/DynamicForm.factories';
@@ -22,18 +24,26 @@ const PAGES_ZOD = z.object({
 const fixtureFor = (
   uiSchema: UiSchema,
   opts: { initial?: number } = {},
-): FormFixture<PageCountFormData> => ({
+): FormFixture<PageCountFormData> & { formContext: Record<string, unknown> } => ({
   schema: PAGES_SCHEMA,
   uiSchema,
   zodSchema: PAGES_ZOD,
   defaults: { pages: opts.initial ?? 7 },
+  // The icon is a node the host supplies; the schema only names it (`ui:options.iconKey`).
+  formContext: {
+    optionSets: {},
+    actions: {},
+    locale: 'en',
+    icons: { pages: React.createElement(FileText) },
+  },
+  derive: () => ({}),
 });
 
 export const plainPagesFixture = (): FormFixture<PageCountFormData> =>
   fixtureFor({
     pages: {
       'ui:widget': 'stepper',
-      'ui:options': { unit: 'page', icon: 'fileText' },
+      'ui:options': { unit: 'page', iconKey: 'pages' },
     },
   });
 
@@ -42,7 +52,7 @@ export const prefilledPagesFixture = (): FormFixture<PageCountFormData> =>
     {
       pages: {
         'ui:widget': 'stepper',
-        'ui:options': { unit: 'page', icon: 'fileText' },
+        'ui:options': { unit: 'page', iconKey: 'pages' },
       },
     },
     { initial: 24 },
@@ -61,6 +71,6 @@ export const disabledPagesFixture = (): FormFixture<PageCountFormData> =>
     pages: {
       'ui:widget': 'stepper',
       'ui:disabled': true,
-      'ui:options': { unit: 'page', icon: 'fileText' },
+      'ui:options': { unit: 'page', iconKey: 'pages' },
     },
   });

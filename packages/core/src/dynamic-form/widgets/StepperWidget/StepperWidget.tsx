@@ -1,35 +1,37 @@
 import { StepperPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { rangeSpec } from '@rjsf/utils';
-import { FileText } from 'lucide-react';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import {
+  formContextOf,
+  numberOption,
+  stringOption,
+  widgetField,
+  widgetGroupName,
+} from '../../lib/widgetKit';
 
-/** RJSF Stepper widget for `type: 'integer' | 'number'` schemas. */
+/**
+ * `stepper`: a number with minus and plus. Bounds and step come from the schema. `ui:options.unit`,
+ * `unitPlural`, `step`; `ui:options.iconKey` names a node in `formContext.icons` (icons are nodes the host
+ * supplies, never names in a schema).
+ */
 export const StepperWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, options, schema } = props;
+  const { value, options, schema } = props;
   const { onChange } = useStableRjsfCallbacks<number>(props, (next) => next);
-
   const { min, max, step } = rangeSpec(schema);
-  const resolvedStep = typeof options?.step === 'number' ? (options.step as number) : (step ?? 1);
-  const unit = (options?.unit as string | undefined) ?? undefined;
-  const unitPlural = (options?.unitPlural as string | undefined) ?? undefined;
-  const iconName = (options?.icon as string | undefined) ?? undefined;
-  const iconNode = iconName === 'fileText' ? <FileText /> : undefined;
-
-  const valueNum = typeof value === 'number' ? (value as number) : (min ?? 0);
+  const iconKey = stringOption(options, 'iconKey');
 
   return (
     <StepperPrimitive
-      id={id}
-      value={valueNum}
+      {...widgetField(props, { requiredHint: true })}
+      {...widgetGroupName(props)}
+      value={typeof value === 'number' ? value : (min ?? 0)}
       min={min}
       max={max}
-      step={resolvedStep}
-      unit={unit}
-      unitPlural={unitPlural}
-      icon={iconNode}
-      disabled={disabled || readonly}
-      invalid={Boolean(rawErrors?.length)}
+      step={numberOption(options, 'step') ?? step ?? 1}
+      unit={stringOption(options, 'unit')}
+      unitPlural={stringOption(options, 'unitPlural')}
+      icon={iconKey ? formContextOf(props).icons?.[iconKey] : undefined}
       onChange={onChange}
     />
   );

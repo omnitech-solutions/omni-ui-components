@@ -15,6 +15,8 @@ export default mergeConfig(
         storybookScript: 'pnpm storybook -p 6141 --ci',
       }),
     ],
+    // The set-up file imports the a11y addon's preview: named here so Vite does not find it mid-run and reload.
+    optimizeDeps: { include: ['@storybook/addon-a11y/preview'] },
     test: {
       name: 'storybook',
       include: [],

@@ -17,8 +17,11 @@ function Slider({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy,
+  'aria-readonly': ariaReadOnly,
+  'aria-invalid': ariaInvalid,
+  thumbLabels,
   ...props
-}: React.ComponentProps<typeof Root>) {
+}: React.ComponentProps<typeof Root> & { thumbLabels?: string[] }) {
   const thumbCount = React.useMemo(() => {
     if (Array.isArray(value)) return value.length;
     if (Array.isArray(defaultValue)) return defaultValue.length;
@@ -28,12 +31,14 @@ function Slider({
   return (
     <Root
       data-slot="slider"
+      data-readonly={ariaReadOnly ? '' : undefined}
+      aria-invalid={ariaInvalid}
       defaultValue={defaultValue}
       value={value}
       min={min}
       max={max}
       className={cn(
-        'relative flex w-full touch-none items-center select-none cursor-pointer data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed',
+        'relative flex w-full touch-none items-center select-none cursor-pointer data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed data-[readonly]:cursor-default',
         /* expanded hit area: 20px tall click target around the thin track */
         'data-[orientation=horizontal]:h-5 data-[orientation=horizontal]:py-2',
         'data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-5 data-[orientation=vertical]:px-2 data-[orientation=vertical]:flex-col',
@@ -61,13 +66,14 @@ function Slider({
         <Thumb
           key={index}
           // The thumb is the slider a screen reader meets: the name and the description belong on it, not on the root.
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabel ? undefined : ariaLabelledBy}
+          aria-label={thumbLabels?.[index] ?? ariaLabel}
+          aria-labelledby={(thumbLabels?.[index] ?? ariaLabel) ? undefined : ariaLabelledBy}
+          aria-readonly={ariaReadOnly}
           aria-describedby={ariaDescribedBy}
           data-slot="slider-thumb"
           className={cn(
             'block size-4 shrink-0 rounded-full border-2 border-primary bg-background shadow-sm',
-            'cursor-grab active:cursor-grabbing',
+            ariaReadOnly ? 'cursor-default' : 'cursor-grab active:cursor-grabbing',
             'ring-ring/50 transition-[color,box-shadow,transform]',
             'hover:ring-4 focus-visible:ring-4 focus-visible:outline-none',
             'disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed',

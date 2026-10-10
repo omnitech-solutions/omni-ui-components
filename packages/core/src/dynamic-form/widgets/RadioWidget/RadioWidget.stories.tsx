@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { playKeyboardArrows } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
 import {
+  cardPlanFixture,
   descriptionPlanFixture,
   disabledOptionPlanFixture,
   inlinePlanFixture,
@@ -20,6 +22,7 @@ const config = defineDynamicFormStories<PlanFormData>({
   fixtures: {
     plain: plainPlanFixture,
     inline: inlinePlanFixture,
+    cards: cardPlanFixture,
     description: descriptionPlanFixture,
     prefilled: prefilledPlanFixture,
     validation: validationPlanFixture,
@@ -28,6 +31,7 @@ const config = defineDynamicFormStories<PlanFormData>({
   titles: {
     plain: 'RadioWidget',
     inline: 'RadioWidget · inline',
+    cards: 'RadioWidget · selectable cards',
     description: 'RadioWidget · description',
     prefilled: 'RadioWidget · prefilled',
     validation: 'RadioWidget · required',
@@ -46,6 +50,7 @@ const config = defineDynamicFormStories<PlanFormData>({
   stories: {
     Plain: { fixture: 'plain' },
     Inline: { fixture: 'inline' },
+    Cards: { fixture: 'cards' },
     WithDescription: { fixture: 'description' },
     Prefilled: { fixture: 'prefilled' },
     DisabledOption: { fixture: 'disabledOption' },
@@ -71,7 +76,11 @@ type Story = StoryObj<Args>;
 
 export const Plain: Story = { args: config.stories.Plain };
 export const Inline: Story = { args: config.stories.Inline };
+export const Cards: Story = { args: config.stories.Cards };
 export const WithDescription: Story = { args: config.stories.WithDescription };
 export const Prefilled: Story = { args: config.stories.Prefilled };
 export const DisabledOption: Story = { args: config.stories.DisabledOption };
 export const ValidationError: Story = { args: config.stories.ValidationError };
+
+/** Driven by the keyboard alone (focus arrives by the field's key, as a host does it). */
+export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardArrows };

@@ -1,18 +1,20 @@
 import { TimePickerPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import { numberOption, stringOption, widgetField, widgetLook } from '../../lib/widgetKit';
 
-/** RJSF Time widget — submits `HH:MM` (24h). */
+/** `time`: a time of day, stored as `HH:MM`. `ui:options.min`, `max` (`HH:MM`) and `step` (seconds). */
 export const TimeWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, required } = props;
+  const { value, options } = props;
   const { onChange } = useStableRjsfCallbacks<string>(props, (next) => next);
   return (
     <TimePickerPrimitive
-      id={id}
+      {...widgetField(props)}
+      {...widgetLook(props)}
       value={(value as string | undefined) ?? ''}
-      required={required}
-      disabled={disabled || readonly}
-      invalid={Boolean(rawErrors?.length)}
+      min={stringOption(options, 'min')}
+      max={stringOption(options, 'max')}
+      step={numberOption(options, 'step')}
       onChange={onChange}
     />
   );

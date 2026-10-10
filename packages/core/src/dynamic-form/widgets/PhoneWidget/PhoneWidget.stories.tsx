@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { playKeyboardReach } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
 import {
   type PhoneFormData,
   prefilledPhoneFixture,
@@ -43,3 +44,6 @@ type Story = StoryObj<Args>;
 export const US: Story = { args: config.stories.US };
 export const UK: Story = { args: config.stories.UK };
 export const Prefilled: Story = { args: config.stories.Prefilled };
+
+/** Reached and left by the keyboard alone (focus arrives by the field's key, as a host does it). */
+export const Keyboard: Story = { args: config.stories.US, play: playKeyboardReach };

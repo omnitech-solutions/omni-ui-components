@@ -38,3 +38,6 @@ export const Prefilled: Story = { args: { value: '123456' } };
 export const FourDigit: Story = { args: { length: 4, label: 'PIN' } };
 export const WithError: Story = { args: { error: 'Code is incorrect' } };
 export const Disabled: Story = { args: { disabled: true, value: '123456' } };
+
+/** Read-only: focusable and readable, announced as such, and the value cannot change. */
+export const ReadOnly: Story = { args: { readOnly: true, value: '123456' } };

@@ -78,3 +78,53 @@ describe('omni-ui-components/Typography sizes', () => {
     expect(screen.getByText('Quiet').className).toContain('--oui-foreground-muted');
   });
 });
+
+describe('omni-ui-components/Typography options', () => {
+  it('without the new props a title is the same h2 and a text the same span as before', () => {
+    render(
+      <div>
+        <Typography.Title>Title</Typography.Title>
+        <Typography.Text>Text</Typography.Text>
+      </div>,
+    );
+    const title = screen.getByRole('heading', { level: 2, name: 'Title' });
+    expect(title.className).toBe(
+      'font-[family-name:var(--oui-font-sans)] font-semibold tracking-tight text-balance text-3xl text-[var(--oui-foreground)]',
+    );
+    const text = screen.getByText('Text');
+    expect(text.tagName).toBe('SPAN');
+    expect(text.className).toBe(
+      'font-[family-name:var(--oui-font-sans)] text-sm leading-6 text-[var(--oui-foreground)]',
+    );
+  });
+
+  it('level picks the heading element and its size step', () => {
+    render(
+      <div>
+        <Typography.Title level={1}>One</Typography.Title>
+        <Typography.Title level={3}>Three</Typography.Title>
+        <Typography.Title level={4} size="compact">
+          Four
+        </Typography.Title>
+      </div>,
+    );
+    expect(screen.getByRole('heading', { level: 1, name: 'One' })).toHaveClass('text-4xl');
+    expect(screen.getByRole('heading', { level: 3, name: 'Three' })).toHaveClass('text-2xl');
+    expect(screen.getByRole('heading', { level: 4, name: 'Four' })).toHaveClass('text-base');
+  });
+
+  it('code, keyboard and strong', () => {
+    render(
+      <div>
+        <Typography.Text code>retries</Typography.Text>
+        <Typography.Text keyboard>Ctrl</Typography.Text>
+        <Typography.Text strong>Saved</Typography.Text>
+      </div>,
+    );
+    expect(screen.getByText('retries').tagName).toBe('CODE');
+    expect(screen.getByText('retries')).toHaveClass('font-mono');
+    expect(screen.getByText('retries').className).toContain('--oui-surface-field');
+    expect(screen.getByText('Ctrl').tagName).toBe('KBD');
+    expect(screen.getByText('Saved')).toHaveClass('font-semibold');
+  });
+});

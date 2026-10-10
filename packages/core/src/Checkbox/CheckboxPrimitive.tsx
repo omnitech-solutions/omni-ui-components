@@ -32,6 +32,7 @@ const CheckboxPrimitiveInner = React.forwardRef<HTMLButtonElement, CheckboxPrimi
       disabled,
       required,
       invalid,
+      readOnly,
       autoFocus,
       'aria-describedby': ariaDescribedBy,
       'aria-labelledby': ariaLabelledBy,
@@ -59,6 +60,10 @@ const CheckboxPrimitiveInner = React.forwardRef<HTMLButtonElement, CheckboxPrimi
         required={required}
         autoFocus={autoFocus}
         aria-invalid={invalid || undefined}
+        aria-readonly={readOnly || undefined}
+        data-readonly={readOnly ? '' : undefined}
+        // Radix skips its toggle when the click is default-prevented.
+        onClick={readOnly ? (event) => event.preventDefault() : undefined}
         aria-describedby={ariaDescribedBy}
         aria-labelledby={ariaLabelledBy}
         data-testid={testId}
@@ -69,7 +74,7 @@ const CheckboxPrimitiveInner = React.forwardRef<HTMLButtonElement, CheckboxPrimi
           'border-muted-foreground/60 text-primary',
           'transition-[color,box-shadow,border-color,background-color]',
           'outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
-          'hover:border-primary',
+          readOnly ? 'cursor-default' : 'hover:border-primary',
           'data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
           'data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground',
           'aria-invalid:border-destructive aria-invalid:ring-destructive/20',

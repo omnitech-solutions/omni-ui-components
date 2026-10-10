@@ -24,7 +24,9 @@ export interface SelectOption {
 /** Footer action rendered below the options list (e.g. "Manage Tax Rates"). */
 export interface SelectFooterAction {
   label: string;
+  /** With an `href` the action is drawn as a link element: the browser follows it, the library never navigates. */
   href?: string | null;
+  /** Called when the action is chosen. The host routes, opens or saves. */
   onSelect?: () => void;
 }
 
@@ -45,6 +47,10 @@ export interface SelectPrimitiveProps
     SelectVariantProps,
     RootProps {
   invalid?: boolean;
+  /** Read-only: stays focusable and readable, is announced as read-only, and cannot be changed. `disabled` wins. */
+  readOnly?: boolean;
+  /** The same sizes under the name every field-shaped control answers to. `selectSize` wins when both are given. */
+  inputSize?: SelectVariantProps['selectSize'];
   options: SelectOption[];
   /** Placeholder rendered as a disabled option when value is empty. */
   placeholder?: string;

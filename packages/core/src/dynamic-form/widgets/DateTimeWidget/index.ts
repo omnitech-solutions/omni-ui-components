@@ -1,1 +1,1 @@
-export { DateTimeWidget } from './DateTimeWidget';
+export { DateTimeWidget, instantToLocal, localToInstant } from './DateTimeWidget';

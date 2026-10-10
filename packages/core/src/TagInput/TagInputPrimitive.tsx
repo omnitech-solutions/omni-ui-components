@@ -1,7 +1,7 @@
 import { cn } from 'lib/utils';
 import { X } from 'lucide-react';
 import * as React from 'react';
-import { inputVariants } from '../Input/Input.variants';
+import { type InputSize, type InputVariant, inputVariants } from '../Input/Input.variants';
 
 export interface TagInputPrimitiveProps {
   id?: string;
@@ -16,6 +16,10 @@ export interface TagInputPrimitiveProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** The look of the field box. Default `bordered`. */
+  variant?: InputVariant;
+  /** The height of the field box. Default `default`. */
+  inputSize?: InputSize;
   readOnly?: boolean;
   'aria-label'?: string;
   'aria-labelledby'?: string;
@@ -41,6 +45,8 @@ export const TagInputPrimitive = React.forwardRef<HTMLInputElement, TagInputPrim
       required,
       invalid,
       readOnly,
+      variant = 'bordered',
+      inputSize = 'default',
       className,
       ...rest
     },
@@ -85,9 +91,10 @@ export const TagInputPrimitive = React.forwardRef<HTMLInputElement, TagInputPrim
       <div
         data-slot="tag-input"
         data-testid={testId}
+        aria-disabled={disabled || undefined}
         aria-invalid={invalid || undefined}
         className={cn(
-          inputVariants({ variant: 'bordered', inputSize: 'default' }),
+          inputVariants({ variant, inputSize }),
           'h-auto min-h-[var(--oui-field-height-md)] w-full flex-wrap items-center gap-1.5 px-2 py-1.5 cursor-text',
           disabled && 'cursor-not-allowed opacity-50',
           className,

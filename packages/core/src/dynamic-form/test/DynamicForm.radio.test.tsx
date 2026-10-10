@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import type { RJSFSchema } from '@rjsf/utils';
+import userEvent from '@testing-library/user-event';
 import { z } from 'zod';
 
 beforeAll(() => {
@@ -140,15 +141,19 @@ describe('DynamicForm — RadioWidget integration', () => {
       ['free', 'pro', 'team'].forEach((v) => expect(getItem(v)).toBeDisabled());
     });
 
-    it('disables every option when DynamicForm.readOnly is set', () => {
+    it('draws a read-only group as read-only, not disabled, when DynamicForm.readOnly is set', async () => {
       renderDynamicForm({
         schema: planSchema(),
         uiSchema: buildSingleFieldUiSchema('plan', { 'ui:widget': 'radio' }),
         zodSchema: z.object({ plan: z.string() }),
-        formData: { plan: '' },
+        formData: { plan: 'pro' },
         readOnly: true,
       });
-      ['free', 'pro', 'team'].forEach((v) => expect(getItem(v)).toBeDisabled());
+      ['free', 'pro', 'team'].forEach((v) => expect(getItem(v)).not.toBeDisabled());
+      expect(screen.getByRole('radiogroup')).toHaveAttribute('aria-readonly', 'true');
+      await userEvent.setup().click(getItem('team'));
+      expect(getItem('pro')).toHaveAttribute('aria-checked', 'true');
+      expect(getItem('team')).toHaveAttribute('aria-checked', 'false');
     });
 
     it('honors ui:enumDisabled for specific values', () => {

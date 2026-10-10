@@ -61,6 +61,9 @@ export const AtMax: Story = { args: { value: 50 } };
 
 export const Disabled: Story = { args: { disabled: true } };
 
+/** Read-only: focusable and readable, announced as such, and the value cannot change. */
+export const ReadOnly: Story = { args: { readOnly: true } };
+
 export const WithError: Story = { args: { error: 'Must be at least 5 pages' } };
 
 export const Required: Story = { args: { required: true } };

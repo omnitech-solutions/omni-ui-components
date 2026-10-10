@@ -20,6 +20,7 @@ const SwitchPrimitiveInner = React.forwardRef<HTMLButtonElement, SwitchPrimitive
       disabled,
       required,
       invalid,
+      readOnly,
       'aria-describedby': ariaDescribedBy,
       'aria-label': ariaLabel,
       ...rest
@@ -42,11 +43,15 @@ const SwitchPrimitiveInner = React.forwardRef<HTMLButtonElement, SwitchPrimitive
         disabled={disabled}
         required={required}
         aria-invalid={invalid || undefined}
+        aria-readonly={readOnly || undefined}
+        data-readonly={readOnly ? '' : undefined}
+        // Radix skips its toggle when the click is default-prevented.
+        onClick={readOnly ? (event: React.MouseEvent) => event.preventDefault() : undefined}
         aria-describedby={ariaDescribedBy}
         aria-label={ariaLabel}
         data-testid={testId}
         data-slot="switch"
-        className={cn(className)}
+        className={cn(readOnly && 'cursor-default', className)}
       />
     );
   },

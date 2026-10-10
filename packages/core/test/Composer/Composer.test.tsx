@@ -305,7 +305,7 @@ describe('omni-ui-components/Composer', () => {
     it('queues while streaming and attaches a dropped file', async () => {
       const onAction = vi.fn();
       render(<ComposerDemo streaming onAction={onAction} />);
-      await userEvent.type(screen.getByRole('combobox', { name: 'Message' }), 'later{Enter}');
+      await userEvent.type(screen.getByRole('textbox', { name: 'Message' }), 'later{Enter}');
       expect(onAction).toHaveBeenCalledWith('queue', 'later');
       expect(screen.getByRole('list', { name: 'Queued messages' })).toBeInTheDocument();
     });

@@ -26,8 +26,11 @@ const CheckboxGroupPrimitiveInner = React.forwardRef<HTMLDivElement, CheckboxGro
       disabled,
       required,
       invalid,
+      readOnly,
       orientation = 'vertical',
       'aria-describedby': ariaDescribedBy,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       ...rest
     },
     ref,
@@ -43,6 +46,7 @@ const CheckboxGroupPrimitiveInner = React.forwardRef<HTMLDivElement, CheckboxGro
     const current = isControlled ? value! : internal;
 
     const toggle = (next: string, checked: boolean) => {
+      if (readOnly) return;
       const updated = checked ? [...current, next] : current.filter((v) => v !== next);
       if (!isControlled) setInternal(updated);
       onChange?.(updated);
@@ -52,7 +56,10 @@ const CheckboxGroupPrimitiveInner = React.forwardRef<HTMLDivElement, CheckboxGro
       <div
         ref={ref}
         role="group"
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
+        data-readonly={readOnly ? '' : undefined}
         aria-invalid={invalid || undefined}
         data-testid={testId}
         data-slot="checkbox-group"
@@ -77,7 +84,9 @@ const CheckboxGroupPrimitiveInner = React.forwardRef<HTMLDivElement, CheckboxGro
                 'flex items-start gap-3 rounded-md p-2 -m-2',
                 isItemDisabled
                   ? 'cursor-not-allowed opacity-50'
-                  : 'cursor-pointer hover:bg-muted/40',
+                  : readOnly
+                    ? 'cursor-default'
+                    : 'cursor-pointer hover:bg-muted/40',
               )}
             >
               <CheckboxPrimitive
@@ -85,6 +94,7 @@ const CheckboxGroupPrimitiveInner = React.forwardRef<HTMLDivElement, CheckboxGro
                 name={name}
                 checked={checked}
                 disabled={isItemDisabled}
+                readOnly={readOnly}
                 required={required}
                 onChange={(c) => toggle(opt.value, c)}
                 onBlur={onBlur}

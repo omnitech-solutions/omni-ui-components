@@ -81,7 +81,9 @@ describe('Table row selection', () => {
 
   it('marks the header checkbox mixed when only some rows are selected', () => {
     renderTable({ rowSelection: { defaultSelectedRowKeys: [1] } });
-    expect(selectAll()).toHaveAttribute('aria-checked', 'mixed');
+    // A native checkbox says "mixed" through `indeterminate`; `aria-checked` is not allowed on it.
+    expect(selectAll().indeterminate).toBe(true);
+    expect(selectAll()).not.toHaveAttribute('aria-checked');
     expect(selectAll().checked).toBe(false);
   });
 

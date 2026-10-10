@@ -11,6 +11,9 @@ export interface RadioOption {
 
 export type RadioOrientation = 'vertical' | 'horizontal';
 
+/** `plain` (default): a mark and its text. `card`: each option is a bordered card; the chosen one is tinted. */
+export type RadioAppearance = 'plain' | 'card';
+
 /**
  * Props for the Radio primitive (just the radio group itself).
  *
@@ -33,12 +36,18 @@ export interface RadioPrimitiveProps extends RootProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** Read-only: stays focusable and readable, is announced as read-only, and cannot be changed. `disabled` wins. */
+  readOnly?: boolean;
   /** `vertical` (default) stacks options; `horizontal` lays them inline. */
   orientation?: RadioOrientation;
+  /** How each option is drawn; behaviour is identical. Default `plain`. */
+  appearance?: RadioAppearance;
   className?: string;
   id?: string;
   'data-testid'?: string;
   'aria-describedby'?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
 }
 
 /**

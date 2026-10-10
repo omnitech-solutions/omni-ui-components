@@ -10,6 +10,13 @@ export type StepperSize = 'sm' | 'default' | 'lg';
  * Renders: optional leading icon · value display · minus button · plus button,
  * all inside a single rounded-full bordered container.
  */
+export interface StepperLabels {
+  decrease: string;
+  increase: string;
+}
+
+export const DEFAULT_STEPPER_LABELS: StepperLabels = { decrease: 'Decrease', increase: 'Increase' };
+
 export interface StepperPrimitiveProps extends RootProps {
   id?: string;
   name?: string;
@@ -22,6 +29,10 @@ export interface StepperPrimitiveProps extends RootProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** Read-only: stays focusable and readable, is announced as read-only, and cannot be changed. `disabled` wins. */
+  readOnly?: boolean;
+  /** Names of the two buttons. Defaults: `Decrease`, `Increase`. */
+  labels?: Partial<StepperLabels>;
   /** Optional leading icon node (e.g. lucide `FileText`). */
   icon?: React.ReactNode;
   /** Singular noun rendered after the value (e.g. "page"). */
@@ -35,6 +46,7 @@ export interface StepperPrimitiveProps extends RootProps {
   'data-testid'?: string;
   'aria-describedby'?: string;
   'aria-label'?: string;
+  'aria-labelledby'?: string;
 }
 
 /**

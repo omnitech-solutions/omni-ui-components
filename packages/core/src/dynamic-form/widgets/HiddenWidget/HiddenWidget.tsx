@@ -1,12 +1,6 @@
 import type { WidgetProps } from '@rjsf/utils';
 
-/**
- * RJSF Hidden widget — renders nothing visible but keeps the value in
- * the form data. Use for IDs, tokens, or computed fields.
- *
- * @example
- * const uiSchema = { recordId: { 'ui:widget': 'hidden' } };
- */
+/** `hidden`: a value the form carries and never shows. It is submitted unchanged. */
 export const HiddenWidget = (props: WidgetProps) => {
   const { id, value } = props;
   return (

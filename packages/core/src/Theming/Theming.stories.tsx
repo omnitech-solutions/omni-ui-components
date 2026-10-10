@@ -50,7 +50,7 @@ export const TokenOverrides: Story = {
       <ThemedSet
         title="branded"
         theme="dark"
-        tokens={{ '--oui-panel-bg': 'rgb(10, 80, 60)', '--oui-primary': '#ff00aa' }}
+        tokens={{ '--oui-panel-bg': 'rgb(10, 80, 60)', '--oui-primary': '#c2007f' }}
       />
     </div>
   ),

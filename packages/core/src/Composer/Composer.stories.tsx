@@ -81,7 +81,7 @@ type Story = StoryObj<ComposerDemoProps>;
 export const Default: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const box = canvas.getByRole('combobox', { name: 'Message' });
+    const box = canvas.getByRole('textbox', { name: 'Message' });
     const send = canvas.getByRole('button', { name: 'Send (Enter)' });
     await expect(send).toBeDisabled();
     await userEvent.type(box, 'Walk me through binary search');
@@ -107,7 +107,7 @@ export const HistoryRecall: Story = {
     initialValue: 'half-typed idea',
   },
   play: async ({ canvasElement }) => {
-    const box = within(canvasElement).getByRole('combobox', {
+    const box = within(canvasElement).getByRole('textbox', {
       name: 'Message',
     }) as HTMLTextAreaElement;
     await userEvent.click(box);
@@ -126,7 +126,7 @@ export const SavedPrompts: Story = {
   args: { initialValue: '/prompts ', history: [] },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const box = canvas.getByRole('combobox', { name: 'Message' });
+    const box = canvas.getByRole('textbox', { name: 'Message' });
     await userEvent.click(box);
     await userEvent.keyboard('{End}');
     await waitFor(() =>
@@ -149,7 +149,7 @@ export const Streaming: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('button', { name: 'Stop (Esc)' })).toBeEnabled();
-    await userEvent.click(canvas.getByRole('combobox', { name: 'Message' }));
+    await userEvent.click(canvas.getByRole('textbox', { name: 'Message' }));
     await userEvent.keyboard('{Escape}');
     await expect(args.onAction).toHaveBeenCalledWith('stop');
   },
@@ -161,7 +161,7 @@ export const QueueWhileStreaming: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.type(
-      canvas.getByRole('combobox', { name: 'Message' }),
+      canvas.getByRole('textbox', { name: 'Message' }),
       'Then the sorted version',
     );
     await expect(canvas.getByRole('button', { name: 'Queue message' })).toBeEnabled();
@@ -208,7 +208,7 @@ export const EnterIsNewline: Story = {
   args: { sendOnEnter: false },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const box = canvas.getByRole('combobox', { name: 'Message' });
+    const box = canvas.getByRole('textbox', { name: 'Message' });
     await userEvent.type(box, 'line one{Enter}line two');
     await expect(box).toHaveValue('line one\nline two');
     await expect(args.onAction).not.toHaveBeenCalledWith('send', expect.anything());
@@ -224,7 +224,7 @@ export const EnterIsNewline: Story = {
 export const AutoGrow: Story = {
   args: { initialValue: Array.from({ length: 14 }, (_, i) => `line ${i + 1}`).join('\n') },
   play: async ({ canvasElement }) => {
-    const box = within(canvasElement).getByRole('combobox', {
+    const box = within(canvasElement).getByRole('textbox', {
       name: 'Message',
     }) as HTMLTextAreaElement;
     await waitFor(() => expect(parseInt(box.style.height, 10)).toBeLessThanOrEqual(200));

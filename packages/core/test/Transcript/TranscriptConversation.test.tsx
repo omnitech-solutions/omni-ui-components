@@ -393,7 +393,7 @@ describe('omni-ui-components/Transcript conversation mode', () => {
   it('the whole demo renders in a Panel with the real parts in the slots', () => {
     render(<ConversationDemo />);
     expect(screen.getByRole('log', { name: 'Conversation' })).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'Message' })).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'Message' })).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'Regenerate' }).length).toBeGreaterThan(0);
   });
 });

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { playKeyboardReach } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
 import {
   disabledPagesFixture,
   minMaxPagesFixture,
@@ -33,7 +34,7 @@ const config = defineDynamicFormStories<PageCountFormData>({
     whenToUse: [
       'Numeric stepper pill (− / +) for bounded integers like page count, seat count, or duration.',
       'Reads min/max/step via `rangeSpec(schema)`. `ui:options.unit` adds singular/plural noun;',
-      "`ui:options.icon: 'fileText'` adds a leading icon.",
+      '`ui:options.iconKey` names a leading icon node in `formContext.icons`.',
     ].join(' '),
   },
   stories: {
@@ -60,3 +61,6 @@ export const Plain: Story = { args: config.stories.Plain };
 export const Prefilled: Story = { args: config.stories.Prefilled };
 export const NoIcon: Story = { args: config.stories.NoIcon };
 export const Disabled: Story = { args: config.stories.Disabled };
+
+/** Reached and left by the keyboard alone (focus arrives by the field's key, as a host does it). */
+export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardReach };

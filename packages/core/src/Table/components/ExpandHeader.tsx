@@ -29,7 +29,7 @@ export function ExpandHeader<TRecord, TRowData>({
       data-testid={`${testIdPrefix}-expand-header-cell`}
       data-pinned={fixedSide}
     >
-      {expandable.columnTitle}
+      {expandable.columnTitle ?? <span className="sr-only">Expand</span>}
     </th>
   );
 }

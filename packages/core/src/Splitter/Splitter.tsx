@@ -102,6 +102,29 @@ export const Splitter = ({
   const horizontal = orientation === 'horizontal';
   const root = React.useRef<HTMLDivElement>(null);
 
+  // A row that really scrolls is a tab stop, so the panels past the edge are reached without a mouse.
+  const panelCount = React.Children.count(children);
+  const [scrolls, setScrolls] = React.useState(false);
+  React.useLayoutEffect(() => {
+    const element = root.current;
+    if (!element || overflow !== 'scroll') {
+      setScrolls(false);
+      return;
+    }
+    const measure = () =>
+      setScrolls(
+        horizontal
+          ? element.scrollWidth > element.clientWidth
+          : element.scrollHeight > element.clientHeight,
+      );
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    for (const child of Array.from(element.children)) observer.observe(child);
+    return () => observer.disconnect();
+  }, [overflow, horizontal, panelCount]);
+
   const panels: PanelSpec[] = [];
   React.Children.forEach(children, (child, index) => {
     if (!isPanel(child)) return;
@@ -396,6 +419,7 @@ export const Splitter = ({
   return (
     <div
       ref={root}
+      tabIndex={scrolls ? 0 : undefined}
       data-slot="splitter"
       data-orientation={orientation}
       data-overflow={overflow}

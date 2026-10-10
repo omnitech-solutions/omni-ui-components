@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { playKeyboardReach } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
 import {
   type BudgetFormData,
   eurBudgetFixture,
@@ -39,3 +40,6 @@ type Story = StoryObj<Args>;
 export const USD: Story = { args: config.stories.USD };
 export const EUR: Story = { args: config.stories.EUR };
 export const JPY: Story = { args: config.stories.JPY };
+
+/** Reached and left by the keyboard alone (focus arrives by the field's key, as a host does it). */
+export const Keyboard: Story = { args: config.stories.USD, play: playKeyboardReach };

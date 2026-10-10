@@ -108,8 +108,22 @@ export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimit
       if (ariaDescribedBy) attributes['aria-describedby'] = ariaDescribedBy;
       if (required) attributes['aria-required'] = 'true';
       if (invalid) attributes['aria-invalid'] = 'true';
+      // Read-only: the text stays reachable by Tab and readable; it is announced as read-only.
+      if (readOnly && !disabled) {
+        attributes['aria-readonly'] = 'true';
+        attributes.tabindex = '0';
+      }
       return attributes;
-    }, [ariaLabel, ariaLabelledBy, ariaDescribedBy, placeholder, required, invalid]);
+    }, [
+      ariaLabel,
+      ariaLabelledBy,
+      ariaDescribedBy,
+      placeholder,
+      required,
+      invalid,
+      readOnly,
+      disabled,
+    ]);
 
     const editor = useEditor({
       extensions: [

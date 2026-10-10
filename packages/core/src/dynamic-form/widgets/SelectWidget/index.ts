@@ -1,1 +1,1 @@
-export { SelectWidget } from './SelectWidget';
+export { SelectControl, SelectWidget } from './SelectWidget';

@@ -307,7 +307,7 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
         type: 'string',
         title: 'Quick actions',
         description:
-          'Omni IconButtons surfaced via the iconToolbar widget. Trash2 auto-defaults to destructive.',
+          'Actions of the form, named in the schema and supplied by the host through formContext.actions.',
       },
       enhancements: {
         type: 'object',
@@ -438,13 +438,7 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
     quick_actions: {
       'ui:widget': 'iconToolbar',
       'ui:options': {
-        actions: [
-          { icon: 'move-up', label: 'Move up', variant: 'ghost' },
-          { icon: 'move-down', label: 'Move down', variant: 'ghost' },
-          { icon: 'copy', label: 'Duplicate', variant: 'ghost' },
-          { icon: 'x', label: 'Clear', variant: 'ghost' },
-          { icon: 'trash', label: 'Delete' },
-        ],
+        actions: [{ actionKey: 'duplicate' }, { actionKey: 'clear' }, { actionKey: 'remove' }],
       },
     },
     enhancements: {
@@ -661,6 +655,14 @@ const KITCHEN_SINK_FIXTURE: DynamicFormFixture<KitchenSinkFormData, Record<strin
       tasks: selectOptions(SHOWCASE_TASKS, { value: 'id', label: 'name' }),
     },
     actions: {
+      duplicate: {
+        actionId: 'duplicate',
+        label: 'Duplicate',
+        href: null,
+        onSelect: () => undefined,
+      },
+      clear: { actionId: 'clear', label: 'Clear', href: null, onSelect: () => undefined },
+      remove: { actionId: 'remove', label: 'Delete', href: null, onSelect: () => undefined },
       manageTaxRates: {
         label: 'Manage Tax Rates',
         href: '/settings/tax_rates',

@@ -4,6 +4,7 @@ import {
 } from '@oc-tech/omni-ui-components/CommandPopover';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
+  CommandPalette as CommandPaletteExample,
   commandPopoverPropsFactory,
   surfaceItems,
 } from 'factories/omni-ui-components/CommandPopover/CommandPopover.factories';
@@ -11,6 +12,7 @@ import { ComposerDemo } from 'factories/omni-ui-components/Composer/Composer.fac
 import * as React from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import factoriesSource from './CommandPopover.factories.tsx?raw';
 import exampleSource from './CommandPopover.stories.tsx?raw';
 
 const meta: Meta<CommandPopoverProps> = {
@@ -21,7 +23,7 @@ const meta: Meta<CommandPopoverProps> = {
     docs: {
       description: {
         component:
-          'The <primary>listbox</primary> a typed `/` or `@` opens above a composer (`role="listbox"`, `aria-selected` options, hover highlight, a hint line, <primary>Nothing matches</primary>). It is presentational: <primary>useCommandTrigger</primary> finds the trigger in the draft (`slashTrigger`: the whole draft is `/word`; `mentionTrigger`: `@query` after whitespace), resolves the rows (a sync array, or `source(query)` sync or async with stale answers dropped), and handles ArrowUp/ArrowDown, Enter or Tab to pick and Escape to close. Focus never leaves the textarea (`aria-activedescendant` points at the active row). `T` is your own item type (extend `CommandItem`): every callback hands back the same object.\n\n**Callbacks**\n\n| Prop | Fires when | Payload |\n| --- | --- | --- |\n| `onSelect` | a row is chosen (click) | `(item: T, index: number)` |\n| `onActiveChange` | the highlight moves (hover), controlled or not | `(index: number)` |\n| `onClose` | a press outside, or Escape inside, asks to close | none |\n| `useCommandTrigger onPick` | a row is picked (Enter, Tab or click) | `(item: T, { draft, query, match })` |\n| `useCommandTrigger onClose` | Escape (or `close()`) closes without a pick | none |\n| `useCommandTrigger onAfterPick` | after a pick, to refocus the textarea | none |\n',
+          'The <primary>listbox</primary> a typed `/` or `@` opens above a composer (`role="listbox"`, `aria-selected` options, hover highlight, a hint line, <primary>Nothing matches</primary>). It is presentational: <primary>useCommandTrigger</primary> finds the trigger in the draft (`slashTrigger`: the whole draft is `/word`; `mentionTrigger`: `@query` after whitespace), resolves the rows (a sync array, or `source(query)` sync or async with stale answers dropped), and handles ArrowUp/ArrowDown, Enter or Tab to pick and Escape to close. Focus never leaves the textarea (`aria-activedescendant` points at the active row). `T` is your own item type (extend `CommandItem`): every callback hands back the same object.\n\n**Callbacks**\n\n| Prop | Fires when | Payload |\n| --- | --- | --- |\n| `onSelect` | a row is chosen (click) | `(item: T, index: number)` |\n| `onActiveChange` | the highlight moves (hover), controlled or not | `(index: number)` |\n| `onClose` | a press outside, or Escape inside, asks to close | none |\n| `useCommandTrigger onPick` | a row is picked (Enter, Tab or click) | `(item: T, { draft, query, match })` |\n| `useCommandTrigger onClose` | Escape (or `close()`) closes without a pick | none |\n| `useCommandTrigger onAfterPick` | after a pick, to refocus the textarea | none |\n| `search.onChange` | the query of the popover\'s own input changes | `(query: string)` |\n\n<primary>A command palette</primary> is the same part with `search` and `placement="inline"` inside a `Modal`: the popover draws its own input (a combobox named by `search.label`) that owns the arrows, Home, End, Enter and Escape, filters by label (`filter` replaces the test, `filter={false}` leaves it to the host), draws rows under their `group` heading in first-seen order and each row\'s `shortcut` keys at its end.\n',
       },
     },
   },
@@ -38,7 +40,7 @@ const meta: Meta<CommandPopoverProps> = {
       description: 'Render nothing when empty (slash). Off: show `labels.empty` (mentions).',
     },
     loading: { control: 'boolean', description: 'An async source is still answering.' },
-    placement: { control: 'inline-radio', options: ['above', 'below'] },
+    placement: { control: 'inline-radio', options: ['above', 'below', 'inline'] },
     labels: { control: 'object', description: '{ empty, loading }.' },
     onSelect: { action: 'selected' },
     onActiveChange: { action: 'hovered' },
@@ -115,7 +117,7 @@ export const InComposer: StoryObj = {
     const canvas = within(canvasElement);
     // The popover renders in a portal on body, so its queries use the whole page.
     const page = within(document.body);
-    const box = canvas.getByRole('combobox', { name: 'Message' });
+    const box = canvas.getByRole('textbox', { name: 'Message' });
     await userEvent.type(box, '/');
     const list = await page.findByRole('listbox', { name: 'Commands' });
     await expect(within(list).getAllByRole('option')).toHaveLength(4);
@@ -180,5 +182,33 @@ export const NotClippedInPortal: StoryObj = {
       'aria-selected',
       'true',
     );
+  },
+};
+
+const onRun = fn();
+
+/** A palette in a `Modal`: `search`, groups, shortcut keys and the empty text. Type, arrow, Enter. */
+export const CommandPalette: StoryObj = {
+  render: () => <CommandPaletteExample onRun={onRun} />,
+  parameters: exampleDocs(factoriesSource, 'CommandPalette'),
+  play: async ({ canvasElement }) => {
+    const page = within(canvasElement.ownerDocument.body);
+    onRun.mockClear();
+    await userEvent.click(within(canvasElement).getByRole('button', { name: 'Open commands' }));
+    const input = await page.findByRole('combobox', { name: 'Search commands' });
+    await waitFor(() => expect(input).toHaveFocus());
+    await expect(page.getByRole('group', { name: 'Navigate' })).toBeInTheDocument();
+    await userEvent.type(input, 'zzz');
+    await expect(page.getByRole('status')).toHaveTextContent('No command matches');
+    await userEvent.clear(input);
+    await userEvent.type(input, 'go to');
+    await expect(page.getAllByRole('option')).toHaveLength(2);
+    await userEvent.keyboard('{ArrowDown}');
+    const people = page.getByRole('option', { name: /Go to People/ });
+    await expect(people).toHaveAttribute('aria-selected', 'true');
+    await expect(input).toHaveAttribute('aria-activedescendant', people.id);
+    await userEvent.keyboard('{Enter}');
+    await expect(onRun).toHaveBeenCalledWith(expect.objectContaining({ id: 'people' }));
+    await waitFor(() => expect(page.queryByRole('combobox')).not.toBeInTheDocument());
   },
 };

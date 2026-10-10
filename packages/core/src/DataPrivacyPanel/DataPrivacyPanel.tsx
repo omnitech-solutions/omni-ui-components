@@ -117,6 +117,8 @@ export const DataPrivacyPanel = ({
             ) : (
               <ul
                 aria-label={labels.activityList}
+                // The list scrolls past 220px: a tab stop lets the keyboard reach the entries below.
+                tabIndex={0}
                 className="m-0 max-h-[220px] list-none overflow-auto rounded-xl border border-solid border-[color:var(--oui-panel-border)] p-0"
               >
                 {(activity ?? []).map((item, index) => (

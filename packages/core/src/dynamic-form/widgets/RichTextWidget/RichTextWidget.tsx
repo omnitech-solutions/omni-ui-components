@@ -1,19 +1,18 @@
 import { RichTextPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import { widgetField, widgetGroupName } from '../../lib/widgetKit';
 
-/** RJSF RichText widget for HTML string values. */
+/** `richText`: formatted text, stored as an HTML string. */
 export const RichTextWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, required, placeholder } = props;
+  const { value, placeholder } = props;
   const { onChange } = useStableRjsfCallbacks<string>(props, (next) => next);
   return (
     <RichTextPrimitive
-      id={id}
+      {...widgetField(props)}
+      {...widgetGroupName(props)}
       value={(value as string | undefined) ?? ''}
       placeholder={placeholder}
-      required={required}
-      disabled={disabled || readonly}
-      invalid={Boolean(rawErrors?.length)}
       onChange={onChange}
     />
   );

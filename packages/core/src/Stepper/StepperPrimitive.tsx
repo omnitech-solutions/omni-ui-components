@@ -1,7 +1,7 @@
 import { cn } from 'lib/utils';
 import { Minus, Plus } from 'lucide-react';
 import * as React from 'react';
-import type { StepperPrimitiveProps } from './Stepper.types';
+import { DEFAULT_STEPPER_LABELS, type StepperPrimitiveProps } from './Stepper.types';
 
 /**
  * Raw Omni Stepper primitive — pill-shaped row with optional leading
@@ -29,6 +29,8 @@ const StepperPrimitiveInner = React.forwardRef<HTMLDivElement, StepperPrimitiveP
       disabled,
       required,
       invalid,
+      readOnly,
+      labels: labelsProp,
       icon,
       unit,
       unitPlural,
@@ -36,6 +38,7 @@ const StepperPrimitiveInner = React.forwardRef<HTMLDivElement, StepperPrimitiveP
       stepperSize = 'default',
       'aria-describedby': ariaDescribedBy,
       'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       ...rest
     },
     ref,
@@ -50,7 +53,10 @@ const StepperPrimitiveInner = React.forwardRef<HTMLDivElement, StepperPrimitiveP
     const isControlled = value !== undefined;
     const current = isControlled ? (value as number) : internal;
 
+    const labels = { ...DEFAULT_STEPPER_LABELS, ...labelsProp };
+
     const commit = (next: number) => {
+      if (readOnly) return;
       const clamped = Math.min(max, Math.max(min, next));
       if (!isControlled) setInternal(clamped);
       onChange?.(clamped);
@@ -82,8 +88,12 @@ const StepperPrimitiveInner = React.forwardRef<HTMLDivElement, StepperPrimitiveP
         data-testid={testId}
         data-slot="stepper"
         data-disabled={disabled || undefined}
+        data-readonly={readOnly ? '' : undefined}
+        aria-disabled={disabled || undefined}
+        role="group"
         aria-describedby={ariaDescribedBy}
         aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         aria-invalid={invalid || undefined}
         className={cn(
           'inline-flex items-center gap-1 rounded-full border border-[var(--oui-border-field)] bg-muted/40 px-2 min-w-fit whitespace-nowrap',
@@ -112,10 +122,11 @@ const StepperPrimitiveInner = React.forwardRef<HTMLDivElement, StepperPrimitiveP
           data-slot="stepper-decrement"
           data-testid={testId ? `${testId}-decrement` : undefined}
           disabled={disabled || atMin}
-          aria-label="Decrease"
+          aria-disabled={readOnly || undefined}
+          aria-label={labels.decrease}
           onClick={decrement}
           className={cn(
-            'inline-flex items-center justify-center rounded-full cursor-pointer',
+            'inline-flex items-center justify-center rounded-full cursor-pointer aria-disabled:cursor-default aria-disabled:opacity-40',
             'bg-muted-foreground/25 text-[var(--oui-foreground)] shadow-sm',
             'hover:bg-muted-foreground/45 transition-colors',
             'disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-muted-foreground/25',
@@ -129,10 +140,11 @@ const StepperPrimitiveInner = React.forwardRef<HTMLDivElement, StepperPrimitiveP
           data-slot="stepper-increment"
           data-testid={testId ? `${testId}-increment` : undefined}
           disabled={disabled || atMax}
-          aria-label="Increase"
+          aria-disabled={readOnly || undefined}
+          aria-label={labels.increase}
           onClick={increment}
           className={cn(
-            'inline-flex items-center justify-center rounded-full cursor-pointer',
+            'inline-flex items-center justify-center rounded-full cursor-pointer aria-disabled:cursor-default aria-disabled:opacity-40',
             'bg-muted-foreground/25 text-[var(--oui-foreground)] shadow-sm',
             'hover:bg-muted-foreground/45 transition-colors',
             'disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-muted-foreground/25',

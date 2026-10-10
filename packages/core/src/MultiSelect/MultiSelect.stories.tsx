@@ -50,3 +50,6 @@ export const Searchable: Story = { args: { searchable: true } };
 export const MaxItems: Story = { args: { maxItems: 3 } };
 export const WithError: Story = { args: { error: 'Pick at least one' } };
 export const Disabled: Story = { args: { disabled: true, value: ['react'] } };
+
+/** Read-only: focusable and readable, announced as such, and the value cannot change. */
+export const ReadOnly: Story = { args: { readOnly: true, value: ['react'] } };

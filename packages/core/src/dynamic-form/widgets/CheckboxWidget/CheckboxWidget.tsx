@@ -2,29 +2,28 @@ import { CheckboxPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { schemaRequiresTrueValue } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import { widgetField } from '../../lib/widgetKit';
 
 /**
- * RJSF Checkbox widget for boolean schemas. The field template draws no label for a boolean field, so the
- * widget draws it beside the box (`ui:title` replaces it, `ui:options.label: false` hides it). Hidden or not,
- * the box is named by it.
+ * `checkbox`: a boolean. The one widget that draws its own label, beside the box. Required only when the schema
+ * demands `true`. `ui:options.label: false` keeps the label for a screen reader and hides it on screen.
  */
 export const CheckboxWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, schema, autofocus, label, hideLabel, options } =
-    props;
+  const { id, value, schema, autofocus, label, hideLabel, options } = props;
   const { onChange, onBlur, onFocus } = useStableRjsfCallbacks<boolean>(props, (next) => next);
   const required = schemaRequiresTrueValue(schema);
   const name = label || schema.title || '';
   const showLabel = Boolean(name) && !hideLabel && options?.label !== false;
   const labelId = `${id}__label`;
+  // The template draws the description of a boolean only when it draws a label row; a checkbox has none.
+  const field = widgetField({ ...props, hideLabel: true });
 
   return (
     <span className="inline-flex items-center gap-2">
       <CheckboxPrimitive
-        id={id}
+        {...field}
         checked={Boolean(value)}
         required={required}
-        disabled={disabled || readonly}
-        invalid={Boolean(rawErrors?.length)}
         autoFocus={autofocus}
         onChange={onChange}
         onBlur={onBlur}
@@ -35,7 +34,6 @@ export const CheckboxWidget = (props: WidgetProps) => {
         <label
           id={labelId}
           htmlFor={id}
-          // A hidden label still names the box.
           className={
             showLabel ? 'text-sm font-medium leading-none text-[var(--oui-foreground)]' : 'sr-only'
           }

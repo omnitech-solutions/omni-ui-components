@@ -92,3 +92,37 @@ export const EditorialBlock: Story = {
     </div>
   ),
 };
+
+/** `level` picks the element (`h1` to `h4`) and the size step; without it a title is an `h2`. */
+export const HeadingLevels: Story = {
+  render: () => (
+    <div className="space-y-3">
+      <Typography.Title level={1}>Level 1: the page</Typography.Title>
+      <Typography.Title level={2}>Level 2: a section</Typography.Title>
+      <Typography.Title level={3}>Level 3: a group</Typography.Title>
+      <Typography.Title level={4}>Level 4: a detail</Typography.Title>
+      <Typography.Title level={3} size="compact">
+        Level 3, compact
+      </Typography.Title>
+    </div>
+  ),
+};
+
+/** `code` is inline code, `keyboard` a key to press, `strong` a heavier weight. */
+export const CodeAndKeys: Story = {
+  render: () => (
+    <div className="space-y-2">
+      <Typography.Paragraph>
+        Set <Typography.Text code>retries</Typography.Text> to{' '}
+        <Typography.Text code>3</Typography.Text> in the settings file.
+      </Typography.Paragraph>
+      <Typography.Paragraph>
+        Press <Typography.Text keyboard>Ctrl</Typography.Text>{' '}
+        <Typography.Text keyboard>K</Typography.Text> to search.
+      </Typography.Paragraph>
+      <Typography.Paragraph>
+        <Typography.Text strong>Saved.</Typography.Text> The change applies to new records.
+      </Typography.Paragraph>
+    </div>
+  ),
+};

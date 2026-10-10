@@ -12,9 +12,14 @@ import {
 import {
   commandPopoverDescriptionClasses,
   commandPopoverEmptyClasses,
+  commandPopoverGroupLabelClasses,
   commandPopoverHintClasses,
+  commandPopoverKeyClasses,
   commandPopoverListClasses,
   commandPopoverOptionClasses,
+  commandPopoverSearchClasses,
+  commandPopoverSearchInputClasses,
+  commandPopoverShortcutClasses,
   commandPopoverTitleClasses,
   commandPopoverVariants,
 } from './CommandPopover.variants';
@@ -29,9 +34,12 @@ import {
  * @example
  * <CommandPopover label="Commands" title="Commands" labelPrefix="/" hint={DEFAULT_COMMAND_HINT} items={items} activeIndex={i} onActiveChange={setI} onSelect={run} />
  */
+const labelContains = (item: CommandItem, query: string) =>
+  item.label.toLowerCase().includes(query.trim().toLowerCase());
+
 function CommandPopoverInner<T extends CommandItem = CommandItem>(
   {
-    items,
+    items: allItems,
     activeIndex: activeProp,
     defaultActiveIndex = 0,
     onActiveChange,
@@ -47,6 +55,8 @@ function CommandPopoverInner<T extends CommandItem = CommandItem>(
     placement = 'above',
     anchor,
     container,
+    search,
+    filter,
     style,
     labels: labelsProp,
     className,
@@ -62,7 +72,33 @@ function CommandPopoverInner<T extends CommandItem = CommandItem>(
     defaultActiveIndex,
     onActiveChange,
   );
+  // [STATE] With `search` the popover owns the query and shows the rows that pass `filter`.
+  const [query, setQueryState] = useControllableState<string>(
+    search?.value,
+    search?.defaultValue ?? '',
+    search?.onChange,
+  );
+  const items = React.useMemo<readonly T[]>(() => {
+    if (!search || filter === false) return allItems;
+    const passes = filter ?? labelContains;
+    return allItems.filter((item) => passes(item, query));
+  }, [allItems, search, filter, query]);
+  // [DOMAIN] Rows are drawn group by group, groups in first-seen order; each row keeps its index in `items`.
+  const sections = React.useMemo(() => {
+    const found: { group: string | undefined; rows: { item: T; at: number }[] }[] = [];
+    items.forEach((item, at) => {
+      const section = found.find((entry) => entry.group === item.group);
+      if (section) section.rows.push({ item, at });
+      else found.push({ group: item.group, rows: [{ item, at }] });
+    });
+    return found;
+  }, [items]);
+  const order = sections.flatMap((section) => section.rows.map((row) => row.at));
+  const move = (to: number) => {
+    if (order.length > 0) setActive(order[(to + order.length) % order.length]);
+  };
   const root = React.useRef<HTMLDivElement | null>(null);
+  const list = React.useRef<HTMLDivElement | null>(null);
   // [SAFETY] A press outside asks to close. The trigger's own textarea (the anchor, and the composer around it) is inside.
   React.useEffect(() => {
     if (!onClose) return;
@@ -89,7 +125,7 @@ function CommandPopoverInner<T extends CommandItem = CommandItem>(
     const measure = () => {
       const rect = anchor.getBoundingClientRect();
       setBox(
-        placement === 'above'
+        placement !== 'below'
           ? { left: rect.left, width: rect.width, bottom: window.innerHeight - rect.top + 8 }
           : { left: rect.left, width: rect.width, top: rect.bottom + 8 },
       );
@@ -106,13 +142,13 @@ function CommandPopoverInner<T extends CommandItem = CommandItem>(
   React.useEffect(() => {
     // Only the list is scrolled: `scrollIntoView` would also move every scrolling ancestor, the page included.
     const option = active.current;
-    const list = option?.parentElement;
-    if (!option || !list || list.scrollHeight <= list.clientHeight) return;
-    const listTop = list.getBoundingClientRect().top;
-    const start = option.getBoundingClientRect().top - listTop + list.scrollTop - list.clientTop;
+    const box = list.current;
+    if (!option || !box || box.scrollHeight <= box.clientHeight) return;
+    const listTop = box.getBoundingClientRect().top;
+    const start = option.getBoundingClientRect().top - listTop + box.scrollTop - box.clientTop;
     const end = start + option.offsetHeight;
-    if (start < list.scrollTop) list.scrollTop = start;
-    else if (end > list.scrollTop + list.clientHeight) list.scrollTop = end - list.clientHeight;
+    if (start < box.scrollTop) box.scrollTop = start;
+    else if (end > box.scrollTop + box.clientHeight) box.scrollTop = end - box.clientHeight;
   }, [activeIndex, items]);
 
   if (hideWhenEmpty && items.length === 0 && !loading) return null;
@@ -139,7 +175,7 @@ function CommandPopoverInner<T extends CommandItem = CommandItem>(
         anchor
           ? {
               ...box,
-              bottom: placement === 'above' ? box?.bottom : 'auto',
+              bottom: placement !== 'below' ? box?.bottom : 'auto',
               top: placement === 'below' ? box?.top : 'auto',
               ...style,
             }
@@ -148,42 +184,112 @@ function CommandPopoverInner<T extends CommandItem = CommandItem>(
       {...rest}
     >
       {title ? <div className={commandPopoverTitleClasses}>{title}</div> : null}
+      {search ? (
+        <div data-slot="command-popover-search" className={commandPopoverSearchClasses}>
+          {search.icon ? (
+            <span aria-hidden="true" className="inline-flex flex-none">
+              {search.icon}
+            </span>
+          ) : null}
+          <input
+            type="text"
+            role="combobox"
+            aria-label={search.label}
+            aria-controls={id}
+            aria-expanded={items.length > 0}
+            aria-autocomplete="list"
+            aria-activedescendant={
+              items.length > 0 && activeIndex < items.length
+                ? `${id}-option-${activeIndex}`
+                : undefined
+            }
+            autoComplete="off"
+            spellCheck={false}
+            placeholder={search.placeholder}
+            value={query}
+            className={commandPopoverSearchInputClasses}
+            onChange={(event) => {
+              setQueryState(event.target.value);
+              setActive(0);
+            }}
+            onKeyDown={(event) => {
+              const at = order.indexOf(activeIndex);
+              if (event.key === 'ArrowDown') move(at + 1);
+              else if (event.key === 'ArrowUp') move(at < 0 ? -1 : at - 1);
+              else if (event.key === 'Home') move(0);
+              else if (event.key === 'End') move(-1);
+              else if (event.key === 'Enter') {
+                const item = items[activeIndex];
+                if (item) void onSelect(item, activeIndex);
+              } else return;
+              event.preventDefault();
+            }}
+          />
+        </div>
+      ) : null}
       <div
+        ref={list}
         id={id}
-        role="listbox"
-        aria-label={label}
+        // A listbox must hold an option: with nothing to choose, the box is a status that says so.
+        role={items.length === 0 ? 'status' : 'listbox'}
+        aria-label={items.length === 0 ? undefined : label}
         aria-busy={loading || undefined}
         className={commandPopoverListClasses}
       >
-        {items.map((item, at) => (
-          <div
-            key={item.id}
-            ref={at === activeIndex ? active : undefined}
-            id={`${id}-option-${at}`}
-            role="option"
-            aria-selected={at === activeIndex}
-            tabIndex={-1}
-            data-slot="command-popover-option"
-            className={commandPopoverOptionClasses}
-            // Keeps the caret in the textarea: the click still fires.
-            onMouseDown={(event) => event.preventDefault()}
-            onMouseEnter={() => setActive(at)}
-            onClick={() => void onSelect(item, at)}
-          >
-            {item.icon ? (
-              <span aria-hidden="true" className="inline-flex flex-none">
-                {item.icon}
+        {sections.map((section) => {
+          const rows = section.rows.map(({ item, at }) => (
+            <div
+              key={item.id}
+              ref={at === activeIndex ? active : undefined}
+              id={`${id}-option-${at}`}
+              role="option"
+              aria-selected={at === activeIndex}
+              tabIndex={-1}
+              data-slot="command-popover-option"
+              className={commandPopoverOptionClasses}
+              // Keeps the caret in the textarea: the click still fires.
+              onMouseDown={(event) => event.preventDefault()}
+              onMouseEnter={() => setActive(at)}
+              onClick={() => void onSelect(item, at)}
+            >
+              {item.icon ? (
+                <span aria-hidden="true" className="inline-flex flex-none">
+                  {item.icon}
+                </span>
+              ) : null}
+              <span className={cn('min-w-0 truncate', labelPrefix && 'font-mono')}>
+                {labelPrefix}
+                {item.label}
               </span>
-            ) : null}
-            <span className={cn('min-w-0 truncate', labelPrefix && 'font-mono')}>
-              {labelPrefix}
-              {item.label}
-            </span>
-            {item.description ? (
-              <span className={commandPopoverDescriptionClasses}>{item.description}</span>
-            ) : null}
-          </div>
-        ))}
+              {item.description ? (
+                <span className={commandPopoverDescriptionClasses}>{item.description}</span>
+              ) : null}
+              {item.shortcut?.length ? (
+                <span
+                  data-slot="command-popover-shortcut"
+                  className={commandPopoverShortcutClasses}
+                >
+                  {item.shortcut.map((key) => (
+                    <kbd key={key} className={commandPopoverKeyClasses}>
+                      {key}
+                    </kbd>
+                  ))}
+                </span>
+              ) : null}
+            </div>
+          ));
+          if (section.group === undefined) return rows;
+          const groupId = `${id}-group-${section.rows[0].at}`;
+          return (
+            // biome-ignore lint/a11y/useSemanticElements: a fieldset cannot be a child of a listbox; `group` can.
+            <div key={`group:${section.group}`} role="group" aria-labelledby={groupId}>
+              <div id={groupId} role="presentation" className={commandPopoverGroupLabelClasses}>
+                {section.group}
+              </div>
+              {rows}
+            </div>
+          );
+        })}
         {items.length === 0 ? (
           <div className={commandPopoverEmptyClasses}>
             {loading ? labels.loading : labels.empty}

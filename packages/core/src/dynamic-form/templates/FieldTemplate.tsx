@@ -1,14 +1,66 @@
 import type { FieldTemplateProps } from '@rjsf/utils';
 import { getTemplate, getUiOptions } from '@rjsf/utils';
+import { FieldShell } from '../../lib/FieldShell';
+import {
+  DEFAULT_DYNAMIC_FORM_LABELS,
+  type OmniRjsfAction,
+  type OmniRjsfFormContext,
+} from '../lib/formContext';
+import { fieldPartIds, layoutOption } from '../lib/widgetKit';
+import { StatusMark } from './StatusMark';
 
-import { cn } from 'lib/utils';
-import type { OmniRjsfFormContext } from '../lib/formContext';
+const ACTION_CLASS = 'text-xs font-medium text-[color:var(--oui-foreground-primary)]';
 
 /**
- * Omni override of the shadcn `FieldTemplate`. Same structure as the
- * upstream template but the required `*` always renders in
- * `text-destructive`, matching the legacy `.form-field` modal asterisk
- * styling.
+ * The action beside a label, resolved by key from `formContext.actions`. The library never navigates: with
+ * `href` it is a link element, with `onSelect` a button that calls the host, with neither plain text.
+ */
+const LabelAction = ({ id, action }: { id: string; action: OmniRjsfAction }) => {
+  const testId = `${id}-label-action`;
+  if (action.href) {
+    return (
+      <a
+        href={action.href}
+        data-testid={testId}
+        className={`${ACTION_CLASS} hover:underline`}
+        onClick={action.onSelect ? () => action.onSelect?.(action) : undefined}
+      >
+        {action.label}
+      </a>
+    );
+  }
+  if (action.onSelect) {
+    return (
+      <button
+        type="button"
+        data-testid={testId}
+        className={`${ACTION_CLASS} cursor-pointer hover:underline`}
+        onClick={() => action.onSelect?.(action)}
+      >
+        {action.label}
+      </button>
+    );
+  }
+  return (
+    <span data-testid={testId} className={ACTION_CLASS}>
+      {action.label}
+    </span>
+  );
+};
+
+/**
+ * The chrome of every schema field: the SAME `FieldShell` a hand-built field uses (label, required mark, hidden
+ * "Required" hint, description, error with `role="alert"`, vertical or horizontal layout), so the two kinds of
+ * form cannot drift apart.
+ *
+ * The ids of the description, the error and the help are {@link fieldPartIds}; each widget points its control at
+ * them with `aria-describedby` through `widgetField`. The label carries the id `<field>__title` so a group
+ * control can be named by `aria-labelledby`.
+ *
+ * Options, per field in `ui:options` or for the whole form in `ui:globalOptions`:
+ *   - `layout: 'vertical' | 'horizontal'`: the label above (default) or to the left of the control.
+ *   - `labelActionKey`: a link or button beside the label, from `formContext.actions`.
+ * A status beside the label comes from `formContext.fieldStatus[<field key>]` (a tone and its words).
  */
 export const FieldTemplate = (props: FieldTemplateProps) => {
   const {
@@ -16,10 +68,8 @@ export const FieldTemplate = (props: FieldTemplateProps) => {
     children,
     displayLabel,
     rawErrors = [],
-    errors,
-    help,
-    description,
     rawDescription,
+    rawHelp,
     classNames,
     style,
     disabled,
@@ -34,23 +84,33 @@ export const FieldTemplate = (props: FieldTemplateProps) => {
     uiSchema,
     registry,
   } = props;
-  const uiOptions = getUiOptions(uiSchema);
+  const uiOptions = getUiOptions(uiSchema, registry?.globalUiOptions);
   const WrapIfAdditionalTemplate = getTemplate('WrapIfAdditionalTemplate', registry, uiOptions);
-
-  /* Optional inline action rendered next to the label (e.g. "View Task"
-   * link next to a Task field). Resolved by id from
-   * formContext.actions; renders as an anchor when href is set,
-   * otherwise as a no-op span. The widget itself owns no business
-   * navigation. */
-  const labelActionKey =
-    typeof uiOptions.labelActionKey === 'string' ? uiOptions.labelActionKey : '';
   const formContext = (registry?.formContext ?? {}) as Partial<OmniRjsfFormContext>;
-  const labelAction = labelActionKey ? formContext.actions?.[labelActionKey] : undefined;
+  const labels = { ...DEFAULT_DYNAMIC_FORM_LABELS, ...formContext.labels };
 
   if (hidden) {
     return <div className="hidden">{children}</div>;
   }
-  const isCheckbox = uiOptions.widget === 'checkbox';
+
+  const labelActionKey =
+    typeof uiOptions.labelActionKey === 'string' ? uiOptions.labelActionKey : '';
+  const labelAction = labelActionKey ? formContext.actions?.[labelActionKey] : undefined;
+  // A checkbox draws its own label beside the box.
+  const showLabel = displayLabel && uiOptions.widget !== 'checkbox';
+  const ids = fieldPartIds(id);
+  // The field's path as the host writes it (`address.city`); the root object has none.
+  const path = (props as { fieldPathId?: { path?: (string | number)[] } }).fieldPathId?.path;
+  const fieldKey = path?.length ? path.join('.') : undefined;
+  const status = fieldKey ? formContext.fieldStatus?.[fieldKey] : undefined;
+  const error =
+    rawErrors.length > 0
+      ? rawErrors.map((message, index) => (
+          <span key={`${index}-${message}`} className="block">
+            {message}
+          </span>
+        ))
+      : undefined;
 
   return (
     <WrapIfAdditionalTemplate
@@ -70,56 +130,32 @@ export const FieldTemplate = (props: FieldTemplateProps) => {
       uiSchema={uiSchema}
       registry={registry}
     >
-      <div className="flex flex-col gap-2">
-        {displayLabel && !isCheckbox && (
-          <div className="flex items-baseline justify-between gap-3">
-            <label
-              htmlFor={id}
-              className={cn(
-                'text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
-                rawErrors.length > 0 && 'text-destructive',
-              )}
-            >
-              {label}
-              {required ? (
-                <span className="ml-0.5 text-[var(--oui-foreground-required)]" aria-hidden="true">
-                  *
-                </span>
-              ) : null}
-            </label>
-            {labelAction ? (
-              labelAction.href ? (
-                <a
-                  href={labelAction.href}
-                  data-testid={`${id}-label-action`}
-                  className="text-xs font-medium text-[color:var(--oui-foreground-primary)] hover:underline"
-                >
-                  {labelAction.label}
-                </a>
-              ) : (
-                <span
-                  data-testid={`${id}-label-action`}
-                  className="text-xs font-medium text-[color:var(--oui-foreground-primary)]"
-                >
-                  {labelAction.label}
-                </span>
-              )
-            ) : null}
-          </div>
-        )}
-        {children}
-        {displayLabel && rawDescription && !isCheckbox && (
-          <span
-            className={cn(
-              'text-xs font-medium text-muted-foreground',
-              rawErrors.length > 0 && 'text-destructive',
-            )}
-          >
-            {description}
-          </span>
-        )}
-        {errors}
-        {help}
+      <div data-slot="form-field" data-field-id={id} data-field-key={fieldKey}>
+        <FieldShell
+          id={id}
+          layout={layoutOption(uiOptions)}
+          label={showLabel ? label : undefined}
+          labelId={ids.label}
+          labelAction={
+            showLabel && (labelAction || status) ? (
+              <span className="inline-flex items-baseline gap-3">
+                {status ? <StatusMark status={status} /> : null}
+                {labelAction ? <LabelAction id={id} action={labelAction} /> : null}
+              </span>
+            ) : undefined
+          }
+          required={required}
+          requiredId={required && showLabel ? ids.required : undefined}
+          requiredLabel={labels.required}
+          description={displayLabel && rawDescription ? rawDescription : undefined}
+          descriptionId={ids.description}
+          error={error}
+          errorId={ids.error}
+          help={rawHelp || undefined}
+          helpId={ids.help}
+        >
+          {children}
+        </FieldShell>
       </div>
     </WrapIfAdditionalTemplate>
   );

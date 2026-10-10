@@ -77,9 +77,18 @@ export const Tag = ({
     mono && 'font-mono',
     copyable &&
       'cursor-pointer transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+    // A host colour is chosen against one theme: on the dark theme it is lightened so it still reads as text.
+    color &&
+      'text-[color:var(--oui-tag-color)] dark:text-[color:color-mix(in_srgb,var(--oui-tag-color)_55%,white)]',
     className,
   );
-  const style = color ? { borderColor: color, color, backgroundColor: `${color}14` } : undefined;
+  const style = color
+    ? ({
+        borderColor: color,
+        backgroundColor: `${color}14`,
+        '--oui-tag-color': color,
+      } as React.CSSProperties)
+    : undefined;
 
   const tag = copyable ? (
     <button

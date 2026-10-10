@@ -23,15 +23,15 @@ export function useStableRjsfCallbacks<T = unknown>(
     emptyValue: props.options?.emptyValue,
     id: props.id,
   });
-  React.useEffect(() => {
-    refs.current = {
-      onChange: props.onChange,
-      onBlur: props.onBlur,
-      onFocus: props.onFocus,
-      emptyValue: props.options?.emptyValue,
-      id: props.id,
-    };
-  });
+  // Assigned during render, not in an effect: a change event that lands before the passive effect has run (CPU
+  // load, batched commits) must still reach the latest RJSF handler, or it is applied to stale form data.
+  refs.current = {
+    onChange: props.onChange,
+    onBlur: props.onBlur,
+    onFocus: props.onFocus,
+    emptyValue: props.options?.emptyValue,
+    id: props.id,
+  };
   const onChange = React.useCallback((next: T) => {
     refs.current.onChange(transform(next, refs.current.emptyValue) as T);
     // eslint-disable-next-line react-hooks/exhaustive-deps

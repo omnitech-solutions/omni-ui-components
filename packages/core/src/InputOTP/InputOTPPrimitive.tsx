@@ -18,6 +18,8 @@ export interface InputOTPPrimitiveProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** Read-only: stays focusable and readable, is announced as read-only, and cannot be changed. `disabled` wins. */
+  readOnly?: boolean;
   'aria-label'?: string;
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
@@ -42,6 +44,7 @@ export const InputOTPPrimitive = React.forwardRef<HTMLInputElement, InputOTPPrim
       disabled,
       required,
       invalid,
+      readOnly,
       className,
       ...rest
     },
@@ -59,6 +62,9 @@ export const InputOTPPrimitive = React.forwardRef<HTMLInputElement, InputOTPPrim
         defaultValue={defaultValue}
         onChange={onChange}
         disabled={disabled}
+        readOnly={readOnly}
+        aria-readonly={readOnly || undefined}
+        data-readonly={readOnly ? '' : undefined}
         aria-label={rest['aria-label']}
         aria-labelledby={rest['aria-labelledby']}
         aria-describedby={rest['aria-describedby']}

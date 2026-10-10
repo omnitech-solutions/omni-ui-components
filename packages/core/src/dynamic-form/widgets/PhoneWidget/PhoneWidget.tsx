@@ -1,20 +1,19 @@
 import { PhoneInputPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import { stringOption, widgetField, widgetLook } from '../../lib/widgetKit';
 
-/** RJSF Phone widget. `ui:options.defaultDialCode` (e.g. `+1`) prefills the dial code. */
+/** `phone`: a phone number as text. `ui:options.defaultDialCode`. */
 export const PhoneWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, required, placeholder, options } = props;
+  const { value, placeholder, options } = props;
   const { onChange } = useStableRjsfCallbacks<string>(props, (next) => next);
   return (
     <PhoneInputPrimitive
-      id={id}
+      {...widgetField(props)}
+      {...widgetLook(props)}
       value={(value as string | undefined) ?? ''}
-      defaultDialCode={(options?.defaultDialCode as string | undefined) ?? undefined}
+      defaultDialCode={stringOption(options, 'defaultDialCode')}
       placeholder={placeholder}
-      required={required}
-      disabled={disabled || readonly}
-      invalid={Boolean(rawErrors?.length)}
       onChange={onChange}
     />
   );

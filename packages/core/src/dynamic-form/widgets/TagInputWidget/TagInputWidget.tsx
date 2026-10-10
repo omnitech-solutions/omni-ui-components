@@ -1,20 +1,19 @@
 import { TagInputPrimitive } from '@oc-tech/omni-ui-components';
 import type { WidgetProps } from '@rjsf/utils';
 import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
+import { numberOption, widgetField, widgetLook } from '../../lib/widgetKit';
 
-/** RJSF TagInput widget — chip-based multi-string input. */
+/** `tags`: free words as chips. The most allowed: `ui:options.maxItems`, else the schema's `maxItems`. */
 export const TagInputWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, required, placeholder, options } = props;
+  const { value, placeholder, options, schema } = props;
   const { onChange } = useStableRjsfCallbacks<string[]>(props, (next) => next);
   return (
     <TagInputPrimitive
-      id={id}
+      {...widgetField(props)}
+      {...widgetLook(props)}
       value={Array.isArray(value) ? (value as string[]) : []}
       placeholder={placeholder}
-      maxItems={(options?.maxItems as number | undefined) ?? undefined}
-      required={required}
-      disabled={disabled || readonly}
-      invalid={Boolean(rawErrors?.length)}
+      maxItems={numberOption(options, 'maxItems') ?? schema.maxItems}
       onChange={onChange}
     />
   );

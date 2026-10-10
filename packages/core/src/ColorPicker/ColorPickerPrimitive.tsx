@@ -1,7 +1,7 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { cn } from 'lib/utils';
 import * as React from 'react';
-import { inputVariants } from '../Input/Input.variants';
+import { type InputSize, type InputVariant, inputVariants } from '../Input/Input.variants';
 
 const PRESETS = [
   '#ef4444',
@@ -34,6 +34,10 @@ export interface ColorPickerPrimitiveProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** The look of the field box. Default `bordered`. */
+  variant?: InputVariant;
+  /** The height of the field box. Default `default`. */
+  inputSize?: InputSize;
   readOnly?: boolean;
   'aria-describedby'?: string;
   'data-testid'?: string;
@@ -53,6 +57,8 @@ export const ColorPickerPrimitive = React.forwardRef<HTMLButtonElement, ColorPic
       required,
       invalid,
       readOnly,
+      variant = 'bordered',
+      inputSize = 'default',
       className,
       ...rest
     },
@@ -71,13 +77,16 @@ export const ColorPickerPrimitive = React.forwardRef<HTMLButtonElement, ColorPic
     };
 
     return (
-      <PopoverPrimitive.Root open={open} onOpenChange={(o) => !disabled && setOpen(o)}>
+      <PopoverPrimitive.Root open={open} onOpenChange={(o) => !disabled && !readOnly && setOpen(o)}>
         <PopoverPrimitive.Trigger asChild>
           <button
             ref={ref}
             id={id}
             type="button"
             disabled={disabled}
+            // A button has no `aria-readonly`: a read-only picker is `aria-disabled` and stays focusable.
+            aria-disabled={(readOnly && !disabled) || undefined}
+            data-readonly={readOnly && !disabled ? '' : undefined}
             data-slot="color-picker"
             data-testid={testId}
             aria-invalid={invalid || undefined}
@@ -85,7 +94,7 @@ export const ColorPickerPrimitive = React.forwardRef<HTMLButtonElement, ColorPic
             aria-haspopup="dialog"
             aria-expanded={open}
             className={cn(
-              inputVariants({ variant: 'bordered', inputSize: 'default' }),
+              inputVariants({ variant, inputSize }),
               'items-center gap-2 px-2 text-left cursor-pointer disabled:cursor-not-allowed',
               className,
             )}
@@ -134,7 +143,7 @@ export const ColorPickerPrimitive = React.forwardRef<HTMLButtonElement, ColorPic
                 disabled={disabled || readOnly}
                 placeholder="#000000"
                 className={cn(
-                  inputVariants({ variant: 'bordered', inputSize: 'default' }),
+                  inputVariants({ variant, inputSize }),
                   'flex-1 px-3 text-sm tabular-nums uppercase',
                 )}
               />

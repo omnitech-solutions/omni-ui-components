@@ -1,5 +1,13 @@
 import type { RJSFSchema, UiSchema } from '@rjsf/utils';
-import { act, fireEvent, type RenderResult, render, screen, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  type RenderResult,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DynamicForm, type DynamicFormProps } from 'dynamic-form';
 import type * as React from 'react';
@@ -69,6 +77,8 @@ export function renderDynamicForm<TFormData, TSubmitData>(
       onError={onError}
       disabled={opts.disabled}
       readOnly={opts.readOnly}
+      idPrefix={opts.idPrefix}
+      serverErrors={opts.serverErrors}
     >
       {children}
     </DynamicForm>,
@@ -97,7 +107,7 @@ export const passthroughZod = <T,>() =>
     T
   >;
 
-export { act, fireEvent, screen, within };
+export { act, fireEvent, screen, waitFor, within };
 
 /**
  * Build a single-property `RJSFSchema` for fixture tests.

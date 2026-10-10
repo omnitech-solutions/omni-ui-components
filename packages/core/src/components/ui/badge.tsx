@@ -11,7 +11,8 @@ const badgeVariants = cva(
         secondary:
           'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
         destructive:
-          'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
+          // Dark theme: `--color-destructive` is a light coral there (it is also text), so the fill is the solid danger tone.
+          'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80 dark:bg-[color:var(--oui-tone-danger-solid-bg)] dark:hover:bg-[color:var(--oui-tone-danger-solid-bg)]',
         outline: 'text-foreground',
       },
     },

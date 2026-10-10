@@ -50,3 +50,6 @@ export const RangeMode: Story = {
 export const Required: Story = { args: { required: true } };
 export const WithError: Story = { args: { error: 'Pick a date in the future', value: null } };
 export const Disabled: Story = { args: { disabled: true, value: new Date(2026, 6, 15) } };
+
+/** Read-only: focusable and readable, announced as such, and the value cannot change. */
+export const ReadOnly: Story = { args: { readOnly: true, value: new Date(2026, 6, 15) } };

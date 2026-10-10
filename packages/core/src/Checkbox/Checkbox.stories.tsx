@@ -46,3 +46,6 @@ export const WithError: Story = {
 };
 
 export const Disabled: Story = { args: { disabled: true, checked: true } };
+
+/** Read-only: focusable and readable, announced as such, and the value cannot change. */
+export const ReadOnly: Story = { args: { readOnly: true, checked: true } };

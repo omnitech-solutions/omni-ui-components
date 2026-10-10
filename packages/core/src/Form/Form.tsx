@@ -25,6 +25,18 @@ import type { FormError, FormProps } from './Form.types';
  *   <button type="submit">Save</button>
  * </Form>
  */
+/** Equal by identity, or by content for plain data. A value that cannot be serialised (a `File`) is equal only to itself. */
+const sameValue = (a: unknown, b: unknown): boolean => {
+  if (Object.is(a, b)) return true;
+  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) return false;
+  if (a instanceof Blob || b instanceof Blob) return false;
+  try {
+    return JSON.stringify(a) === JSON.stringify(b);
+  } catch {
+    return false;
+  }
+};
+
 function FormImpl<TFormData, TSubmitData = TFormData>(
   props: FormProps<TFormData, TSubmitData>,
 ): JSX.Element {
@@ -73,8 +85,10 @@ function FormImpl<TFormData, TSubmitData = TFormData>(
     },
     onSubmit: async ({ value }) => {
       if (disabled || readOnly) return;
+      // The host receives what the schema PARSED (trims, defaults, coercions), not the raw values.
+      const parsed = (zodSchema as any).safeParse(value);
       try {
-        await onSubmitRef.current(value as unknown as TSubmitData);
+        await onSubmitRef.current((parsed.success ? parsed.data : value) as TSubmitData);
       } catch (err) {
         const apiError: FormError = {
           path: [],
@@ -85,6 +99,21 @@ function FormImpl<TFormData, TSubmitData = TFormData>(
       }
     },
   });
+
+  /* A controlled form takes the host's values whenever the HOST changes them, also after the person has edited
+   * a field (TanStack only re-reads `defaultValues` while the form is untouched). Only the keys that differ are
+   * written, so nothing remounts: focus and the caret stay where they are. A host that passes the same values
+   * again (a new object with equal content) changes nothing. */
+  const hostDataRef = React.useRef(formData);
+  React.useEffect(() => {
+    const previous = hostDataRef.current as Record<string, unknown> | undefined;
+    const next = formData as Record<string, unknown> | undefined;
+    hostDataRef.current = formData;
+    if (!next || next === previous || sameValue(previous, next)) return;
+    const current = (form.state.values ?? {}) as Record<string, unknown>;
+    for (const key of new Set([...Object.keys(current), ...Object.keys(next)]))
+      if (!sameValue(current[key], next[key])) (form as any).setFieldValue(key, next[key]);
+  }, [formData, form]);
 
   /* Forward field-level changes to caller-supplied onChange via TanStack's
    * useStore selector. Selector returns a stable reference until values change. */
@@ -107,6 +136,15 @@ function FormImpl<TFormData, TSubmitData = TFormData>(
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
+          /* A failed submit leaves a form-level `onSubmit` error behind, and with it `canSubmit: false`. Values
+           * that arrive without a registered field (the schema form) never clear it, so every later submit
+           * would be dropped. Values that now pass the schema start clean; the submit validates them again. */
+          const api = form as any;
+          if ((zodSchema as any).safeParse(api.state.values).success) {
+            api.setErrorMap?.({ onSubmit: undefined });
+            for (const name of Object.keys(api.state.fieldMeta ?? {}))
+              api.setFieldMeta?.(name, (meta: any) => ({ ...meta, errorMap: {}, errors: [] }));
+          }
           void form.handleSubmit();
         }}
       >

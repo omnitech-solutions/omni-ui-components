@@ -69,7 +69,7 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                   'flex items-center gap-[10px] text-[color:var(--oui-tone-neutral-fg)]',
                   state === 'done' && 'opacity-70',
                   state === 'current' && 'font-medium',
-                  state === 'pending' && 'opacity-50',
+                  state === 'pending' && 'opacity-65',
                 )}
               >
                 <span

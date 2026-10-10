@@ -28,6 +28,8 @@ interface SegmentedPrimitiveBaseProps extends RootProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** Read-only: stays focusable and readable, is announced as read-only, and cannot be changed. `disabled` wins. */
+  readOnly?: boolean;
   className?: string;
   /** Visual style; behaviour is identical. Default `pill`. */
   appearance?: SegmentedAppearance;
@@ -40,6 +42,8 @@ interface SegmentedPrimitiveBaseProps extends RootProps {
   minActiveReason?: React.ReactNode;
   'data-testid'?: string;
   'aria-describedby'?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
 }
 
 /** One option on at a time (default); `onChange` gets the picked value. */

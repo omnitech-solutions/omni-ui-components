@@ -55,6 +55,12 @@ export const FineStep: Story = {
 
 export const Disabled: Story = { args: { disabled: true, value: 50 } };
 
+/** Read-only: focusable and readable, announced as such, and the value cannot change. */
+export const ReadOnly: Story = { args: { readOnly: true, value: 50 } };
+
 export const HorizontalSidebar: Story = {
   args: { layout: 'horizontal', label: 'Volume', wrapperClassName: 'mx-auto max-w-lg' },
 };
+
+/** A range names each thumb through `thumbLabels`. */
+export const ThumbLabels: Story = { args: { value: [20, 80], thumbLabels: ['From', 'To'] } };

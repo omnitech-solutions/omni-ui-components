@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import type { FieldLayoutProps } from '../Input/Input.variants';
+import type { FieldLayoutProps, InputSize, InputVariant } from '../Input/Input.variants';
 import type { RootProps } from '../lib';
 
 export interface NumberInputPrimitiveProps extends RootProps {
@@ -27,6 +27,10 @@ export interface NumberInputPrimitiveProps extends RootProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** The look of the field box. Default `bordered`. */
+  variant?: InputVariant;
+  /** The height of the field box. Default `default`. */
+  inputSize?: InputSize;
   readOnly?: boolean;
   className?: string;
   'data-testid'?: string;

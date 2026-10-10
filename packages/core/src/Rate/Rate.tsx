@@ -1,63 +1,71 @@
 import { cn } from 'lib/utils';
-import { Star } from 'lucide-react';
 import * as React from 'react';
+import { FieldShell, useFieldChrome } from '../lib/FieldShell';
+import type { RateProps } from './Rate.types';
+import { RatePrimitive } from './RatePrimitive';
 
-export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
-  count?: number;
-  value?: number;
-  defaultValue?: number;
-  disabled?: boolean;
-  onChange?: (value: number) => void;
-  /** Names a star for assistive technology. Defaults to `1 star`, `2 stars`, … */
-  starLabel?: (value: number, count: number) => string;
-}
+/**
+ * Chrome-wrapped Omni Rate. Composes {@link RatePrimitive} with {@link FieldShell}: the label names the radio
+ * group, the description and the error describe it.
+ *
+ * @example
+ * <Rate label="Answer quality" description="How well did it land?" value={score} onChange={setScore} />
+ */
+const RateInner = React.forwardRef<HTMLDivElement, RateProps>(
+  (
+    {
+      id: idProp,
+      wrapperClassName,
+      labelClassName,
+      layout = 'vertical',
+      label,
+      description,
+      error,
+      required,
+      invalid,
+      'aria-describedby': ariaDescribedBy,
+      'aria-labelledby': ariaLabelledBy,
+      ...primitiveProps
+    },
+    ref,
+  ) => {
+    const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
+      id: idProp,
+      label,
+      description,
+      error,
+      invalid,
+      prefix: 'oui-rate',
+    });
+    const labelId = label ? `${id}-label` : undefined;
+    return (
+      <FieldShell
+        id={id}
+        layout={layout}
+        label={label}
+        description={description}
+        error={error}
+        required={required}
+        descriptionId={descriptionId}
+        errorId={errorId}
+        labelTag="span"
+        labelId={labelId}
+        wrapperClassName={wrapperClassName}
+        labelClassName={labelClassName}
+      >
+        <RatePrimitive
+          ref={ref}
+          id={id}
+          invalid={isInvalid}
+          required={required}
+          aria-labelledby={cn(labelId, ariaLabelledBy) || undefined}
+          aria-describedby={cn(ariaDescribedBy, describedBy) || undefined}
+          {...primitiveProps}
+        />
+      </FieldShell>
+    );
+  },
+);
+RateInner.displayName = 'Rate';
 
-const defaultStarLabel = (value: number) => `${value} ${value === 1 ? 'star' : 'stars'}`;
-
-export function Rate({
-  count = 5,
-  value,
-  defaultValue = 0,
-  disabled,
-  onChange,
-  starLabel = defaultStarLabel,
-  className,
-  ...props
-}: RateProps) {
-  const controlled = value !== undefined;
-  const [internal, setInternal] = React.useState(defaultValue);
-  const current = controlled ? value : internal;
-
-  const select = (next: number) => {
-    if (disabled) return;
-    if (!controlled) setInternal(next);
-    onChange?.(next);
-  };
-
-  return (
-    <div className={cn('flex items-center gap-1', className)} {...props}>
-      {Array.from({ length: count }, (_, index) => {
-        const selected = index < current;
-        return (
-          <button
-            key={index}
-            type="button"
-            disabled={disabled}
-            aria-label={starLabel(index + 1, count)}
-            aria-pressed={selected}
-            onClick={() => select(index + 1)}
-            className="disabled:cursor-not-allowed"
-          >
-            <Star
-              aria-hidden="true"
-              className={cn(
-                'h-5 w-5',
-                selected ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground',
-              )}
-            />
-          </button>
-        );
-      })}
-    </div>
-  );
-}
+export const Rate = React.memo(RateInner) as typeof RateInner;

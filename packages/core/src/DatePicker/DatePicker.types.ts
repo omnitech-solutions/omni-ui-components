@@ -1,6 +1,6 @@
 import type * as React from 'react';
 import type { DateRange } from 'react-day-picker';
-import type { FieldLayoutProps } from '../Input/Input.variants';
+import type { FieldLayoutProps, InputSize, InputVariant } from '../Input/Input.variants';
 import type { RootProps } from '../lib';
 
 export type DatePickerMode = 'single' | 'range';
@@ -19,6 +19,12 @@ export interface DatePickerPrimitiveProps extends RootProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  /** Read-only: stays focusable and readable, is announced as read-only, and cannot be changed. `disabled` wins. */
+  readOnly?: boolean;
+  /** The look of the field box. Default `bordered`. */
+  variant?: InputVariant;
+  /** The height of the field box. Default `default`. */
+  inputSize?: InputSize;
   placeholder?: string;
   /** Intl formatter override. Default `{ dateStyle: 'medium' }`. */
   formatOptions?: Intl.DateTimeFormatOptions;

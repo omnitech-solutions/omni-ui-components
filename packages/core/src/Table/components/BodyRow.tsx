@@ -102,6 +102,8 @@ export function BodyRow<TRecord, TRowData>({
     'data-indent': indent,
     'data-selected': selected ? 'true' : 'false',
     'data-disabled': disabled ? 'true' : 'false',
+    // Said to assistive technology too, not only drawn dimmed.
+    'aria-disabled': disabled ? true : undefined,
   };
   const cells = (
     <>

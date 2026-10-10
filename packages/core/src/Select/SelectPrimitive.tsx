@@ -37,8 +37,10 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
       id,
       className,
       variant,
-      selectSize,
+      selectSize: selectSizeProp,
+      inputSize,
       invalid,
+      readOnly,
       options,
       placeholder = 'Select…',
       searchable = false,
@@ -54,8 +56,12 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
     ref,
   ) => {
     const [open, setOpen] = React.useState(false);
+    const selectSize = selectSizeProp ?? inputSize;
+    const isReadOnly = Boolean(readOnly) && !disabled;
+    const footerLink = React.useRef<HTMLAnchorElement>(null);
+    const listRef = React.useRef<HTMLDivElement>(null);
     const isInvalid = Boolean(invalid);
-    const state = disabled ? 'disabled' : isInvalid ? 'invalid' : 'idle';
+    const state = disabled ? 'disabled' : isReadOnly ? 'readonly' : isInvalid ? 'invalid' : 'idle';
     const isPlaceholder = !value;
     const selected = options.find((o) => o.value === value);
 
@@ -84,13 +90,18 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
       return Array.from(buckets.entries()).map(([heading, items]) => ({ heading, items }));
     }, [options]);
 
+    // The library never navigates: an action with an `href` is a real link, activated as a link.
     const handleFooter = () => {
       if (footerAction?.onSelect) footerAction.onSelect();
+      else footerLink.current?.click();
       setOpen(false);
     };
 
     return (
-      <PopoverPrimitive.Root open={open} onOpenChange={(o) => !disabled && setOpen(o)}>
+      <PopoverPrimitive.Root
+        open={open}
+        onOpenChange={(o) => !disabled && !isReadOnly && setOpen(o)}
+      >
         <PopoverPrimitive.Trigger asChild>
           <button
             type="button"
@@ -104,6 +115,9 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
             data-placeholder={isPlaceholder || undefined}
             data-open={open || undefined}
             aria-invalid={isInvalid || undefined}
+            // A button has no `aria-readonly`: a read-only select is `aria-disabled` and stays focusable.
+            aria-disabled={isReadOnly || undefined}
+            data-readonly={isReadOnly ? '' : undefined}
             aria-describedby={(rest as { 'aria-describedby'?: string })['aria-describedby']}
             aria-haspopup="listbox"
             aria-expanded={open}
@@ -113,6 +127,7 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
             className={cn(
               selectVariants({ variant, selectSize }),
               'items-center justify-between bg-none pr-3 text-left',
+              isReadOnly && 'cursor-default hover:border-[var(--oui-border-field)]',
               className,
             )}
           >
@@ -138,9 +153,16 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
             align="start"
             sideOffset={4}
             data-testid={`${testId}-popover`}
+            // With no search box nothing inside takes focus, and the list would not hear the arrow keys:
+            // focus goes to the list itself.
+            onOpenAutoFocus={(event) => {
+              if (searchable) return;
+              event.preventDefault();
+              listRef.current?.focus();
+            }}
             className="z-50 w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-md border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] text-[var(--oui-foreground)] shadow-md outline-none"
           >
-            <Command>
+            <Command ref={listRef} tabIndex={-1} className="outline-none">
               {searchable ? <CommandInput placeholder="Search…" /> : null}
               <CommandList className="max-h-64">
                 <CommandEmpty>No results.</CommandEmpty>
@@ -213,7 +235,19 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
                       data-testid={`${testId}-footer-action`}
                       className="cursor-pointer border-t border-border text-[color:var(--oui-foreground-primary)] data-[selected=true]:bg-muted/60"
                     >
-                      {footerAction.label}
+                      {footerAction.href ? (
+                        <a
+                          ref={footerLink}
+                          href={footerAction.href}
+                          tabIndex={-1}
+                          className="block w-full text-inherit no-underline"
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          {footerAction.label}
+                        </a>
+                      ) : (
+                        footerAction.label
+                      )}
                     </CommandItem>
                   </CommandGroup>
                 ) : null}

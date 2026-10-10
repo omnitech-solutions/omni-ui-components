@@ -1,4 +1,4 @@
-import type * as React from 'react';
+import * as React from 'react';
 
 import { Button } from '../Button';
 import { Popover, PopoverContent } from '../Popover';
@@ -17,21 +17,31 @@ export interface TourProps {
 }
 
 export const Tour = ({ open = false, current = 0, steps, onCurrentChange, onClose }: TourProps) => {
+  const titleId = React.useId();
   const step = steps[current];
   const lastIndex = steps.length - 1;
   if (!open || !step) return null;
+  const position = `Step ${current + 1} of ${steps.length}`;
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[1px]" aria-hidden="true" />
       <Popover open>
-        <PopoverContent className="fixed right-6 top-6 z-50 w-[min(calc(100vw-2rem),24rem)] rounded-xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-0 shadow-2xl">
+        <PopoverContent
+          // The dialog is named by the step's title, or by its position when the step has none.
+          aria-labelledby={step.title ? titleId : undefined}
+          aria-label={step.title ? undefined : position}
+          className="fixed right-6 top-6 z-50 w-[min(calc(100vw-2rem),24rem)] rounded-xl border border-[var(--oui-border-field)] bg-[var(--oui-surface-field)] p-0 shadow-2xl"
+        >
           <div className="space-y-4">
             <div className="border-b border-[var(--oui-border-field)] px-5 py-4">
               <div className="text-xs font-medium uppercase tracking-[0.14em] text-[var(--oui-foreground-muted)]">
                 Step {current + 1} of {steps.length}
               </div>
               {step.title ? (
-                <div className="mt-2 text-base font-semibold text-[var(--oui-foreground)]">
+                <div
+                  id={titleId}
+                  className="mt-2 text-base font-semibold text-[var(--oui-foreground)]"
+                >
                   {step.title}
                 </div>
               ) : null}

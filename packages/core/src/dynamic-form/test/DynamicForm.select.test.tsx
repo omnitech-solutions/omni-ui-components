@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import type { RJSFSchema } from '@rjsf/utils';
 import { within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { z } from 'zod';
 
 beforeAll(() => {
@@ -205,7 +206,7 @@ describe('DynamicForm — SelectWidget integration', () => {
       expect(getTrigger()).toBeDisabled();
     });
 
-    it('disables the trigger when DynamicForm.readOnly is set (native <select> has no readonly)', () => {
+    it('keeps a read-only trigger focusable and closed when DynamicForm.readOnly is set', async () => {
       renderDynamicForm({
         schema: countrySchema(),
         uiSchema: buildSingleFieldUiSchema('country', { 'ui:widget': 'select' }),
@@ -213,7 +214,11 @@ describe('DynamicForm — SelectWidget integration', () => {
         formData: { country: '' },
         readOnly: true,
       });
-      expect(getTrigger()).toBeDisabled();
+      expect(getTrigger()).not.toBeDisabled();
+      expect(getTrigger()).toHaveAttribute('aria-disabled', 'true');
+      expect(getTrigger()).toHaveAttribute('data-readonly');
+      await userEvent.setup().click(getTrigger());
+      expect(getTrigger()).toHaveAttribute('aria-expanded', 'false');
     });
   });
 });
