@@ -56,20 +56,40 @@ describe('omni-ui-components/Tabs', () => {
     expect(list).not.toHaveClass('overflow-x-auto');
   });
 
-  it('the chosen tab is brought into view when it changes', async () => {
-    const seen: string[] = [];
+  it('the chosen tab is brought into view by scrolling the bar alone, never the page', async () => {
+    // happy-dom lays nothing out: a bar 100px wide holding two 80px tabs.
+    const widths = vi
+      .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+      .mockImplementation(function clientWidth(this: HTMLElement) {
+        return this.getAttribute('role') === 'tablist' ? 100 : 0;
+      });
+    const scrolls = vi
+      .spyOn(HTMLElement.prototype, 'scrollWidth', 'get')
+      .mockImplementation(function scrollWidth(this: HTMLElement) {
+        return this.getAttribute('role') === 'tablist' ? 160 : 0;
+      });
+    const lefts = vi
+      .spyOn(HTMLElement.prototype, 'offsetLeft', 'get')
+      .mockImplementation(function offsetLeft(this: HTMLElement) {
+        return this.textContent === 'Two' ? 80 : 0;
+      });
+    const tabWidths = vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(80);
+    const page = vi.fn();
     const original = HTMLElement.prototype.scrollIntoView;
-    HTMLElement.prototype.scrollIntoView = function scrollIntoView(this: HTMLElement) {
-      seen.push(this.textContent ?? '');
-    };
+    HTMLElement.prototype.scrollIntoView = page;
     try {
       const user = userEvent.setup();
       bar();
-      expect(seen.at(-1)).toBe('One');
+      const list = screen.getByRole('tablist', { name: 'Sections' });
+      expect(list.scrollLeft).toBe(0);
       await user.click(screen.getByRole('tab', { name: 'Two' }));
-      await waitFor(() => expect(seen.at(-1)).toBe('Two'));
+      await waitFor(() => expect(list.scrollLeft).toBe(60));
+      await user.click(screen.getByRole('tab', { name: 'One' }));
+      await waitFor(() => expect(list.scrollLeft).toBe(0));
+      expect(page).not.toHaveBeenCalled();
     } finally {
       HTMLElement.prototype.scrollIntoView = original;
+      for (const spy of [widths, scrolls, lefts, tabWidths]) spy.mockRestore();
     }
   });
 

@@ -17,10 +17,16 @@ const TabsListInner = React.forwardRef<HTMLDivElement, TabsListProps>(
     React.useEffect(() => {
       const list = own.current;
       if (!scrollable || !list) return;
-      const show = () =>
-        list
-          .querySelector<HTMLElement>('[role="tab"][data-state="active"]')
-          ?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+      // Only the bar itself is scrolled, and only sideways: `scrollIntoView` would also move every scrolling
+      // ancestor, the page included.
+      const show = () => {
+        const tab = list.querySelector<HTMLElement>('[role="tab"][data-state="active"]');
+        if (!tab || list.scrollWidth <= list.clientWidth) return;
+        const start = tab.offsetLeft;
+        const end = start + tab.offsetWidth;
+        if (start < list.scrollLeft) list.scrollLeft = start;
+        else if (end > list.scrollLeft + list.clientWidth) list.scrollLeft = end - list.clientWidth;
+      };
       show();
       // The chosen tab changes by an attribute on a tab, whoever controls the tabs.
       const watching = new MutationObserver(show);

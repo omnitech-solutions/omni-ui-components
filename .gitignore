@@ -25,3 +25,6 @@ tmp
 
 # agent worktrees
 .claude/worktrees/
+
+# Storybook audit captures (scripts/storybook-inventory.mjs)
+/storybook-audit/
