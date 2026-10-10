@@ -79,6 +79,7 @@ export const Splitter = ({
   children,
   resizable = false,
   orientation = 'horizontal',
+  overflow = 'scroll',
   sizes: sizesProp,
   defaultSizes,
   onSizesChange,
@@ -397,9 +398,15 @@ export const Splitter = ({
       ref={root}
       data-slot="splitter"
       data-orientation={orientation}
+      data-overflow={overflow}
       className={cn(
         'flex min-h-0 min-w-0',
         horizontal ? 'w-full flex-row' : 'h-full flex-col',
+        // Panels that need more room than there is are reached by scrolling, never cut off.
+        overflow === 'scroll' && [
+          horizontal ? 'overflow-x-auto overflow-y-hidden' : 'overflow-y-auto overflow-x-hidden',
+          '[scrollbar-color:var(--oui-panel-scrollbar-thumb)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-[var(--oui-panel-scrollbar-size)] [&::-webkit-scrollbar]:w-[var(--oui-panel-scrollbar-size)] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[color:var(--oui-panel-scrollbar-thumb)] [&::-webkit-scrollbar-track]:bg-transparent',
+        ],
         className,
       )}
       {...props}

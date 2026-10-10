@@ -233,3 +233,30 @@ export const CardResizedFromBottom = () => {
     </div>
   );
 };
+
+/**
+ * Three columns kept at sizes that need more room than the card has. The splitter scrolls sideways (the default),
+ * so the last column is reached instead of being cut off; `overflow="clip"` gives the old behaviour.
+ */
+export const ColumnsWiderThanTheirContainer = ({
+  overflow,
+}: Pick<SplitterProps, 'overflow'> = {}) => (
+  <div className="h-40 w-[420px] rounded-lg border">
+    <Splitter
+      resizable
+      {...(overflow ? { overflow } : {})}
+      defaultSizes={{ outline: 220, details: 260 }}
+      className="h-full"
+    >
+      <SplitterPanel id="outline" label="the outline" minSize={160} className="p-4">
+        Outline
+      </SplitterPanel>
+      <SplitterPanel id="body" minSize={200} className="p-4">
+        Body
+      </SplitterPanel>
+      <SplitterPanel id="details" label="the details" minSize={200} className="p-4">
+        Details, reached by scrolling
+      </SplitterPanel>
+    </Splitter>
+  </div>
+);

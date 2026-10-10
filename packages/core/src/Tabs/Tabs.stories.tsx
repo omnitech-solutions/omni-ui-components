@@ -119,3 +119,36 @@ export const FullWidthBar: Story = {
     </Tabs>
   ),
 };
+
+const sections = [
+  'Overview',
+  'Activity',
+  'Files',
+  'Billing',
+  'Members',
+  'Integrations',
+  'Audit log',
+];
+
+/**
+ * More tabs than the bar has room for. The bar scrolls sideways (the default) and the chosen tab is brought
+ * into view; `scrollable={false}` lets the bar grow past what holds it.
+ */
+export const MoreTabsThanFit: Story = {
+  render: () => (
+    <Tabs defaultValue="Audit log" className="w-72">
+      <TabsBar aria-label="Account sections">
+        {sections.map((section) => (
+          <Tab key={section} value={section}>
+            {section}
+          </Tab>
+        ))}
+      </TabsBar>
+      {sections.map((section) => (
+        <TabPanel key={section} value={section}>
+          <div className="text-sm text-[var(--oui-foreground-muted)]">{section}</div>
+        </TabPanel>
+      ))}
+    </Tabs>
+  ),
+};

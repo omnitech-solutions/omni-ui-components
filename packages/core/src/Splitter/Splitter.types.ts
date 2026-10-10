@@ -22,6 +22,12 @@ export interface SplitterProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   resizable?: boolean;
   /** `horizontal` lays panels left to right (the default); `vertical` stacks them. */
   orientation?: 'horizontal' | 'vertical';
+  /**
+   * What happens when the panels need more room than the splitter has (kept sizes from a larger container,
+   * or floors that do not fit). `scroll` (default): the splitter scrolls along its orientation, so the last
+   * panel can always be reached. `clip`: the panels overflow and whatever holds the splitter cuts them off.
+   */
+  overflow?: 'scroll' | 'clip';
   /** Controlled sizes in px, by panel `id`. */
   sizes?: SplitterSizes;
   /** Starting sizes in px, by panel `id`. A panel's own `defaultSize` is used where this has no entry. */

@@ -712,4 +712,22 @@ describe('omni-ui-components/Splitter', () => {
       expect(screen.getByRole('region', { name: 'Card' })).toHaveTextContent('200px');
     });
   });
+
+  it('scrolls along its orientation by default, so panels that need more room than there is are not cut off', () => {
+    const { container, rerender } = render(<Columns />);
+    const root = container.querySelector<HTMLElement>('[data-slot="splitter"]');
+    expect(root).toHaveAttribute('data-overflow', 'scroll');
+    expect(root).toHaveClass('overflow-x-auto', 'overflow-y-hidden');
+    rerender(<Columns orientation="vertical" />);
+    expect(root).toHaveClass('overflow-y-auto', 'overflow-x-hidden');
+    expect(root).not.toHaveAttribute('overflow');
+  });
+
+  it('overflow="clip" leaves the cutting to whatever holds the splitter', () => {
+    const { container } = render(<Columns overflow="clip" />);
+    const root = container.querySelector<HTMLElement>('[data-slot="splitter"]');
+    expect(root).toHaveAttribute('data-overflow', 'clip');
+    expect(root).not.toHaveClass('overflow-x-auto');
+    expect(root).not.toHaveClass('overflow-y-auto');
+  });
 });

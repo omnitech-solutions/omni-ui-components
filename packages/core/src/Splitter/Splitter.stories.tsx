@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   CardResizedFromBothSides,
   CardResizedFromBottom,
+  ColumnsWiderThanTheirContainer,
   ColumnsWithGap,
   ResettableColumns,
   ResizableColumns,
@@ -163,5 +164,19 @@ export const OuterEdgeVertical: Story = {
     await expect(canvas.getByText('224px')).toBeVisible();
     await userEvent.keyboard('{Enter}');
     await expect(canvas.getByText('200px')).toBeVisible();
+  },
+};
+
+/**
+ * The kept sizes add up to more than the card is wide. By default the splitter scrolls along its orientation, so
+ * no panel is cut off; set `overflow="clip"` where whatever holds the splitter should cut the panels instead.
+ */
+export const WiderThanItsContainer: Story = {
+  render: () => <ColumnsWiderThanTheirContainer />,
+  parameters: exampleDocs(factories, 'ColumnsWiderThanTheirContainer'),
+  play: async ({ canvasElement }) => {
+    const root = canvasElement.querySelector<HTMLElement>('[data-slot="splitter"]');
+    await expect(root).toHaveAttribute('data-overflow', 'scroll');
+    await expect(root?.scrollWidth ?? 0).toBeGreaterThan(root?.clientWidth ?? 0);
   },
 };
