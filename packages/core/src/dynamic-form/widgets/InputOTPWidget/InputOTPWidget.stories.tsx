@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { playKeyboardReach } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
+import { playKeyboardType } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
 import {
   fourDigitOtpFixture,
   type OtpFormData,
@@ -53,5 +53,5 @@ export const Plain: Story = { args: config.stories.Plain };
 export const Prefilled: Story = { args: config.stories.Prefilled };
 export const FourDigit: Story = { args: config.stories.FourDigit };
 
-/** Reached and left by the keyboard alone (focus arrives by the field's key, as a host does it). */
-export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardReach };
+/** Driven by the keyboard alone (focus arrives by the field's key, as a host does it). */
+export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardType('7') };

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { playKeyboardReach } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
+import { playKeyboardToggle } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
 import {
   type ChannelsFormData,
   descriptionsChannelsFixture,
@@ -77,5 +77,5 @@ export const Prefilled: Story = { args: config.stories.Prefilled };
 export const DisabledOption: Story = { args: config.stories.DisabledOption };
 export const ValidationError: Story = { args: config.stories.ValidationError };
 
-/** Reached and left by the keyboard alone (focus arrives by the field's key, as a host does it). */
-export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardReach };
+/** Driven by the keyboard alone (focus arrives by the field's key, as a host does it). */
+export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardToggle };

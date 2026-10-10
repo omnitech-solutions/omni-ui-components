@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { playKeyboardReach } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
+import { playKeyboardPick } from 'factories/dynamic-form/DynamicForm/widgetPlay.factories';
 import {
   type CountryFormData,
   customPlaceholderComboboxFixture,
@@ -64,5 +64,5 @@ export const CustomPlaceholder: Story = { args: config.stories.CustomPlaceholder
 export const WithOptionSet: Story = { args: config.stories.WithOptionSet };
 export const GroupedOptions: Story = { args: config.stories.GroupedOptions };
 
-/** Reached and left by the keyboard alone (focus arrives by the field's key, as a host does it). */
-export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardReach };
+/** Driven by the keyboard alone (focus arrives by the field's key, as a host does it). */
+export const Keyboard: Story = { args: config.stories.Plain, play: playKeyboardPick };

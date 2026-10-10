@@ -1,4 +1,4 @@
-import { expect, userEvent } from 'storybook/test';
+import { expect, userEvent, waitFor } from 'storybook/test';
 import { focusFieldIn } from '../lib/widgetKit';
 
 /**
@@ -61,14 +61,16 @@ export const playKeyboardToggle = async ({ canvasElement }: { canvasElement: HTM
   await expect(control.getAttribute('aria-checked')).toBe(before);
 };
 
-/** A radio group: focus by key, an arrow key moves to the next option and chooses it. */
+/** A radio group: focus by key lands on an option; a held arrow key moves to the next option and chooses it. */
 export const playKeyboardArrows = async ({ canvasElement }: { canvasElement: HTMLElement }) => {
   const { field, control } = firstField(canvasElement);
-  await userEvent.keyboard('{ArrowDown}');
-  const now = canvasElement.ownerDocument.activeElement as HTMLElement;
-  await expect(now).not.toBe(control);
-  await expect(field.contains(now)).toBe(true);
-  await expect(now).toHaveAttribute('aria-checked', 'true');
+  const active = () => canvasElement.ownerDocument.activeElement as HTMLElement;
+  // Held, as a person holds it: the group moves focus a tick after keydown and chooses while the key is down.
+  await userEvent.keyboard('{ArrowDown>}');
+  await waitFor(() => expect(active()).not.toBe(control));
+  await userEvent.keyboard('{/ArrowDown}');
+  await expect(field.contains(active())).toBe(true);
+  await waitFor(() => expect(active()).toHaveAttribute('aria-checked', 'true'));
 };
 
 /** A list behind a trigger: Enter opens it, an arrow key and Enter pick, the list closes and the trigger shows the pick. */
@@ -80,4 +82,12 @@ export const playKeyboardPick = async ({ canvasElement }: { canvasElement: HTMLE
   await userEvent.keyboard('{ArrowDown}{Enter}');
   await expect(control).toHaveAttribute('aria-expanded', 'false');
   await expect(control.textContent).not.toBe(before);
+};
+
+/** A slider: focus by key lands on the thumb, and an arrow key moves the value. */
+export const playKeyboardSlide = async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+  const { control } = firstField(canvasElement);
+  const before = control.getAttribute('aria-valuenow');
+  await userEvent.keyboard('{ArrowRight}');
+  await waitFor(() => expect(control.getAttribute('aria-valuenow')).not.toBe(before));
 };

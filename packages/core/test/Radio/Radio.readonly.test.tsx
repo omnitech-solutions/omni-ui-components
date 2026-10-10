@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { RadioPrimitive } from '@oc-tech/omni-ui-components/Radio';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 const options = [
@@ -30,7 +30,9 @@ describe('omni-ui-components/Radio: read-only', () => {
     await user.click(alpha);
     await user.click(screen.getByText('Gamma'));
     beta.focus();
-    await user.keyboard('{ArrowDown}{ArrowUp}{ArrowUp}');
+    await user.keyboard('{ArrowUp>}');
+    await waitFor(() => expect(alpha).toHaveFocus());
+    await user.keyboard('{/ArrowUp}');
     expect(beta).toHaveAttribute('aria-checked', 'true');
     expect(alpha).toHaveAttribute('aria-checked', 'false');
     expect(onChange).not.toHaveBeenCalled();
@@ -59,5 +61,21 @@ describe('omni-ui-components/Radio: appearance="card"', () => {
   it('is plain by default', () => {
     render(<RadioPrimitive id="r" options={options} value="a" />);
     expect(screen.getByRole('radiogroup')).toHaveAttribute('data-appearance', 'plain');
+  });
+});
+
+describe('omni-ui-components/Radio: arrow keys choose', () => {
+  it('moves to the next option and chooses it', async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+    render(<RadioPrimitive id="r" options={options} defaultValue="a" onChange={onChange} />);
+    const [alpha, beta] = screen.getAllByRole('radio');
+    alpha.focus();
+    // Held, as a person holds it: the group moves focus a tick after keydown and chooses while the key is down.
+    await user.keyboard('{ArrowDown>}');
+    await waitFor(() => expect(beta).toHaveFocus());
+    await user.keyboard('{/ArrowDown}');
+    expect(onChange).toHaveBeenCalledWith('b');
+    expect(beta).toHaveAttribute('aria-checked', 'true');
   });
 });
