@@ -11,6 +11,7 @@
  *   node scripts/storybook-inventory.mjs --profile <id>,<id>   cold load with a CPU profile -> profile-<id>.json
  *   node scripts/storybook-inventory.mjs --manager <id>,<id>   the manager UI (/?path=...) -> manager/<id>.png
  *   node scripts/storybook-inventory.mjs --sources             what every docs page shows behind "Show code" -> sources.json
+ *   node scripts/storybook-inventory.mjs --a11y --theme light   every story's accessibility result, node by node -> a11y-<theme>.json
  *   node scripts/storybook-inventory.mjs --reclassify          re-derive ok/error/timeout in an existing inventory.json
  *
  * Options: --base http://localhost:6006  --out storybook-audit  --concurrency 4  --timeout 60000
@@ -87,6 +88,27 @@ const initScript = () => {
       if (!report) return;
       const result = report.result ?? {};
       if (result.error) audit.errors.push(`a11y: ${short(result.error?.message ?? result.error)}`);
+      // Every failing node with what the rule measured (the colour pair of a contrast failure): for --a11y.
+      audit.a11yNodes = (result.violations ?? []).flatMap((each) =>
+        (each.nodes ?? []).map((node) => {
+          const check = [...(node.any ?? []), ...(node.all ?? []), ...(node.none ?? [])].find(
+            (item) => item.data,
+          );
+          const data = check?.data ?? {};
+          return {
+            rule: each.id,
+            impact: each.impact,
+            target: short(node.target?.join(' ')).slice(0, 200),
+            html: short(node.html).slice(0, 240),
+            fg: data.fgColor,
+            bg: data.bgColor,
+            ratio: data.contrastRatio,
+            expected: data.expectedContrastRatio,
+            fontSize: data.fontSize,
+            message: short(check?.message ?? node.failureSummary).slice(0, 200),
+          };
+        }),
+      );
       audit.a11y = {
         status: report.status,
         violations: (result.violations ?? []).map((each) => ({
@@ -166,6 +188,9 @@ const collect = (viewMode) => {
     contentRect: rect(content),
     scroll: [document.documentElement.scrollWidth, document.documentElement.scrollHeight],
     showCode: {
+      // `frame`: the shared ExampleFrame's code bar. `custom` and `docsBlock` are the two bars it replaced.
+      frame: document.querySelectorAll('.pb-example-foot').length,
+      frames: document.querySelectorAll('.pb-example, .pb-example-host').length,
       custom: document.querySelectorAll('.pb-showcode').length,
       docsBlock: document.querySelectorAll('.docblock-code-toggle').length,
       showButtons: count(/^show code$/i),
@@ -650,26 +675,48 @@ async function sources(browser, entries) {
       Object.assign(
         result,
         await page.evaluate(async () => {
-          const toggles = [...document.querySelectorAll('.docblock-code-toggle')];
-          const disabled = toggles.filter((each) => each.disabled).length;
+          // A docs page mounts a story when it comes near the window: walk the page once so every one is there.
+          for (let y = 0; y < document.documentElement.scrollHeight; y += window.innerHeight) {
+            window.scrollTo(0, y);
+            await new Promise((resolve) => setTimeout(resolve, 150));
+          }
+          window.scrollTo(0, 0);
+          await new Promise((resolve) => setTimeout(resolve, 600));
+          // The shared ExampleFrame: one "Show code" a story. Storybook's own bar is read too, should one remain.
+          const own = [
+            ...document.querySelectorAll('.pb-example .pb-example-action[aria-expanded="false"]'),
+          ];
+          const legacy = [...document.querySelectorAll('.docblock-code-toggle')];
+          const toggles = [...own, ...legacy];
+          const disabled = legacy.filter((each) => each.disabled).length;
           for (const toggle of toggles) if (!toggle.disabled) toggle.click();
-          await new Promise((resolve) => setTimeout(resolve, 1200));
-          const blocks = [...document.querySelectorAll('.sbdocs-preview')].map((preview) => {
-            const story = preview.querySelector('[data-story-block]');
-            const code = preview.querySelector('.docblock-source pre, pre')?.textContent ?? null;
-            const rendered = (story?.innerText ?? '').replace(/\s+/g, ' ').trim();
-            return {
-              story: story?.id ?? null,
-              code: code?.slice(0, 1500) ?? null,
-              codeLength: code?.length ?? 0,
-              renderedText: rendered.slice(0, 160),
-              reactElementJson: /\$\$typeof|"_owner"|"props":/.test(code ?? ''),
-              childrenAsAttribute: /\bchildren=/.test(code ?? ''),
-              placeholderHandler: /=\{\(\) => \{\}\}/.test(code ?? ''),
-              bareTag: /^<[\w.]+\s*\/>$/.test((code ?? '').replace(/\s+/g, ' ').trim()),
-              unnamedComponent: /^<Component\b/.test(code ?? ''),
-            };
-          });
+          // The first open loads the formatter and the highlighter.
+          await new Promise((resolve) => setTimeout(resolve, 2500));
+          const blocks = [...document.querySelectorAll('.pb-example, .sbdocs-preview')].map(
+            (preview) => {
+              const story = preview.querySelector('[data-story-block]');
+              const code =
+                preview.querySelector('.pb-example-code pre, .docblock-source pre')?.textContent ??
+                null;
+              const rendered = (story?.innerText ?? '').replace(/\s+/g, ' ').trim();
+              return {
+                story: story?.id ?? null,
+                code: code?.slice(0, 1500) ?? null,
+                codeLength: code?.length ?? 0,
+                renderedText: rendered.slice(0, 160),
+                reactElementJson: /\$\$typeof|"_owner"|"props":/.test(code ?? ''),
+                childrenAsAttribute: /\bchildren=/.test(code ?? ''),
+                placeholderHandler: /=\{\(\) => \{\}\}/.test(code ?? ''),
+                bareTag: /^<[\w.]+\s*\/>$/.test((code ?? '').replace(/\s+/g, ' ').trim()),
+                unnamedComponent:
+                  /^<(Component|React\.Memo|React\.ForwardRef|No Display Name)\b/.test(code ?? ''),
+                storyObject: /^\{\s*(render|args|name|parameters|play|decorators)\b/.test(
+                  code ?? '',
+                ),
+                noBar: !preview.querySelector('.pb-example-foot, .docblock-code-toggle'),
+              };
+            },
+          );
           return { toggles: toggles.length, noCodeAvailable: disabled, blocks };
         }),
       );
@@ -683,7 +730,105 @@ async function sources(browser, entries) {
   results.sort((a, b) => a.id.localeCompare(b.id));
   const file = path.join(OUT, 'sources.json');
   await writeFile(file, `${JSON.stringify(results, null, 1)}\n`);
-  console.log(`docs pages ${results.length} -> ${file}`);
+  const blocks = results.flatMap((each) => each.blocks ?? []);
+  const tally = (key) => blocks.filter((each) => each[key]).length;
+  console.log(
+    `docs pages ${results.length}, blocks ${blocks.length}: unnamedComponent ${tally('unnamedComponent')}, reactElementJson ${tally('reactElementJson')}, childrenAsAttribute ${tally('childrenAsAttribute')}, bareTag ${tally('bareTag')}, storyObject ${tally('storyObject')}, noBar ${tally('noBar')}, noCode ${blocks.filter((each) => !each.code).length}, placeholderHandler ${tally('placeholderHandler')}, failed ${results.filter((each) => each.failure).length} -> ${file}`,
+  );
+}
+
+/**
+ * Every story's accessibility result in one theme, node by node: -> a11y-<theme>.json, with the failing nodes
+ * counted a rule and, for colour contrast, a colour pair (foreground on background), most frequent first.
+ */
+async function a11y(browser, entries) {
+  const theme = option('theme', 'dark');
+  const only = new Set(list('only'));
+  const filter = option('filter', '');
+  const pattern = filter ? new RegExp(filter) : null;
+  const stories = entries.filter(
+    (each) =>
+      each.type === 'story' &&
+      (!only.size || only.has(each.id)) &&
+      (!pattern || pattern.test(each.id)),
+  );
+  const context = await browser.newContext({
+    viewport: DESKTOP,
+    colorScheme: theme === 'light' ? 'light' : 'dark',
+    deviceScaleFactor: 1,
+    reducedMotion: 'reduce',
+  });
+  await context.addInitScript(initScript);
+  const results = [];
+  let done = 0;
+  await pool(stories, CONCURRENCY, async (entry) => {
+    const page = await context.newPage();
+    const result = { id: entry.id, title: entry.title, name: entry.name };
+    try {
+      await page.goto(`${iframeUrl(entry)}&globals=theme:${theme}`, {
+        waitUntil: 'commit',
+        timeout: TIMEOUT,
+      });
+      await page.waitForFunction(
+        () =>
+          window.__audit?.events.some(([name]) =>
+            ['storyFinished', 'storyErrored', 'storyThrewException', 'storyMissing'].includes(name),
+          ),
+        null,
+        { timeout: TIMEOUT, polling: 100 },
+      );
+      const audit = await page.evaluate(() => ({
+        status: window.__audit.a11y?.status ?? null,
+        nodes: window.__audit.a11yNodes ?? [],
+        ran: Boolean(window.__audit.a11y),
+      }));
+      Object.assign(result, audit);
+    } catch (error) {
+      result.failure = error.message.split('\n')[0].slice(0, 200);
+    }
+    results.push(result);
+    done += 1;
+    if (done % 100 === 0) console.log(`[${done}/${stories.length}]`);
+    await page.close().catch(() => {});
+  });
+  await context.close();
+  results.sort((a, b) => a.id.localeCompare(b.id));
+  const nodes = results.flatMap((each) =>
+    (each.nodes ?? []).map((node) => ({ ...node, id: each.id })),
+  );
+  const count = (items, key) => {
+    const tally = new Map();
+    for (const item of items) {
+      const name = key(item);
+      const entry = tally.get(name) ?? { nodes: 0, stories: new Set() };
+      entry.nodes += 1;
+      entry.stories.add(item.id);
+      tally.set(name, entry);
+    }
+    return [...tally.entries()]
+      .map(([name, entry]) => ({ name, nodes: entry.nodes, stories: entry.stories.size }))
+      .sort((a, b) => b.nodes - a.nodes);
+  };
+  const summary = {
+    theme,
+    stories: results.length,
+    failed: results.filter((each) => each.failure).length,
+    notRun: results.filter((each) => !each.failure && !each.ran).length,
+    storiesWithViolations: results.filter((each) => each.nodes?.length).length,
+    rules: count(nodes, (node) => node.rule),
+    contrastPairs: count(
+      nodes.filter((node) => node.rule === 'color-contrast'),
+      (node) => `${node.fg} on ${node.bg} (${node.ratio}, needs ${node.expected})`,
+    ).slice(0, 60),
+  };
+  const file = path.join(OUT, `a11y-${theme}.json`);
+  await writeFile(file, `${JSON.stringify({ summary, results }, null, 1)}\n`);
+  console.log(
+    `${theme}: stories ${summary.stories}, with violations ${summary.storiesWithViolations}, failed to load ${summary.failed}, not run ${summary.notRun}`,
+  );
+  for (const rule of summary.rules)
+    console.log(`  ${rule.name}: ${rule.stories} stories, ${rule.nodes} nodes`);
+  console.log(`-> ${file}`);
 }
 
 if (flag('reclassify')) {
@@ -702,6 +847,7 @@ try {
   if (list('profile').length) await profile(browser, entries);
   else if (list('manager').length) await manager(browser, entries);
   else if (flag('sources')) await sources(browser, entries);
+  else if (flag('a11y')) await a11y(browser, entries);
   else await inventory(browser, entries);
 } finally {
   await browser.close();

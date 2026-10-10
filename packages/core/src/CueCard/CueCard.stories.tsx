@@ -16,7 +16,7 @@ import {
 } from 'factories/omni-ui-components/CueCard/CueCard.factories';
 import type * as React from 'react';
 import { expect, userEvent, within } from 'storybook/test';
-import { exampleDocs } from 'storybook-helpers/internal/support/sourceSnippet';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
 import factories from './CueCard.factories.tsx?raw';
 
 type StoryArgs = Partial<CueCardProps<Cited>>;

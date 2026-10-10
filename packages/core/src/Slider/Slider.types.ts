@@ -30,6 +30,8 @@ export interface SliderPrimitiveProps extends RootProps {
   'data-testid'?: string;
   'aria-describedby'?: string;
   'aria-label'?: string;
+  /** Id of the element that names the slider (its thumb is named by it). */
+  'aria-labelledby'?: string;
 }
 
 /**

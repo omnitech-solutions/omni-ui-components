@@ -310,6 +310,7 @@
   :host,
   [data-theme] {
     --color-primary-foreground: var(--color-primary-contrast);
+    --color-destructive: var(--color-danger);
     --color-destructive-foreground: var(--color-primary-contrast);
     --color-secondary: var(--bg-grey-f1);
     --color-secondary-foreground: var(--text-default);

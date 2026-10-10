@@ -14,7 +14,7 @@ import {
 } from 'factories/omni-ui-components/OutlineList/OutlineList.factories';
 import type * as React from 'react';
 import { expect, userEvent, within } from 'storybook/test';
-import { exampleDocs } from 'storybook-helpers/internal/support/sourceSnippet';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
 import factories from './OutlineList.factories.tsx?raw';
 
 type StoryArgs = Partial<OutlineListProps<Step>>;
@@ -133,7 +133,12 @@ export const CustomLabels: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('list', { name: 'Schritte' })).toBeVisible();
-    await expect(canvas.getByText('3 min · läuft')).toBeVisible();
+    // The live word is its own element inside the meta line, so the line is matched by its whole text.
+    const live = canvas.getByText('läuft');
+    await expect(live).toBeVisible();
+    await expect(live.closest('[data-slot="outline-list-meta"]')).toHaveTextContent(
+      '3 min · läuft',
+    );
   },
 };
 

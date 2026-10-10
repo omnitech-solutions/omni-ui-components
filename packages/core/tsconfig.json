@@ -17,7 +17,6 @@
     "src/**/*.factories.*",
     "src/**/*.test.*",
     "src/Table/TableStoryGroupOverview.tsx",
-    "src/Table/Showcase/ShowcaseShell.tsx",
     "src/Table/storySupport.ts",
     "src/Table/Table.story.fixtures.tsx",
     "test"

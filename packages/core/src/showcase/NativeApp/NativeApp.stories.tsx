@@ -34,7 +34,12 @@ const DOCS = `The Native App window, composed only from library parts with mocke
 const meta: Meta<NativeAppArgs> = {
   title: 'omni-ui-components/Showcase/Native App',
   tags: ['autodocs'],
-  parameters: { layout: 'padded', docs: { description: { component: DOCS } } },
+  // Full-page showcase: each story is a window of its own, with no frame around it.
+  parameters: {
+    layout: 'padded',
+    example: { frame: false },
+    docs: { description: { component: DOCS } },
+  },
   args: nativeAppDefaults,
   argTypes: nativeAppArgTypes,
 };

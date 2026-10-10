@@ -25,8 +25,11 @@ const StepperInner = React.forwardRef<HTMLDivElement, StepperProps>(
     },
     ref,
   ) => {
-    const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
+    const { id, isInvalid, descriptionId, errorId, requiredId, describedBy } = useFieldChrome({
       id: idProp,
+      required,
+      // The control cannot carry `aria-required`: it is described by a hidden "Required" hint instead.
+      requiredHint: true,
       label,
       description,
       error,
@@ -44,6 +47,7 @@ const StepperInner = React.forwardRef<HTMLDivElement, StepperProps>(
         required={required}
         descriptionId={descriptionId}
         errorId={errorId}
+        requiredId={requiredId}
         labelTag="span"
         labelId={labelId}
         role="group"

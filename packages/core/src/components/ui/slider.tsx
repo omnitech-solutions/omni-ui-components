@@ -14,6 +14,9 @@ function Slider({
   value,
   min = 0,
   max = 100,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
   ...props
 }: React.ComponentProps<typeof Root>) {
   const thumbCount = React.useMemo(() => {
@@ -57,6 +60,10 @@ function Slider({
       {Array.from({ length: thumbCount }, (_, index) => (
         <Thumb
           key={index}
+          // The thumb is the slider a screen reader meets: the name and the description belong on it, not on the root.
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabel ? undefined : ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
           data-slot="slider-thumb"
           className={cn(
             'block size-4 shrink-0 rounded-full border-2 border-primary bg-background shadow-sm',

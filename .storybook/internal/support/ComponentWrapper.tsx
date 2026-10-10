@@ -1,8 +1,11 @@
 /**
  * @fileoverview
- * `ComponentWrapper` — wrap a single JSX element and emit a matching Show
- * code panel underneath. Pure introspection: the wrapped element is rendered
- * verbatim, and its `type` + `props` drive the snippet.
+ * `ComponentWrapper` — wrap a single JSX element and give its frame a matching
+ * snippet. Pure introspection: the wrapped element is rendered verbatim, and
+ * its `type` + `props` drive the snippet. The wrapper draws nothing of its
+ * own: the title, the description and the code go to the story's
+ * `ExampleFrame` (the story view's, or the docs page's) through the example
+ * store, so an example has one frame and one code bar wherever it is shown.
  *
  * Usage:
  *
@@ -11,10 +14,10 @@
  *     </ComponentWrapper>
  */
 import * as React from 'react';
+import { renderCodeAwareText } from './codeAwareText';
+import { ExampleStoryContext, registerExample } from './exampleStore';
 import { getRegisteredFixtures } from './fixtureRegistry';
-import { InlineCode } from './InlineCode';
-import { ShowCodePanel } from './ShowCodePanel';
-import type { UseDynamicSnippetOptions } from './useDynamicSnippet';
+import { type UseDynamicSnippetOptions, useDynamicSnippet } from './useDynamicSnippet';
 
 export interface ComponentWrapperProps {
   /** A single JSX element — its `type` becomes the JSX tag in the code
@@ -48,15 +51,8 @@ export interface ComponentWrapperProps {
   componentName?: string;
   /** Optional wrapper class. */
   className?: string;
-  /** Language for the code panel. */
-  language?: string;
-  /** Whether to render the Show code panel. Defaults to `true`. Set to
-   *  `false` to hide it entirely for the current story. */
+  /** Whether the frame shows the snippet. Defaults to `true`. */
   showCode?: boolean;
-  /** Whether the Show code panel opens expanded by default. Defaults to
-   *  `true` — the caller can override to `false` for stories where the
-   *  code shouldn't steal focus. */
-  defaultOpen?: boolean;
 }
 
 // Walk into host tags (`div`, `section`, …) to find the first React element
@@ -95,21 +91,6 @@ const resolveComponentName = (type: React.ReactElement['type']): string => {
   return raw.replace(/Impl$/, '');
 };
 
-// Render a description string, turning backtick-fenced tokens into the shared
-// prism-highlighted `<InlineCode>` used throughout the Docs pages. React nodes
-// pass through as-is.
-const renderDescription = (description: React.ReactNode): React.ReactNode => {
-  if (typeof description !== 'string') return description;
-  const parts = description.split(/(`[^`]+`)/g);
-  return parts.map((part, index) =>
-    part.startsWith('`') && part.endsWith('`') ? (
-      <InlineCode key={index} code={part.slice(1, -1)} />
-    ) : (
-      part
-    ),
-  );
-};
-
 export const ComponentWrapper: React.FC<ComponentWrapperProps> = ({
   children,
   snippetTarget,
@@ -120,10 +101,9 @@ export const ComponentWrapper: React.FC<ComponentWrapperProps> = ({
   extraPreamble,
   componentName,
   className = 'grid gap-4',
-  language = 'tsx',
   showCode = true,
-  defaultOpen = false,
 }) => {
+  const storyId = React.useContext(ExampleStoryContext);
   const root = React.Children.only(children);
   // Snippet introspection unwraps host-tag wrappers so a story that puts
   // `<Table>` inside a layout `<div>` still emits Table props, not the div.
@@ -151,31 +131,28 @@ export const ComponentWrapper: React.FC<ComponentWrapperProps> = ({
     if (!registeredMatch && !explicitMatch) propDerived[key] = value;
   }
   const mergedFixtures = { ...registered, ...propDerived, ...fixtures };
+  const snippet = useDynamicSnippet({
+    componentName: name,
+    props: elementProps,
+    fixtures: mergedFixtures,
+    omit,
+    extraPreamble,
+  });
+  const shownDescription = typeof description === 'string' ? description : undefined;
+  // The frame is outside this tree (and on a docs page in another root): it reads what is registered here.
+  React.useEffect(() => {
+    if (!storyId) return;
+    registerExample(storyId, {
+      title,
+      description: shownDescription ? renderCodeAwareText(shownDescription) : description,
+      code: showCode ? snippet : '',
+    });
+    // A description given as elements is new on every render: the string, when it is one, stands for it.
+    // biome-ignore lint/correctness/useExhaustiveDependencies: see above.
+  }, [storyId, title, shownDescription, snippet, showCode]);
   return (
-    <div
-      className={className}
-      style={{ maxWidth: 800, minWidth: 600, marginInline: 'auto', width: '100%' }}
-    >
-      {(title || description) && (
-        <header className="pb-pipeline-section" style={{ margin: 0 }}>
-          {title && <h3 className="pb-pipeline-section-title">{title}</h3>}
-          {description && <p style={{ margin: 0 }}>{renderDescription(description)}</p>}
-        </header>
-      )}
+    <div className={className} style={{ maxWidth: 800, marginInline: 'auto', width: '100%' }}>
       {root}
-      {showCode && (
-        <ShowCodePanel
-          language={language}
-          defaultOpen={defaultOpen}
-          dynamic={{
-            componentName: name,
-            props: elementProps,
-            fixtures: mergedFixtures,
-            omit,
-            extraPreamble,
-          }}
-        />
-      )}
     </div>
   );
 };

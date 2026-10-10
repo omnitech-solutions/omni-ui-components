@@ -33,6 +33,7 @@ const SliderPrimitiveInner = React.forwardRef<HTMLSpanElement, SliderPrimitivePr
       minStepsBetweenThumbs,
       'aria-describedby': ariaDescribedBy,
       'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       ...rest
     },
     _ref,
@@ -69,8 +70,8 @@ const SliderPrimitiveInner = React.forwardRef<HTMLSpanElement, SliderPrimitivePr
         onValueCommit={handleCommit}
         aria-describedby={ariaDescribedBy}
         aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         aria-invalid={invalid || undefined}
-        aria-required={required || undefined}
         id={id}
         data-testid={testId}
         className={cn(className)}

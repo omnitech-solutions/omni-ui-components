@@ -104,7 +104,15 @@ function CommandPopoverInner<T extends CommandItem = CommandItem>(
   }, [anchor, placement, items.length]);
   const active = React.useRef<HTMLDivElement | null>(null);
   React.useEffect(() => {
-    active.current?.scrollIntoView?.({ block: 'nearest' });
+    // Only the list is scrolled: `scrollIntoView` would also move every scrolling ancestor, the page included.
+    const option = active.current;
+    const list = option?.parentElement;
+    if (!option || !list || list.scrollHeight <= list.clientHeight) return;
+    const listTop = list.getBoundingClientRect().top;
+    const start = option.getBoundingClientRect().top - listTop + list.scrollTop - list.clientTop;
+    const end = start + option.offsetHeight;
+    if (start < list.scrollTop) list.scrollTop = start;
+    else if (end > list.scrollTop + list.clientHeight) list.scrollTop = end - list.clientHeight;
   }, [activeIndex, items]);
 
   if (hideWhenEmpty && items.length === 0 && !loading) return null;

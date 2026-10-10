@@ -9,6 +9,8 @@ import {
   dataPrivacyPanelVariants,
 } from 'factories/omni-ui-components/DataPrivacyPanel/DataPrivacyPanel.factories';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './DataPrivacyPanel.factories.tsx?raw';
 
 const meta: Meta<DataPrivacyPanelProps> = {
   title: 'omni-ui-components/DataPrivacyPanel',
@@ -89,6 +91,7 @@ export const DeleteNeedsConfirmation: Story = {
 /** View log loads rows (here after a click); Hide log removes them. */
 export const ActivityLog: Story = {
   render: () => <DataPrivacyPanelDemo />,
+  parameters: exampleDocs(exampleSource, 'DataPrivacyPanelDemo'),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'View log' }));

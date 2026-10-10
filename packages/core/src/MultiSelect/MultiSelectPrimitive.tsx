@@ -72,7 +72,6 @@ export const MultiSelectPrimitive = React.forwardRef<HTMLButtonElement, MultiSel
             data-slot="multi-select"
             data-testid={testId}
             aria-invalid={invalid || undefined}
-            aria-required={required || undefined}
             aria-describedby={rest['aria-describedby']}
             aria-haspopup="listbox"
             aria-expanded={open}
@@ -93,7 +92,7 @@ export const MultiSelectPrimitive = React.forwardRef<HTMLButtonElement, MultiSel
                 : selected.map((opt) => (
                     <span
                       key={opt.value}
-                      className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary"
+                      className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-[color:var(--oui-tone-accent-fg)]"
                     >
                       {opt.label}
                       <span

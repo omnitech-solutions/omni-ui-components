@@ -2,9 +2,19 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Card } from '../Card';
 import { Masonry } from './Masonry';
 
-const meta = { title: 'omni-ui-components/Masonry', component: Masonry } satisfies Meta<
-  typeof Masonry
->;
+const meta = {
+  title: 'omni-ui-components/Masonry',
+  component: Masonry,
+  tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Lays `items` of different heights out in `columns` (a number, or a number a breakpoint) with a `gutter`, each item in the shortest column. `itemRender` draws an item from its `data`.',
+      },
+    },
+  },
+} satisfies Meta<typeof Masonry>;
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {

@@ -28,3 +28,4 @@ tmp
 
 # Storybook audit captures (scripts/storybook-inventory.mjs)
 /storybook-audit/
+/.vitest-attachments/

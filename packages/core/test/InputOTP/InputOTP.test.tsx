@@ -27,4 +27,9 @@ describe('omni-ui-components/InputOTP', () => {
     );
     expect(screen.getByRole('alert')).toHaveTextContent('Code is incorrect');
   });
+
+  it('names the input by its label', () => {
+    renderOTP();
+    expect(screen.getByRole('textbox', { name: 'Code' })).toHaveAttribute('data-slot', 'input-otp');
+  });
 });

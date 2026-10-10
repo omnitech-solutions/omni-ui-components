@@ -9,6 +9,8 @@ import {
   sampleActions,
 } from 'factories/omni-ui-components/MessageActions/MessageActions.factories';
 import { expect, userEvent, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './MessageActions.factories.tsx?raw';
 
 const meta: Meta<MessageActionsProps> = {
   title: 'omni-ui-components/MessageActions',
@@ -45,6 +47,7 @@ export const Busy: Story = { args: { actions: sampleActions({ busy: true }) } };
 export const Working: Story = {
   render: () => <MessageActionsDemo />,
   parameters: {
+    ...exampleDocs(exampleSource, 'MessageActionsDemo'),
     docs: {
       description: {
         story: 'With state: thumbs are mutually exclusive, read aloud toggles.',

@@ -1,4 +1,5 @@
 import type { FormError } from '@oc-tech/omni-ui-components';
+import { Button } from '@oc-tech/omni-ui-components/Button';
 
 import { DynamicForm } from '@oc-tech/omni-ui-components/dynamic-form';
 import {
@@ -101,16 +102,16 @@ export function DynamicFormStoryShell<TFormData>({
           data-testid="errors"
           className="mb-3 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-xs"
         >
-          <h3 className="mb-2 text-sm font-semibold text-destructive">
+          <h3 className="mb-2 text-sm font-semibold text-foreground">
             Validation errors ({errors.length})
           </h3>
           <ul className="divide-y divide-destructive/20 font-mono">
             {errors.map((e, i) => (
               <li key={i} className="flex items-baseline gap-3 py-1">
-                <span className="min-w-[8rem] shrink-0 font-semibold text-destructive">
+                <span className="min-w-[8rem] shrink-0 font-semibold text-foreground">
                   {e.path.length ? e.path.join('.') : '(form)'}
                 </span>
-                <span className="flex-1 text-destructive/90">{e.message}</span>
+                <span className="flex-1 text-foreground">{e.message}</span>
               </li>
             ))}
           </ul>
@@ -121,8 +122,8 @@ export function DynamicFormStoryShell<TFormData>({
           data-testid="submitted"
           className="mb-3 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs"
         >
-          <h3 className="mb-2 text-sm font-semibold text-emerald-300">Submitted payload</h3>
-          <pre className="font-mono text-emerald-200/90">{JSON.stringify(submitted, null, 2)}</pre>
+          <h3 className="mb-2 text-sm font-semibold text-foreground">Submitted payload</h3>
+          <pre className="font-mono text-foreground">{JSON.stringify(submitted, null, 2)}</pre>
         </section>
       ) : null}
       <div className="mx-auto w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg">
@@ -149,13 +150,9 @@ export function DynamicFormStoryShell<TFormData>({
         >
           {resolvedSubmitLabel ? (
             <div className="mt-6 flex justify-end border-t border-border pt-6">
-              <button
-                type="submit"
-                disabled={disabled || readOnly}
-                className="rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-              >
+              <Button type="submit" disabled={disabled || readOnly}>
                 {resolvedSubmitLabel}
-              </button>
+              </Button>
             </div>
           ) : null}
         </DynamicForm>

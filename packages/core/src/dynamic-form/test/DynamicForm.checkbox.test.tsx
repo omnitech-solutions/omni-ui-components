@@ -26,6 +26,27 @@ describe('DynamicForm — CheckboxWidget (boolean) integration', () => {
     expect(getBox()).toHaveAttribute('aria-checked', 'false');
   });
 
+  it('draws the label beside the box and names the box by it; a hidden label still names it', () => {
+    const { rtl } = renderDynamicForm({
+      schema: boolSchema(),
+      uiSchema: buildSingleFieldUiSchema('agreed', {}),
+      zodSchema: z.object({ agreed: z.boolean() }),
+      formData: { agreed: false },
+    });
+    expect(getBox()).toHaveAccessibleName('I agree');
+    expect(document.querySelector('label[for="root_agreed"]')).toHaveTextContent('I agree');
+    expect(document.querySelector('label[for="root_agreed"]')).not.toHaveClass('sr-only');
+    rtl.unmount();
+    renderDynamicForm({
+      schema: boolSchema(),
+      uiSchema: buildSingleFieldUiSchema('agreed', { 'ui:options': { label: false } }),
+      zodSchema: z.object({ agreed: z.boolean() }),
+      formData: { agreed: false },
+    });
+    expect(getBox()).toHaveAccessibleName('I agree');
+    expect(document.querySelector('label[for="root_agreed"]')).toHaveClass('sr-only');
+  });
+
   it('toggles to checked when clicked and submits the boolean value', async () => {
     const { user, submit, onSubmit } = renderDynamicForm({
       schema: boolSchema(true),

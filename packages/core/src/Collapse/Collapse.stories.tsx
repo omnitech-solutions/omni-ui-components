@@ -6,7 +6,7 @@ import {
   ServicesSmall,
 } from 'factories/omni-ui-components/Collapse/Collapse.factories';
 import { expect, userEvent, within } from 'storybook/test';
-import { exampleDocs } from 'storybook-helpers/internal/support/sourceSnippet';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
 import factories from './Collapse.factories.tsx?raw';
 
 const meta: Meta<typeof Collapse> = {

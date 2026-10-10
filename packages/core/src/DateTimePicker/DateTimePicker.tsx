@@ -63,6 +63,7 @@ export const DateTimePicker = React.memo(
           descriptionId={descriptionId}
           errorId={errorId}
           labelTag="span"
+          labelId={label ? `${id}-label` : undefined}
           wrapperClassName={wrapperClassName}
           labelClassName={labelClassName}
         >
@@ -71,6 +72,8 @@ export const DateTimePicker = React.memo(
             id={id}
             invalid={isInvalid}
             required={required}
+            // The label is a span over two controls: each is named by it.
+            aria-labelledby={label ? `${id}-label` : undefined}
             aria-describedby={describedBy}
             className={className}
             {...primitiveProps}

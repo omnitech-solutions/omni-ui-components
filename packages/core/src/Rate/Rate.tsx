@@ -8,7 +8,11 @@ export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'o
   defaultValue?: number;
   disabled?: boolean;
   onChange?: (value: number) => void;
+  /** Names a star for assistive technology. Defaults to `1 star`, `2 stars`, … */
+  starLabel?: (value: number, count: number) => string;
 }
+
+const defaultStarLabel = (value: number) => `${value} ${value === 1 ? 'star' : 'stars'}`;
 
 export function Rate({
   count = 5,
@@ -16,6 +20,7 @@ export function Rate({
   defaultValue = 0,
   disabled,
   onChange,
+  starLabel = defaultStarLabel,
   className,
   ...props
 }: RateProps) {
@@ -38,10 +43,13 @@ export function Rate({
             key={index}
             type="button"
             disabled={disabled}
+            aria-label={starLabel(index + 1, count)}
+            aria-pressed={selected}
             onClick={() => select(index + 1)}
             className="disabled:cursor-not-allowed"
           >
             <Star
+              aria-hidden="true"
               className={cn(
                 'h-5 w-5',
                 selected ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground',

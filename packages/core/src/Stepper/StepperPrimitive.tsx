@@ -85,7 +85,6 @@ const StepperPrimitiveInner = React.forwardRef<HTMLDivElement, StepperPrimitiveP
         aria-describedby={ariaDescribedBy}
         aria-label={ariaLabel}
         aria-invalid={invalid || undefined}
-        aria-required={required || undefined}
         className={cn(
           'inline-flex items-center gap-1 rounded-full border border-[var(--oui-border-field)] bg-muted/40 px-2 min-w-fit whitespace-nowrap',
           heightClass,

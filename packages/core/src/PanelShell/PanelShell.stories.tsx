@@ -6,6 +6,8 @@ import {
   panelShellVariants,
 } from 'factories/omni-ui-components/PanelShell/PanelShell.factories';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './PanelShell.factories.tsx?raw';
 
 const meta: Meta<PanelShellProps> = {
   title: 'omni-ui-components/PanelShell',
@@ -85,7 +87,7 @@ export const NarrowPanel: Story = { args: panelShellVariants[3].args };
  * the ModelPicker, EmptyStarters or Transcript, the composer, SettingsDialog and a Toast with Undo).
  */
 export const ChatShell: Story = {
-  parameters: { layout: 'fullscreen' },
+  parameters: { layout: 'fullscreen', ...exampleDocs(exampleSource, 'ChatShellDemo') },
   render: () => <ChatShellDemo />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

@@ -4,6 +4,7 @@ import { expect, within } from 'storybook/test';
 
 const meta: Meta = {
   title: 'omni-ui-components/Theming',
+  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: {

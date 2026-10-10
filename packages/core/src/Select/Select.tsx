@@ -25,8 +25,11 @@ const SelectInner = React.forwardRef<HTMLSelectElement, SelectProps>(
     },
     ref,
   ) => {
-    const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
+    const { id, isInvalid, descriptionId, errorId, requiredId, describedBy } = useFieldChrome({
       id: idProp,
+      required,
+      // The control cannot carry `aria-required`: it is described by a hidden "Required" hint instead.
+      requiredHint: true,
       label,
       description,
       error,
@@ -43,6 +46,7 @@ const SelectInner = React.forwardRef<HTMLSelectElement, SelectProps>(
         required={required}
         descriptionId={descriptionId}
         errorId={errorId}
+        requiredId={requiredId}
         wrapperClassName={wrapperClassName}
         labelClassName={labelClassName}
       >
@@ -51,7 +55,6 @@ const SelectInner = React.forwardRef<HTMLSelectElement, SelectProps>(
           id={id}
           invalid={isInvalid}
           aria-describedby={describedBy}
-          aria-required={required || undefined}
           aria-invalid={isInvalid || undefined}
           className={cn(layout === 'horizontal' && 'flex-1', className)}
           {...primitiveProps}

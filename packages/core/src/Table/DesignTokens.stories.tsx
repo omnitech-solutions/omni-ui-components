@@ -365,6 +365,8 @@ const meta: Meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
+    // A reference page with its own contents list: no frame around it.
+    example: { frame: false },
     docs: {
       description: {
         component:

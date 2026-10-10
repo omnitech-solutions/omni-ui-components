@@ -129,6 +129,16 @@ describe('omni-ui-components/ConversationHeader', () => {
     spy.mockRestore();
   });
 
+  it('a header shown already renaming focuses its field without scrolling the page to it', async () => {
+    const focus = vi.spyOn(HTMLElement.prototype, 'focus');
+    render(<ConversationHeader {...conversationHeaderPropsFactory({ renaming: true })} />);
+    const field = screen.getByRole('textbox', { name: 'Conversation title' });
+    await waitFor(() => expect(field).toHaveFocus());
+    expect(focus).toHaveBeenCalledWith({ preventScroll: true });
+    expect(focus).not.toHaveBeenCalledWith();
+    focus.mockRestore();
+  });
+
   it('renaming can be controlled and honours maxLength', () => {
     const { rerender } = render(
       <ConversationHeader {...conversationHeaderPropsFactory({ renaming: true, maxLength: 10 })} />,

@@ -27,7 +27,7 @@ export const SegmentedPill: React.FC<SegmentedPillProps> = ({ segments, classNam
           ? 'border-l border-[color:color-mix(in_srgb,var(--oui-border-field)_84%,white_16%)]'
           : '',
         segment.tinted
-          ? 'bg-[color:color-mix(in_srgb,var(--color-border)_70%,transparent)] tabular-nums text-muted-foreground'
+          ? 'bg-[color:color-mix(in_srgb,var(--color-border)_70%,transparent)] tabular-nums pb-muted'
           : '',
         segment.uppercase ? 'uppercase tracking-wider text-foreground/90' : '',
         segment.className ?? '',

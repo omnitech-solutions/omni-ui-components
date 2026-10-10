@@ -18,6 +18,8 @@ export interface InputOTPPrimitiveProps {
   disabled?: boolean;
   required?: boolean;
   invalid?: boolean;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
   'aria-describedby'?: string;
   'data-testid'?: string;
   className?: string;
@@ -57,6 +59,8 @@ export const InputOTPPrimitive = React.forwardRef<HTMLInputElement, InputOTPPrim
         defaultValue={defaultValue}
         onChange={onChange}
         disabled={disabled}
+        aria-label={rest['aria-label']}
+        aria-labelledby={rest['aria-labelledby']}
         aria-describedby={rest['aria-describedby']}
         aria-invalid={invalid || undefined}
         aria-required={required || undefined}

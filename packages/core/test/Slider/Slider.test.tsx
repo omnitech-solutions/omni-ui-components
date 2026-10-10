@@ -79,4 +79,22 @@ describe('omni-ui-components/Slider', () => {
       expect(root).toHaveAttribute('data-disabled');
     });
   });
+
+  describe('name and required', () => {
+    it('names the thumb (the slider a screen reader meets) by the label, or by aria-label', () => {
+      const { unmount } = renderSlider();
+      expect(screen.getByRole('slider')).toHaveAccessibleName(/Volume/);
+      unmount();
+      render(<Slider aria-label="Zoom" min={0} max={10} value={3} />);
+      expect(screen.getByRole('slider', { name: 'Zoom' })).toBeInTheDocument();
+    });
+
+    it('a required slider is described by the hidden "Required" hint and carries no aria-required', () => {
+      renderSlider({ required: true, description: 'Out of 100' });
+      const thumb = screen.getByRole('slider');
+      expect(thumb).toHaveAccessibleDescription('Required Out of 100');
+      expect(thumb).not.toHaveAttribute('aria-required');
+      expect(screen.getByTestId('s')).not.toHaveAttribute('aria-required');
+    });
+  });
 });

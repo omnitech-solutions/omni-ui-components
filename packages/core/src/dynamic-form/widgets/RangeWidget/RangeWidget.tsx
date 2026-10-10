@@ -5,7 +5,7 @@ import { useStableRjsfCallbacks } from '../../lib/useStableRjsfCallbacks';
 
 /** RJSF Range widget — slider for numeric schemas. */
 export const RangeWidget = (props: WidgetProps) => {
-  const { id, value, disabled, readonly, rawErrors, options, schema } = props;
+  const { id, value, disabled, readonly, rawErrors, options, schema, label } = props;
   const { onChange } = useStableRjsfCallbacks<number | number[]>(props, (next) => next);
 
   const { min, max, step } = rangeSpec(schema);
@@ -22,6 +22,8 @@ export const RangeWidget = (props: WidgetProps) => {
       step={resolvedStep}
       disabled={disabled || readonly}
       invalid={Boolean(rawErrors?.length)}
+      // The field template's label points at the slider's root; the thumb is named here.
+      aria-label={label || schema.title || undefined}
       onChange={onChange}
     />
   );

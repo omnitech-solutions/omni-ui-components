@@ -8,7 +8,7 @@
  *
  * Usage in a fixtures module:
  *
- *     import { registerFixtures } from '.../ShowCodePanel/fixtureRegistry';
+ *     import { registerFixtures } from 'storybook-helpers/internal/support';
  *     export const defaultColumns = […];
  *     export const projects = […];
  *     registerFixtures({ defaultColumns, projects });

@@ -6,10 +6,8 @@ import { largeProjects, type ProjectRecord, wideProjectColumns } from './Table.s
 
 const meta: Meta = {
   title: 'omni-ui-components/Table/Virtualization',
-  // No `autodocs` tag — the autodocs page renders every story simultaneously,
-  // which forces 5 large virtualized tables (150 + 20 + 40 + 40 + 150 records)
-  // to mount inside containers the virtualizer can't measure reliably. Open
-  // each story directly for the interactive preview instead.
+  // The docs page mounts a story when it comes near the window, so the large tables are not all measured at once.
+  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: {

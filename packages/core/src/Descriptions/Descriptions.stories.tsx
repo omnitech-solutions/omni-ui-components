@@ -5,7 +5,7 @@ import {
   ReleaseSmall,
 } from 'factories/omni-ui-components/Descriptions/Descriptions.factories';
 import { expect, within } from 'storybook/test';
-import { exampleDocs } from 'storybook-helpers/internal/support/sourceSnippet';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
 import factories from './Descriptions.factories.tsx?raw';
 
 const meta: Meta<typeof Descriptions> = {

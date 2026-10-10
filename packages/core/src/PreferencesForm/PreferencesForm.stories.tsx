@@ -9,6 +9,8 @@ import {
   preferencesFormVariants,
 } from 'factories/omni-ui-components/PreferencesForm/PreferencesForm.factories';
 import { expect, fn, userEvent, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './PreferencesForm.factories.tsx?raw';
 
 const meta: Meta<PreferencesFormProps> = {
   title: 'omni-ui-components/PreferencesForm',
@@ -84,6 +86,7 @@ export const OnChange: Story = {
 /** The memory switch and Forget change the list. */
 export const MemoryInteractive: Story = {
   render: () => <PreferencesFormDemo />,
+  parameters: exampleDocs(exampleSource, 'PreferencesFormDemo'),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(

@@ -44,8 +44,11 @@ export const ColorPicker = React.memo(
       },
       ref,
     ) => {
-      const { id, isInvalid, descriptionId, errorId, describedBy } = useFieldChrome({
+      const { id, isInvalid, descriptionId, errorId, requiredId, describedBy } = useFieldChrome({
         id: idProp,
+        required,
+        // The control cannot carry `aria-required`: it is described by a hidden "Required" hint instead.
+        requiredHint: true,
         label,
         description,
         error,
@@ -62,6 +65,7 @@ export const ColorPicker = React.memo(
           required={required}
           descriptionId={descriptionId}
           errorId={errorId}
+          requiredId={requiredId}
           labelTag="span"
           wrapperClassName={wrapperClassName}
           labelClassName={labelClassName}

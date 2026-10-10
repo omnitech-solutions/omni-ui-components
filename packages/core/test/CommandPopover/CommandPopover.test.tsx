@@ -54,6 +54,40 @@ describe('omni-ui-components/CommandPopover', () => {
     await userEvent.click(options[1]);
     expect(onSelect).toHaveBeenCalledWith(slashCommands()[1], 1);
   });
+  it('brings the highlighted option into view by scrolling the list only, never the page', () => {
+    // A list 100px tall holding options 40px tall: the fourth one starts at 120.
+    const heights = vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(100);
+    const scrolls = vi.spyOn(HTMLElement.prototype, 'scrollHeight', 'get').mockReturnValue(400);
+    const optionHeights = vi
+      .spyOn(HTMLElement.prototype, 'offsetHeight', 'get')
+      .mockReturnValue(40);
+    const rects = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function rect(this: HTMLElement) {
+        const at = this.getAttribute('role') === 'option' ? Number(this.id.split('-').pop()) : 0;
+        const scrolled = this.getAttribute('role') === 'option' ? this.parentElement!.scrollTop : 0;
+        return { top: at * 40 - scrolled, left: 0, width: 0, height: 40 } as DOMRect;
+      });
+    const page = vi.fn();
+    const original = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = page;
+    try {
+      const { rerender } = render(
+        <CommandPopover {...commandPopoverPropsFactory({ activeIndex: 0 })} />,
+      );
+      const list = screen.getByRole('listbox', { name: 'Commands' });
+      expect(list.scrollTop).toBe(0);
+      rerender(<CommandPopover {...commandPopoverPropsFactory({ activeIndex: 3 })} />);
+      expect(list.scrollTop).toBe(60);
+      rerender(<CommandPopover {...commandPopoverPropsFactory({ activeIndex: 0 })} />);
+      expect(list.scrollTop).toBe(0);
+      expect(page).not.toHaveBeenCalled();
+    } finally {
+      HTMLElement.prototype.scrollIntoView = original;
+      for (const spy of [heights, scrolls, optionHeights, rects]) spy.mockRestore();
+    }
+  });
+
   it('shows Nothing matches, or nothing when hideWhenEmpty', () => {
     const { rerender } = render(<CommandPopover {...commandPopoverPropsFactory({ items: [] })} />);
     expect(screen.getByText('Nothing matches')).toBeInTheDocument();

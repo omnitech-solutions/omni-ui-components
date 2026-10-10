@@ -10,6 +10,8 @@ import {
 import { ComposerDemo } from 'factories/omni-ui-components/Composer/Composer.factories';
 import * as React from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './CommandPopover.stories.tsx?raw';
 
 const meta: Meta<CommandPopoverProps> = {
   title: 'omni-ui-components/CommandPopover',
@@ -163,6 +165,7 @@ const ClippedDemo: React.FC = () => {
  */
 export const NotClippedInPortal: StoryObj = {
   render: () => <ClippedDemo />,
+  parameters: exampleDocs(exampleSource, 'ClippedDemo'),
   play: async ({ canvasElement }) => {
     const clip = within(canvasElement).getByTestId('clip');
     const popover = document.querySelector('[data-slot="command-popover"]') as HTMLElement;

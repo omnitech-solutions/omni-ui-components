@@ -22,7 +22,16 @@ export default meta;
 
 type Story = StoryObj<typeof Divider>;
 
-export const Default: Story = {};
+/** A rule between two blocks of content. */
+export const Default: Story = {
+  render: (args) => (
+    <div className="flex flex-col gap-3">
+      <p className="m-0">Billing details</p>
+      <Divider {...args} />
+      <p className="m-0">Payment history</p>
+    </div>
+  ),
+};
 export const WithLabel: Story = { args: { children: 'OR' } };
 export const Vertical: Story = {
   render: () => (

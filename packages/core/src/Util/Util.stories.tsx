@@ -1,7 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { clamp, isNil } from './index';
 
-const meta = { title: 'omni-ui-components/Util' } satisfies Meta;
+const meta = {
+  title: 'omni-ui-components/Util',
+  tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Small helpers the components share: `clamp(value, min, max)`, `isNil(value)` and `warning(condition, message)`.',
+      },
+    },
+  },
+} satisfies Meta;
 export default meta;
 export const Default: StoryObj<typeof meta> = {
   render: () => (

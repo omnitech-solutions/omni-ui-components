@@ -3,7 +3,6 @@ import * as React from 'react';
 import '../internal/support/overview.css';
 import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
 import { Table } from '@oc-tech/omni-ui-components/Table';
-import fixtureSource from '../../packages/core/src/Table/Table.factories.tsx?raw';
 import {
   clientFilters,
   type DocCellData,
@@ -23,23 +22,41 @@ import {
   storyTableRegistry,
   wideProjectColumns,
 } from '../../packages/core/src/Table/Table.story.fixtures';
-import {
-  InlineCode,
-  SegmentedPill,
-  ShowCodePanel,
-  TableOfContents,
-  type TocItem,
-  useIsDark,
-} from '../internal/support';
 import { ComponentLink } from '../internal/support/ComponentLink';
-import { buildSourceSnippet } from '../internal/support/sourceSnippet';
-import themeSource from '../internal/support/useIsDark.ts?raw';
-import source from './TableOverview.stories.tsx?raw';
+import { ExampleFrame } from '../internal/support/ExampleFrame';
+import { InlineCode } from '../internal/support/InlineCode';
+import { SegmentedPill } from '../internal/support/SegmentedPill';
+import { TableOfContents, type TocItem } from '../internal/support/TableOfContents';
+import { useIsDark } from '../internal/support/useIsDark';
+
+// The code of a row is cut from this file and the fixtures as they are written. Their text and the parser that
+// reads it are requested the first time a row's code is opened or copied, not with the page.
+let snippetSources: Promise<{ build: (target: string) => string }> | undefined;
+const loadSnippetSources = () => {
+  snippetSources ??= Promise.all([
+    import('../internal/support/sourceSnippet'),
+    import('./TableOverview.stories.tsx?raw').then((module) => module.default),
+    import('../../packages/core/src/Table/Table.factories.tsx?raw').then(
+      (module) => module.default,
+    ),
+    import('../internal/support/useIsDark.ts?raw').then((module) => module.default),
+  ]).then(([{ buildSourceSnippet }, source, fixtureSource, themeSource]) => ({
+    build: (target: string) =>
+      buildSourceSnippet(source, target, {
+        '../../packages/core/src/Table/Table.story.fixtures': fixtureSource,
+        '../internal/support/useIsDark': themeSource,
+      }),
+  }));
+  return snippetSources;
+};
 
 const meta: Meta = {
   title: 'Getting Started/Table Overview',
   parameters: {
     layout: 'fullscreen',
+    // The page is its own frame, and the Table is checked for accessibility in its own stories.
+    example: { frame: false },
+    a11y: { test: 'off' },
     docs: {
       description: {
         component:
@@ -111,30 +128,29 @@ interface SubComponentRowProps {
   chips?: string[];
   description: React.ReactNode;
 
-  language?: string;
   children: React.ReactNode;
 }
 
-const previewSources = (children: React.ReactNode): Record<string, string> => {
-  const snippets: Record<string, string> = {};
+/** The preview components among a row's children, by the name their code is cut from. */
+const previewTargets = (children: React.ReactNode): string[] => {
+  const targets: string[] = [];
   React.Children.forEach(children, (child) => {
     if (!React.isValidElement(child)) return;
     const target = typeof child.type === 'function' ? PREVIEW_SOURCES.get(child.type) : undefined;
-    if (target) {
-      snippets[target.replace(/Preview$/, '')] = buildSourceSnippet(source, target, {
-        '../../packages/core/src/Table/Table.story.fixtures': fixtureSource,
-        '../internal/support': themeSource,
-      });
-    } else Object.assign(snippets, previewSources(child.props.children));
+    if (target) targets.push(target);
+    else targets.push(...previewTargets((child.props as { children?: React.ReactNode }).children));
   });
-  return snippets;
+  return targets;
 };
 
-const codeForPreviews = (children: React.ReactNode) => {
-  const snippets = previewSources(children);
-  const entries = Object.entries(snippets);
-  return entries.length === 1 ? { '': entries[0][1] } : snippets;
-};
+/** True when the row holds sections the table of contents links to: they must be in the page from the start. */
+const hasAnchors = (children: React.ReactNode): boolean =>
+  React.Children.toArray(children).some(
+    (child) =>
+      React.isValidElement(child) &&
+      (Boolean((child.props as { id?: string }).id) ||
+        hasAnchors((child.props as { children?: React.ReactNode }).children)),
+  );
 
 const SubComponentRow = ({
   id,
@@ -143,33 +159,53 @@ const SubComponentRow = ({
   ic,
   description,
   chips,
-  language = 'tsx',
   children,
-}: SubComponentRowProps) => (
-  <div id={id} className="pb-overview-row">
-    <div className="pb-overview-row-header">
-      <SegmentedPill
-        segments={[
-          { content: number, uppercase: true, tinted: true },
-          { content: <ComponentLink component="Table">{name}</ComponentLink>, uppercase: true },
-          { content: <InlineCode code={ic} /> },
-        ]}
-      />
-    </div>
-    <div className="pb-overview-description">{description}</div>
-    {chips && (
-      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-        {chips.map((chip) => (
-          <span key={chip} className="rounded border px-2 py-1">
-            {chip}
-          </span>
-        ))}
-      </div>
-    )}
-    <div className="pb-overview-row-preview">{children}</div>
-    <ShowCodePanel code={codeForPreviews(children)} language={language} />
-  </div>
-);
+}: SubComponentRowProps) => {
+  const names = previewTargets(children).join(' ');
+  // One snippet, or a labelled one a preview when the row shows several.
+  const code = React.useCallback(async () => {
+    const sources = await loadSnippetSources();
+    const targets = names.split(' ').filter(Boolean);
+    if (targets.length === 1) return sources.build(targets[0]);
+    return Object.fromEntries(
+      targets.map((target) => [target.replace(/Preview$/, ''), sources.build(target)]),
+    );
+  }, [names]);
+  return (
+    <ExampleFrame
+      id={id}
+      className="pb-overview-row"
+      defer={!hasAnchors(children)}
+      deferHeight={260}
+      code={names ? code : undefined}
+      header={
+        <div className="pb-overview-row-header">
+          <SegmentedPill
+            segments={[
+              { content: number, uppercase: true, tinted: true },
+              { content: <ComponentLink component="Table">{name}</ComponentLink>, uppercase: true },
+              { content: <InlineCode code={ic} /> },
+            ]}
+          />
+        </div>
+      }
+      description={description}
+      meta={
+        chips ? (
+          <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
+            {chips.map((chip) => (
+              <span key={chip} className="rounded border px-2 py-1">
+                {chip}
+              </span>
+            ))}
+          </div>
+        ) : null
+      }
+    >
+      {children}
+    </ExampleFrame>
+  );
+};
 
 const GroupHeader = ({
   id,

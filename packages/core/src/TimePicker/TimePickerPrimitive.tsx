@@ -20,6 +20,8 @@ export interface TimePickerPrimitiveProps extends RootProps {
   readOnly?: boolean;
   className?: string;
   'aria-describedby'?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
   'data-testid'?: string;
 }
 
@@ -43,6 +45,8 @@ const TimePickerPrimitiveInner = React.forwardRef<HTMLInputElement, TimePickerPr
       invalid,
       className,
       'aria-describedby': ariaDescribedBy,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
       ...rest
     },
     ref,
@@ -69,6 +73,8 @@ const TimePickerPrimitiveInner = React.forwardRef<HTMLInputElement, TimePickerPr
           readOnly={readOnly}
           required={required}
           aria-invalid={invalid || undefined}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
           data-slot="time-picker"
           data-testid={testId}

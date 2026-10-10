@@ -104,7 +104,6 @@ const SelectPrimitiveInner = React.forwardRef<HTMLSelectElement, SelectPrimitive
             data-placeholder={isPlaceholder || undefined}
             data-open={open || undefined}
             aria-invalid={isInvalid || undefined}
-            aria-required={(rest as { 'aria-required'?: boolean })['aria-required'] || undefined}
             aria-describedby={(rest as { 'aria-describedby'?: string })['aria-describedby']}
             aria-haspopup="listbox"
             aria-expanded={open}

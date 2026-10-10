@@ -15,7 +15,16 @@ const columns: TableColumn<ProjectRecord>[] = [
 const meta: Meta<typeof Table<ProjectRecord>> = {
   title: 'omni-ui-components/Table/Extendable',
   component: Table,
-  parameters: { layout: 'padded' },
+  tags: ['autodocs'],
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        component:
+          'A table that grows: `extendable.rows` and `extendable.columns` add an append control under the last row and after the last column, with factories for what is appended.',
+      },
+    },
+  },
 };
 
 export default meta;

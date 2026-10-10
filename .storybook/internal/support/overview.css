@@ -11,7 +11,6 @@
   gap: 2.5rem;
   max-width: 1500px;
   margin-inline: auto;
-  align-items: start;
 }
 .pb-overview-main {
   min-width: 0;
@@ -28,7 +27,7 @@
   gap: 1rem;
 }
 .pb-shell-header p {
-  color: var(--color-muted-foreground);
+  color: var(--pb-chrome-muted);
   line-height: 1.8;
   margin-top: 1rem;
 }
@@ -64,76 +63,17 @@
   font-size: inherit;
   line-height: inherit;
 }
-.pb-overview-description {
-  color: var(--color-muted-foreground);
+.pb-overview-row .pb-example-description {
+  max-width: none;
+  font-size: 1rem;
   line-height: 1.7;
-  margin: 1rem 0;
+  margin: 1rem 0 0;
 }
-.pb-overview-row-preview {
-  min-width: 0;
-  margin: 1.25rem 0;
-  padding: 1.25rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
+.pb-overview-row .pb-example-header {
+  margin-bottom: 1.25rem;
+}
+.pb-overview-row .pb-example-preview {
   background: var(--color-card);
-  overflow-x: auto;
-}
-.pb-showcode {
-  min-width: 0;
-  border: 1px solid #52525b;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  color: #e4e4e7;
-  background: #1e1e1e;
-}
-.pb-showcode-toolbar {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.35rem;
-  background: #2a2a2a;
-  cursor: pointer;
-}
-.pb-showcode-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.6rem;
-  font-size: 0.75rem;
-  cursor: pointer;
-  border-radius: 0.25rem;
-}
-.pb-showcode-btn:hover {
-  background: #3f3f46;
-}
-.pb-showcode-body {
-  position: relative;
-  max-height: 38rem;
-  overflow: auto;
-}
-.pb-showcode-copy-abs {
-  position: sticky;
-  top: 0.5rem;
-  float: right;
-  right: 0.5rem;
-  z-index: 1;
-  background: #2a2a2a;
-}
-.pb-showcode-snippet-label {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-.pb-showcode-hide {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem;
-  background: #2a2a2a;
-  font-size: 0.75rem;
-  cursor: pointer;
 }
 /* A raised navigation icon distinguishes links while preserving the pill typography. */
 .pb-component-link {
@@ -163,29 +103,82 @@
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
 }
+/* The table of contents stays in view beside the content and scrolls on its own. The aside is as tall as the
+   content (the grid's default stretch), which is the room the sticky list travels in. */
+.pb-overview-layout > aside {
+  min-width: 0;
+}
+.pb-toc {
+  box-sizing: border-box;
+  position: sticky;
+  top: 1.5rem;
+}
+.pb-toc-body {
+  box-sizing: border-box;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 0.5rem;
+}
+.pb-toc-toggle {
+  display: none;
+}
+.pb-toc-top {
+  width: 100%;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+  color: var(--pb-chrome-muted);
+}
+.pb-toc-top:hover {
+  color: var(--color-foreground);
+}
+/* No room beside the content: a collapsed "Contents" control stays at the top of the window. */
 @media (max-width: 900px) {
   .pb-overview-layout {
     grid-template-columns: minmax(0, 1fr);
+    gap: 0;
   }
   .pb-overview-layout > aside {
+    order: -1;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding: 0.5rem 0;
+    background: var(--color-background);
+  }
+  .pb-overview-row {
+    scroll-margin-top: 4rem;
+  }
+  .pb-toc {
+    position: relative;
+    top: auto;
+  }
+  .pb-toc-toggle {
+    display: inline-flex;
+  }
+  .pb-toc[data-open='true'] .pb-toc-chevron {
+    transform: rotate(180deg);
+  }
+  .pb-toc-body {
     display: none;
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + 0.5rem);
+    max-height: min(70vh, 32rem);
+    padding: 0.75rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    background: var(--color-card);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+  }
+  .pb-toc[data-open='true'] .pb-toc-body {
+    display: block;
   }
   .pb-shell {
     padding: 0.5rem;
   }
 }
 
-.pb-showcode-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border-bottom: 1px solid #52525b;
-}
-.pb-showcode-tabs [aria-selected='true'] {
-  background: #3f3f46;
-  color: #93c5fd;
-}
 .pb-overview-stack {
   display: grid;
   gap: 2rem;

@@ -24,6 +24,7 @@ import {
   Textarea,
   TimePicker,
 } from '@oc-tech/omni-ui-components';
+import { Button } from '@oc-tech/omni-ui-components/Button';
 import type {
   FieldDef,
   FormFixture,
@@ -487,13 +488,9 @@ export function FormDemo<TFormData>({
       {actions !== undefined || submitLabel || fixture.submitLabel ? (
         <FormActions>
           {actions ?? (
-            <button
-              type="submit"
-              disabled={disabled || readOnly}
-              className="rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-            >
+            <Button type="submit" disabled={disabled || readOnly}>
               {submitLabel ?? fixture.submitLabel}
-            </button>
+            </Button>
           )}
         </FormActions>
       ) : null}

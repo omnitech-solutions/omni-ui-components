@@ -74,9 +74,15 @@ describe('omni-ui-components/Select', () => {
       expect(screen.getByTestId('s')).toHaveAttribute('aria-invalid', 'true');
     });
 
-    it('sets aria-required when required', () => {
-      renderSelect({ required: true });
-      expect(screen.getByTestId('s')).toHaveAttribute('aria-required', 'true');
+    it('a required select is described by a hidden "Required" hint, not by aria-required (a button cannot carry it)', () => {
+      const { unmount } = renderSelect({ required: true, description: 'Where you pay tax' });
+      const trigger = screen.getByTestId('s');
+      expect(trigger).not.toHaveAttribute('aria-required');
+      expect(trigger).toHaveAccessibleDescription('Required Where you pay tax');
+      unmount();
+      renderSelect();
+      expect(screen.getByTestId('s')).not.toHaveAccessibleDescription();
+      expect(screen.queryByText('Required')).not.toBeInTheDocument();
     });
 
     it('exposes aria-haspopup=listbox on the trigger', () => {

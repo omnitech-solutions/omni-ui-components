@@ -311,6 +311,224 @@ Compare timings only when the `loadAverage` recorded in `inventory.json` is belo
    the first open after starting the server, and was the machine busy? If it recurs once warm, a Chrome performance
    trace of that load would settle it.
 
+## Result (phase 2 of 2: the fix, 2026-10-09)
+
+Built in the working tree on `master`, not committed. Measured against a private dev server on port 6107 with its
+own `CACHE_DIR`; the owner's server on 6006 was only read. Evidence is in `storybook-audit/after/` (gitignored):
+`inventory.json` (all 1,044 entries), `sources.json` (852 docs code blocks), `a11y/final/a11y-dark.json` and
+`a11y-light.json` (every failing node of 862 stories in each theme), `shots/*.png` and `a11y/*.png`. The audit's
+own data is kept in `storybook-audit/before/`.
+
+### What was built
+
+One renderer, `ExampleFrame` (`.storybook/internal/support/ExampleFrame.tsx`, with `CodeDisclosure.tsx`,
+`exampleStore.ts`, `example.css`): a preview box, an optional title and description, and one code bar attached under
+it at the left, made of the library's ghost `Button`s ("Show code", "Copy code"; one copy control, nothing under the
+bar). It is used three ways:
+
+- Overview pages: each row is an `ExampleFrame` with `defer` (mounted when it comes within a viewport of the window,
+  behind a placeholder; the row, its anchor and its pill are in the page from the start).
+- Docs pages: `DocsPage` draws the primary story and every variant in an `ExampleFrame` around Storybook's bare
+  `Story` block. Storybook's `Canvas` and its bar are no longer used. Variants are deferred too.
+- Story view: the preview decorator draws the frame around Storybook's root (`ExampleFrame host`): the header and
+  the bar are siblings of `#storybook-root`, and the root itself becomes the preview box. Nothing is added inside
+  the story's element, so play functions and the a11y run see the story alone. (A frame inside the root broke
+  plays such as `queryByRole('button')` being null.) `parameters.example = { frame: false }` turns it off.
+
+The code shown is resolved in one place (`resolveExampleCode`), first match wins: what a story registered about
+itself (`ComponentWrapper`), `parameters.example.code` (`exampleDocs`, built on first open), a hand-written
+`parameters.docs.source.code`, the JSX Storybook's React renderer prints from the story's args (received on the
+channel in the story view and on docs pages alike), and last the example as written in the story file, reduced to
+its JSX (`storySourceToExample`). The highlighter (Prism light, TSX only, class names coloured by `example.css` for
+both themes) and the formatter are separate chunks loaded by `import()` on first open.
+
+### Per issue
+
+| Id | State | What was done |
+|---|---|---|
+| H1 | done | The hand-made bar is gone (`grep -r pb-showcode` finds nothing). Library ghost buttons, left-aligned, one copy control, no `role="button"` wrapper. |
+| H2 | done | Docs examples go through `ExampleFrame`; no Storybook bar, no empty card space under the bar. |
+| H3 | done | The global `docs.source.transform` and `formatArgs` are deleted. `--sources`: `unnamedComponent` 241 -> 0, `reactElementJson` 232 -> 0, `childrenAsAttribute` 50 -> 0, `bareTag` 100 -> 0, and no block prints a story object. 13 stories that render a demo component now show its real source through `exampleDocs`. |
+| H4 | done | The aside stretches, so the sticky list travels; it scrolls on its own and keeps the active link in view. All 38 + 136 links were clicked by script: the nav's top stays at 24 px and each target lands within 16 px of the top. |
+| H5 | done | `box-sizing` on the docs wrapper and sections; the API table, the controls table and the hero signature scroll or wrap in their own box. `overflow-narrow` on docs: 162 -> 2 (see Not done). |
+| H6 | done | See the timing table. In-view mounting, code on first open (the 124 raw factories files and the parser are requested on first open, not with the page), a11y off on the two overview stories, `content-visibility` on rows far from the window. |
+| H7 | done | Frame on by default in the story view; `layout` honoured (`padded` is now the stated default, `centered` centres, `fullscreen` has no padding and the full width). 854 of 862 stories show a code bar (57 before). Opted out: the two overview pages, the Native App showcase, Table Design Tokens, Table API, and the four Table showcases (which draw their own `ExampleFrame`). |
+| H8 | done | No entry has two bars (8 before). `ComponentWrapper` draws no panel: it registers its title, description and snippet with the frame. `ShowCodePanel`, `CodePanel`, `ShowcaseShell`, `Row` and `SubComponentRow` are deleted or folded in. |
+| M1 | done | Component Overview opens at `scrollY 0`. `CommandPopover` scrolls its own list, `ConversationHeader` focuses with `preventScroll`; both with tests. |
+| M2 | partly | See "Accessibility". Stories with violations 442 -> 108 (dark), 102 (light). |
+| M3 | done | The OutlineList play function asserts the live word and its meta line's text. 0 entries fail (1 before). |
+| M4 | done | `overflow-narrow` on stories: 252 -> 1. The preview box scrolls sideways and holds what an example positions absolutely. |
+| M5 | done | Below 900 px the table of contents is a sticky "Contents" control that opens the list. |
+| M6 | done | A Button story: 406 -> 107 requests, 38 -> 26 MB. No Prism language or Prettier request until a code panel is opened. |
+| M7 | done | The 20 titles have a docs page (the two overview pages stay without one, as intended): 182 docs entries, all load clean. Stub stories were given real examples (BackTop, Breadcrumb, Calendar, ConfigProvider, Icon, Message, Notification, Upload, HiddenWidget). |
+| M8 | done | Story descriptions are drawn through `renderCodeAwareText`; the `<primary>` console error is gone (0 console errors in the inventory). |
+| L1 | done | The active item is the last section at or above the reading line; the first item at the top of the page. |
+| L2 | not done | The Anchor examples still link to ids that do not exist (3 entries). |
+| L3 | partly | The frame's title makes an empty-at-rest story obvious; Divider "Default" now shows a rule between two lines. 14 entries still draw nothing in the root (portal-only or empty at rest). |
+| L4 | done | RichText no longer adds the underline extension twice (tested). |
+| L5 | done | `storySort` lists only the pages that exist. |
+| L6 | done | One row component; `ComponentWrapper`'s `minWidth: 600` is gone. |
+| L7 | not done | "Accessing the Story Store is deprecated" on StatusClock "With dev build tag": caller not traced. |
+| L8 | done | Upload "Default" no longer widens the page (`overflow-desktop` 1 -> 0). |
+
+### Numbers
+
+Full inventory (`node scripts/storybook-inventory.mjs`), 4 at a time, dark theme:
+
+| | Audit | Now |
+|---|---|---|
+| Entries | 1,021 | 1,044 (20 new docs pages, 3 new stories) |
+| ok / error / timeout | 1,020 / 1 / 0 | 1,044 / 0 / 0 |
+| Console errors, page errors | 1, 0 | 0, 0 |
+| Blank root | 16 | 14 |
+| Zero height | 2 | 0 |
+| Wider than a 1,280 px window | 1 | 0 |
+| Wider than a 400 px window: docs | 162 | 2 |
+| Wider than a 400 px window: stories | 252 | 1 |
+| Entries with two code bars | 8 | 0 |
+| Stories with a code bar | 57 | 854 |
+| Broken in-page anchors | 4 | 3 |
+| Stories with a11y violations | 442 | 108 |
+| Median content / settled, all entries | 572 / 1,193 ms | 344 / 962 ms (machine load 18) |
+| Median requests a story | 427 | 125 |
+
+Docs code (`--sources`): 825 blocks on 162 pages before, 852 on 182 now.
+
+| Counter | Audit | Now |
+|---|---|---|
+| `unnamedComponent` | 241 | 0 |
+| `reactElementJson` | 232 | 0 |
+| `childrenAsAttribute` | 50 | 0 |
+| `bareTag` | 100 | 0 |
+| story object printed as code | 0 | 0 |
+| blocks with no code or no bar | 0 | 0 |
+| `={() => {}}` placeholder handler | 464 | 447 (Storybook's own print of a function prop; left) |
+
+The four pages the owner named, warm, one at a time, load average 6.3 to 7.0 (three runs, all within 40 ms):
+
+| Page | Content | Settled | Requests | Decoded | Long tasks | DOM nodes |
+|---|---|---|---|---|---|---|
+| Table Overview, audit | 1.3 to 2.0 s | 2.7 to 3.7 s | 531 | 42 MB | 1.3 to 2.0 s | 2,819 |
+| Table Overview, now | 0.25 s | 0.76 s | 228 | 26 MB | 0.10 s | 1,299 |
+| Component Overview, audit | 3.6 to 3.9 s | 9.0 to 11.6 s | 1,223 | 65 MB | 6.6 to 9.1 s | 13,299 |
+| Component Overview, now | 0.62 to 0.65 s | 1.12 to 1.14 s | 784 | 47 MB | 0.10 s | 2,612 |
+| Button docs, audit | 0.5 to 0.8 s | 0.9 to 1.2 s | 410 | 39 MB | 0.3 s | 1,588 |
+| Button docs, now | 0.23 s | 0.75 s | 123 | 23 MB | 0.10 s | 726 |
+| Button "Ghost", audit | 0.4 to 0.7 s | 1.0 to 1.3 s | 406 | 38.6 MB | 0.2 s | 137 |
+| Button "Ghost", now | 0.21 s | 0.84 s | 107 | 26 MB | 0.16 s | 154 |
+
+First load after a server start (dependency cache kept, load average 15): Table Overview 2.0 s, Component Overview
+4.5 s (audit: 20.5 s and 12.8 s). All targets of section F are met except "DOM nodes at load under 2,500" on
+Component Overview (2,612: 136 rows of header and placeholder plus the 136-link list).
+
+### Accessibility (M2)
+
+Measured with `node scripts/storybook-inventory.mjs --a11y --theme dark|light` (new: every failing node with the
+colour pair the rule measured). The audit counted the dark theme only; light was as bad (415 stories).
+
+| Rule (stories / nodes) | Audit, dark | Now, dark | Now, light |
+|---|---|---|---|
+| Stories with any violation | 442 | 107 | 102 |
+| `color-contrast` | 389 / 2,905 | 51 / 81 | 43 / 112 |
+| `nested-interactive` | 67 / 246 | 10 / 10 | 10 / 10 |
+| `aria-allowed-attr` (critical) | 32 / 69 | 1 / 4 | 1 / 4 |
+| `aria-input-field-name` | 29 / 38 | 2 / 2 | 2 / 2 |
+| `aria-allowed-role` | 23 / 25 | 22 / 22 | 22 / 22 |
+| `label` (critical) | 22 / 36 | 0 | 0 |
+| `button-name` (critical) | 11 / 34 | 0 | 0 |
+| `scrollable-region-focusable` | 11 / 18 | 10 / 10 | 10 / 10 |
+| `landmark-unique` | 9 / 18 | 5 / 7 | 5 / 7 |
+| `empty-table-header` | 7 / 9 | 6 / 6 | 6 / 6 |
+| `label-title-only` | 6 / 9 | 0 | 0 |
+| `heading-order` | 3 / 3 | 3 / 3 | 3 / 3 |
+| `aria-conditional-attr` | 3 / 3 | 2 / 2 | 2 / 2 |
+| `landmark-no-duplicate-banner` | 3 / 3 | 0 | 0 |
+| `aria-dialog-name` | 2 / 2 | 2 / 2 | 2 / 2 |
+| `aria-required-children` | 2 / 2 | 1 / 1 | 1 / 1 |
+| `select-name` | 2 / 2 | 0 | 0 |
+| `aria-valid-attr-value` | 1 / 1 | 1 / 1 | 1 / 1 |
+
+No rule was disabled, on any story or globally, and `a11y.test` is still `'error'`. The only switch is the audit's
+decision 4: the a11y run is off on the two overview stories.
+
+Tokens changed (the bulk of the contrast failures; ratios are WCAG contrast, 4.5 needed for text):
+
+| Token | Theme | Was | Now | Contrast before -> after |
+|---|---|---|---|---|
+| `--oui-primary` (the seed; `--color-primary` follows) | both | `#1677ff` | `#146ceb` | white text on it 4.10 -> 4.80; as text on `#fafafa` 3.93 -> 4.60, on `#ffffff` 4.10 -> 4.80 |
+| `--color-primary-contrast` | dark | `#ffffffe0` | `#ffffff` | button text on the primary 3.52 -> 4.80 |
+| `--text-muted`, `--text-muted-alt`, `--text-semi-transparent-muted` | light | `#00000073` (45%) | `#0000008c` (55%) | on `#ffffff` 3.36 -> 4.74; on `#fafafa` 3.35 -> 4.68 |
+| same | dark | `#ffffff73` (45%) | `#ffffff96` (59%) | on `#1a1c1d` 4.44 -> 6.68; on a panel `#2f2f2f` 4.03 -> 5.70; on `#404040` 3.51 -> 4.78 |
+| `--oui-foreground-placeholder` | both | 32% of the foreground | 62% | dark on `#1d1d1d` 2.56 -> 5.84; light on `#fafafa` 2.01 -> 4.61 |
+| `--color-danger`, `--danger` (`--color-destructive` follows, now on every theme root) | light | `#ff4d4f` | `#d32f35` | as text on `#ffffff` 3.27 -> 4.97, on `#fafafa` 3.13 -> 4.76; white on it 3.27 -> 4.97 |
+| same | dark | `#ff4d4f` | `#ff6b6d` | as text on a panel `#2f2f2f` 4.10 -> 4.83 |
+| `--oui-panel-meta-fg` | light | `#6b7280` | `#566070` | on `#e4ebfb` 4.05 -> 5.32 |
+| same | dark | `#7d8aa3` | `#a4afc6` | on `#2f2f2f` 3.84 -> 6.07; on `#374054` 2.98 -> 4.71 |
+| `--oui-tone-success-solid-bg` | dark | `#2f9e55` | `#23874a` | white on it 3.42 -> 4.53 |
+| `--oui-tone-danger-solid-bg` | dark | `#d8453f` | `#cf3f39` | white on it 4.34 -> 4.75 |
+
+Before and after captures of Button, Tag, Badge, Input, Typography, a Table, CueCard, HeardLine (in the CueCard
+story), OutlineList and Panel, in both themes: `storybook-audit/after/a11y/before-*.png` and `after-*.png`.
+
+Two thirds of the failing nodes the first measurement found were not components at all but the Storybook's own
+chrome (inline code in the theme's primary, quiet text in the theme's muted colour): the chrome now has its own
+two colours (`--pb-chrome-muted`, `--pb-chrome-accent` in `example.css`), which read on the page and on a card.
+
+Component defects fixed, each with a test:
+
+- `aria-required` on an element whose role cannot carry it (Select, MultiSelect, DatePicker, ColorPicker, Slider,
+  Stepper): removed; a required control is described by a hidden "Required" hint from `FieldShell`
+  (`useFieldChrome({ required, requiredHint: true })`). RichText carries it on its textbox.
+- No name: the Slider thumb, the InputOTP input, the TagInput input, DateTimePicker's time field and date button,
+  the RichText textbox, the Rate stars, the Carousel buttons, and the dynamic-form checkbox (which had no label at
+  all) and range slider.
+- Contrast in a component rather than a token: TagInput and MultiSelect chips use the accent tone's text colour on
+  their tint; StreamStatus's timer lost its 80% opacity.
+
+Visual baselines: `pnpm test:visual` fails 6 of 10 (PanelsInThreeStates, Window1180, Window900, each in dark and
+light; 1% to 2% of pixels, same size). These are the token changes (muted text, panel meta text, placeholder).
+ToolbarStates and FooterStates still match. The baselines were NOT updated: that is the owner's decision. The
+actual and diff images are in `.vitest-attachments/` (untracked).
+
+### Not done, and what remains
+
+- M2 remainder, by rule (dark; light is the same within a few nodes):
+  - `color-contrast`, 51 stories / 81 nodes. Table rows at 50% opacity while dragged or disabled (20 nodes, 4
+    stories); the Button shortcut hint at 70% opacity on a solid accent button (7); the theme's primary used as
+    text on a dark surface (the dynamic-form label action link, Button "Link", Steps: 8; a single primary cannot be
+    both a fill for white text and text on a dark panel, so these want `--color-primary-dark` or a text token);
+    panel meta text on a selected row `#194580` (6); `--oui-tone-dim-fg` (2, dim on purpose); white on
+    `bg-destructive` in dark (2); the see-through Panel stories in light, whose backdrop axe reads as the
+    background (about 40 nodes, 5 stories, likely false positives that should be looked at one by one); the rest
+    are singles.
+  - `aria-allowed-role`, 22: the Composer textarea with `role="combobox"` in the examples that use the command
+    trigger (ARIA in HTML allows no other role on a textarea). It is what the factories pass through
+    `inputProps`; changing it changes what the library recommends, so it was left for a decision.
+  - `nested-interactive`, 10: the DatePicker trigger holds its "Clear date" button.
+  - `scrollable-region-focusable`, 10: ActionMenu's list, DataPrivacyPanel's log, the Splitter with `overflow`,
+    and three examples.
+  - `empty-table-header`, 6 (Table's expand and selection columns); `landmark-unique`, 5 (two DiffReviews or
+    Panels with the same name on one page); `heading-order`, 3 (dynamic-form array title is an `h5`);
+    `aria-conditional-attr`, 2 (Table's "select all" native checkbox with `aria-checked="mixed"`);
+    `aria-dialog-name`, 2 (Tour); `aria-input-field-name`, 2; `aria-allowed-attr`, 1 story (Radix's hidden menu
+    anchor in the Native App showcase); `aria-required-children`, 1; `aria-valid-attr-value`, 1.
+- The "Required" hint is the English word, with no prop to translate it yet.
+- dynamic-form widgets built on Select, MultiSelect, DatePicker, ColorPicker and Stepper lost the invalid
+  `aria-required` and do not yet get the hint (the dynamic-form field template would have to draw it).
+- H5/M4: three entries are still wider than a 400 px window: the Native App showcase docs page and one of its
+  stories (a desktop window by design, 15 px over), and OutlineList docs (a long signature in the hero).
+- Docs page in the light theme: the frame and code bar are right, but Storybook's own docs theme is fixed to dark
+  (`docs.theme: themes.dark`), so the API table's stripes and some headings are dark-on-light there. Not part of
+  this round.
+- Stories whose render wraps the component in a local helper print the helper (`<Renderer …>`, `<Stage>`), which
+  is what runs but not what a consumer writes: about 30 blocks (FileUpload, InputOTP, TagInput, DiffReview). They
+  want `exampleDocs` like the others.
+- L2, L7, and the rest of L3, as in the table.
+- Checks run at the end: `pnpm verify` passes (229 test files, 2,279 tests, typecheck, Biome, build);
+  `pnpm test:storybook` passes (184 files, 862 stories, every play function); `pnpm test:visual` fails 6 of 10 as
+  described above.
+- Not checked: Firefox and Safari, and a production `storybook build`.
+
 ## Not checked
 
 - Light theme (one dark capture per entry, as asked).

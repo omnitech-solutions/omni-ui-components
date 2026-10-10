@@ -13,7 +13,7 @@ import {
 } from 'factories/omni-ui-components/Splitter/Splitter.factories';
 import type * as React from 'react';
 import { expect, userEvent, within } from 'storybook/test';
-import { exampleDocs } from 'storybook-helpers/internal/support/sourceSnippet';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
 import factories from './Splitter.factories.tsx?raw';
 
 const meta: Meta<SplitterProps> = {

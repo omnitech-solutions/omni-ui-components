@@ -1,12 +1,14 @@
 import { Table } from '@oc-tech/omni-ui-components/Table';
 import type { Meta, StoryObj } from '@storybook/react';
 import type * as React from 'react';
+import { ExampleFrame } from 'storybook-helpers/internal/support/ExampleFrame';
 import { type InvoiceLineRecord, invoiceColumns, invoiceLines } from '../Table.story.fixtures';
-import { ShowcaseShell } from './ShowcaseShell';
 
 const meta: Meta = {
   title: 'omni-ui-components/Table/Showcase/Invoice line items',
-  parameters: { layout: 'fullscreen' },
+  tags: ['autodocs'],
+  // The story is a page of its own: it draws its frame itself, with the scenario as the description.
+  parameters: { layout: 'padded', example: { frame: false } },
 };
 export default meta;
 
@@ -50,9 +52,10 @@ const CODE = `const renderSubtotal = (records) => {
 
 export const Default: StoryObj = {
   render: () => (
-    <ShowcaseShell
+    <ExampleFrame
+      eyebrow="Showcase"
       title="Invoice line items"
-      scenario="A stripped invoice-detail grid: no pagination, money-typed totals, unbordered rows, and a live subtotal footer computed from the current dataSource via the `summary` prop. This is the shape a Projects billing view drops the Table component into."
+      description="A stripped invoice-detail grid: no pagination, money-typed totals, unbordered rows, and a live subtotal footer computed from the current dataSource via the `summary` prop. This is the shape a Projects billing view drops the Table component into."
       code={CODE}
     >
       <Table<InvoiceLineRecord>
@@ -63,6 +66,6 @@ export const Default: StoryObj = {
         summary={renderSubtotal}
         testIdPrefix="showcase-invoice"
       />
-    </ShowcaseShell>
+    </ExampleFrame>
   ),
 };

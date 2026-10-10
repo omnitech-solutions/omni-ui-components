@@ -34,16 +34,16 @@ export function FormStoryShell<TFormData>(props: FormStoryShellProps<TFormData>)
           data-testid="errors"
           className="mb-3 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-xs"
         >
-          <h3 className="mb-2 text-sm font-semibold text-destructive">
+          <h3 className="mb-2 text-sm font-semibold text-foreground">
             Validation errors ({errors.length})
           </h3>
           <ul className="divide-y divide-destructive/20 font-mono">
             {errors.map((e, i) => (
               <li key={i} className="flex items-baseline gap-3 py-1">
-                <span className="min-w-[8rem] shrink-0 font-semibold text-destructive">
+                <span className="min-w-[8rem] shrink-0 font-semibold text-foreground">
                   {e.path.length ? e.path.join('.') : '(form)'}
                 </span>
-                <span className="flex-1 text-destructive/90">{e.message}</span>
+                <span className="flex-1 text-foreground">{e.message}</span>
               </li>
             ))}
           </ul>
@@ -54,12 +54,12 @@ export function FormStoryShell<TFormData>(props: FormStoryShellProps<TFormData>)
           data-testid="submitted"
           className="mb-3 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs"
         >
-          <h3 className="mb-2 text-sm font-semibold text-emerald-300">Submitted payload</h3>
+          <h3 className="mb-2 text-sm font-semibold text-foreground">Submitted payload</h3>
           <ul className="divide-y divide-emerald-500/20 font-mono">
             {Object.entries(submitted as Record<string, unknown>).map(([k, v]) => (
               <li key={k} className="flex items-baseline gap-3 py-1">
-                <span className="min-w-[8rem] shrink-0 font-semibold text-emerald-300">{k}</span>
-                <span className="flex-1 text-emerald-200/90">{JSON.stringify(v)}</span>
+                <span className="min-w-[8rem] shrink-0 font-semibold text-foreground">{k}</span>
+                <span className="flex-1 text-foreground">{JSON.stringify(v)}</span>
               </li>
             ))}
           </ul>

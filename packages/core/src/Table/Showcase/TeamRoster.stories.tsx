@@ -2,7 +2,7 @@ import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
 
 import { Table } from '@oc-tech/omni-ui-components/Table';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ShowcaseShell } from './ShowcaseShell';
+import { ExampleFrame } from 'storybook-helpers/internal/support/ExampleFrame';
 
 interface TeamMember {
   id: string;
@@ -109,7 +109,9 @@ const rosterColumns: TableColumn<TeamMember>[] = [
 
 const meta: Meta = {
   title: 'omni-ui-components/Table/Showcase/Team roster',
-  parameters: { layout: 'fullscreen' },
+  tags: ['autodocs'],
+  // The story is a page of its own: it draws its frame itself, with the scenario as the description.
+  parameters: { layout: 'padded', example: { frame: false } },
 };
 export default meta;
 
@@ -135,9 +137,10 @@ const rosterColumns: TableColumn<TeamMember>[] = [
 
 export const Default: StoryObj = {
   render: () => (
-    <ShowcaseShell
+    <ExampleFrame
+      eyebrow="Showcase"
       title="Team roster"
-      scenario="A settings page's team roster with mixed states (Active / Invited / Deactivated), billable flag, right-aligned money column, sortable name, and filterable role + status columns. Realistic data shape for a Company > Team view."
+      description="A settings page's team roster with mixed states (Active / Invited / Deactivated), billable flag, right-aligned money column, sortable name, and filterable role + status columns. Realistic data shape for a Company > Team view."
       code={CODE}
     >
       <Table<TeamMember>
@@ -148,6 +151,6 @@ export const Default: StoryObj = {
         pagination={{ defaultPageSize: 10, placement: ['bottomEnd'] }}
         testIdPrefix="showcase-team-roster"
       />
-    </ShowcaseShell>
+    </ExampleFrame>
   ),
 };

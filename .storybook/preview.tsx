@@ -1,35 +1,70 @@
 import { withThemeByDataAttribute } from '@storybook/addon-themes';
 import type { Preview } from '@storybook/react';
+import * as React from 'react';
 import { themes } from 'storybook/theming';
-import { DocsPage } from './internal/support';
+import { renderCodeAwareText } from './internal/support/codeAwareText';
+import { componentNameOf } from './internal/support/componentName';
+import { DocsPage } from './internal/support/DocsPage';
+import { ExampleFrame, type ExampleLayout } from './internal/support/ExampleFrame';
+import {
+  ExampleStoryContext,
+  resolveExampleCode,
+  useExampleRecord,
+} from './internal/support/exampleStore';
+import { listenForRenderedSource } from './internal/support/renderedSource';
 
 import '../packages/core/src/styles/base-palette.css';
 import '../packages/core/src/styles/theme-tokens.css';
 import '../packages/core/src/styles/tailwind.css';
 import '../packages/core/src/styles/tokens.css';
 
+type StoryParameters = {
+  layout?: ExampleLayout;
+  example?: { frame?: boolean };
+  __isPortableStory?: boolean;
+  docs?: { description?: { story?: string } };
+};
+
 /**
- * Render `args` as JSX attributes in the docs "Show code" preview so the
- * autodocs source shows `<Input prop="value" />` instead of the renderer
- * wrapper from the `render` function. Mirrors feature/omni-ui-components.
+ * The story view. The frame (component name, story name, description, the code bar) is on by default and is
+ * drawn around Storybook's root, never inside it. `parameters.example = { frame: false }` leaves a story the
+ * whole window (the overview pages, full-page showcases); either way the story's `layout` places it.
  */
-const formatArgs = (args: Record<string, unknown>): string => {
-  const lines: string[] = [];
-  for (const [k, v] of Object.entries(args)) {
-    if (v === undefined || k === 'error') continue;
-    if (typeof v === 'string') {
-      lines.push(`  ${k}="${v}"`);
-    } else if (typeof v === 'boolean') {
-      if (v) lines.push(`  ${k}`);
-    } else if (typeof v === 'number') {
-      lines.push(`  ${k}={${v}}`);
-    } else if (typeof v === 'function') {
-      lines.push(`  ${k}={() => {}}`);
-    } else {
-      lines.push(`  ${k}={${JSON.stringify(v, null, 2).replace(/\n/g, '\n  ')}}`);
-    }
-  }
-  return lines.join('\n');
+const StoryView: React.FC<{
+  id: string;
+  title: string;
+  name: string;
+  parameters: StoryParameters;
+  canvas: HTMLElement;
+  children: React.ReactNode;
+}> = ({ id, title, name, parameters, canvas, children }) => {
+  const record = useExampleRecord(id);
+  const layout = parameters.layout ?? 'padded';
+  // Only Storybook's own root is framed: a story mounted elsewhere (a test) is left as it is.
+  const framed =
+    parameters.example?.frame !== false &&
+    !parameters.__isPortableStory &&
+    canvas.id === 'storybook-root';
+  React.useLayoutEffect(() => {
+    if (framed || parameters.__isPortableStory) return;
+    canvas.setAttribute('data-story-layout', layout);
+    return () => canvas.removeAttribute('data-story-layout');
+  }, [canvas, framed, layout, parameters.__isPortableStory]);
+  if (!framed) return <>{children}</>;
+  return (
+    <ExampleFrame
+      host={canvas}
+      eyebrow={title.split('/').filter(Boolean).at(-1)}
+      title={record.title ?? name}
+      description={renderCodeAwareText(
+        record.description ?? parameters.docs?.description?.story ?? undefined,
+      )}
+      code={resolveExampleCode(record, parameters)}
+      layout={layout}
+    >
+      {children}
+    </ExampleFrame>
+  );
 };
 
 const preview: Preview = {
@@ -49,7 +84,8 @@ const preview: Preview = {
   },
   initialGlobals: { hitArea: 'off' },
   parameters: {
-    layout: 'fullscreen',
+    // Storybook's own default, stated: a story is placed by its `layout` (see `StoryView` and `ExampleFrame`).
+    layout: 'padded',
     controls: {
       expanded: true,
       matchers: { color: /(background|color)$/i, date: /Date$/ },
@@ -57,19 +93,6 @@ const preview: Preview = {
     docs: {
       theme: themes.dark,
       page: DocsPage,
-      source: {
-        transform: (
-          _code: string,
-          ctx: {
-            args?: Record<string, unknown>;
-            component?: { displayName?: string; name?: string };
-          },
-        ) => {
-          const name = ctx.component?.displayName || ctx.component?.name || 'Component';
-          const args = ctx.args ?? {};
-          return `<${name}\n${formatArgs(args)}\n/>`;
-        },
-      },
     },
     backgrounds: {
       default: 'dark',
@@ -78,12 +101,14 @@ const preview: Preview = {
         { name: 'light', value: '#ffffff' },
       ],
     },
+    // The JSX printed from a story's args names components as they are imported (see `componentNameOf`).
+    jsx: { displayName: (element: React.ReactElement) => componentNameOf(element.type) },
     a11y: { test: 'error' },
     options: {
       storySort: {
         order: [
           'Getting Started',
-          ['Component Overview', 'Dynamic Form Overview', 'Table Overview', 'Design Tokens'],
+          ['Component Overview', 'Table Overview'],
           'omni-ui-components',
           'dynamic-form',
         ],
@@ -97,6 +122,7 @@ const preview: Preview = {
       attributeName: 'data-theme',
     }),
     (Story, ctx) => {
+      listenForRenderedSource();
       if (typeof document !== 'undefined') {
         if (ctx.globals.hitArea === 'outline')
           document.documentElement.setAttribute('data-oui-hit-outline', '');
@@ -111,21 +137,25 @@ const preview: Preview = {
       const fg = 'var(--color-foreground)';
       const fontStack =
         "var(--font-sans, 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif)";
+      // A story composed outside Storybook (the screenshot tests mount one in an element they name
+      // \`storybook-root\`) keeps the placement the baselines were taken with: centred, sized by its content.
+      const portable = (ctx.parameters as { __isPortableStory?: boolean }).__isPortableStory
+        ? '#storybook-root:not([hidden]) { padding: 3rem 2rem; min-height: 100vh; box-sizing: border-box; display: flex; align-items: flex-start; justify-content: center; }'
+        : '';
       const css = `
         html, body { background: ${bg} !important; color: ${fg} !important; font-family: ${fontStack} !important; }
         #storybook-root[hidden] { display: none !important; }
         #storybook-root:not([hidden]), .sb-show-main {
           background: ${bg} !important; color: ${fg} !important; font-family: ${fontStack} !important;
-          padding: 3rem 2rem; min-height: 100vh; box-sizing: border-box;
-          display: flex; align-items: flex-start; justify-content: center;
         }
+        ${portable}
         .docs-story, .docs-story #storybook-root { background: ${bg} !important; color: ${fg} !important; }
         .docs-story #storybook-root, .docs-story .sb-show-main { padding-top: 3rem !important; padding-bottom: 3rem !important; }
         .sbdocs-preview .docs-story { padding-top: 1rem; padding-bottom: 1rem; }
         .sbdocs.sbdocs-wrapper, .sbdocs.sbdocs-content, .sbdocs-preview {
           background: ${bg} !important; color: ${fg} !important;
         }
-        .sbdocs.sbdocs-content, .sbdocs.sbdocs-content * { font-family: ${fontStack} !important; }
+        .sbdocs.sbdocs-content, .sbdocs.sbdocs-content *:not(pre, code, pre *, code *, .pb-code-pre, .pb-code-pre *, .pb-example-eyebrow, .font-mono) { font-family: ${fontStack} !important; }
         .sbdocs.sbdocs-content { max-width: 100% !important; }
         .sbdocs-wrapper { padding: 0 !important; }
         .sbdocs .sb-unstyled { color: ${fg} !important; }
@@ -150,10 +180,22 @@ const preview: Preview = {
         }
       `;
       return (
-        <>
+        <ExampleStoryContext.Provider value={ctx.id}>
           <style dangerouslySetInnerHTML={{ __html: css }} />
-          <Story />
-        </>
+          {ctx.viewMode === 'story' && ctx.canvasElement ? (
+            <StoryView
+              id={ctx.id}
+              title={ctx.title}
+              name={ctx.name}
+              parameters={ctx.parameters as StoryParameters}
+              canvas={ctx.canvasElement}
+            >
+              <Story />
+            </StoryView>
+          ) : (
+            <Story />
+          )}
+        </ExampleStoryContext.Provider>
       );
     },
   ],

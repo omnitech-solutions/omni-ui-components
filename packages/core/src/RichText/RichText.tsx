@@ -62,6 +62,7 @@ export const RichText = React.memo(
           descriptionId={descriptionId}
           errorId={errorId}
           labelTag="span"
+          labelId={label ? `${id}-label` : undefined}
           wrapperClassName={wrapperClassName}
           labelClassName={labelClassName}
         >
@@ -70,6 +71,7 @@ export const RichText = React.memo(
             id={id}
             invalid={isInvalid}
             required={required}
+            aria-labelledby={label ? `${id}-label` : undefined}
             aria-describedby={describedBy}
             className={className}
             {...primitiveProps}

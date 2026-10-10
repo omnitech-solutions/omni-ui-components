@@ -14,7 +14,11 @@ export interface DateTimePickerPrimitiveProps {
   required?: boolean;
   invalid?: boolean;
   readOnly?: boolean;
+  /** Id of the element that names the pair: the date button is named by it and its own date, the time field by it. */
+  'aria-labelledby'?: string;
   'aria-describedby'?: string;
+  /** Name of the time field when nothing labels the pair. */
+  timeLabel?: string;
   'data-testid'?: string;
   className?: string;
 }
@@ -61,12 +65,14 @@ export const DateTimePickerPrimitive = React.forwardRef<
       invalid,
       readOnly,
       className,
+      timeLabel = 'Time',
       ...rest
     },
     ref,
   ) => {
     const testId = rest['data-testid'] ?? id;
     const parts = splitIso(value);
+    const labelledBy = rest['aria-labelledby'];
     return (
       <div
         ref={ref}
@@ -87,6 +93,8 @@ export const DateTimePickerPrimitive = React.forwardRef<
             disabled={disabled}
             required={required}
             invalid={invalid}
+            aria-labelledby={labelledBy && id ? `${labelledBy} ${id}-date` : undefined}
+            aria-describedby={rest['aria-describedby']}
           />
         </div>
         <div className="w-44">
@@ -98,6 +106,9 @@ export const DateTimePickerPrimitive = React.forwardRef<
             readOnly={readOnly}
             required={required}
             invalid={invalid}
+            aria-label={labelledBy ? undefined : timeLabel}
+            aria-labelledby={labelledBy}
+            aria-describedby={rest['aria-describedby']}
           />
         </div>
       </div>

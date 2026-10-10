@@ -2,7 +2,7 @@ import type { TableColumn } from '@oc-tech/omni-ui-components/Table';
 
 import { Table } from '@oc-tech/omni-ui-components/Table';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ShowcaseShell } from './ShowcaseShell';
+import { ExampleFrame } from 'storybook-helpers/internal/support/ExampleFrame';
 
 interface LedgerEntry {
   id: string;
@@ -75,7 +75,9 @@ const ledgerColumns: TableColumn<LedgerEntry>[] = [
 
 const meta: Meta = {
   title: 'omni-ui-components/Table/Showcase/Transaction ledger',
-  parameters: { layout: 'fullscreen' },
+  tags: ['autodocs'],
+  // The story is a page of its own: it draws its frame itself, with the scenario as the description.
+  parameters: { layout: 'padded', example: { frame: false } },
 };
 export default meta;
 
@@ -90,9 +92,10 @@ const CODE = `<Table<LedgerEntry>
 
 export const Default: StoryObj = {
   render: () => (
-    <ShowcaseShell
+    <ExampleFrame
+      eyebrow="Showcase"
       title="Transaction ledger"
-      scenario="A finance-view ledger with 48 entries, mixed currencies formatted per locale, negative amounts for expenses, filterable category, and paginated scrolling. Same component, different domain."
+      description="A finance-view ledger with 48 entries, mixed currencies formatted per locale, negative amounts for expenses, filterable category, and paginated scrolling. Same component, different domain."
       code={CODE}
     >
       <Table<LedgerEntry>
@@ -103,6 +106,6 @@ export const Default: StoryObj = {
         scroll={{ x: 900 }}
         testIdPrefix="showcase-ledger"
       />
-    </ShowcaseShell>
+    </ExampleFrame>
   ),
 };

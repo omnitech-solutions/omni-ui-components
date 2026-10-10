@@ -54,4 +54,9 @@ describe('omni-ui-components/TagInput', () => {
     await user.type(screen.getByRole('textbox'), 'c{Enter}');
     expect(screen.queryByText('c')).not.toBeInTheDocument();
   });
+
+  it('names the text input by its label', () => {
+    render(<Controlled value={['react']} />);
+    expect(screen.getByRole('textbox', { name: 'Tags' })).toBeInTheDocument();
+  });
 });

@@ -2,9 +2,10 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parsers } from 'prettier/plugins/typescript';
 import { describe, expect, it } from 'vitest';
+import { exampleDocs } from '../../../../.storybook/internal/support/exampleDocs';
 import {
+  buildExampleCode,
   buildSourceSnippet,
-  exampleDocs,
   mergeImports,
 } from '../../../../.storybook/internal/support/sourceSnippet';
 
@@ -90,8 +91,7 @@ const Preview = (props: DynamicFormProps<any, any>) => <DynamicForm {...props} /
 
 const factoriesOf = (name: string) =>
   readFileSync(join(import.meta.dirname, `../../src/${name}/${name}.factories.tsx`), 'utf8');
-const shown = (name: string, example: string) =>
-  exampleDocs(factoriesOf(name), example).docs.source.code;
+const shown = (name: string, example: string) => buildExampleCode(factoriesOf(name), example);
 
 describe('mergeImports', () => {
   it('folds the named imports of one module into one line, types marked, and leaves the rest alone', () => {
@@ -151,11 +151,13 @@ describe('the code shown for OutlineList, CueCard, HeardLine and Splitter', () =
 
   it.each(examples)(
     '%s %s is real consumer code: it parses, imports from the package root in one line, and names no demo',
-    (name, example) => {
-      const { source } = exampleDocs(factoriesOf(name), example).docs;
-      const code = source.code;
-      expect(source.language).toBe('tsx');
-      expect(source.transform()).toBe(code);
+    async (name, example) => {
+      // What a story passes as `parameters`: the code is built when it is first asked for, once.
+      const parameters = exampleDocs(factoriesOf(name), example);
+      const asked = parameters.example.code();
+      expect(parameters.example.code()).toBe(asked);
+      const code = await asked;
+      expect(code).toBe(shown(name, example));
       expect(() =>
         parsers.typescript.parse(code, { filepath: 'example.tsx' } as Parameters<
           typeof parsers.typescript.parse

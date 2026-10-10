@@ -17,6 +17,8 @@ export interface TagInputPrimitiveProps {
   required?: boolean;
   invalid?: boolean;
   readOnly?: boolean;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
   'aria-describedby'?: string;
   'data-testid'?: string;
   className?: string;
@@ -98,7 +100,7 @@ export const TagInputPrimitive = React.forwardRef<HTMLInputElement, TagInputPrim
           <span
             key={chip}
             data-slot="tag-input-chip"
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-medium text-primary"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-medium text-[color:var(--oui-tone-accent-fg)]"
           >
             {chip}
             {!disabled && !readOnly ? (
@@ -134,6 +136,8 @@ export const TagInputPrimitive = React.forwardRef<HTMLInputElement, TagInputPrim
           disabled={disabled}
           readOnly={readOnly}
           required={required}
+          aria-label={rest['aria-label']}
+          aria-labelledby={rest['aria-labelledby']}
           aria-describedby={rest['aria-describedby']}
           aria-invalid={invalid || undefined}
           className="min-w-[6rem] flex-1 border-0 bg-transparent text-sm outline-none placeholder:text-[var(--oui-foreground-placeholder)]"

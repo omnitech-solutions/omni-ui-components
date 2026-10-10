@@ -45,6 +45,7 @@ const DatePickerPrimitiveInner = React.forwardRef<HTMLButtonElement, DatePickerP
       placeholder = 'Pick a date',
       formatOptions = defaultFormat,
       'aria-describedby': ariaDescribedBy,
+      'aria-labelledby': ariaLabelledBy,
       ...rest
     },
     ref,
@@ -91,7 +92,7 @@ const DatePickerPrimitiveInner = React.forwardRef<HTMLButtonElement, DatePickerP
             data-state={disabled ? 'disabled' : invalid ? 'invalid' : 'idle'}
             data-placeholder={isPlaceholder || undefined}
             aria-invalid={invalid || undefined}
-            aria-required={required || undefined}
+            aria-labelledby={ariaLabelledBy}
             aria-describedby={ariaDescribedBy}
             aria-haspopup="dialog"
             aria-expanded={open}

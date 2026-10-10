@@ -11,6 +11,8 @@ import {
   settingsDialogVariants,
 } from 'factories/omni-ui-components/SettingsDialog/SettingsDialog.factories';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './SettingsDialog.factories.tsx?raw';
 
 const meta: Meta<SettingsDialogProps> = {
   title: 'omni-ui-components/SettingsDialog',
@@ -89,6 +91,7 @@ export const ArrowKeyTabs: Story = {
 /** The trigger opens the dialog; Escape closes it and focus goes back to the trigger. */
 export const FocusReturn: Story = {
   render: () => <SettingsDialogDemo />,
+  parameters: exampleDocs(exampleSource, 'SettingsDialogDemo'),
   play: async ({ canvasElement }) => {
     const trigger = within(canvasElement).getByRole('button', { name: 'Open settings' });
     await userEvent.click(trigger);

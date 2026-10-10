@@ -25,6 +25,8 @@ export interface DatePickerPrimitiveProps extends RootProps {
   className?: string;
   'data-testid'?: string;
   'aria-describedby'?: string;
+  /** Ids that name the button; include the button's own id to keep the chosen date in its name. */
+  'aria-labelledby'?: string;
 }
 
 export interface DatePickerProps extends DatePickerPrimitiveProps, FieldLayoutProps {

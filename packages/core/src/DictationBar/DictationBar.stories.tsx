@@ -4,7 +4,9 @@ import { ComposerDemo } from 'factories/omni-ui-components/Composer/Composer.fac
 import { dictationBarPropsFactory } from 'factories/omni-ui-components/DictationBar/DictationBar.factories';
 import * as React from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
 import { describeHoldKey, useHoldToTalk } from '../lib';
+import exampleSource from './DictationBar.stories.tsx?raw';
 
 const meta: Meta<DictationBarProps> = {
   title: 'omni-ui-components/DictationBar',
@@ -95,6 +97,7 @@ const KeyDemo: React.FC = () => {
 /** The hold-to-talk hook on a real key: tap Right Option, or hold it (the story's play function drives it). */
 export const HoldToTalk: StoryObj = {
   render: () => <KeyDemo />,
+  parameters: exampleDocs(exampleSource, 'KeyDemo'),
   play: async ({ canvasElement }) => {
     const press = (type: 'keydown' | 'keyup', code: string) =>
       window.dispatchEvent(new KeyboardEvent(type, { code, bubbles: true }));

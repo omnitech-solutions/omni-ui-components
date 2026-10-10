@@ -9,6 +9,8 @@ import {
   integrationListVariants,
 } from 'factories/omni-ui-components/IntegrationList/IntegrationList.factories';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './IntegrationList.factories.tsx?raw';
 
 const meta: Meta<IntegrationListProps> = {
   title: 'omni-ui-components/IntegrationList',
@@ -66,6 +68,7 @@ export const Default: Story = {
 /** Add by address: the button is disabled until there is text; the field clears once the add resolves. */
 export const AddServer: Story = {
   render: () => <IntegrationListDemo />,
+  parameters: exampleDocs(exampleSource, 'IntegrationListDemo'),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const add = canvas.getByRole('button', { name: 'Add server' });

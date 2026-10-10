@@ -1,40 +1,14 @@
 import type * as React from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import './example.css';
+import { CodeText } from './CodeDisclosure';
 
 export interface SignatureCodeProps {
   code: string;
 }
 
+/** A component signature in the run of a line. Plain text at first; highlighted once the highlighter has loaded. */
 export const SignatureCode: React.FC<SignatureCodeProps> = ({ code }) => (
-  <SyntaxHighlighter
-    language="tsx"
-    PreTag="span"
-    CodeTag="span"
-    customStyle={{
-      margin: 0,
-      padding: 0,
-      background: 'transparent',
-      display: 'inline-block',
-      overflow: 'visible',
-      fontSize: '0.66rem',
-      lineHeight: 1.4,
-      fontFamily:
-        'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace',
-    }}
-    codeTagProps={{
-      style: { background: 'transparent', padding: 0, whiteSpace: 'pre' },
-    }}
-    style={{
-      ...oneDark,
-      tag: { color: 'var(--color-muted-foreground)' },
-      punctuation: { color: 'var(--color-muted-foreground)' },
-      attrName: { color: 'var(--color-primary)' },
-      selectorTag: { color: 'var(--color-primary)' },
-      title: { color: 'var(--color-primary)' },
-      className: { color: 'var(--color-primary)' },
-    }}
-  >
-    {code}
-  </SyntaxHighlighter>
+  <span className="pb-signature" style={{ fontSize: '0.66rem', lineHeight: 1.4 }}>
+    <CodeText code={code} as="span" />
+  </span>
 );

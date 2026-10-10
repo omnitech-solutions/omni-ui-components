@@ -11,6 +11,8 @@ import {
 } from 'factories/omni-ui-components/ConversationList/ConversationList.factories';
 import type * as React from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './ConversationList.factories.tsx?raw';
 
 type Args = ConversationListProps<SampleConversation>;
 
@@ -111,6 +113,7 @@ export const Default: Story = {
 /** A stateful list: type to filter, Pin toggles the filled pin, Delete removes, the archived button swaps the view. */
 export const Interactive: Story = {
   render: () => <ConversationListDemo />,
+  parameters: exampleDocs(exampleSource, 'ConversationListDemo'),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.type(canvas.getByRole('searchbox', { name: 'Search conversations' }), 'rate');

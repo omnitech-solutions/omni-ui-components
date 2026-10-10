@@ -124,7 +124,8 @@ export const ConversationHeader = <
     openedAt.current = performance.now();
     setDraft(title ?? '');
     requestAnimationFrame(() => {
-      input.current?.focus();
+      // The field takes focus where it is: a page that shows a header already renaming must not jump to it.
+      input.current?.focus({ preventScroll: true });
       input.current?.select();
     });
   }, [renaming, title]);
@@ -165,7 +166,7 @@ export const ConversationHeader = <
         // The menu that opened this field hands focus back to its (now gone) trigger as it closes; that stray blur
         // must not commit. Within the first moments after opening, take focus back instead.
         if (performance.now() - openedAt.current < RENAME_SETTLE_MS && !event.relatedTarget) {
-          input.current?.focus();
+          input.current?.focus({ preventScroll: true });
           return;
         }
         commit();

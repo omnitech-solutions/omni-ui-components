@@ -9,6 +9,8 @@ import {
   conversationHeaderVariants,
 } from 'factories/omni-ui-components/ConversationHeader/ConversationHeader.factories';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './ConversationHeader.factories.tsx?raw';
 
 const meta: Meta<ConversationHeaderProps> = {
   title: 'omni-ui-components/ConversationHeader',
@@ -82,6 +84,7 @@ export const Default: Story = {
 /** The Rename row opens the inline field: text selected, Enter commits the new title. */
 export const RenameFromMenu: Story = {
   render: () => <ConversationHeaderDemo />,
+  parameters: exampleDocs(exampleSource, 'ConversationHeaderDemo'),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: /Two Sum with a hash map/ }));
@@ -96,6 +99,7 @@ export const RenameFromMenu: Story = {
 
 export const RenameCancelsOnEscape: Story = {
   render: () => <ConversationHeaderDemo />,
+  parameters: exampleDocs(exampleSource, 'ConversationHeaderDemo'),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: /Two Sum with a hash map/ }));

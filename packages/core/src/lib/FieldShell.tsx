@@ -11,6 +11,12 @@ export interface FieldChromeArgs {
   error?: React.ReactNode;
   invalid?: boolean;
   required?: boolean;
+  /**
+   * For a control whose role cannot carry `aria-required` (a button that opens a list or a dialog, a slider, a
+   * group): when it is required, the shell draws a "Required" hint for assistive technology and the control is
+   * described by it.
+   */
+  requiredHint?: boolean;
   prefix: string;
 }
 
@@ -19,6 +25,8 @@ export interface FieldChrome {
   isInvalid: boolean;
   descriptionId?: string;
   errorId?: string;
+  /** Id of the hidden "Required" hint; pass it to {@link FieldShell}. Set only with `requiredHint` on a required field. */
+  requiredId?: string;
   describedBy?: string;
 }
 
@@ -30,6 +38,8 @@ export function useFieldChrome({
   description,
   error,
   invalid,
+  required,
+  requiredHint,
   prefix,
 }: FieldChromeArgs): FieldChrome {
   const fallbackId = useStableId(prefix);
@@ -37,8 +47,9 @@ export function useFieldChrome({
   const isInvalid = Boolean(error) || Boolean(invalid);
   const descriptionId = description ? `${resolvedId}-description` : undefined;
   const errorId = error ? `${resolvedId}-error` : undefined;
-  const describedBy = [descriptionId, errorId].filter(Boolean).join(' ') || undefined;
-  return { id: resolvedId, isInvalid, descriptionId, errorId, describedBy };
+  const requiredId = requiredHint && required ? `${resolvedId}-required` : undefined;
+  const describedBy = [requiredId, descriptionId, errorId].filter(Boolean).join(' ') || undefined;
+  return { id: resolvedId, isInvalid, descriptionId, errorId, requiredId, describedBy };
 }
 
 export interface FieldShellProps extends FieldLayoutProps {
@@ -49,6 +60,8 @@ export interface FieldShellProps extends FieldLayoutProps {
   required?: boolean;
   descriptionId?: string;
   errorId?: string;
+  /** From {@link useFieldChrome} with `requiredHint`: draws the hidden "Required" hint the control is described by. */
+  requiredId?: string;
   labelTag?: 'label' | 'span';
   labelId?: string;
   role?: string;
@@ -70,6 +83,7 @@ export const FieldShell: React.FC<FieldShellProps> = ({
   required,
   descriptionId,
   errorId,
+  requiredId,
   labelTag = 'label',
   labelId,
   role,
@@ -96,6 +110,12 @@ export const FieldShell: React.FC<FieldShellProps> = ({
         {requiredMark}
       </span>
     )
+  ) : null;
+  // The asterisk is hidden from assistive technology; a control that cannot carry `aria-required` is described by this.
+  const requiredHint = requiredId ? (
+    <span id={requiredId} className="sr-only">
+      Required
+    </span>
   ) : null;
   const helpers =
     description && !error ? (
@@ -125,6 +145,7 @@ export const FieldShell: React.FC<FieldShellProps> = ({
         aria-labelledby={ariaLabelledBy}
       >
         {labelNode}
+        {requiredHint}
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           {children}
           {helpers}
@@ -142,6 +163,7 @@ export const FieldShell: React.FC<FieldShellProps> = ({
       aria-labelledby={ariaLabelledBy}
     >
       {labelNode}
+      {requiredHint}
       {children}
       {helpers}
       {errorNode}

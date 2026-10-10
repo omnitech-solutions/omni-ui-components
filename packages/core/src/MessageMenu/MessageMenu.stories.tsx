@@ -7,6 +7,8 @@ import {
 } from 'factories/omni-ui-components/MessageMenu/MessageMenu.factories';
 import type * as React from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './MessageMenu.factories.tsx?raw';
 
 const meta: Meta<MessageMenuProps> = {
   title: 'omni-ui-components/MessageMenu',
@@ -67,6 +69,7 @@ export const CopyOnly: Story = {
 
 export const DeleteConfirm: Story = {
   render: () => <MessageMenuDemo />,
+  parameters: exampleDocs(exampleSource, 'MessageMenuDemo'),
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     await userEvent.click(within(canvasElement).getByRole('button', { name: 'More' }));

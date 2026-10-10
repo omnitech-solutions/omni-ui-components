@@ -2,26 +2,49 @@ import { DynamicForm } from '@oc-tech/omni-ui-components/dynamic-form';
 import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
 import '../internal/support/overview.css';
-import factorySupport from '../../packages/core/src/internal/support/makeFactory.ts?raw';
-import countrySource from '../../packages/core/src/Select/countries.ts?raw';
-import { buildSourceSnippet, mergeImports } from '../internal/support/sourceSnippet';
-import source from './ComponentOverview.stories.tsx?raw';
 
+// The code of a row is cut from this file and the factories files as they are written. Their text (124 files)
+// and the parser that reads it are requested the first time a row's code is opened or copied, not with the page.
 const factorySources = import.meta.glob('../../packages/core/src/**/*.factories.{ts,tsx}', {
   query: '?raw',
   import: 'default',
-  eager: true,
-}) as Record<string, string>;
-const snippetDependencies = Object.fromEntries(
-  Object.entries(factorySources).map(([path, content]) => [
-    path
-      .replace('../../packages/core/src/', 'factories/omni-ui-components/')
-      .replace(/\.tsx?$/, ''),
-    content,
-  ]),
-);
-snippetDependencies['../../internal/support/makeFactory'] = factorySupport;
-snippetDependencies['./countries'] = countrySource;
+}) as Record<string, () => Promise<string>>;
+let snippetSources:
+  | Promise<{
+      build: (target: string) => string;
+    }>
+  | undefined;
+const loadSnippetSources = () => {
+  snippetSources ??= Promise.all([
+    import('../internal/support/sourceSnippet'),
+    import('./ComponentOverview.stories.tsx?raw').then((module) => module.default),
+    import('../../packages/core/src/internal/support/makeFactory.ts?raw').then(
+      (module) => module.default,
+    ),
+    import('../../packages/core/src/Select/countries.ts?raw').then((module) => module.default),
+    Promise.all(
+      Object.entries(factorySources).map(
+        async ([path, load]) =>
+          [
+            path
+              .replace('../../packages/core/src/', 'factories/omni-ui-components/')
+              .replace(/\.tsx?$/, ''),
+            await load(),
+          ] as const,
+      ),
+    ),
+  ]).then(
+    ([{ buildSourceSnippet, mergeImports }, source, factorySupport, countrySource, files]) => {
+      const dependencies: Record<string, string> = Object.fromEntries(files);
+      dependencies['../../internal/support/makeFactory'] = factorySupport;
+      dependencies['./countries'] = countrySource;
+      return {
+        build: (target: string) => mergeImports(buildSourceSnippet(source, target, dependencies)),
+      };
+    },
+  );
+  return snippetSources;
+};
 
 import {
   ActionMenu,
@@ -495,46 +518,51 @@ import {
   versionPagerVariants,
 } from 'factories/omni-ui-components/VersionPager/VersionPager.factories';
 import { z } from 'zod';
-import {
-  CodePanel,
-  InlineCode,
-  SegmentedPill,
-  TableOfContents,
-  type TocItem,
-} from '../internal/support';
 import { ComponentLink } from '../internal/support/ComponentLink';
+import { ExampleFrame } from '../internal/support/ExampleFrame';
+import { InlineCode } from '../internal/support/InlineCode';
+import { SegmentedPill } from '../internal/support/SegmentedPill';
+import { TableOfContents, type TocItem } from '../internal/support/TableOfContents';
 
 interface RowProps {
   id: string;
   index: string;
   name: string;
-  code: string;
+  /** The preview component in this file the row's code is cut from. */
+  source: string;
   children: React.ReactNode;
 }
 
-const Row: React.FC<RowProps> = ({ id, index, name, code, children }) => (
-  <section id={id} className="pb-overview-row scroll-mt-6 py-8">
-    <div className="pb-overview-row-header">
-      <SegmentedPill
-        segments={[
-          {
-            content: index,
-            tinted: true,
-          },
-          {
-            content: <ComponentLink component={name} />,
-            uppercase: true,
-          },
-          {
-            content: <InlineCode code={`<${name} />`} />,
-          },
-        ]}
-      />
-    </div>
-    <div className="pb-overview-row-preview mt-5">{children}</div>
-    <CodePanel code={code} />
-  </section>
-);
+/** One component of the page: its pill, its live preview (mounted when it comes near the window) and its code. */
+const Row = React.memo<RowProps>(({ id, index, name, source, children }) => {
+  const code = React.useCallback(
+    () => loadSnippetSources().then((sources) => sources.build(source)),
+    [source],
+  );
+  return (
+    <ExampleFrame
+      id={id}
+      className="pb-overview-row"
+      defer
+      deferHeight={200}
+      code={code}
+      header={
+        <div className="pb-overview-row-header">
+          <SegmentedPill
+            segments={[
+              { content: index, tinted: true },
+              { content: <ComponentLink component={name} />, uppercase: true },
+              { content: <InlineCode code={`<${name} />`} /> },
+            ]}
+          />
+        </div>
+      }
+    >
+      {children}
+    </ExampleFrame>
+  );
+});
+Row.displayName = 'Row';
 
 const SectionHeading: React.FC<{
   id: string;
@@ -547,9 +575,6 @@ const SectionHeading: React.FC<{
     </div>
   </div>
 );
-
-const codeFromVariants = (row: OverviewRowSpec): string =>
-  mergeImports(buildSourceSnippet(source, row.source ?? `${row.name}Preview`, snippetDependencies));
 
 type AnyComponent<P> = React.ComponentType<P>;
 
@@ -2428,63 +2453,69 @@ const SECTIONS: OverviewSectionSpec[] = [
 const sectionId = (title: string) => `section-${slug(title)}`;
 const rowId = (name: string) => `component-${slug(name)}`;
 
-const ComponentOverviewPage: React.FC = () => {
-  const tocItems: TocItem[] = SECTIONS.flatMap((section) =>
-    section.rows.map((row) => ({
-      id: rowId(row.name),
-      label: row.name,
-      group: section.title,
-    })),
-  );
+const tocItems: TocItem[] = SECTIONS.flatMap((section) =>
+  section.rows.map((row) => ({
+    id: rowId(row.name),
+    label: row.name,
+    group: section.title,
+  })),
+);
 
-  return (
-    <div className="pb-shell box-border w-full max-w-[100vw] px-8 py-10">
-      <div className="pb-overview-layout grid gap-8 md:grid-cols-[minmax(0,1fr)_14rem] xl:grid-cols-[minmax(0,1fr)_16rem]">
-        <div className="pb-overview-main min-w-0">
-          <header className="pb-shell-header mb-8 max-w-4xl">
-            <h1 className="text-4xl font-semibold text-foreground">Component Overview</h1>
-            <p className="mt-3 text-[15px] leading-8 text-muted-foreground">
-              Browse the Omni UI component set with the same reference layout used for Table. Each
-              row keeps the component identity, JSX contract, live preview, and runnable example
-              code together.
-            </p>
-          </header>
-          {SECTIONS.map((section, sectionIndex) => (
-            <React.Fragment key={section.title}>
-              <SectionHeading
-                id={sectionId(section.title)}
-                index={String(sectionIndex + 1)}
-                title={section.title}
-              />
-              {section.rows.map((row, rowIndex) => {
-                const Preview = row.preview;
-                return (
-                  <Row
-                    key={row.name}
-                    id={rowId(row.name)}
-                    index={`${sectionIndex + 1}.${rowIndex + 1}`}
-                    name={row.name}
-                    code={codeFromVariants(row)}
-                  >
-                    <Preview />
-                  </Row>
-                );
-              })}
-            </React.Fragment>
-          ))}
-        </div>
-        <aside className="hidden md:block">
-          <TableOfContents items={tocItems} title="Table of contents" />
-        </aside>
+// One element a preview, made once: a row whose props do not change is not drawn again.
+const previewElements = new Map(
+  SECTIONS.flatMap((section) => section.rows).map((row) => {
+    const Preview = row.preview;
+    return [row.name, <Preview key={row.name} />] as const;
+  }),
+);
+
+const ComponentOverviewPage: React.FC = () => (
+  <div className="pb-shell box-border w-full max-w-[100vw] px-8 py-10">
+    <div className="pb-overview-layout">
+      <div className="pb-overview-main min-w-0">
+        <header className="pb-shell-header mb-8 max-w-4xl">
+          <h1 className="text-4xl font-semibold text-foreground">Component Overview</h1>
+          <p className="mt-3 text-[15px] leading-8 text-muted-foreground">
+            Browse the Omni UI component set with the same reference layout used for Table. Each row
+            keeps the component identity, JSX contract, live preview, and runnable example code
+            together.
+          </p>
+        </header>
+        {SECTIONS.map((section, sectionIndex) => (
+          <React.Fragment key={section.title}>
+            <SectionHeading
+              id={sectionId(section.title)}
+              index={String(sectionIndex + 1)}
+              title={section.title}
+            />
+            {section.rows.map((row, rowIndex) => (
+              <Row
+                key={row.name}
+                id={rowId(row.name)}
+                index={`${sectionIndex + 1}.${rowIndex + 1}`}
+                name={row.name}
+                source={row.source ?? `${row.name}Preview`}
+              >
+                {previewElements.get(row.name)}
+              </Row>
+            ))}
+          </React.Fragment>
+        ))}
       </div>
+      <aside>
+        <TableOfContents items={tocItems} title="Table of contents" />
+      </aside>
     </div>
-  );
-};
+  </div>
+);
 
 const meta: Meta = {
   title: 'Getting Started/Component Overview',
   parameters: {
     layout: 'fullscreen',
+    // The page is its own frame, and every component on it is checked for accessibility in its own stories.
+    example: { frame: false },
+    a11y: { test: 'off' },
   },
 };
 

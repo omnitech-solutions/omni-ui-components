@@ -60,7 +60,8 @@
 
     --oui-foreground:              var(--color-foreground);
     --oui-foreground-muted:        var(--color-muted-foreground);
-    --oui-foreground-placeholder:  color-mix(in srgb, var(--color-foreground) 32%, transparent);
+    /* 62% of the foreground: a placeholder is text someone has to read (4.5:1); at 32% it was 2:1 to 2.6:1. */
+    --oui-foreground-placeholder:  color-mix(in srgb, var(--color-foreground) 62%, transparent);
     --oui-foreground-required:     var(--color-destructive);
 
     /* ---- Tone scale (fg / bg / border = soft tint; solid-bg / solid-fg = filled) ----
@@ -115,7 +116,7 @@
     --oui-panel-dock-bg:           #f6f7f9;
     --oui-panel-border:            #e3e6ec;
     --oui-panel-divider:           #e8ebf0; /* 1px separators under the header and over the dock */
-    --oui-panel-meta-fg:           #6b7280;
+    --oui-panel-meta-fg:           #566070;
     --oui-tag-filled-bg:           #eef0f4;
     --oui-tag-filled-fg:           #374151;
     --oui-clock-live:              #b42318; /* StatusClock record icon and timer while live */
@@ -151,7 +152,7 @@
     --oui-tone-success-fg:         #6ddc93;
     --oui-tone-success-bg:         rgba(109, 220, 147, 0.12);
     --oui-tone-success-border:     #2f9e55;
-    --oui-tone-success-solid-bg:   #2f9e55;
+    --oui-tone-success-solid-bg:   #23874a;
     --oui-tone-success-solid-fg:   #ffffff;
 
     --oui-tone-warning-fg:         #f5c86b;
@@ -163,7 +164,7 @@
     --oui-tone-danger-fg:          #ff8a85;
     --oui-tone-danger-bg:          rgba(255, 107, 102, 0.1);
     --oui-tone-danger-border:      #7a3236;
-    --oui-tone-danger-solid-bg:    #d8453f;
+    --oui-tone-danger-solid-bg:    #cf3f39;
     --oui-tone-danger-solid-fg:    #ffffff;
 
     --oui-tone-dim-fg:             #5f636c;
@@ -176,7 +177,7 @@
     --oui-panel-dock-bg:           #141c2d;
     --oui-panel-border:            #24314a;
     --oui-panel-divider:           #212c42;
-    --oui-panel-meta-fg:           #7d8aa3;
+    --oui-panel-meta-fg:           #a4afc6;
     --oui-tag-filled-bg:           #212c42;
     --oui-tag-filled-fg:           #a9b6cf;
     --oui-clock-live:              #ff8a85; /* board-1e coral */

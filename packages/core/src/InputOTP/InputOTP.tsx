@@ -66,6 +66,7 @@ export const InputOTP = React.memo(
           descriptionId={descriptionId}
           errorId={errorId}
           labelTag="span"
+          labelId={label ? `${id}-label` : undefined}
           wrapperClassName={wrapperClassName}
           labelClassName={labelClassName}
         >
@@ -74,6 +75,8 @@ export const InputOTP = React.memo(
             id={id}
             invalid={isInvalid}
             required={required}
+            // The label is a span (the code is typed into slots): the field is named by it.
+            aria-labelledby={label ? `${id}-label` : undefined}
             aria-describedby={describedBy}
             className={className}
             {...primitiveProps}

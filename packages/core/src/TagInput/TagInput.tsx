@@ -65,6 +65,7 @@ export const TagInput = React.memo(
           descriptionId={descriptionId}
           errorId={errorId}
           labelTag="span"
+          labelId={label ? `${id}-label` : undefined}
           wrapperClassName={wrapperClassName}
           labelClassName={labelClassName}
         >
@@ -73,6 +74,8 @@ export const TagInput = React.memo(
             id={id}
             invalid={isInvalid}
             required={required}
+            // The label is a span (the field is a box of chips): the text input inside is named by it.
+            aria-labelledby={label ? `${id}-label` : undefined}
             aria-describedby={describedBy}
             className={className}
             {...primitiveProps}

@@ -9,6 +9,8 @@ import {
   modelsSettingsVariants,
 } from 'factories/omni-ui-components/ModelsSettings/ModelsSettings.factories';
 import { expect, fn, userEvent, within } from 'storybook/test';
+import { exampleDocs } from 'storybook-helpers/internal/support/exampleDocs';
+import exampleSource from './ModelsSettings.factories.tsx?raw';
 
 const meta: Meta<ModelsSettingsProps> = {
   title: 'omni-ui-components/ModelsSettings',
@@ -69,5 +71,5 @@ export const ReadOnly: Story = { args: modelsSettingsVariants[3].args };
 export const InSettingsDialog: Story = {
   decorators: [(Story) => <Story />],
   render: () => <ModelsSettingsDialogDemo />,
-  parameters: { layout: 'fullscreen' },
+  parameters: { layout: 'fullscreen', ...exampleDocs(exampleSource, 'ModelsSettingsDialogDemo') },
 };

@@ -2,7 +2,6 @@ import Highlight from '@tiptap/extension-highlight';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import { TextAlign } from '@tiptap/extension-text-align';
-import Underline from '@tiptap/extension-underline';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { cn } from 'lib/utils';
@@ -39,6 +38,8 @@ export interface RichTextPrimitiveProps {
   required?: boolean;
   invalid?: boolean;
   readOnly?: boolean;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
   'aria-describedby'?: string;
   'data-testid'?: string;
   className?: string;
@@ -94,10 +95,26 @@ export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimit
   ) => {
     const testId = rest['data-testid'] ?? id;
 
+    // The editable area is the textbox a screen reader meets: its name, description and state belong on it.
+    const ariaLabel = rest['aria-label'];
+    const ariaLabelledBy = rest['aria-labelledby'];
+    const ariaDescribedBy = rest['aria-describedby'];
+    const textboxAttributes = React.useMemo(() => {
+      // `role` is restated: these attributes replace the ones the editor starts with.
+      const attributes: Record<string, string> = { role: 'textbox', 'aria-multiline': 'true' };
+      if (ariaLabel) attributes['aria-label'] = ariaLabel;
+      else if (ariaLabelledBy) attributes['aria-labelledby'] = ariaLabelledBy;
+      else if (placeholder) attributes['aria-label'] = placeholder;
+      if (ariaDescribedBy) attributes['aria-describedby'] = ariaDescribedBy;
+      if (required) attributes['aria-required'] = 'true';
+      if (invalid) attributes['aria-invalid'] = 'true';
+      return attributes;
+    }, [ariaLabel, ariaLabelledBy, ariaDescribedBy, placeholder, required, invalid]);
+
     const editor = useEditor({
       extensions: [
+        // StarterKit 3 brings underline itself; adding the extension again registers the name twice.
         StarterKit.configure({ link: false }),
-        Underline,
         Highlight,
         Link.configure({
           openOnClick: false,
@@ -113,9 +130,14 @@ export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimit
         Placeholder.configure({ placeholder: placeholder ?? 'Start writing…' }),
       ],
       content: value,
+      editorProps: { attributes: textboxAttributes },
       editable: !disabled && !readOnly,
       onUpdate: ({ editor: ed }) => onChange?.(ed.getHTML()),
     });
+
+    React.useEffect(() => {
+      editor?.setOptions({ editorProps: { attributes: textboxAttributes } });
+    }, [editor, textboxAttributes]);
 
     React.useEffect(() => {
       if (!editor) return;
@@ -305,8 +327,6 @@ export const RichTextPrimitive = React.forwardRef<HTMLDivElement, RichTextPrimit
           editor={editor}
           id={id}
           aria-invalid={invalid || undefined}
-          aria-describedby={rest['aria-describedby']}
-          aria-required={required || undefined}
           className={cn(
             'prose prose-sm prose-invert max-w-none min-h-32 px-3 py-2 text-sm text-[var(--oui-foreground)] focus-within:outline-none',
             '[&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-28',

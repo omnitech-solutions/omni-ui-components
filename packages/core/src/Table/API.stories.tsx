@@ -38,7 +38,7 @@ const propNameCell: React.CSSProperties = {
   fontFamily: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
   fontSize: 12.5,
   overflowWrap: 'anywhere',
-  color: '#22ad01',
+  color: 'var(--pb-chrome-accent)',
 };
 
 const typeCell: React.CSSProperties = {
@@ -1004,8 +1004,11 @@ const stateProps: ApiRow[] = [
 
 const meta: Meta = {
   title: 'omni-ui-components/Table/API',
+  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
+    // A reference page: it is its own frame, and has no example code.
+    example: { frame: false },
     docs: {
       description: {
         component:
@@ -1019,59 +1022,63 @@ export default meta;
 export const TableComponentAPI: StoryObj = {
   name: 'Table Component API',
   render: () => (
-    <div style={{ minWidth: 960, maxWidth: 1100, color: 'var(--color-foreground)' }}>
-      <style>{`.bui-api-default .pb-pill-inline-code, .bui-api-type .pb-pill-inline-code { white-space: normal !important; overflow-wrap: anywhere !important; word-break: break-word !important; }`}</style>
-      <p style={{ margin: '0 0 24px', fontSize: 14, lineHeight: 1.6 }}>
-        Omni Table exposes an AntD-compatible surface where possible. Everything below is generated
-        from the real <InlineCode code="Table.types.ts" /> definitions and the runtime defaults in{' '}
-        <InlineCode code="Table.tsx" />. Where a prop is Omni-specific it is called out inline.
-      </p>
+    // The reference tables keep their width and scroll in this box at a narrow window.
+    <div style={{ overflowX: 'auto' }}>
+      <div style={{ minWidth: 960, maxWidth: 1100, color: 'var(--color-foreground)' }}>
+        <style>{`.bui-api-default .pb-pill-inline-code, .bui-api-type .pb-pill-inline-code { white-space: normal !important; overflow-wrap: anywhere !important; word-break: break-word !important; }`}</style>
+        <p style={{ margin: '0 0 24px', fontSize: 14, lineHeight: 1.6 }}>
+          Omni Table exposes an AntD-compatible surface where possible. Everything below is
+          generated from the real <InlineCode code="Table.types.ts" /> definitions and the runtime
+          defaults in <InlineCode code="Table.tsx" />. Where a prop is Omni-specific it is called
+          out inline.
+        </p>
 
-      <Section id="api-table" title="Table" rows={tableProps} />
-      <Section
-        id="api-column"
-        title="Column"
-        blurb="Column definitions passed to `columns` (or `column.children` for grouped headers)."
-        rows={columnProps}
-      />
-      <Section
-        id="api-appearance"
-        title="appearance"
-        blurb="Omni-specific — fine-grained visual configuration. `bordered` is a convenience alias for `appearance.borders = 'grid'`."
-        rows={appearanceProps}
-      />
-      <Section id="api-pagination" title="pagination" rows={paginationProps} />
-      <Section id="api-expandable" title="expandable" rows={expandableProps} />
-      <Section id="api-row-selection" title="rowSelection" rows={rowSelectionProps} />
-      <Section id="api-scroll" title="scroll" rows={scrollProps} />
-      <Section id="api-virtual" title="virtual" rows={virtualProps} />
-      <Section id="api-sticky" title="sticky" rows={stickyProps} />
-      <Section
-        id="api-editable"
-        title="editable (Table-level)"
-        blurb="Combines with `column.editable` — controls the append-on-Tab behavior and the row / column control affordances."
-        rows={editableProps}
-      />
-      <Section
-        id="api-column-editable"
-        title="column.editable"
-        blurb="Column-level editable configuration. Prefer this over row-level `editable` — every editable column can supply its own `onSave` / `validate` / `renderEditor`."
-        rows={columnEditableProps}
-      />
-      <Section id="api-extendable" title="extendable" rows={extendableProps} />
-      <Section id="api-locale" title="locale" rows={localeProps} />
-      <Section
-        id="api-state"
-        title="TableState"
-        blurb="Passed via `state` (controlled) or `defaultState` (uncontrolled). One shape covers sorting, filters, pagination, selection, expansion, column order / sizing / pinning / visibility."
-        rows={stateProps}
-      />
-      <Section
-        id="api-ref"
-        title="TableRef"
-        blurb="Imperative handle exposed via `React.useRef<TableRef>()` + `ref` on the Table."
-        rows={rowRefProps}
-      />
+        <Section id="api-table" title="Table" rows={tableProps} />
+        <Section
+          id="api-column"
+          title="Column"
+          blurb="Column definitions passed to `columns` (or `column.children` for grouped headers)."
+          rows={columnProps}
+        />
+        <Section
+          id="api-appearance"
+          title="appearance"
+          blurb="Omni-specific — fine-grained visual configuration. `bordered` is a convenience alias for `appearance.borders = 'grid'`."
+          rows={appearanceProps}
+        />
+        <Section id="api-pagination" title="pagination" rows={paginationProps} />
+        <Section id="api-expandable" title="expandable" rows={expandableProps} />
+        <Section id="api-row-selection" title="rowSelection" rows={rowSelectionProps} />
+        <Section id="api-scroll" title="scroll" rows={scrollProps} />
+        <Section id="api-virtual" title="virtual" rows={virtualProps} />
+        <Section id="api-sticky" title="sticky" rows={stickyProps} />
+        <Section
+          id="api-editable"
+          title="editable (Table-level)"
+          blurb="Combines with `column.editable` — controls the append-on-Tab behavior and the row / column control affordances."
+          rows={editableProps}
+        />
+        <Section
+          id="api-column-editable"
+          title="column.editable"
+          blurb="Column-level editable configuration. Prefer this over row-level `editable` — every editable column can supply its own `onSave` / `validate` / `renderEditor`."
+          rows={columnEditableProps}
+        />
+        <Section id="api-extendable" title="extendable" rows={extendableProps} />
+        <Section id="api-locale" title="locale" rows={localeProps} />
+        <Section
+          id="api-state"
+          title="TableState"
+          blurb="Passed via `state` (controlled) or `defaultState` (uncontrolled). One shape covers sorting, filters, pagination, selection, expansion, column order / sizing / pinning / visibility."
+          rows={stateProps}
+        />
+        <Section
+          id="api-ref"
+          title="TableRef"
+          blurb="Imperative handle exposed via `React.useRef<TableRef>()` + `ref` on the Table."
+          rows={rowRefProps}
+        />
+      </div>
     </div>
   ),
 };

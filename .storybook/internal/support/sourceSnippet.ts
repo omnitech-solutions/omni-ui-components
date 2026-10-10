@@ -204,18 +204,12 @@ export function mergeImports(code: string): string {
 }
 
 /**
- * The docs "Show code" of a story that renders an example component from its factories file: the example as it
- * is written there, with the types and data it uses and one import line a module. Read from the original TSX,
- * so what is shown is what runs. `transform` is set because the preview's own transform would replace the code.
- *
- * @example
- * import factories from './OutlineList.factories.tsx?raw';
- * export const Default: Story = { render: () => <QuestionsPanel />, parameters: exampleDocs(factories, 'QuestionsPanel') };
+ * An example component of a factories file as a consumer writes it: the example, the types and data it uses,
+ * and one import line a module. Read from the original TSX, so what is shown is what runs.
  */
-export function exampleDocs(source: string, target: string) {
+export function buildExampleCode(source: string, target: string): string {
   // One blank line between the top-level declarations, which the builder joins without any.
-  const code = mergeImports(buildSourceSnippet(source, target))
+  return mergeImports(buildSourceSnippet(source, target))
     .replace(/\n(?=(?:const|interface|type|function|export const Example) )/g, '\n\n')
     .replace(/\n{3,}/g, '\n\n');
-  return { docs: { source: { code, language: 'tsx', type: 'code', transform: () => code } } };
 }

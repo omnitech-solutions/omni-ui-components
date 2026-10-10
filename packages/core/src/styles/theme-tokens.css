@@ -9,9 +9,9 @@
 
   /* Brand colors (unchanged across themes) */
   --oui-background-current: var(--oui-background);
-  --danger: #ff4d4f;
+  --danger: #d32f35;
   --color-primary: var(--oui-primary-6);
-  --color-danger: #ff4d4f;
+  --color-danger: #d32f35;
   --color-primary-contrast: var(--color-primary-contrast-light);
   --color-primary-dark: var(--color-primary-dark-light);
   --color-danger-dark: var(--color-danger-dark-light);
@@ -147,6 +147,9 @@
   /* Brand variants */
   --color-primary-contrast: var(--color-primary-contrast-dark);
   --color-primary-dark: var(--color-primary-dark-dark);
+  /* Red text on a dark panel: #ff4d4f is 4.1:1 there. */
+  --danger: #ff6b6d;
+  --color-danger: #ff6b6d;
   --color-danger-dark: var(--color-danger-dark-dark);
   --color-danger-light: var(--color-danger-light-dark);
 

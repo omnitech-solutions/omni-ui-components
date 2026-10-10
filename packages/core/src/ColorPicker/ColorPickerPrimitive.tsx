@@ -81,7 +81,6 @@ export const ColorPickerPrimitive = React.forwardRef<HTMLButtonElement, ColorPic
             data-slot="color-picker"
             data-testid={testId}
             aria-invalid={invalid || undefined}
-            aria-required={required || undefined}
             aria-describedby={rest['aria-describedby']}
             aria-haspopup="dialog"
             aria-expanded={open}

@@ -116,6 +116,12 @@ describe('omni-ui-components/Stepper', () => {
       expect(screen.getByTestId('s')).toHaveAttribute('aria-invalid', 'true');
     });
 
+    it('a required stepper is described by the hidden "Required" hint and carries no aria-required', () => {
+      renderStepper({ required: true });
+      expect(screen.getByTestId('s')).not.toHaveAttribute('aria-required');
+      expect(screen.getByTestId('s')).toHaveAccessibleDescription('Required');
+    });
+
     it('exposes the error in role=alert', () => {
       renderStepper({ error: 'Pick a value' });
       expect(screen.getByRole('alert')).toHaveTextContent('Pick a value');
